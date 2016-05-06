@@ -1,6 +1,8 @@
 <?php
-interface Console_Plugin_Interface {
+
+interface Nip_Console_Plugin_Interface
+{
 
     public function output();
-    
+
 }

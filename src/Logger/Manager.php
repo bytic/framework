@@ -1,8 +1,8 @@
 <?php
-require_once 'Adapter.php';
-require_once 'Event.php';
 
-class Logger
+namespace Nip\Logger;
+
+class Manager
 {
 	const EVENT_ERROR = 'error';
 	const EVENT_WARNING = 'warning';
@@ -77,7 +77,7 @@ class Logger
 		return $this->_eventTypes;
 	}
 
-	public function setAdapter(Logger_Adapter $adapter)
+	public function setAdapter(\Nip\Logger\Adapter\AdapterAbstract $adapter)
 	{
 		$this->_adapter = $adapter;
 	}
@@ -86,18 +86,5 @@ class Logger
 	{
 		return $this->_adapter;
 	}
-
-	/**
-	 * Singleton
-	 * @return Logger
-	 */
-	public static function instance()
-	{
-		static $instance;
-		if (!($instance instanceof self)) {
-			$instance = new self();
-		}
-		return $instance;
-	}
-
+    
 }

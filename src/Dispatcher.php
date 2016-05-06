@@ -83,8 +83,8 @@ class Nip_Dispatcher
 		$action = $this->formatActionName($action);
 
 		try {
-			Nip_AutoLoader::instance()->load($controller);
-		} catch (Nip_AutoLoader_Exception $e) {
+			Nip\AutoLoader::instance()->load($controller);
+		} catch (Nip\AutoLoader\Exception $e) {
             Nip_FrontController::instance()->getTrace()->add($e->getMessage());
 			return;
 		}

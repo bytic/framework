@@ -1,6 +1,12 @@
 <?php
-class Logger_Event_Error extends Logger_Event {
 
-    protected $_type = Logger::EVENT_ERROR;
+namespace Nip\Logger\Event;
+
+use Nip\Logger\Manager;
+use Nip\Logger\Event;
+
+class Error extends Event {
+
+    protected $_type = Manager::EVENT_ERROR;
 
 }

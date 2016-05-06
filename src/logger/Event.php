@@ -1,5 +1,8 @@
 <?php
-class Logger_Event {
+
+namespace Nip\Logger;
+
+class Event {
     
     protected $_type;
     protected $_data;
@@ -18,15 +21,12 @@ class Logger_Event {
 
     static public function getNew($type = false) {
         switch ($type) {
-            case Logger::EVENT_ERROR:
-                require_once 'event/Error.php';
-
-                $event = new Logger_Event_Error();
+            case \Nip\Logger::EVENT_ERROR:
+                $event = new \Nip\Logger\Event\Error();
                 break;
-            case Logger::EVENT_INFO:
+            case \Nip\Logger::EVENT_INFO:
             default:
-                require_once 'event/Info.php';
-                $event = new Logger_Event_Info();
+                $event = new \Nip\Logger\Event\Info();
                 break;
         }
 

@@ -1,8 +1,8 @@
 <?php
 
-require_once dirname(__FILE__) . "/../../console/plugin/logger/Logger.php";
+namespace Nip\Logger\Adapter;
 
-class Logger_Adapter_Console extends Logger_Adapter {
+class Console extends AdapterAbstract {
 
     /**
      * @var Console_Plugin
@@ -10,10 +10,10 @@ class Logger_Adapter_Console extends Logger_Adapter {
     protected $_console;
 
     public function __construct() {
-        $console = new Console_Plugin_Logger("Log");
+        $console = new \Nip_Console_Plugin_Logger("Log");
         $console->setLogger($this);
         
-        Console::instance()->plugIn($console);
+        \Nip_Console::instance()->plugIn($console);
     }
 
     public function output() {

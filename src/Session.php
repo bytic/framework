@@ -46,9 +46,9 @@ class Session
 		if ($id) {
 			session_id($id);
 		}
-        Nip_AutoLoader::instance()->isFatal(false);
+        \Nip\AutoLoader::instance()->isFatal(false);
 		session_start();
-        Nip_AutoLoader::instance()->isFatal(true);
+        \Nip\AutoLoader::instance()->isFatal(true);
 	}
 
 	/**

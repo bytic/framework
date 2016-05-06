@@ -1,7 +1,10 @@
 <?php
-interface Logger_Adapter_Interface {
 
-    public function addEvent(Logger_Event $event);
+namespace Nip\Logger\Adapter;
+
+interface AdapterInterface {
+
+    public function addEvent(\Nip\Logger\Event $event);
     public function output();
 
 }

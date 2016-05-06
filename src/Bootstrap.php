@@ -69,7 +69,7 @@ class Bootstrap
     {
         fix_input_quotes();
 
-        if (Nip_Staging::instance()->isPublic()) {
+        if (\Nip_Staging::instance()->isPublic()) {
             ini_set('display_errors', 0);
             error_reporting(0);
         } else {
@@ -78,8 +78,8 @@ class Bootstrap
             error_reporting(E_ALL ^ E_NOTICE);
         }
 
-        $logger = Logger::instance();
-        $adapter = new Logger_Adapter_Console();
+        $logger = new \Nip\Logger\Manager();
+        $adapter = new \Nip\Logger\Adapter\Console();
         $logger->setAdapter($adapter);
 
         set_error_handler(array($logger, "errorHandler"), E_ALL ^ E_NOTICE);
@@ -110,7 +110,7 @@ class Bootstrap
     public function setupSession()
     {
         $this->_sessionManager = $this->initSession();
-        $domain = Nip_Request::instance()->getHttp()->getRootDomain();
+        $domain = \Nip_Request::instance()->getHttp()->getRootDomain();
 
 
         if (!ini_get('session.auto_start') || (strtolower(ini_get('session.auto_start'))
@@ -118,15 +118,15 @@ class Bootstrap
         ) {
             if ($domain !== 'localhost') {
                 ini_set('session.cookie_domain',
-                    '.' . Nip_Request::instance()->getHttp()->getRootDomain());
+                    '.' . \Nip_Request::instance()->getHttp()->getRootDomain());
             }
-            $this->_sessionManager->setLifetime(Nip_Config::instance()->SESSION->lifetime);
+            $this->_sessionManager->setLifetime(\Nip_Config::instance()->SESSION->lifetime);
         } else {
 
         }
 
         if ($domain != 'localhost') {
-            Nip_Cookie_Jar::instance()->setDefaults(
+            \Nip_Cookie_Jar::instance()->setDefaults(
                 array('domain' => '.' . $domain)
             );
         }
@@ -146,7 +146,7 @@ class Bootstrap
     public function setupRouting()
     {
         $router = $this->initRouter();
-        Nip_FrontController::instance()->setRouter($router);
+        \Nip_FrontController::instance()->setRouter($router);
     }
 
     public function initRouter()
@@ -155,7 +155,7 @@ class Bootstrap
 
     public function dispatch()
     {
-        $fc = Nip_FrontController::instance();
+        $fc = \Nip_FrontController::instance();
         try {
             ob_start();
             $this->preDispatch();
@@ -168,7 +168,7 @@ class Bootstrap
             $fc->dispatch($params);
             ob_end_flush();
             $this->postDispatch();
-        } catch (Nip_PHPException $e) {
+        } catch (\Nip_PHPException $e) {
             $e->log();
         }
     }
