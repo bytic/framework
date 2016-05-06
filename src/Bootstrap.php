@@ -2,8 +2,6 @@
 
 namespace Nip;
 
-use Nip\Session;
-
 class Bootstrap
 {
     protected $_autoloader;
@@ -109,17 +107,20 @@ class Bootstrap
 
     public function setupSession()
     {
-
         $this->_sessionManager = $this->initSession();
         $domain = Nip_Request::instance()->getHttp()->getRootDomain();
 
-        if (!ini_get('session.auto_start') || (strtolower(ini_get('session.auto_start')) == 'off')) {
+
+        if (!ini_get('session.auto_start') || (strtolower(ini_get('session.auto_start'))
+                == 'off')
+        ) {
             if ($domain !== 'localhost') {
                 ini_set('session.cookie_domain',
                     '.' . Nip_Request::instance()->getHttp()->getRootDomain());
             }
             $this->_sessionManager->setLifetime(Nip_Config::instance()->SESSION->lifetime);
         } else {
+
         }
 
         if ($domain != 'localhost') {
