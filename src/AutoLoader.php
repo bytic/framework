@@ -1,12 +1,17 @@
 <?php
 
-function Nip_autoload($class)
+namespace Nip;
+
+use Nip\AutoLoader\ClassMapGenerator;
+use Nip\AutoLoader\Exception as AutoloadException;
+
+function _autoload($class)
 {
-    $autoloader = Nip_AutoLoader::instance();
+    $autoloader = AutoLoader::instance();
 
     try {
         $autoloader->load($class);
-    } catch (Nip\AutoLoader\Exception $ex) {
+    } catch (AutoloadException $ex) {
         if ($autoloader->isFatal()) {
             trigger_error($ex, E_USER_ERROR);
         } else {
@@ -14,9 +19,10 @@ function Nip_autoload($class)
         }
     }
 }
-spl_autoload_register('Nip_autoload');
 
-class Nip_AutoLoader
+spl_autoload_register('Nip\_autoload');
+
+class AutoLoader
 {
     protected $_directories = array();
     protected $_map         = array();
@@ -25,7 +31,7 @@ class Nip_AutoLoader
 
     public function __construct()
     {
-        $this->_mapGenerator = new Nip\AutoLoader\ClassMapGenerator();
+        $this->_mapGenerator = new ClassMapGenerator();
     }
     /**
      * If true, if a class location is not mapped, it tries again by rewriting the cache file
@@ -63,13 +69,13 @@ class Nip_AutoLoader
                         false) || trait_exists($class, false)) {
                     return true;
                 } else {
-                    throw new Nip\AutoLoader\Exception("Cannot find the $class class in $file");
+                    throw new AutoloadException("Cannot find the $class class in $file");
                 }
             } else {
-                throw new Nip\AutoLoader\Exception("Cannot include $class file $file");
+                throw new AutoloadException("Cannot include $class file $file");
             }
         } else {
-            throw new Nip\AutoLoader\Exception("Cannot find class $class");
+            throw new AutoloadException("Cannot find class $class");
         }
 
         return false;
@@ -86,9 +92,9 @@ class Nip_AutoLoader
         }
 
         if (!$retry) {
-            Nip_Profiler::instance()->start('autoloader [buildCache]');
+            \Nip_Profiler::instance()->start('autoloader [buildCache]');
             $this->generateMap();
-            Nip_Profiler::instance()->end('autoloader [buildCache]');
+            \Nip_Profiler::instance()->end('autoloader [buildCache]');
 
             return $this->getClassLocation($class, true);
         }
@@ -117,10 +123,10 @@ class Nip_AutoLoader
                 $filePath = $this->_cachePath.$fileName;
 
                 if (!$this->readCacheFile($filePath)) {
-                    Nip_Profiler::instance()->start('autoloader [readCache]');
+                    \Nip_Profiler::instance()->start('autoloader [readCache]');
                     $this->generateMapDir($dir);
                     $this->readCacheFile($filePath);
-                    Nip_Profiler::instance()->start('autoloader [readCache]');
+                    \Nip_Profiler::instance()->start('autoloader [readCache]');
                 }
             }
         }

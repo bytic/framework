@@ -42,9 +42,9 @@ class Bootstrap
 
     public function setupAutoloader()
     {
-        $this->_autoloader = Nip_AutoLoader::instance();
+        $this->_autoloader = AutoLoader::instance();
 
-        if (Nip_Staging::instance()->inProduction()) {
+        if (\Nip_Staging::instance()->inProduction()) {
             $this->_autoloader->setRetry(false);
         }
 
@@ -87,10 +87,12 @@ class Bootstrap
 
     protected function determineBaseURL()
     {
-        $stage = Nip_Staging::instance()->getStage();
+        $stage = \Nip_Staging::instance()->getStage();
 
-        $projectDirectoryParser = new Nip_Request_ProjectDirectory();
-        $projectDirectoryParser->setScriptName(Nip_Request::instance()->getHTTP()->determineScriptNameByFilePath(ROOT_PATH));
+        $projectDirectoryParser = new \Nip_Request_ProjectDirectory();
+        $projectDirectoryParser->setScriptName(
+            \Nip_Request::instance()->getHTTP()->determineScriptNameByFilePath(ROOT_PATH)
+        );
 
         $baseURL = $stage->getHTTP() . $stage->getHost() . $projectDirectoryParser->determine();
         define('BASE_URL', $baseURL);
@@ -98,8 +100,8 @@ class Bootstrap
 
     public function setupDatabase()
     {
-        $stageConfig = Nip_Staging::instance()->getStage()->getConfig();
-        Nip_DB_Wrapper::instance($stageConfig->DB->adapter,
+        $stageConfig = \Nip_Staging::instance()->getStage()->getConfig();
+        \Nip_DB_Wrapper::instance($stageConfig->DB->adapter,
             $stageConfig->DB->prefix)
             ->connect($stageConfig->DB->host, $stageConfig->DB->user,
                 $stageConfig->DB->password, $stageConfig->DB->name);
@@ -186,4 +188,10 @@ class Bootstrap
     public function postRouting()
     {
     }
+    
+    public function setupURLConstants()
+    {
+        $this->determineBaseURL();
+    }
+    
 }
