@@ -1,0 +1,8 @@
+{
+  "name": "ByTIC/Framework",
+  "autoload": {
+    "classmap": [
+      "src"
+    ]
+  }
+}
