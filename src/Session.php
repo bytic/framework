@@ -17,7 +17,10 @@ class Session
 
 //		ini_set('session.save_handler', 'user');
 		register_shutdown_function('session_write_close');
+	}
 
+	public function init()
+	{
 		$id = $this->checkRequestId();
 //		$this->setHandlers();
 		$this->start($id);
@@ -36,7 +39,6 @@ class Session
 
 	/**
 	 * Starts the session, with optional session id
-	 *
 	 * @param string $id
 	 */
 	protected function start($id = false)
@@ -51,7 +53,6 @@ class Session
 
 	/**
 	 * Overrides default session handling functions
-	 *
 	 * @return Session
 	 */
 	protected function setHandlers()
@@ -220,20 +221,6 @@ class Session
 	protected function decodeData($data)
 	{
 		return base64_decode($data);
-	}
-
-	/**
-	 * Singleton
-	 *
-	 * @return Nip_Session
-	 */
-	static public function instance()
-	{
-		static $instance;
-		if (!($instance instanceof Nip_Session)) {
-			$instance = new Nip_Session();
-		}
-		return $instance;
 	}
 
 }
