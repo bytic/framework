@@ -3,6 +3,11 @@
   "autoload": {
     "classmap": [
       "src"
+    ],
+    "files": [
+      "src/functions/common.php",
+      "src/functions/input.php",
+      "src/functions/flash.php"
     ]
   }
 }
