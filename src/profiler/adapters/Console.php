@@ -4,7 +4,7 @@ class Nip_Profiler_Adapters_Console extends Nip_Profiler_Adapters_Abstract {
     protected $_plugin;
 
     public function output($name) {
-        $this->_plugin = new Console_Plugin_Generic_Table($name);
+        $this->_plugin = new Nip_Console_Plugin_Generic_Table($name);
         Console::instance()->plugIn($this->_plugin);
 
         $data = array();
