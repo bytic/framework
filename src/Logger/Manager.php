@@ -24,7 +24,7 @@ class Manager
 
 	public function logEvent($type = self::EVENT_INFO, $data = null)
 	{
-		$event = Logger_Event::getNew($type);
+		$event = Event::getNew($type);
 		$event->setData($data);
 		$event->setBacktrace(debug_backtrace());
 
