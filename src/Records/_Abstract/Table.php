@@ -35,9 +35,10 @@ abstract class Table
         $this->_controller = inflector()->unclassify($class);
     }
 
-    public function generateModelClass()
+    public function generateModelClass($class = null)
     {
-        $class = get_class($this);
+        $class = $class ? $class : get_class($this);
+
         if (strpos($class, '\\')) {
             $nsParts = explode('\\', $class);
             $class = array_pop($nsParts);
@@ -59,7 +60,7 @@ abstract class Table
     public function getRegistry()
     {
         if (!$this->_registry) {
-            $this->_registry = new Nip_Registry();
+            $this->_registry = new \Nip_Registry();
         }
         return $this->_registry;
     }

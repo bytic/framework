@@ -57,12 +57,14 @@ class Nip_Inflector
 		'move' => 'moves'
 	);
 	protected $dictionary;
-	protected $cacheFile;
+	protected $cacheFile = null;
 	protected $toCache = false;
 
 	public function __construct()
 	{
-		$this->cacheFile = CACHE_PATH . 'inflector.php';
+		if (defined('CACHE_PATH')) {
+			$this->cacheFile = CACHE_PATH . 'inflector.php';
+		}
 		$this->readCache();
 	}
 
@@ -104,7 +106,7 @@ class Nip_Inflector
 
 	public function writeCache()
 	{
-		if ($this->dictionary) {
+		if ($this->dictionary && $this->cacheFile) {
 			$file = new Nip_File_Handler(array("path" => $this->cacheFile));
 			$data = '<?php $inflector = ' . var_export($this->dictionary, true) . ";";
 			$file->rewrite($data);
@@ -113,16 +115,19 @@ class Nip_Inflector
 
 	public function isCached()
 	{
-		if (!file_exists($this->cacheFile)) {
-			return false;
+		if ($this->hasCacheFile()) {
+			if (filemtime($this->cacheFile) + Nip_Config::instance()->MISC->inflector_cache > time()) {
+				return true;
+			}
 		}
 
-		if (filemtime($this->cacheFile) + Nip_Config::instance()->MISC->inflector_cache < time()) {
-			return false;
-		}
-
-		return true;
+		return false;
 	}
+
+    public function hasCacheFile()
+    {
+        return ($this->cacheFile && file_exists($this->cacheFile));
+    }
 
 	protected function _pluralize($word)
 	{
