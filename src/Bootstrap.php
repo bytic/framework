@@ -6,6 +6,9 @@ class Bootstrap
 {
     protected $_autoloader;
 
+    protected $_staging;
+    protected $_stage;
+
     public function run()
     {
         $this->loadFiles();
@@ -21,6 +24,7 @@ class Bootstrap
     public function prepare()
     {
         $this->includeVendorAutoload();
+        $this->setupStaging();
         $this->setupAutoloader();
         $this->setupErrorHandling();
         $this->setupURLConstants();
@@ -40,11 +44,22 @@ class Bootstrap
 
     }
 
+    public function setupStaging()
+    {
+        $this->_staging = Staging::instance();
+        $this->_stage = $this->_staging->getStage();
+    }
+
+    public function getStage()
+    {
+        return $this->_stage;
+    }
+
     public function setupAutoloader()
     {
         $this->_autoloader = AutoLoader::instance();
 
-        if (\Nip_Staging::instance()->inProduction()) {
+        if ($this->getStage()->inProduction()) {
             $this->_autoloader->setRetry(false);
         }
 
@@ -188,10 +203,10 @@ class Bootstrap
     public function postRouting()
     {
     }
-    
+
     public function setupURLConstants()
     {
         $this->determineBaseURL();
     }
-    
+
 }

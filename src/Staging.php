@@ -1,110 +1,156 @@
 <?php
 
-class Nip_Staging
+namespace Nip;
+
+use Nip\Staging\Stage;
+
+class Staging
 {
 
-	protected $_stage;
-	protected $_stages;
+    protected $_stage;
+    protected $_stages;
     protected $_config;
     protected $_publicStages = array('production', 'staging', 'demo');
 
     /**
      * @return Nip_Staging_Stage
      */
-	public function getStage()
-	{
-		if (!$this->_stage) {
-			$_stage = false;
-			if (isset($_SERVER['SERVER_NAME'])) {
-				foreach ($this->getStages() as $stage) {
-                    if($stage->isCurrent()) {
+    public function getStage()
+    {
+        if (!$this->_stage) {
+            $stage = $this->determineStage();
+            $this->updateStage($stage);
+        }
+
+        return $this->_stage;
+    }
+
+    public function determineStage()
+    {
+        if ($stage = $this->determineStageFromConf()) {
+            return $stage;
+        }
+
+        if ($stage = $this->determineStageFromHOST()) {
+            return $stage;
+        }
+        return 'local';
+    }
+
+    public function determineStageFromConf()
+    {
+        if (isset($this->getConfig()->STAGE) && isset($this->getConfig()->STAGE->current)) {
+            return $this->getConfig()->STAGE->current;
+        }
+        return false;
+    }
+
+    public function determineStageFromHOST()
+    {
+        $_stage = false;
+        if (isset($_SERVER['SERVER_NAME'])) {
+            foreach ($this->getStages() as $stage => $hosts) {
+                foreach ($hosts as $host) {
+                    if (preg_match('/^' . strtr($host, array('*' => '.*', '?' => '.?')) . '$/i',
+                        $_SERVER['SERVER_NAME'])) {
                         $_stage = $stage;
-                        break;
+                        break 2;
                     }
-				}
-			}
-            if ($_stage == false) {
-                debug_print_backtrace();
-                trigger_error('ERROR DETECTING STAGE', E_USER_ERROR);
+                }
             }
-            
-            $this->updateStage($_stage);
-		}
+        }
+        return $_stage;
+    }
 
-		return $this->_stage;
-	}
-
-    public function updateStage($stage)
-    {        
-        $this->_stage = is_object($stage) ? $stage : $this->newStage($stage);
+    public function updateStage($name)
+    {
+        $this->_stage = $this->newStage($name);
         return $this;
     }
 
     public function newStage($name)
     {
-        if (!class_exists('Nip_Staging_Stage')) {
-            require NIP_PATH . 'staging/Stage.php';
+        $stage = new Stage();
+        $stage->setManager($this);
+        $stage->setName($name);
+
+        $stages = $this->getStages();
+        if (isset($stages[$name])) {
+            $stage->setHosts($stages[$name]);
         }
-        $stage = new Nip_Staging_Stage();
-        $stage->setName($name);        
 
         return $stage;
     }
 
     public function getStages()
-	{
-		if (!$this->_stages) {
-            if (!class_exists('Nip_File_System')) {
-                require NIP_PATH . 'file/System.php';
+    {
+        if (!$this->_stages) {
+            $stageObj = $this->getConfig()->HOSTS;
+            if ($stageObj) {
+                $this->_stages = get_object_vars($stageObj);
+
+                if (is_array($this->_stages)) {
+                    foreach ($this->_stages as &$stage) {
+                        if (strpos($stage, ',')) {
+                            $stage = array_map("trim", explode(',', $stage));
+                        } else {
+                            $stage = array(trim($stage));
+                        }
+                    }
+                }
+            } else {
+                $this->_stages = array();
             }
-            $files = Nip_File_System::instance()->scanDirectory(CONFIG_STAGING_PATH);
-            
-            foreach ($files as $file) {
-                $stageName = str_replace('.ini', '', $file);
-                $this->_stages[$stageName] = $this->newStage($stageName);
-                $this->_stages[$stageName]->init();
-            }
-		}
-		return $this->_stages;
-	}
+        }
+        return $this->_stages;
+    }
 
     public function getConfig()
     {
         if (!$this->_config) {
-            $this->_config = new Nip_Config();
-            $this->_config->parse($this->_getConfigPath());
-
+            $this->_config = $this->initConfig();
         }
         return $this->_config;
     }
 
-    protected function _getConfigPath()
+    public function initConfig()
     {
-        return CONFIG_PATH . 'staging.ini';
+        $config = new \Nip_Config();
+        if ($this->hasConfigFile('staging.ini')) {
+            $config->parse($this->getConfigFolder() . 'staging.ini');
+        }
+
+        if ($this->hasConfigFile('stage.ini')) {
+            $config->parse($this->getConfigFolder() . 'stage.ini');
+        }
+        return $config;
     }
 
-	public function inProduction()
-	{
-		return $this->getStage()->getType() == 'production';
-	}
-
-
-    public function isPublic()
+    protected function hasConfigFile($file)
     {
-        return !isset ($_SESSION['authorized']) && in_array($this->getStage()->getType(), $this->_publicStages);
+        return is_file($this->getConfigFolder().$file);
+    }
+
+    protected function getConfigFolder()
+    {
+        return defined('CONFIG_PATH') ? CONFIG_PATH : null;
+    }
+
+    public function isInPublicStages($name)
+    {
+        return in_array($name, $this->_publicStages);
     }
 
     /**
-	 * Singleton
-	 *
-	 * @return Nip_Staging
-	 */
-	static public function instance()
-	{
-		static $instance;
-		if (!($instance instanceof self)) {
-			$instance = new self();
-		}
-		return $instance;
-	}
+     * Singleton
+     * @return self
+     */
+    static public function instance()
+    {
+        static $instance;
+        if (!($instance instanceof self)) {
+            $instance = new self();
+        }
+        return $instance;
+    }
 }

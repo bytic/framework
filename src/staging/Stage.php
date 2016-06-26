@@ -1,7 +1,12 @@
 <?php
 
-class Nip_Staging_Stage
+namespace Nip\Staging;
+
+use Nip\Staging;
+
+class Stage
 {
+    protected $_manager;
     protected $_name;
     protected $_hosts;
     protected $_host;
@@ -32,6 +37,24 @@ class Nip_Staging_Stage
         return $this;
     }
 
+    /**
+     * @return Staging
+     */
+    public function getManager()
+    {
+        return $this->_manager;
+    }
+
+    /**
+     * @param Staging $manager
+     */
+    public function setManager($manager)
+    {
+        $this->_manager = $manager;
+        return $this;
+    }
+
+
     public function getType()
     {
         return $this->getConfig()->STAGE->type;
@@ -40,8 +63,8 @@ class Nip_Staging_Stage
     public function isCurrent()
     {
         foreach ($this->_hosts as $host) {
-            if (preg_match('/^'.strtr($host, array('*' => '.*', '?' => '.?')).'$/i',
-                    $_SERVER['SERVER_NAME'])) {
+            if (preg_match('/^' . strtr($host, array('*' => '.*', '?' => '.?')) . '$/i',
+                $_SERVER['SERVER_NAME'])) {
                 return true;
             }
         }
@@ -63,7 +86,7 @@ class Nip_Staging_Stage
 
             if (!$this->_host) {
                 $this->_host = isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST']
-                        : 'localhost';
+                    : 'localhost';
             }
         }
 
@@ -73,7 +96,7 @@ class Nip_Staging_Stage
     public function getBaseURL()
     {
         if (!$this->_baseURL) {
-            $this->_baseURL = $this->getHTTP().$this->getHost().$this->getProjectDir();
+            $this->_baseURL = $this->getHTTP() . $this->getHost() . $this->getProjectDir();
         }
 
         return $this->_baseURL;
@@ -85,7 +108,7 @@ class Nip_Staging_Stage
         if (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == "on") {
             $https = true;
         }
-        return "http".($https ? "s" : "")."://";
+        return "http" . ($https ? "s" : "") . "://";
     }
 
     public function getProjectDir()
@@ -99,7 +122,7 @@ class Nip_Staging_Stage
 
     public function initProjectDir()
     {
-        $parser = new Nip_Request_ProjectDirectory();
+        $parser = new \Nip_Request_ProjectDirectory();
         return $parser->determine();
     }
 
@@ -111,14 +134,37 @@ class Nip_Staging_Stage
     public function getConfig()
     {
         if (!$this->_config) {
-            $this->_config = new Nip_Config();
-            $this->_config->parse($this->_getConfigPath());
+            $this->_config = new \Nip_Config();
+            if ($this->hasConfigFile()) {
+                $this->_config->parse($this->getConfigPath());
+            }
         }
         return $this->_config;
     }
 
-    protected function _getConfigPath()
+    protected function hasConfigFile()
     {
-        return CONFIG_STAGING_PATH.$this->_name.'.ini';
+        return is_file($this->getConfigPath());
+    }
+
+    protected function getConfigPath()
+    {
+        return $this->getConfigFolder() . $this->_name . '.ini';
+    }
+
+    protected function getConfigFolder()
+    {
+        return defined('CONFIG_STAGING_PATH') ? CONFIG_STAGING_PATH : null;
+    }
+
+    public function inProduction()
+    {
+        return $this->_name == 'production';
+    }
+
+
+    public function isPublic()
+    {
+        return !isset ($_SESSION['authorized']) && $this->getManager()->isInPublicStages($this->getName());
     }
 }
