@@ -5,8 +5,8 @@ namespace Nip\Records\_Abstract;
 abstract class Table
 {
 
-    protected $_model;
-    protected $_controller;
+    protected $_model = null;
+    protected $_controller = null;
 
     public function __construct()
     {
@@ -26,13 +26,24 @@ abstract class Table
      */
     protected function inflect()
     {
+        $this->inflectModel();
+        $this->inflectController();
+    }
+
+    protected function inflectModel()
+    {
         $class = get_class($this);
-
-        if (!$this->_model) {
-            $this->_model = $this->generateModelClass();
+        if ($this->_model == null) {
+            $this->_model = $this->generateModelClass($class);
         }
+    }
 
-        $this->_controller = inflector()->unclassify($class);
+    protected function inflectController()
+    {
+        $class = get_class($this);
+        if ($this->_controller == null) {
+            $this->_controller = inflector()->unclassify($class);
+        }
     }
 
     public function generateModelClass($class = null)
@@ -47,6 +58,19 @@ abstract class Table
             }
         }
         return ucfirst(inflector()->singularize($class));
+    }
+
+    /**
+     * @param null $model
+     */
+    public function setModel($model)
+    {
+        $this->_model = $model;
+    }
+
+    public function getModel()
+    {
+        return $this->_model;
     }
 
     public function getController()

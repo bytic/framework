@@ -20,6 +20,16 @@ class TableTest extends \Codeception\TestCase\Test
     }
 
     // tests
+
+    public function testSetModel()
+    {
+        $this->_object->setModel('Row');
+        $this->assertEquals($this->_object->getModel(),'Row');
+
+        $this->_object->setModel('Row2');
+        $this->assertEquals($this->_object->getModel(),'Row2');
+    }
+
     public function testGenerateModelClass()
     {
         $this->assertEquals($this->_object->generateModelClass('Notifications\Table'),'Notifications\Row');
