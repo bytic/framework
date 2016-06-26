@@ -1,5 +1,12 @@
 {
   "name": "ByTIC/Framework",
+  "description": "Php Framework",
+  "authors": [
+    {
+      "name": "Gabriel Solomon",
+      "email": "hello@gabrielsolomon.ro"
+    }
+  ],
   "autoload": {
     "classmap": [
       "src"
@@ -9,5 +16,8 @@
       "src/functions/input.php",
       "src/functions/flash.php"
     ]
+  },
+  "require-dev": {
+    "codeception/codeception": "2.1.7"
   }
 }

@@ -1,6 +1,6 @@
 <?php
 
-class Nip_Record extends Nip_Record_Abstract {
+class Nip_Record extends \Nip\Records\_Abstract\Row {
 
 
     protected $_fields = array();

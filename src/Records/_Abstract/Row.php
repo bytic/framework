@@ -1,6 +1,8 @@
 <?php
 
-abstract class Nip_Record_Abstract extends Nip_Object {
+namespace Nip\Records\_Abstract;
+
+abstract class Row extends \Nip_Object {
 
     protected $_name;
     protected $_manager;

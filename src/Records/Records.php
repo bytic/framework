@@ -1,6 +1,6 @@
 <?php
 
-abstract class Nip_Records extends Nip_Records_Abstract {
+abstract class Nip_Records extends \Nip\Records\_Abstract\Table {
 
     protected $_db;
     protected $_collectionClass = 'Nip_RecordCollection';

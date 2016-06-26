@@ -1,42 +1,58 @@
 <?php
 
-abstract class Nip_Records_Abstract {
+namespace Nip\Records\_Abstract;
+
+abstract class Table
+{
 
     protected $_model;
     protected $_controller;
-    
-    public function __construct() {
+
+    public function __construct()
+    {
         $this->inflect();
-    }   
-    
+    }
+
     public function getNewRecord($data = array())
     {
         $model = $this->getModel();
         $record = new $model($data);
-        $record->setManager($this);        
+        $record->setManager($this);
         return $record;
     }
 
-        /**
+    /**
      * Sets model and database table from the class name
      */
-    protected function inflect() {
+    protected function inflect()
+    {
         $class = get_class($this);
 
         if (!$this->_model) {
-            $this->_model = ucfirst(inflector()->singularize($class));
+            $this->_model = $this->generateModelClass();
         }
+
         $this->_controller = inflector()->unclassify($class);
     }
-    
-    public function getModel() {
-        return $this->_model;
+
+    public function generateModelClass()
+    {
+        $class = get_class($this);
+        if (strpos($class, '\\')) {
+            $nsParts = explode('\\', $class);
+            $class = array_pop($nsParts);
+            if ($class == 'Table') {
+                return implode($nsParts, '\\') . '\Row';
+            }
+        }
+        return ucfirst(inflector()->singularize($class));
     }
 
-    public function getController() {
+    public function getController()
+    {
         return $this->_controller;
-    }    
-    
+    }
+
     /**
      * @return Nip_Registry
      */
