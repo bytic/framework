@@ -121,7 +121,7 @@ class Bootstrap
     protected function determineBaseURL()
     {
         $stage = $this->getStage();
-        $pathInfo = $this->getFrontController()->getRequest()->getHttp()->getBaseUrl();
+        $pathInfo = $this->getFrontController()->getRequest()->getHttp()->getPathInfo();
 
         $baseURL = $stage->getHTTP() . $stage->getHost() . $pathInfo;
         define('BASE_URL', $baseURL);
@@ -206,6 +206,7 @@ class Bootstrap
     public function setupRouting()
     {
         $router = $this->initRouter();
+        $router->setRequest($this->getFrontController()->getRequest());
         $this->getFrontController()->setRouter($router);
     }
 
