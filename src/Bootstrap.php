@@ -4,7 +4,9 @@ namespace Nip;
 
 class Bootstrap
 {
-    protected $_autoloader;
+    protected $_autoloader = null;
+
+    protected $_frontController = null;
 
     protected $_staging;
     protected $_stage;
@@ -46,8 +48,16 @@ class Bootstrap
 
     public function setupStaging()
     {
-        $this->_staging = Staging::instance();
+        $this->_staging = $this->initStaging();
         $this->_stage = $this->_staging->getStage();
+
+        $this->getFrontController()->setStaging($this->_staging);
+        $this->getFrontController()->setStage($this->_stage);
+    }
+
+    public function initStaging()
+    {
+        return Staging::instance();
     }
 
     public function getStage()
@@ -84,7 +94,7 @@ class Bootstrap
     {
         fix_input_quotes();
 
-        if (\Nip_Staging::instance()->isPublic()) {
+        if ($this->getStage()->isPublic()) {
             ini_set('display_errors', 0);
             error_reporting(0);
         } else {
@@ -102,7 +112,7 @@ class Bootstrap
 
     protected function determineBaseURL()
     {
-        $stage = \Nip_Staging::instance()->getStage();
+        $stage = $this->getStage();
 
         $projectDirectoryParser = new \Nip_Request_ProjectDirectory();
         $projectDirectoryParser->setScriptName(
@@ -115,7 +125,7 @@ class Bootstrap
 
     public function setupDatabase()
     {
-        $stageConfig = \Nip_Staging::instance()->getStage()->getConfig();
+        $stageConfig = $this->getStage()->getConfig();
         \Nip_DB_Wrapper::instance($stageConfig->DB->adapter,
             $stageConfig->DB->prefix)
             ->connect($stageConfig->DB->host, $stageConfig->DB->user,
@@ -161,26 +171,41 @@ class Bootstrap
     public function setupRouting()
     {
         $router = $this->initRouter();
-        \Nip_FrontController::instance()->setRouter($router);
+        $this->getFrontController()->setRouter($router);
     }
 
     public function initRouter()
     {
     }
 
+    protected function getFrontController()
+    {
+        if ($this->_frontController === null) {
+            $this->_frontController = $this->initFrontController();
+        }
+        return $this->_frontController;
+    }
+
+    protected function initFrontController()
+    {
+
+        $fc = new FrontController();
+        $fc->setBootstrap($this);
+        return $fc;
+    }
+
     public function dispatch()
     {
-        $fc = \Nip_FrontController::instance();
         try {
             ob_start();
             $this->preDispatch();
-            $fc->getRequestURI();
+            $this->getFrontController()->getRequestURI();
 
             $this->preRouting();
-            $params = $fc->routeURI();
+            $params = $this->getFrontController()->routeURI();
             $this->postRouting();
 
-            $fc->dispatch($params);
+            $this->getFrontController()->dispatch($params);
             ob_end_flush();
             $this->postDispatch();
         } catch (\Nip_PHPException $e) {

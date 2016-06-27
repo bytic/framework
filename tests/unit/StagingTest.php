@@ -1,5 +1,7 @@
 <?php
 
+namespace Nip\Tests;
+
 class StagingTest extends \Codeception\TestCase\Test
 {
     /**

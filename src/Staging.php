@@ -13,7 +13,7 @@ class Staging
     protected $_publicStages = array('production', 'staging', 'demo');
 
     /**
-     * @return Nip_Staging_Stage
+     * @return Nip\Staging\Stage
      */
     public function getStage()
     {

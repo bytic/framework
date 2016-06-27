@@ -81,9 +81,9 @@ class Nip_Cache_Manager
 			return true;
 		} else {
 			$message = "Cannot open cache file for writing: ";
-			if (!Nip_Staging::instance()->isPublic()) {
-				$message .= " [ ".$this->cache_file." ] ";
-			}
+//			if (!Nip_Staging::instance()->isPublic()) {
+//				$message .= " [ ".$this->cache_file." ] ";
+//			}
 			die($message);
 		}
 	}

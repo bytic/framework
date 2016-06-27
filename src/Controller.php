@@ -1,9 +1,13 @@
 <?php
 
-class Nip_Controller
+namespace Nip;
+
+class Controller
 {
 
 	protected $_dispatcher;
+    protected $_frontController;
+
 	protected $_action;
 	protected $_name;
 	protected $_request;
@@ -95,29 +99,36 @@ class Nip_Controller
 
 	/**
 	 * Returns the dispatcher Object
-	 * @return Nip_Dispatcher
+	 * @return Dispatcher
 	 */
 	public function getDispatcher()
 	{
-		if (!$this->_dispatcher instanceof Nip_Dispatcher) {
-			$this->_dispatcher = Nip_Dispatcher::instance();
-		}
 		return $this->_dispatcher;
 	}
 
 	/**
-	 * @param Nip_Request $request
-	 * @return Nip_Controller
+	 * @param Dispatcher $dispatcher
+	 * @return self
 	 */
-	public function setDispatcher(Nip_Dispatcher $dispatcher)
+	public function setDispatcher(Dispatcher $dispatcher)
 	{
 		$this->_dispatcher = $dispatcher;
+		$this->_frontController = $dispatcher->getFrontController();
 		return $this;
 	}
+    
+    /**
+     * Returns the dispatcher Object
+     * @return FrontController
+     */
+    public function getFrontController()
+    {
+        return $this->_frontController;
+    }
 
 	/**
 	 * @param string $action
-	 * @return Nip_Controller
+	 * @return self
 	 */
 	public function setAction($action)
 	{

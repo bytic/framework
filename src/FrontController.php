@@ -1,11 +1,56 @@
 <?php
 
-class Nip_FrontController
+namespace Nip;
+
+class FrontController
 {
+
+    protected $_bootstrap;
+
+    protected $_staging;
+    protected $_stage;
+    
     protected $_router;
     protected $_dispatcher;
     protected $_request;
     protected $_requestURI = null;
+
+    public function setBootstrap($bootstrap)
+    {
+        $this->_bootstrap = $bootstrap;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getStage()
+    {
+        return $this->_stage;
+    }
+
+    /**
+     * @param mixed $stage
+     */
+    public function setStage($stage)
+    {
+        $this->_stage = $stage;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getStaging()
+    {
+        return $this->_staging;
+    }
+
+    /**
+     * @param mixed $staging
+     */
+    public function setStaging($staging)
+    {
+        $this->_staging = $staging;
+    }
 
     public function dispatch($params = array())
     {
@@ -26,8 +71,8 @@ class Nip_FrontController
             $url = parse_url($_SERVER['REQUEST_URI']);
 
             // replace first occurence
-            $this->_requestURI = str_replace("###".Nip_Staging::instance()->getStage()->getProjectDir(),
-                "", "###".$url['path']);
+            $this->_requestURI = str_replace("###" . $this->getStage()->getProjectDir(),
+                "", "###" . $url['path']);
         }
         return $this->_requestURI;
     }
@@ -53,10 +98,17 @@ class Nip_FrontController
     public function getDispatcher()
     {
         if (!$this->_dispatcher) {
-            $this->_dispatcher = Nip_Dispatcher::instance();
+            $this->_dispatcher = $this->initDispatcher();
         }
 
         return $this->_dispatcher;
+    }
+
+    public function initDispatcher()
+    {
+        $dispatcher = Nip_Dispatcher::instance();
+        $dispatcher->setFrontController($this);
+        return $dispatcher;
     }
 
     public function setDispatcher($dispatcher = false)
