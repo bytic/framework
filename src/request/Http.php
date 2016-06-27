@@ -181,7 +181,7 @@ class Http
         $this->getRequest()->server->set('REQUEST_URI', $requestUri);
         return $requestUri;
     }
-    
+
     /**
      * Returns the path being requested relative to the executed script.
      *

@@ -345,10 +345,7 @@ class Request
     public function getActionName()
     {
         if (null === $this->_action) {
-            $this->_action = $this->attributes->get($this->getActionKey());
-            if ($this->_action==null){
-                $this->setActionName($this->getActionDefault());
-            }
+            $this->setActionName($this->getActionDefault());
         }
 
         return $this->_action;
@@ -367,9 +364,6 @@ class Request
     public function setActionName($value)
     {
         $this->_action = $value;
-        if (null === $value) {
-            $this->setParam($this->getActionKey(), $value);
-        }
         return $this;
     }
 

@@ -12,7 +12,7 @@ abstract class Nip_Records extends \Nip\Records\_Abstract\Table {
 
     public function __construct() {
         parent::__construct();
-        
+
         $this->setUpDB();
         $this->setUpStructure();
     }
@@ -55,13 +55,7 @@ abstract class Nip_Records extends \Nip\Records\_Abstract\Table {
         }
 
         if ($name === ucfirst($name)) {
-            $class = 'Nip_Helper_' . $name;
-
-            if (!isset($this->_helpers[$class])) {
-                $this->_helpers[$class] = new $class;
-            }
-
-            return $this->_helpers[$class];
+            return \Nip\HelperBroker::get($name);
         }
 
         trigger_error("Call to undefined method $name", E_USER_ERROR);
@@ -110,23 +104,23 @@ abstract class Nip_Records extends \Nip\Records\_Abstract\Table {
      * @param array $data[optional]
      */
     public function getNew($data = array()) {
-        
-        $pk = $this->getPrimaryKey();        
+
+        $pk = $this->getPrimaryKey();
         if (is_string($pk) && $this->getRegistry()->get($data[$pk])) {
-            $return = $this->getRegistry()->get($data[$pk]);        
+            $return = $this->getRegistry()->get($data[$pk]);
             $return->writeData($data);
-            return $return;        
+            return $return;
         }
-        
+
         $record = $this->getNewRecord($data);
 
         return $record;
     }
 
     protected function setUpDB() {
-         $this->_db = db();
+        $this->_db = db();
     }
-    
+
     protected function setUpStructure() {
         if ($this->_tableStructure === NULL) {
             $this->_tableStructure = $this->getDB()->getMetadata()->describeTable($this->_table);
@@ -144,7 +138,7 @@ abstract class Nip_Records extends \Nip\Records\_Abstract\Table {
      */
     protected function inflect() {
         parent::inflect();
-             
+
         if (!$this->_table) {
             $this->_table = $this->_controller;
         }
@@ -280,7 +274,7 @@ abstract class Nip_Records extends \Nip\Records\_Abstract\Table {
         extract($params);
 
         $query = $this->newQuery('delete');
-        
+
         if (isset($where)) {
             if (is_array($where)) {
                 foreach ($where as $condition) {
@@ -439,9 +433,9 @@ abstract class Nip_Records extends \Nip\Records\_Abstract\Table {
                 if (is_string($pk)) {
                     $this->getRegistry()->set($item->$pk, $item);
                 }
-                if ($params['indexKey']) {                    
+                if ($params['indexKey']) {
                     $return->add($item, $params['indexKey']);
-                } else {                     
+                } else {
                     $return->add($item);
                 }
             }
@@ -465,7 +459,7 @@ abstract class Nip_Records extends \Nip\Records\_Abstract\Table {
         $return = 0;
 
         $query = $this->newQuery('select');
-        
+
         if (isset($from)) {
             call_user_func_array(array($query, 'from'), $from);
         }
@@ -476,7 +470,7 @@ abstract class Nip_Records extends \Nip\Records\_Abstract\Table {
                 $query->where($condition[0], $condition[1]);
             }
         }
-        
+
         return $this->countByQuery($query);
     }
 
@@ -486,7 +480,7 @@ abstract class Nip_Records extends \Nip\Records\_Abstract\Table {
      */
     public function countByQuery($query) {
         $query->setCols('count(*) as count');
-        
+
         /* @var $result DBResult */
         $result = $this->getDB()->execute($query);
 
@@ -560,5 +554,5 @@ abstract class Nip_Records extends \Nip\Records\_Abstract\Table {
         }
 
         return $this->_cacheManager;
-    }    
+    }
 }
