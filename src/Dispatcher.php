@@ -130,19 +130,19 @@ class Dispatcher
         return $module . "_" . $controller . "Controller";
     }
 
-    protected function formatModuleName($name)
+    public function formatModuleName($name)
     {
         $name = $name ? $name : 'default';
         return inflector()->camelize($name);
     }
 
-    protected function formatControllerName($name)
+    public function formatControllerName($name)
     {
         $name = $name ? $name : 'index';
         return $this->getControllerName($name);
     }
 
-    protected function formatActionName($name)
+    public static function formatActionName($name)
     {
         $name = inflector()->camelize($name);
         $name[0] = strtolower($name[0]);

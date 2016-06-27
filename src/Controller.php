@@ -43,9 +43,7 @@ class Controller
 
     public function dispatchAction($action = false)
     {
-        if (!$action) {
-            $action = $this->_action;
-        }
+        $action = Dispatcher::formatActionName($action);
 
         if ($action) {
             if ($this->validAction($action)) {
