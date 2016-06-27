@@ -32,7 +32,6 @@ class Bootstrap
     public function prepare()
     {
         $this->includeVendorAutoload();
-        $this->setupRequest();
         $this->setupStaging();
         $this->setupAutoloader();
         $this->setupErrorHandling();
@@ -43,6 +42,7 @@ class Bootstrap
     {
         $this->setupConfig();
         $this->setupDatabase();
+        $this->setupRequest();
         $this->setupSession();
         $this->setupTranslation();
         $this->setupLocale();
