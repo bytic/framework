@@ -13,6 +13,7 @@ class Nip_Router
 
     public function connect($route, $name)
     {
+        $route->setRequest($this->getRequest());
         $this->_routes[$name] = $route;
     }
 
@@ -72,6 +73,11 @@ class Nip_Router
     public function getRoute($name)
     {
         return $this->_routes[$name];
+    }
+
+    public function getAll()
+    {
+        return $this->_routes;
     }
 
     /**
