@@ -57,24 +57,12 @@ class FrontController
         $this->getDispatcher()->dispatch($params['action'], $params['controller'], $params['module']);
     }
 
-    public function routeURI($uri = false)
+    public function route($request = false)
     {
-        $uri = $uri ? $uri : $this->getRequestURI();
-        $params = $this->getRouter()->route($uri);
-        $this->getRequest()->setParams($params);
+        $request = $request ? $request : $this->getRequest();
+        $params = $this->getRouter()->route($request);
+        $this->getRequest()->attributes->add($params);
         return $params;
-    }
-
-    public function getRequestURI()
-    {
-        if ($this->_requestURI === null) {
-            $url = parse_url($_SERVER['REQUEST_URI']);
-
-            // replace first occurence
-            $this->_requestURI = str_replace("###" . $this->getStage()->getProjectDir(),
-                "", "###" . $url['path']);
-        }
-        return $this->_requestURI;
     }
 
     public function getRouter()
@@ -106,7 +94,7 @@ class FrontController
 
     public function initDispatcher()
     {
-        $dispatcher = Nip_Dispatcher::instance();
+        $dispatcher = Dispatcher::instance();
         $dispatcher->setFrontController($this);
         return $dispatcher;
     }

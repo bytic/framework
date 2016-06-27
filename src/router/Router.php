@@ -1,6 +1,12 @@
 <?php
+
 class Nip_Router
 {
+
+    /**
+     * @var \Nip\Request
+     */
+    protected $_request;
 
     protected $_route;
     protected $_routes;
@@ -15,19 +21,21 @@ class Nip_Router
         return ($this->getRoute($name) instanceof Nip_Route_Abstract);
     }
 
-    public function route($uri)
+    public function route($request)
     {
         $this->_route = false;
-        
-        foreach ($this->_routes as $name=>$route) {
-            Nip_Profiler::instance()->start('route ['.$name.']');
+        $uri = $request->getHTTP()->getPathInfo();
+
+        foreach ($this->_routes as $name => $route) {
+            $route->setRequest($request);
+            Nip_Profiler::instance()->start('route [' . $name . ']');
             if ($route->match($uri)) {
                 $this->_route = $route;
-			    Nip_Profiler::instance()->end('route ['.$name.']');
+                Nip_Profiler::instance()->end('route [' . $name . ']');
                 break;
             }
-            
-		    Nip_Profiler::instance()->end('route ['.$name.']');
+
+            Nip_Profiler::instance()->end('route [' . $name . ']');
         }
 
         if ($this->_route) {
@@ -66,15 +74,18 @@ class Nip_Router
     }
 
     /**
-     * Singleton
-     * @return Nip_Router
+     * @return mixed
      */
-    static public function instance()
+    public function getRequest()
     {
-        static $instance;
-        if (!($instance instanceof self)) {
-            $instance = new self();
-        }
-        return $instance;
+        return $this->_request;
+    }
+
+    /**
+     * @param mixed $request
+     */
+    public function setRequest($request)
+    {
+        $this->_request = $request;
     }
 }

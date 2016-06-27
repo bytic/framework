@@ -34,28 +34,28 @@ class Dispatcher
             list($controller, $action) = $this->prepareControllerAction($action, $controller, $module, $params);
 
             $profilerName = "dispatch [{$this->_module}.{$this->_controller}.{$this->_action}]";
-            Nip_Profiler::instance()->start($profilerName);
+            \Nip_Profiler::instance()->start($profilerName);
             if ($controller instanceof Controller) {
                 try {
                     $this->_currentController = $controller;
 
                     $controller->dispatch($action);
-                } catch (Nip_Dispatcher_ForwardException $e) {
+                } catch (\Nip_Dispatcher_ForwardException $e) {
                     $return = $this->dispatch();
-                    Nip_Profiler::instance()->end($profilerName);
+                    \Nip_Profiler::instance()->end($profilerName);
                     return $return;
                 }
             } else {
                 $this->setErrorControler();
                 $return = $this->dispatch();
-                Nip_Profiler::instance()->end($profilerName);
+                \Nip_Profiler::instance()->end($profilerName);
                 return $return;
             }
         } else {
             trigger_error("Maximum number of hops ($this->_maxHops) has been reached for {$this->_module}-{$this->_controller}-{$this->_action}", E_USER_ERROR);
         }
 
-        Nip_Profiler::instance()->end($profilerName);
+        \Nip_Profiler::instance()->end($profilerName);
         return true;
     }
 
@@ -74,7 +74,7 @@ class Dispatcher
             $this->getRequest()->setParams($params);
         }
 
-        throw new Nip_Dispatcher_ForwardException;
+        throw new \Nip_Dispatcher_ForwardException;
     }
 
     public function prepareControllerAction($action = false, $controllerClass = false, $module = false, $params = array())
@@ -97,7 +97,7 @@ class Dispatcher
             return;
         }
 
-        /* @var $controllerClass Nip_Controller */
+        /* @var $controllerClass \Nip_Controller */
         $controller = $this->newController($controllerClass);
         return array($controller, $action);
     }
@@ -154,7 +154,7 @@ class Dispatcher
     public function getFrontController()
     {
         if (!$this->_frontController) {
-            $this->_frontController = Nip_FrontController::instance();
+            $this->_frontController = \Nip_FrontController::instance();
         }
 
         return $this->_frontController;
@@ -183,7 +183,7 @@ class Dispatcher
     /**
      * Singleton
      *
-     * @return Nip_Dispatcher
+     * @return self
      */
     static public function instance()
     {

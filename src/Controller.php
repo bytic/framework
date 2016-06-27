@@ -23,7 +23,7 @@ class Controller
 	public function __call($name, $arguments)
 	{
 		if ($name === ucfirst($name)) {
-			$class = 'Nip_Helper_' . $name;
+			$class = '\Nip_Helper_' . $name;
 
 			if (!isset($this->helpers[$class])) {
 				$this->_helpers[$class] = new $class;
@@ -65,19 +65,19 @@ class Controller
 
 	/**
 	 * Returns the config Object
-	 * @return Nip_Config
+	 * @return \Nip_Config
 	 */
 	public function getConfig()
 	{
-		if (!$this->_config instanceof Nip_Config) {
-			$this->_config = Nip_Config::instance();
+		if (!$this->_config instanceof \Nip_Config) {
+			$this->_config = \Nip_Config::instance();
 		}
 		return $this->_config;
 	}
 
 	/**
 	 * Returns the request Object
-	 * @return Nip_Request
+	 * @return Request
 	 */
 	public function getRequest()
 	{

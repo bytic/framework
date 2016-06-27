@@ -211,6 +211,7 @@ class Bootstrap
 
     public function initRouter()
     {
+        return new Nip_Router();
     }
 
     protected function getFrontController()
@@ -234,10 +235,9 @@ class Bootstrap
         try {
             ob_start();
             $this->preDispatch();
-            $this->getFrontController()->getRequestURI();
 
             $this->preRouting();
-            $params = $this->getFrontController()->routeURI();
+            $params = $this->getFrontController()->route();
             $this->postRouting();
 
             $this->getFrontController()->dispatch($params);

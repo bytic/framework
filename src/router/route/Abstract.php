@@ -1,12 +1,18 @@
 <?php
+
 abstract class Nip_Route_Abstract
 {
+    /**
+     * @var \Nip\Request
+     */
+    protected $_request;
+
     protected $_map;
     protected $_parts;
     protected $_params = array();
     protected $_matches = array();
 
-    public function  __construct($map = false, $params = array())
+    public function __construct($map = false, $params = array())
     {
         if ($map) {
             $this->setMap($map);
@@ -27,7 +33,7 @@ abstract class Nip_Route_Abstract
 
     public function setMap($map)
     {
-        $this->_map   = $map;
+        $this->_map = $map;
         $this->parseMap();
     }
 
@@ -35,7 +41,7 @@ abstract class Nip_Route_Abstract
     {
         $this->_parts = explode("/", $this->_map);
     }
-    
+
     public function setParams($params = array())
     {
         if ($params) {
@@ -131,5 +137,22 @@ abstract class Nip_Route_Abstract
     public function setAction($action)
     {
         $this->_action = $action;
+    }
+
+
+    /**
+     * @return mixed
+     */
+    public function getRequest()
+    {
+        return $this->_request;
+    }
+
+    /**
+     * @param mixed $request
+     */
+    public function setRequest($request)
+    {
+        $this->_request = $request;
     }
 }
