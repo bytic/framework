@@ -2,6 +2,7 @@
 
 namespace Nip\Staging;
 
+use Nip\Request;
 use Nip\Staging;
 
 class Stage
@@ -122,8 +123,8 @@ class Stage
 
     public function initProjectDir()
     {
-        $parser = new \Nip_Request_ProjectDirectory();
-        return $parser->determine();
+        $request = new Request();
+        return $request->getHttp()->getPathInfo();
     }
 
     public function setProjectDir($dir)
