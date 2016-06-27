@@ -135,7 +135,7 @@ class Bootstrap
 
     public function initRequest()
     {
-        $request = new Request();
+        $request = Request::createFromGlobals();
         return $request;
     }
 

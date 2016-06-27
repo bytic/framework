@@ -2,7 +2,10 @@
 
 class Nip_View
 {
+    protected $_request  = null;
+
     protected $_helpers  = array();
+
     protected $_data     = array();
     protected $_blocks   = array();
     protected $_basePath = VIEWS_PATH;
@@ -127,6 +130,22 @@ class Nip_View
 
             return dirname($caller)."/".$view.".php";
         }
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getRequest()
+    {
+        return $this->_request;
+    }
+
+    /**
+     * @param mixed $request
+     */
+    public function setRequest($request)
+    {
+        $this->_request = $request;
     }
 
     /**

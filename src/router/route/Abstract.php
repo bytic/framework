@@ -141,7 +141,7 @@ abstract class Nip_Route_Abstract
 
 
     /**
-     * @return mixed
+     * @return \Nip\Request
      */
     public function getRequest()
     {
@@ -154,5 +154,27 @@ abstract class Nip_Route_Abstract
     public function setRequest($request)
     {
         $this->_request = $request;
+    }
+
+    public function populateRequest()
+    {
+        $params = $this->getParams();
+        foreach ($params as $param => $value) {
+            switch ($param) {
+                case 'module':
+                    $this->getRequest()->setModuleName($value);
+                    break;
+                case 'controller':
+                    $this->getRequest()->setControllerName($value);
+                    break;
+                case 'action':
+                    $this->getRequest()->setActionName($value);
+                    break;
+                default:
+                    $this->getRequest()->attributes->set($param, $value);
+                    break;
+            }
+        }
+        $this->getRequest()->attributes->add($this->getMatches());
     }
 }

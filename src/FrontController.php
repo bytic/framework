@@ -61,8 +61,6 @@ class FrontController
     {
         $request = $request ? $request : $this->getRequest();
         $params = $this->getRouter()->route($request);
-        $this->getRequest()->attributes->add($params);
-
         return $params;
     }
 

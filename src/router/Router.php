@@ -39,6 +39,7 @@ class Nip_Router
         }
 
         if ($this->_route) {
+            $this->_route->populateRequest();
             return $this->_route->getParams() + $this->_route->getMatches();
         } else {
             return array();

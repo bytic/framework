@@ -7,10 +7,6 @@ class Dispatcher
     protected $_frontController = false;
     protected $_request;
 
-    protected $_module = "default";
-    protected $_controller = "error";
-    protected $_action = "index";
-
     protected $_currentController = false;
 
     protected $_hops = 0;
@@ -22,19 +18,21 @@ class Dispatcher
         $this->_hops++;
 
         if ($this->_hops <= $this->_maxHops) {
-            $this->_module = $request->getModuleName();
-            $this->_controller = $request->getControllerName();
-            $this->_action = $request->getActionName();
+            if ($request->getControllerName() == null) {
+                $this->setErrorControler();
+                return $this->dispatch();
+            }
 
-            list($controller, $action) = $this->prepareControllerAction($this->_action, $this->_controller, $this->_module);
+            $controller = $this->generateController($request);
 
-            $profilerName = "dispatch [{$this->_module}.{$this->_controller}.{$this->_action}]";
+            $profilerName = "dispatch [{$request->getMCA()}]";
+
             \Nip_Profiler::instance()->start($profilerName);
             if ($controller instanceof Controller) {
                 try {
                     $this->_currentController = $controller;
                     $controller->setRequest($request);
-                    $controller->dispatch($action);
+                    $controller->dispatch();
                 } catch (\Nip_Dispatcher_ForwardException $e) {
                     $return = $this->dispatch();
                     \Nip_Profiler::instance()->end($profilerName);
@@ -56,13 +54,13 @@ class Dispatcher
 
     public function forward($action = false, $controller = false, $module = false, $params = array())
     {
-        $this->_action = $action;
+        $this->getRequest()->setActionName($action);
 
         if ($controller) {
-            $this->_controller = $controller;
+            $this->getRequest()->setControllerName($controller);
         }
         if ($module) {
-            $this->_module = $module;
+            $this->getRequest()->setModuleName($module);
         }
 
         if (is_array($params)) {
@@ -72,14 +70,9 @@ class Dispatcher
         throw new \Nip_Dispatcher_ForwardException;
     }
 
-    public function prepareControllerAction($action = false, $controllerClass = false, $module = false)
+    public function generateController($request)
     {
-        $module = $module ? $module : $this->_module;
-        $controllerClass = $controllerClass ? $controllerClass : $this->_controller;
-        $action = $action ? $action : $this->_action;
-
-        $controllerClass = $this->getFullControllerName($module, $controllerClass);
-        $action = $this->formatActionName($action);
+        $controllerClass = $this->getFullControllerNameFromRequest($request);
 
         try {
             AutoLoader::instance()->load($controllerClass);
@@ -90,7 +83,7 @@ class Dispatcher
 
         /* @var $controllerClass \Nip_Controller */
         $controller = $this->newController($controllerClass);
-        return array($controller, $action);
+        return $controller;
     }
 
     public function newController($class)
@@ -102,13 +95,9 @@ class Dispatcher
 
     public function setErrorControler()
     {
-        $this->_action = 'index';
-        if ($this->_controller == 'error') {
-            $this->_module = 'default';
-        } else {
-            $this->_controller = 'error';
-//            $this->_module = 'default';
-        }
+        $this->getRequest()->setActionName('index');
+        $this->getRequest()->setControllerName('error');
+        $this->getRequest()->setModuleName('default');
     }
 
     public function throwError($params = false)
@@ -129,17 +118,36 @@ class Dispatcher
         return inflector()->classify($controller);
     }
 
-    public function getFullControllerName($module, $controller)
+    public function getFullControllerNameFromRequest($request)
     {
-        return inflector()->camelize($module) . "_" . $this->getControllerName($controller) . "Controller";
+        $module = $this->formatModuleName($request->getModuleName());
+        $controller = $this->formatControllerName($request->getControllerName());
+        return $this->getFullControllerName($module, $controller);
     }
 
-    protected function formatActionName($action)
+    public function getFullControllerName($module, $controller)
     {
-        $action = inflector()->camelize($action);
-        $action[0] = strtolower($action[0]);
+        return $module . "_" . $controller . "Controller";
+    }
 
-        return $action;
+    protected function formatModuleName($name)
+    {
+        $name = $name ? $name : 'default';
+        return inflector()->camelize($name);
+    }
+
+    protected function formatControllerName($name)
+    {
+        $name = $name ? $name : 'index';
+        return $this->getControllerName($name);
+    }
+
+    protected function formatActionName($name)
+    {
+        $name = inflector()->camelize($name);
+        $name[0] = strtolower($name[0]);
+
+        return $name;
     }
 
     public function getFrontController()

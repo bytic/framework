@@ -346,9 +346,17 @@ class Request
     {
         if (null === $this->_action) {
             $this->_action = $this->attributes->get($this->getActionKey());
+            if ($this->_action==null){
+                $this->setActionName($this->getActionDefault());
+            }
         }
 
         return $this->_action;
+    }
+
+    public function getActionDefault()
+    {
+        return 'index';
     }
 
     /**
@@ -430,6 +438,14 @@ class Request
         $this->_actionKey = (string)$key;
         return $this;
     }
+
+
+    public function getMCA()
+    {
+        return $this->getModuleName().'.'.$this->getControllerName().'.'.$this->getActionName();
+    }
+
+
 
     public function setParams(array $params)
     {
