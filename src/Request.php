@@ -452,7 +452,7 @@ class Request
 
     /**
      * Returns Http object
-     * @return Nip_Request_Http
+     * @return Request\Http
      */
     public function getHttp()
     {
