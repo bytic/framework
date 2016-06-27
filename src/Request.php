@@ -295,7 +295,7 @@ class Request
     public function getModuleName()
     {
         if (null === $this->_module) {
-            $this->_module = $this->attributes->set($this->getModuleKey());
+            $this->_module = $this->attributes->get($this->getModuleKey());
         }
 
         return $this->_module;
@@ -319,7 +319,7 @@ class Request
     public function getControllerName()
     {
         if (null === $this->_controller) {
-            $this->_controller = $this->attributes->set($this->getControllerKey());
+            $this->_controller = $this->attributes->get($this->getControllerKey());
         }
 
         return $this->_controller;
@@ -345,7 +345,7 @@ class Request
     public function getActionName()
     {
         if (null === $this->_action) {
-            $this->_action = $this->attributes->set($this->getActionKey());
+            $this->_action = $this->attributes->get($this->getActionKey());
         }
 
         return $this->_action;

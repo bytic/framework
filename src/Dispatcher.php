@@ -16,29 +16,24 @@ class Dispatcher
     protected $_hops = 0;
     protected $_maxHops = 30;
 
-    public function dispatch($action = false, $controller = false, $module = false, $params = array())
+    public function dispatch(Request $request = null)
     {
-        $request = $this->getRequest();
-        return $this->dispatchRequest($request);
-    }
-
-    public function dispatchRequest($request)
-    {
+        $request = $request ? $request : $this->getRequest();
         $this->_hops++;
 
         if ($this->_hops <= $this->_maxHops) {
-            $this->_module = $this->getRequest()->module = ($module ? $module : $this->_module);
-            $this->_controller = $this->getRequest()->controller = ($controller ? $controller : $this->_controller);
-            $this->_action = $this->getRequest()->action = ($action ? $action : $this->_action);
+            $this->_module = $request->getModuleName();
+            $this->_controller = $request->getControllerName();
+            $this->_action = $request->getActionName();
 
-            list($controller, $action) = $this->prepareControllerAction($action, $controller, $module, $params);
+            list($controller, $action) = $this->prepareControllerAction($this->_action, $this->_controller, $this->_module);
 
             $profilerName = "dispatch [{$this->_module}.{$this->_controller}.{$this->_action}]";
             \Nip_Profiler::instance()->start($profilerName);
             if ($controller instanceof Controller) {
                 try {
                     $this->_currentController = $controller;
-
+                    $controller->setRequest($request);
                     $controller->dispatch($action);
                 } catch (\Nip_Dispatcher_ForwardException $e) {
                     $return = $this->dispatch();
@@ -71,21 +66,17 @@ class Dispatcher
         }
 
         if (is_array($params)) {
-            $this->getRequest()->setParams($params);
+            $this->getRequest()->attributes->add($params);
         }
 
         throw new \Nip_Dispatcher_ForwardException;
     }
 
-    public function prepareControllerAction($action = false, $controllerClass = false, $module = false, $params = array())
+    public function prepareControllerAction($action = false, $controllerClass = false, $module = false)
     {
         $module = $module ? $module : $this->_module;
         $controllerClass = $controllerClass ? $controllerClass : $this->_controller;
         $action = $action ? $action : $this->_action;
-
-        if ($params) {
-            $this->getRequest()->setParams($params);
-        }
 
         $controllerClass = $this->getFullControllerName($module, $controllerClass);
         $action = $this->formatActionName($action);

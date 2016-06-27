@@ -9,7 +9,7 @@ class FrontController
 
     protected $_staging;
     protected $_stage;
-    
+
     protected $_router;
     protected $_dispatcher;
     protected $_request;
@@ -52,9 +52,9 @@ class FrontController
         $this->_staging = $staging;
     }
 
-    public function dispatch($params = array())
+    public function dispatch($request)
     {
-        $this->getDispatcher()->dispatch($params['action'], $params['controller'], $params['module']);
+        $this->getDispatcher()->dispatch($request);
     }
 
     public function route($request = false)
@@ -62,19 +62,20 @@ class FrontController
         $request = $request ? $request : $this->getRequest();
         $params = $this->getRouter()->route($request);
         $this->getRequest()->attributes->add($params);
+
         return $params;
     }
 
     public function getRouter()
     {
         if (!$this->_router) {
-            $this->_router = new Nip_Router();
+            $this->_router = new \Nip_Router();
         }
 
         return $this->_router;
     }
 
-    public function setRouter(Nip_Router $router = NULL)
+    public function setRouter(\Nip_Router $router = NULL)
     {
         $this->_router = $router;
         return $this;
@@ -128,7 +129,7 @@ class FrontController
     /**
      * Singleton
      *
-     * @return Nip_FrontController
+     * @return self
      */
     static public function instance()
     {

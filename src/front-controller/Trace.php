@@ -40,7 +40,7 @@ class Trace
      *
      * @return Nip_FrontController_Trace
      */
-    public function instance()
+    public static function instance()
     {
         static $instance;
         if (!($instance instanceof self)) {

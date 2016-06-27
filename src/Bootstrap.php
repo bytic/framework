@@ -237,10 +237,10 @@ class Bootstrap
             $this->preDispatch();
 
             $this->preRouting();
-            $params = $this->getFrontController()->route();
+            $this->getFrontController()->route();
             $this->postRouting();
 
-            $this->getFrontController()->dispatch($params);
+            $this->getFrontController()->dispatch();
             ob_end_flush();
             $this->postDispatch();
         } catch (\Nip_PHPException $e) {

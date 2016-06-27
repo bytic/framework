@@ -28,14 +28,14 @@ class Nip_Router
 
         foreach ($this->_routes as $name => $route) {
             $route->setRequest($request);
-            Nip_Profiler::instance()->start('route [' . $name . ']');
+            Nip_Profiler::instance()->start('route [' . $name . '] ['.$uri.']');
             if ($route->match($uri)) {
                 $this->_route = $route;
-                Nip_Profiler::instance()->end('route [' . $name . ']');
+                Nip_Profiler::instance()->end('route [' . $name . '] ['.$uri.']');
                 break;
             }
 
-            Nip_Profiler::instance()->end('route [' . $name . ']');
+            Nip_Profiler::instance()->end('route [' . $name . '] ['.$uri.']');
         }
 
         if ($this->_route) {
