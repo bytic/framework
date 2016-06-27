@@ -9,7 +9,7 @@
  * @version    SVN: $Id: Fulltext.php 14 2009-04-13 11:24:22Z victor.stanciu $
  */
 
-class Nip_Helper_Fulltext extends Nip_Helper_Abstract {
+class Nip_Helper_Fulltext extends Nip\Helpers\AbstractHelper {
 
 	public function buildString($keywords, $mode = 'any') {
 		$return = "";

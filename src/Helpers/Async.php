@@ -1,5 +1,5 @@
 <?php
-class Nip_Helper_Async extends Nip_Helper
+class Nip_Helper_Async extends Nip\Helpers\AbstractHelper
 {
 	
 	public function sendMessage($message, $type = 'success', $format ='json')

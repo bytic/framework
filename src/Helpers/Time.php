@@ -1,5 +1,5 @@
 <?php
-class Nip_Helper_Time extends Nip_Helper_Abstract {
+class Nip_Helper_Time extends Nip\Helpers\AbstractHelper {
 
 
     public function parseMinutes($time = false)

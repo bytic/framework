@@ -1,23 +1,28 @@
 <?php
-class Nip_Helper_Passwords extends Nip_Helper {
+
+class Nip_Helper_Passwords extends Nip\Helpers\AbstractHelper
+{
 
     protected $salt;
 
 
-    public function __construct() {
-        $this->salt = Nip_Config::instance()->PASSWORD->salt;
+    public function __construct()
+    {
+        $this->salt = isset(Nip_Config::instance()->PASSWORD) ? Nip_Config::instance()->PASSWORD->salt : '';
     }
 
 
-    public function hash($password) {
+    public function hash($password)
+    {
         return md5($this->salt . $password);
     }
 
 
-    public function generate($length = 8, $use_upper = true, $use_lower = true, $use_number = true, $use_custom = "") {
-        $lower		= implode('', range('a', 'z'));
-        $upper		= strtoupper($lower);
-        $numbers	= implode('', range(0, 9));
+    public function generate($length = 8, $use_upper = true, $use_lower = true, $use_number = true, $use_custom = "")
+    {
+        $lower = implode('', range('a', 'z'));
+        $upper = strtoupper($lower);
+        $numbers = implode('', range(0, 9));
 
         if ($use_upper) {
             $seed_length += 26;
@@ -35,7 +40,7 @@ class Nip_Helper_Passwords extends Nip_Helper {
         }
 
         if ($use_custom) {
-            $seed_length +=strlen($use_custom);
+            $seed_length += strlen($use_custom);
             $seed .= $use_custom;
         }
 
@@ -47,7 +52,8 @@ class Nip_Helper_Passwords extends Nip_Helper {
     }
 
 
-    public function setSalt($salt) {
+    public function setSalt($salt)
+    {
         $this->salt = $salt;
         return $this;
     }
@@ -58,7 +64,8 @@ class Nip_Helper_Passwords extends Nip_Helper {
      *
      * @return Nip_Helper_Passwords
      */
-    static public function instance() {
+    static public function instance()
+    {
         static $instance;
         if (!($instance instanceof self)) {
             $instance = new self();

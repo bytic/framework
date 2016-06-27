@@ -1,6 +1,6 @@
 <?php
 
-class Nip_Helper_Hash extends Nip_Helper_Abstract
+class Nip_Helper_Hash extends Nip\Helpers\AbstractHelper
 {
 
     function uhash($num, $len = 10, $base = 36)

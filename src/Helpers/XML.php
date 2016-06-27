@@ -1,6 +1,6 @@
 <?php
 
-class Nip_Helper_XML extends Nip_Helper_String
+class Nip_Helper_XML extends Nip\Helpers\AbstractHelper
 {
 
 	public function format($string)

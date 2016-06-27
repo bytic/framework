@@ -9,7 +9,7 @@
  * @version    SVN: $Id: Abstract.php 14 2009-04-13 11:24:22Z victor.stanciu $
  */
 
-abstract class Nip_Helper_View_Abstract extends Nip_Helper_Abstract {
+abstract class Nip_Helper_View_Abstract extends Nip\Helpers\AbstractHelper {
 
     protected $_view;
 

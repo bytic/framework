@@ -1,5 +1,5 @@
 <?php
-class Nip_Helper_URL extends Nip_Helper_Abstract
+class Nip_Helper_Url extends Nip\Helpers\AbstractHelper
 {
 
     protected $_pieces = array();
@@ -104,10 +104,18 @@ class Nip_Helper_URL extends Nip_Helper_Abstract
     public function getRouter()
     {
         if (!$this->_router) {
-            $this->_router = Nip_FrontController::instance()->getRouter();
+            $this->_router = $this->initRouter();
         }
 
         return $this->_router;
+    }
+
+    /**
+     * @return Nip_Router;
+     */
+    public function initRouter()
+    {
+        return \Nip\FrontController::instance()->getRouter();
     }
 
 	/**

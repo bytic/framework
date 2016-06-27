@@ -1,6 +1,6 @@
 <?php
 
-class Nip_Helper_Array extends Nip_Helper
+class Nip_Helper_Array extends Nip\Helpers\AbstractHelper
 {
 
     public function toXLS($array, $filename, $labels = array())

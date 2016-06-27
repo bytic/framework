@@ -1,6 +1,6 @@
 <?php
 
-class Nip_Helper_Date extends Nip_Helper_Abstract
+class Nip_Helper_Date extends Nip\Helpers\AbstractHelper
 {
 
 
