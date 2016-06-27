@@ -68,7 +68,7 @@ abstract class Nip_Form_Abstract
 
     public function init()
     {
-        $this->setAction(current_url());
+        $this->setAction(CURRENT_URL);
     }
 
     public function postInit()

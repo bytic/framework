@@ -267,6 +267,7 @@ class Bootstrap
     public function setupURLConstants()
     {
         $this->determineBaseURL();
+        define('CURRENT_URL', $this->getFrontController()->getRequest()->getHttp()->getURI());
     }
 
 }

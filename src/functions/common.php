@@ -65,11 +65,6 @@ function encode_url($input) {
     return $return_;
 }
 
-function current_url()
-{
-    return Nip_Request::instance()->getHttp()->getFullURL();
-}
-
 /**
  * Transforms a date's string representation into $format
  *
