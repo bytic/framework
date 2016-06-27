@@ -128,12 +128,12 @@ class Dispatcher
         return;
     }
 
-    public function reverseControllerName($controller)
+    public static function reverseControllerName($controller)
     {
         return inflector()->unclassify($controller);
     }
 
-    public function getControllerName($controller)
+    public static function getControllerName($controller)
     {
         return inflector()->classify($controller);
     }

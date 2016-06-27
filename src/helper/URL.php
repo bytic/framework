@@ -8,7 +8,7 @@ class Nip_Helper_URL extends Nip_Helper_Abstract
     public function __call($name, $arguments)
     {
         if ($name == ucfirst($name)) {
-			$this->_pieces[] = Nip_Dispatcher::instance()->reverseControllerName($name);
+			$this->_pieces[] = Nip\Dispatcher::reverseControllerName($name);
             return $this;
         } else {
 			$this->_pieces[] = $name;
