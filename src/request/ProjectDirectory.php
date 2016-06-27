@@ -1,5 +1,7 @@
 <?php
 
+namespace Nip\Request;
+
 /**
  * Nip Framework
  *
@@ -8,7 +10,7 @@
  * @license    http://www.opensource.org/licenses/mit-license.php The MIT License
  * @version    SVN: $Id: Http.php 135 2009-05-27 16:48:23Z victor.stanciu $
  */
-class Nip_Request_ProjectDirectory
+class ProjectDirectory
 {
     protected $_requestURI;
     protected $_requestURIParsed;

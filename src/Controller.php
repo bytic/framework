@@ -81,17 +81,17 @@ class Controller
 	 */
 	public function getRequest()
 	{
-		if (!$this->_request instanceof Nip_Request) {
-			$this->_request = Nip_Request::instance();
+		if (!$this->_request instanceof Request) {
+			$this->_request = new Request();
 		}
 		return $this->_request;
 	}
 
 	/**
-	 * @param Nip_Request $request
-	 * @return Nip_Controller
+	 * @param Request $request
+	 * @return self
 	 */
-	public function setRequest(Nip_Request $request)
+	public function setRequest(Request $request)
 	{
 		$this->_request = $request;
 		return $this;
@@ -116,7 +116,7 @@ class Controller
 		$this->_frontController = $dispatcher->getFrontController();
 		return $this;
 	}
-    
+
     /**
      * Returns the dispatcher Object
      * @return FrontController

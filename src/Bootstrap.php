@@ -36,6 +36,7 @@ class Bootstrap
     {
         $this->setupConfig();
         $this->setupDatabase();
+        $this->setupRequest();
         $this->setupSession();
         $this->setupLocale();
         $this->setupRouting();
@@ -114,13 +115,25 @@ class Bootstrap
     {
         $stage = $this->getStage();
 
-        $projectDirectoryParser = new \Nip_Request_ProjectDirectory();
+        $projectDirectoryParser = new Request\ProjectDirectory();
         $projectDirectoryParser->setScriptName(
-            \Nip_Request::instance()->getHTTP()->determineScriptNameByFilePath(ROOT_PATH)
+            $this->getFrontController()->getRequest()->getHTTP()->determineScriptNameByFilePath(ROOT_PATH)
         );
 
         $baseURL = $stage->getHTTP() . $stage->getHost() . $projectDirectoryParser->determine();
         define('BASE_URL', $baseURL);
+    }
+
+    public function setupRequest()
+    {
+        $request = $this->initRequest();
+        $this->getFrontController()->setRequest($request);
+    }
+
+    public function initRequest()
+    {
+        $request = new Request();
+        return $request;
     }
 
     public function setupDatabase()
@@ -135,7 +148,8 @@ class Bootstrap
     public function setupSession()
     {
         $this->_sessionManager = $this->initSession();
-        $domain = \Nip_Request::instance()->getHttp()->getRootDomain();
+        $requestHTTP = $this->getFrontController()->getRequest()->getHttp();
+        $domain = $requestHTTP->getRootDomain();
 
 
         if (!ini_get('session.auto_start') || (strtolower(ini_get('session.auto_start'))
@@ -143,7 +157,7 @@ class Bootstrap
         ) {
             if ($domain !== 'localhost') {
                 ini_set('session.cookie_domain',
-                    '.' . \Nip_Request::instance()->getHttp()->getRootDomain());
+                    '.' .$requestHTTP->getRootDomain());
             }
             $this->_sessionManager->setLifetime(\Nip_Config::instance()->SESSION->lifetime);
         } else {
@@ -166,6 +180,13 @@ class Bootstrap
     public function setupLocale()
     {
 
+    }
+
+    public function initI18n()
+    {
+        $i18n = Nip_I18n::instance();
+        $i18n->setRequest($this->getFrontController()->getRequest());
+        return $i18n;
     }
 
     public function setupRouting()

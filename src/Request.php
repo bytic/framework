@@ -3,6 +3,9 @@
 namespace Nip;
 
 use Nip\Request\ParameterBag;
+use Nip\Request\FileBag;
+use Nip\Request\ServerBag;
+use Nip\Request\HeaderBag;
 
 class Request
 {
@@ -53,7 +56,7 @@ class Request
      * @var \Nip\Request\ParameterBag
      */
     public $attributes;
-    
+
     /**
      * Request body parameters ($_POST).
      * @var \Nip\Request\ParameterBag
@@ -140,13 +143,100 @@ class Request
 
         $request = new self();
         $request->initialize($_GET, $_POST, array(), $_COOKIE, $_FILES, $server);
+
         if (0 === strpos($request->headers->get('CONTENT_TYPE'), 'application/x-www-form-urlencoded')
             && in_array(strtoupper($request->server->get('REQUEST_METHOD', 'GET')), array('PUT', 'DELETE', 'PATCH'))
         ) {
             parse_str($request->getContent(), $data);
-            $request->request = new ParameterBag($data);
+            $request->body = new ParameterBag($data);
         }
+
         return $request;
+    }
+
+    /**
+     * Creates a Request based on a given URI and configuration.
+     *
+     * The information contained in the URI always take precedence
+     * over the other information (server and parameters).
+     *
+     * @param string $uri The URI
+     * @param string $method The HTTP method
+     * @param array $parameters The query (GET) or request (POST) parameters
+     * @param array $cookies The request cookies ($_COOKIE)
+     * @param array $files The request files ($_FILES)
+     * @param array $server The server parameters ($_SERVER)
+     * @param string $content The raw body data
+     *
+     * @return Request A Request instance
+     */
+    public static function create($uri, $method = 'GET', $parameters = array(), $cookies = array(), $files = array(), $server = array(), $content = null)
+    {
+        $components = parse_url($uri);
+        if (isset($components['host'])) {
+            $server['SERVER_NAME'] = $components['host'];
+            $server['HTTP_HOST'] = $components['host'];
+        }
+        if (isset($components['scheme'])) {
+            if ('https' === $components['scheme']) {
+                $server['HTTPS'] = 'on';
+                $server['SERVER_PORT'] = 443;
+            } else {
+                unset($server['HTTPS']);
+                $server['SERVER_PORT'] = 80;
+            }
+        }
+        if (isset($components['port'])) {
+            $server['SERVER_PORT'] = $components['port'];
+            $server['HTTP_HOST'] = $server['HTTP_HOST'] . ':' . $components['port'];
+        }
+        if (isset($components['user'])) {
+            $server['PHP_AUTH_USER'] = $components['user'];
+        }
+        if (isset($components['pass'])) {
+            $server['PHP_AUTH_PW'] = $components['pass'];
+        }
+        if (!isset($components['path'])) {
+            $components['path'] = '/';
+        }
+        switch (strtoupper($method)) {
+            case 'POST':
+            case 'PUT':
+            case 'DELETE':
+                if (!isset($server['CONTENT_TYPE'])) {
+                    $server['CONTENT_TYPE'] = 'application/x-www-form-urlencoded';
+                }
+            // no break
+            case 'PATCH':
+                $body = $parameters;
+                $query = array();
+                break;
+            default:
+                $body = array();
+                $query = $parameters;
+                break;
+        }
+        $queryString = '';
+        if (isset($components['query'])) {
+            parse_str(html_entity_decode($components['query']), $qs);
+            if ($query) {
+                $query = array_replace($qs, $query);
+                $queryString = http_build_query($query, '', '&');
+            } else {
+                $query = $qs;
+                $queryString = $components['query'];
+            }
+        } elseif ($query) {
+            $queryString = http_build_query($query, '', '&');
+        }
+        $server['REQUEST_URI'] = $components['path'] . ('' !== $queryString ? '?' . $queryString : '');
+        $server['QUERY_STRING'] = $queryString;
+
+        $request = new self();
+        $request->initialize($query, $body, array(), $cookies, $files, $server, $content);
+
+        return $request;
+
     }
 
     /**
@@ -158,8 +248,8 @@ class Request
      *
      * Order of precedence: PATH (routing placeholders or custom attributes), GET, BODY
      *
-     * @param string $key     the key
-     * @param mixed  $default the default value if the parameter key does not exist
+     * @param string $key the key
+     * @param mixed $default the default value if the parameter key does not exist
      *
      * @return mixed
      */
@@ -171,7 +261,7 @@ class Request
         if ($this !== $result = $this->query->get($key, $this)) {
             return $result;
         }
-        if ($this !== $result = $this->request->get($key, $this)) {
+        if ($this !== $result = $this->body->get($key, $this)) {
             return $result;
         }
         return $default;
@@ -188,7 +278,7 @@ class Request
      */
     public function setAttribute($key, $value)
     {
-        $this->attributes->set($key,$value);
+        $this->attributes->set($key, $value);
 
         return $this;
     }
@@ -352,7 +442,8 @@ class Request
     public function getHttp()
     {
         if (!$this->_http) {
-            $this->_http = new Nip_Request_Http();
+            $this->_http = new Request\Http();
+            $this->_http->setRequest($this);
         }
         return $this->_http;
     }

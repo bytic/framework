@@ -8,6 +8,7 @@ class Nip_I18n
         );
 
 	protected $_backend;
+	protected $_request;
 
 	public $defaultLanguage = false;
 	public $selectedLanguage = false;
@@ -90,8 +91,8 @@ class Nip_I18n
                 $language = $_GET['language'];
             }
 
-            if (Nip_Request::instance()->language) {
-                $language = Nip_Request::instance()->language;
+            if ($this->getRequest()->language) {
+                $language = $this->getRequest()->language;
             }
 
 
@@ -119,8 +120,8 @@ class Nip_I18n
 	 * @param string $language
 	 * @return string
 	 */
-	public function translate($slug = false, $params = array(), $language = false)
-	{
+	public function translate($slug = false, $params = array(), $language = false)	{
+        
 		if (!$language) {
 			$language = $this->getLanguage();
 		}
@@ -152,6 +153,22 @@ class Nip_I18n
 		}
 
 		return $this->_backend->hasTranslation($slug, $language);;
+	}
+
+	/**
+	 * @return mixed
+	 */
+	public function getRequest()
+	{
+		return $this->_request;
+	}
+
+	/**
+	 * @param mixed $request
+	 */
+	public function setRequest($request)
+	{
+		$this->_request = $request;
 	}
 
 	/**

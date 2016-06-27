@@ -160,9 +160,10 @@ class Dispatcher
         return $this->_frontController;
     }
 
-    public function setFrontController($controller)
+    public function setFrontController(FrontController $controller)
     {
         $this->_frontController = $controller;
+        $this->_request = $controller->getRequest();
         return $this;
     }
 
@@ -172,14 +173,10 @@ class Dispatcher
     }
 
     /**
-     * @return Nip_Request
+     * @return Request
      */
     public function getRequest()
     {
-        if (!$this->_request) {
-            $this->_request = Nip_Request::instance();
-        }
-
         return $this->_request;
     }
 

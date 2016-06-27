@@ -16,7 +16,7 @@ class StagingTest extends \Codeception\TestCase\Test
 
     protected function _before()
     {
-        $this->_object = new Nip\Staging();
+        $this->_object = new \Nip\Staging();
     }
 
     protected function _after()

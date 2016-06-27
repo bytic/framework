@@ -120,7 +120,7 @@ class FrontController
     public function getRequest()
     {
         if (!$this->_request) {
-            $this->_request = Nip_Request::instance();
+            $this->_request = new Request();
         }
 
         return $this->_request;
