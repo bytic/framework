@@ -25,6 +25,14 @@ class Nip_I18n
 		return $this;
 	}
 
+    /**
+     * @return Nip_I18n_Backend_Abstract
+     */
+    public function getBackend()
+    {
+        return $this->_backend;
+    }
+
 	/**
 	 * Selects a language to be used when translating
 	 *

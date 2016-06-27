@@ -1,11 +1,15 @@
 <?php
 
+/**
+ * From Symfony Symfony\Component\HttpFoundation\Tests\HttpTest class
+ */
+
 namespace Nip\Tests\Request;
 
 use Nip\Request;
 use Nip\Request\Http;
 
-class RequestTest extends \Codeception\TestCase\Test
+class HttpTest extends \Codeception\TestCase\Test
 {
     /**
      * @var \UnitTester

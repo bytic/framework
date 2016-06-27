@@ -2,6 +2,8 @@
 
 namespace Nip;
 
+use Nip\Staging\Stage;
+
 class Bootstrap
 {
     protected $_autoloader = null;
@@ -9,6 +11,10 @@ class Bootstrap
     protected $_frontController = null;
 
     protected $_staging;
+
+    /**
+     * @var Stage
+     */
     protected $_stage;
 
     public function run()
@@ -38,6 +44,7 @@ class Bootstrap
         $this->setupDatabase();
         $this->setupRequest();
         $this->setupSession();
+        $this->setupTranslation();
         $this->setupLocale();
         $this->setupRouting();
     }
@@ -114,13 +121,9 @@ class Bootstrap
     protected function determineBaseURL()
     {
         $stage = $this->getStage();
+        $pathInfo = $this->getFrontController()->getRequest()->getHttp()->getPathInfo();
 
-        $projectDirectoryParser = new Request\ProjectDirectory();
-        $projectDirectoryParser->setScriptName(
-            $this->getFrontController()->getRequest()->getHTTP()->determineScriptNameByFilePath(ROOT_PATH)
-        );
-
-        $baseURL = $stage->getHTTP() . $stage->getHost() . $projectDirectoryParser->determine();
+        $baseURL = $stage->getHTTP() . $stage->getHost() . $pathInfo;
         define('BASE_URL', $baseURL);
     }
 
@@ -157,7 +160,7 @@ class Bootstrap
         ) {
             if ($domain !== 'localhost') {
                 ini_set('session.cookie_domain',
-                    '.' .$requestHTTP->getRootDomain());
+                    '.' . $requestHTTP->getRootDomain());
             }
             $this->_sessionManager->setLifetime(\Nip_Config::instance()->SESSION->lifetime);
         } else {
@@ -177,16 +180,27 @@ class Bootstrap
         return new Session();
     }
 
+    public function setupTranslation()
+    {
+        $translation = $this->initTranslation();
+        $this->initLanguages($translation);
+    }
+
+    public function initTranslation()
+    {
+        $i18n = \Nip_I18n::instance();
+        $i18n->setRequest($this->getFrontController()->getRequest());
+        return $i18n;
+    }
+
+    public function initLanguages($translation)
+    {
+        return $translation;
+    }
+
     public function setupLocale()
     {
 
-    }
-
-    public function initI18n()
-    {
-        $i18n = Nip_I18n::instance();
-        $i18n->setRequest($this->getFrontController()->getRequest());
-        return $i18n;
     }
 
     public function setupRouting()

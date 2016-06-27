@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * Inspired From Symfony Symfony\Component\HttpFoundation\Request class
+ */
+
+
 namespace Nip;
 
 use Nip\Request\ParameterBag;
