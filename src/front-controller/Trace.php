@@ -1,11 +1,15 @@
 <?php
 
-class Nip_FrontController_Trace {
+namespace Nip\FrontController;
 
-    protected $_traces =array();
+class Trace
+{
 
-    public function add($params) {
- 		if ($params) {
+    protected $_traces = array();
+
+    public function add($params)
+    {
+        if ($params) {
             if (!is_array($params)) {
                 $trace['message'] = $params;
             } else {
@@ -32,16 +36,16 @@ class Nip_FrontController_Trace {
     }
 
     /**
-	 * Singleton
-	 *
-	 * @return Nip_FrontController_Trace
-	 */
-	public function instance()
-	{
-		static $instance;
-		if (!($instance instanceof self)) {
-			$instance = new self;
-		}
-		return $instance;
-	}
+     * Singleton
+     *
+     * @return Nip_FrontController_Trace
+     */
+    public function instance()
+    {
+        static $instance;
+        if (!($instance instanceof self)) {
+            $instance = new self;
+        }
+        return $instance;
+    }
 }

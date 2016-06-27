@@ -122,7 +122,7 @@ class FrontController
 
     public function getTrace()
     {
-        return Nip_FrontController_Trace::instance();
+        return FrontController\Trace::instance();
     }
 
     /**

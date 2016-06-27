@@ -225,7 +225,7 @@ class Bootstrap
     protected function initFrontController()
     {
 
-        $fc = new FrontController();
+        $fc = FrontController::instance();
         $fc->setBootstrap($this);
         return $fc;
     }
