@@ -10,7 +10,8 @@ class Staging
     protected $_stage;
     protected $_stages;
     protected $_config;
-    protected $_publicStages = array('production', 'staging', 'demo');
+    protected $_publicStages = array('production');
+    protected $_testingStages = array('local');
 
     /**
      * @return Nip\Staging\Stage
@@ -139,6 +140,11 @@ class Staging
     public function isInPublicStages($name)
     {
         return in_array($name, $this->_publicStages);
+    }
+
+    public function isInTestingStages($name)
+    {
+        return in_array($name, $this->_testingStages);
     }
 
     /**

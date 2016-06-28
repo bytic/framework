@@ -163,9 +163,13 @@ class Stage
         return $this->_name == 'production';
     }
 
-
     public function isPublic()
     {
         return !isset ($_SESSION['authorized']) && $this->getManager()->isInPublicStages($this->getName());
+    }
+
+    public function inTesting()
+    {
+        return isset ($_SESSION['authorized']) || $this->getManager()->isInTestingStages($this->getName());
     }
 }
