@@ -2,30 +2,22 @@
 
 class Nip_View
 {
-    protected $_request  = null;
+    protected $_request = null;
 
-    protected $_helpers  = array();
+    protected $_helpers = array();
 
-    protected $_data     = array();
-    protected $_blocks   = array();
-    protected $_basePath = VIEWS_PATH;
+    protected $_data = array();
+    protected $_blocks = array();
+    protected $_basePath = null;
 
     public function __construct()
     {
-        
     }
 
     public function __call($name, $arguments)
     {
         if ($name === ucfirst($name)) {
-            $class = 'Nip_Helper_View_'.$name;
-
-            if (!isset($this->_helpers[$class])) {
-                $this->_helpers[$class] = new $class;
-                $this->_helpers[$class]->setView($this);
-            }
-
-            return $this->_helpers[$class];
+            return $this->getHelper($name);
         } else {
             trigger_error("Call to undefined method $name", E_USER_ERROR);
         }
@@ -55,6 +47,29 @@ class Nip_View
         unset($this->_data[$name]);
     }
 
+    public function getHelper($name)
+    {
+        if (!isset($this->_helpers[$name])) {
+            $this->_helpers[$name] = $this->initHelper($name);
+        }
+
+        return $this->_helpers[$name];
+    }
+
+    public function getHelperClass($name)
+    {
+        return 'Nip_Helper_View_' . $name;
+
+    }
+
+    public function initHelper($name)
+    {
+        $class = $this->getHelperClass($name);
+        $helper = new $class();
+        $helper->setView($this);
+        return $helper;
+    }
+
     public function setBlock($name, $block)
     {
         $this->_blocks[$name] = $block;
@@ -64,6 +79,17 @@ class Nip_View
     {
         $this->_basePath = $path;
         return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getBasePath()
+    {
+        if ($this->_basePath === null && defined('VIEWS_PATH')) {
+            $this->_basePath = VIEWS_PATH;
+        }
+        return $this->_basePath;
     }
 
     public function load($view, $variables = array(), $return = false)
@@ -93,7 +119,7 @@ class Nip_View
     public function render($block = 'default')
     {
         if (!empty($this->_blocks[$block])) {
-            $this->load("/".$this->_blocks[$block]);
+            $this->load("/" . $this->_blocks[$block]);
         } else {
             trigger_error("No $block block", E_USER_ERROR);
         }
@@ -123,12 +149,12 @@ class Nip_View
     protected function buildPath($view)
     {
         if ($view[0] == '/') {
-            return $this->_basePath.ltrim($view, "/").'.php';
+            return $this->_basePath . ltrim($view, "/") . '.php';
         } else {
             $backtrace = debug_backtrace();
-            $caller    = $backtrace[2]['file'];
+            $caller = $backtrace[2]['file'];
 
-            return dirname($caller)."/".$view.".php";
+            return dirname($caller) . "/" . $view . ".php";
         }
     }
 
