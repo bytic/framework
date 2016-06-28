@@ -20,19 +20,19 @@ class Controller
         $this->_name = inflector()->unclassify($name);
     }
 
+
     public function __call($name, $arguments)
     {
         if ($name === ucfirst($name)) {
-            $class = '\Nip_Helper_' . $name;
-
-            if (!isset($this->helpers[$class])) {
-                $this->_helpers[$class] = new $class;
-            }
-
-            return $this->_helpers[$class];
+            return $this->getHelper($name);
         } else {
             trigger_error("Call to undefined method $name", E_USER_ERROR);
         }
+    }
+
+    public function getHelper($name)
+    {
+        return HelperBroker::get($name);
     }
 
     public function dispatch($request = null)

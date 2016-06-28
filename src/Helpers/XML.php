@@ -1,6 +1,6 @@
 <?php
 
-class Nip_Helper_XML extends Nip\Helpers\AbstractHelper
+class Nip_Helper_Xml extends Nip\Helpers\AbstractHelper
 {
 
 	public function format($string)
@@ -15,7 +15,7 @@ class Nip_Helper_XML extends Nip\Helpers\AbstractHelper
 	/**
 	 * Singleton
 	 *
-	 * @return Nip_Helper_XML
+	 * @return self
 	 */
 	public static function instance()
 	{

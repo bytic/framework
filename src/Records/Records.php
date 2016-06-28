@@ -55,7 +55,7 @@ abstract class Nip_Records extends \Nip\Records\_Abstract\Table {
         }
 
         if ($name === ucfirst($name)) {
-            return \Nip\HelperBroker::get($name);
+            return $this->getHelper($name);
         }
 
         trigger_error("Call to undefined method $name", E_USER_ERROR);
@@ -63,6 +63,11 @@ abstract class Nip_Records extends \Nip\Records\_Abstract\Table {
 
     public function __wakeup() {
         $this->setUpDB();
+    }
+
+    public function getHelper($name)
+    {
+        return \Nip\HelperBroker::get($name);
     }
 
     /**
