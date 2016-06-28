@@ -10,7 +10,7 @@ class Staging
     protected $_stage;
     protected $_stages;
     protected $_config;
-    protected $_publicStages = array('production');
+    protected $_publicStages = array('production', 'staging', 'demo');
     protected $_testingStages = array('local');
 
     /**
@@ -52,8 +52,7 @@ class Staging
         if (isset($_SERVER['SERVER_NAME'])) {
             foreach ($this->getStages() as $stage => $hosts) {
                 foreach ($hosts as $host) {
-                    if (preg_match('/^' . strtr($host, array('*' => '.*', '?' => '.?')) . '$/i',
-                        $_SERVER['SERVER_NAME'])) {
+                    if ($this->matchHost($host, $_SERVER['SERVER_NAME'])) {
                         $_stage = $stage;
                         break 2;
                     }
@@ -61,6 +60,12 @@ class Staging
             }
         }
         return $_stage;
+    }
+
+    public function matchHost($key, $host)
+    {
+        return preg_match('/^' . strtr($key, array('*' => '.*', '?' => '.?')) . '$/i',
+            $host);
     }
 
     public function updateStage($name)
@@ -129,7 +134,7 @@ class Staging
 
     protected function hasConfigFile($file)
     {
-        return is_file($this->getConfigFolder().$file);
+        return is_file($this->getConfigFolder() . $file);
     }
 
     protected function getConfigFolder()

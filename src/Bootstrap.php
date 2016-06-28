@@ -57,6 +57,7 @@ class Bootstrap
     public function setupStaging()
     {
         $this->_staging = $this->initStaging();
+        
         $this->_stage = $this->_staging->getStage();
 
         $this->getFrontController()->setStaging($this->_staging);
