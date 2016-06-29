@@ -38,7 +38,7 @@ class Trace
     /**
      * Singleton
      *
-     * @return Nip_FrontController_Trace
+     * @return self
      */
     public static function instance()
     {
