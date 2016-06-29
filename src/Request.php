@@ -132,7 +132,7 @@ class Request
 
     /**
      * Creates a new request with values from PHP's super globals.
-     * @return Request A new request
+     * @return Request
      */
     public static function createFromGlobals()
     {
@@ -173,7 +173,7 @@ class Request
      * @param array $server The server parameters ($_SERVER)
      * @param string $content The raw body data
      *
-     * @return Request A Request instance
+     * @return self
      */
     public static function create($uri, $method = 'GET', $parameters = array(), $cookies = array(), $files = array(), $server = array(), $content = null)
     {
@@ -308,7 +308,9 @@ class Request
      */
     public function setModuleName($value)
     {
-        $this->_module = $value;
+        if ($value) {
+            $this->_module = $value;
+        }
         return $this;
     }
 
@@ -333,7 +335,9 @@ class Request
      */
     public function setControllerName($value)
     {
-        $this->_controller = $value;
+        if ($value) {
+            $this->_controller = $value;
+        }
         return $this;
     }
 
@@ -363,7 +367,9 @@ class Request
      */
     public function setActionName($value)
     {
-        $this->_action = $value;
+        if ($value) {
+            $this->_action = $value;
+        }
         return $this;
     }
 
@@ -492,6 +498,21 @@ class Request
     {
         header("Location: " . $url);
         exit();
+    }
+
+    public function duplicate()
+    {
+        return clone $this;
+    }
+
+    public function duplicateWithParams($action = false, $controller = false, $module = false, $params = array())
+    {
+        $newRequest = $this->duplicate();
+        $newRequest->setActionName($action);
+        $newRequest->setControllerName($controller);
+        $newRequest->setModuleName($module);
+        $newRequest->attributes->add($params);
+        return $newRequest;
     }
 
     /**

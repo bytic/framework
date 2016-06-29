@@ -90,5 +90,31 @@ class RequestTest extends \Codeception\TestCase\Test
         $this->assertEquals('bar5', $request->server->get('foo5'), '::fromGlobals() uses values from $_SERVER');
     }
 
+    public function testDuplicateWithParams()
+    {
+        $request = new Request();
+        $request->setActionName('action1');
+        $request->setControllerName('controller1');
+        $request->setModuleName('module1');
+        $atributes = array('attrb1' => 'val1', 'attrb2' =>'val2');
+        $request->attributes->add($atributes);
+        
+        $duplicateAction = $request->duplicateWithParams('action2');
+        $this->assertEquals('action2', $duplicateAction->getActionName());
+        $this->assertEquals('controller1', $duplicateAction->getControllerName());
+        $this->assertEquals('module1', $duplicateAction->getModuleName());
+
+        $duplicateAction = $request->duplicateWithParams('action2', 'controller2');
+        $this->assertEquals('action2', $duplicateAction->getActionName());
+        $this->assertEquals('controller2', $duplicateAction->getControllerName());
+        $this->assertEquals('module1', $duplicateAction->getModuleName());
+
+        $duplicateAction = $request->duplicateWithParams('action2', 'controller2', 'module2');
+        $this->assertEquals('action2', $duplicateAction->getActionName());
+        $this->assertEquals('controller2', $duplicateAction->getControllerName());
+        $this->assertEquals('module2', $duplicateAction->getModuleName());
+    }
+    
+
 
 }

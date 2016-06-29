@@ -62,8 +62,11 @@ class Controller
 
     public function call($action = false, $controller = false, $module = false, $params = array())
     {
-        list($controller, $action) = $this->getDispatcher()->prepareControllerAction($action, $controller, $module);
+        $newRequest = $this->getRequest()->duplicateWithParams($action, $controller, $module, $params);
+
+        $controller = $this->getDispatcher()->generateController($newRequest);
         $controller->setView($this->getView());
+        $controller->setRequest($newRequest);
         return call_user_func_array(array($controller, $action), $params);
     }
 
