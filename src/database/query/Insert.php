@@ -12,10 +12,11 @@ class Nip_DB_Query_Insert extends Nip_DB_Query_Abstract
         $return .= $this->parseCols();
         $return .= $this->parseValues();
 
-        if ($this->_parts['onDuplicate']) {
+        if ($this->hasPart('onDuplicate')) {
             $update = $this->getManager()->newQuery("update");
 
-            foreach ($this->_parts['onDuplicate'] as $onDuplicate) {
+            $onDuplicate = $this->getPart('onDuplicate');
+            foreach ($onDuplicate as $onDuplicate) {
                 foreach ($onDuplicate as $key => $value) {
                     $data[$key] = $value;
                 }
@@ -82,6 +83,11 @@ class Nip_DB_Query_Insert extends Nip_DB_Query_Abstract
         }
 
         return ' VALUES ' . implode(', ', $values);
+    }
+    
+    public function onDuplicate($value)
+    {
+        $this->addPart('onDuplicate', $value);
     }
 
 }
