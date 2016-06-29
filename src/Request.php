@@ -105,6 +105,11 @@ class Request
         $this->headers = new HeaderBag();
     }
 
+    public function __get($name)
+    {
+        return $this->get($name);
+    }
+
     /**
      * Sets the parameters for this request.
      *
