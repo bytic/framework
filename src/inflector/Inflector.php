@@ -116,7 +116,7 @@ class Nip_Inflector
 	public function isCached()
 	{
 		if ($this->hasCacheFile()) {
-			if (filemtime($this->cacheFile) + Nip_Config::instance()->MISC->inflector_cache > time()) {
+			if (filemtime($this->cacheFile) + $this->getCacheTTL() > time()) {
 				return true;
 			}
 		}
@@ -124,10 +124,18 @@ class Nip_Inflector
 		return false;
 	}
 
-    public function hasCacheFile()
-    {
-        return ($this->cacheFile && file_exists($this->cacheFile));
-    }
+	public function getCacheTTL()
+	{
+		if (isset(Nip_Config::instance()->MISC) && isset(Nip_Config::instance()->MISC->inflector_cache)) {
+			return Nip_Config::instance()->MISC->inflector_cache;
+		}
+		return 86400;
+	}
+
+	public function hasCacheFile()
+	{
+		return ($this->cacheFile && file_exists($this->cacheFile));
+	}
 
 	protected function _pluralize($word)
 	{
@@ -209,7 +217,7 @@ class Nip_Inflector
 
 	/**
 	 * Converts lowercase string to underscored camelize class format
-	 * 
+	 *
 	 * @param string $string
 	 * @return string
 	 */
@@ -222,7 +230,7 @@ class Nip_Inflector
 
 	/**
 	 * Reverses classify()
-	 * 
+	 *
 	 * @param string $string
 	 * @return string
 	 */
