@@ -114,7 +114,30 @@ class RequestTest extends \Codeception\TestCase\Test
         $this->assertEquals('controller2', $duplicateAction->getControllerName());
         $this->assertEquals('module2', $duplicateAction->getModuleName());
     }
+
+    public function testCreateFromGlobalsFiles()
+    {
+        $_FILES = array(
+            'file1' => array(
+                'name' => 'MyFile.txt',
+                'type' => 'text/plain',
+                'tmp_name' => '/tmp/php/php1h4j1o',
+                'error' => UPLOAD_ERR_OK,
+                'size' => 123,
+            ),
+            'file2' => array(
+                'name' => 'MyFile.jpg',
+                'type' => 'image/jpeg',
+                'tmp_name' => '/tmp/php/php1h4j1o',
+                'error' => UPLOAD_ERR_OK,
+                'size' => 300,
+            )
+        );
+
+        $request = Request::createFromGlobals();
+
+        $this->isInstanceOf('Nip\Request\Files\Uploaded', $request->files->get('file2'), '::fromGlobals() uses values from $_FILES');
+    }
     
-
-
+    
 }

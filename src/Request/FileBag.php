@@ -5,6 +5,8 @@
 
 namespace Nip\Request;
 
+use \Nip\Request\Files\Uploaded as UploadedFile;
+
 class FileBag extends ParameterBag
 {
     private static $fileKeys = array('error', 'name', 'size', 'tmp_name', 'type');
