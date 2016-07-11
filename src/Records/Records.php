@@ -237,7 +237,7 @@ abstract class Nip_Records extends \Nip\Records\_Abstract\Table
 
     protected function initTableStructure()
     {
-        $this->_tableStructure = $this->getDB()->getMetadata()->describeTable($this->_table);
+        $this->_tableStructure = $this->getDB()->getMetadata()->describeTable($this->getTable());
     }
 
     /**
@@ -256,12 +256,8 @@ abstract class Nip_Records extends \Nip\Records\_Abstract\Table
 
     public function insertQuery($model, $onDuplicate)
     {
-        $inserts = array();
 
-        $fields = $model->getFields() ? $model->getFields() : $this->getFields();
-        foreach ($fields as $field) {
-            $inserts[$field] = $model->$field;
-        }
+        $inserts = $this->getQueryModelData($model);
 
         $query = $this->newQuery('insert');
         $query->data($inserts);
@@ -271,6 +267,19 @@ abstract class Nip_Records extends \Nip\Records\_Abstract\Table
         }
 
         return $query;
+    }
+
+    public function getQueryModelData($model)
+    {
+        $data = array();
+
+        $fields = $this->getFields();
+        foreach ($fields as $field) {
+            if ($model->$field) {
+                $data[$field] = $model->$field ;
+            }
+        }
+        return $data;
     }
 
     /**
@@ -294,11 +303,7 @@ abstract class Nip_Records extends \Nip\Records\_Abstract\Table
             $pk = array($pk);
         }
 
-        $data = array();
-        $fields = $model->getFields() ? $model->getFields() : $this->getFields();
-        foreach ($fields as $field) {
-            $data[$field] = $model->$field;
-        }
+        $data = $this->getQueryModelData($model);
 
         if ($data) {
             $query = $this->newQuery('update');
@@ -671,7 +676,7 @@ abstract class Nip_Records extends \Nip\Records\_Abstract\Table
     public function getFields()
     {
         if ($this->_fields === null) {
-            $this->initPrimaryKey();
+            $this->initFields();
         }
         return $this->_fields;
     }
