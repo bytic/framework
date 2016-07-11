@@ -7,11 +7,8 @@ class Nip_Record extends \Nip\Records\_Abstract\Row {
     protected $_dbData = array();
     protected $_helpers = array();
 
-    public function __construct($data = array()) {
-        parent::__construct($data);
-
-        $this->_fields = array();
-        $this->writeDBData($data);
+    public function __construct() {
+        parent::__construct();
     }
 
     /**
