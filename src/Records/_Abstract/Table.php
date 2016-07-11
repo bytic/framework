@@ -21,6 +21,13 @@ abstract class Table
         return $record;
     }
 
+    public function getNewRecordFromDB($data = array())
+    {
+        $record = $this->getNewRecord($data);
+        $record->writeDBData($data);
+        return $record;
+    }
+
     /**
      * Sets model and database table from the class name
      */

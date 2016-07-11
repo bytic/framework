@@ -212,10 +212,11 @@ abstract class Nip_Records extends \Nip\Records\_Abstract\Table
         if (is_string($pk) && $this->getRegistry()->get($data[$pk])) {
             $return = $this->getRegistry()->get($data[$pk]);
             $return->writeData($data);
+            $return->writeDBData($data);
             return $return;
         }
 
-        $record = $this->getNewRecord($data);
+        $record = $this->getNewRecordFromDB($data);
 
         return $record;
     }
