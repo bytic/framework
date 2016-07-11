@@ -682,6 +682,15 @@ abstract class Nip_Records extends \Nip\Records\_Abstract\Table
         $this->_fields = array_keys($structure['fields']);
     }
 
+    public function hasField($name)
+    {
+        $fields = $this->getFields();
+        if (is_array($fields) && in_array($name, $fields)) {
+            return true;
+        }
+        return false;
+    }
+
     public function getUniqueFields()
     {
         if ($this->_uniqueFields === null) {

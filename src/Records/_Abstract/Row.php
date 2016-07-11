@@ -10,7 +10,7 @@ abstract class Row extends \Nip_Object
     protected $_managerName = null;
 
     public function __construct() {
-        
+
     }
 
     /**
@@ -47,7 +47,7 @@ abstract class Row extends \Nip_Object
     }
 
     /**
-     * @return Nip_Records
+     * @return \Nip_Records
      */
     public function getManager()
     {

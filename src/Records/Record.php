@@ -33,7 +33,7 @@ class Nip_Record extends \Nip\Records\_Abstract\Row {
 
     public function __set($name, $value) {
         parent::__set($name, $value);
-        if (in_array($name, $this->getManager()->getFields()) && !in_array($name, $this->getFields())) {
+        if ($this->getManager()->hasField($name) && !in_array($name, $this->getFields())) {
             $this->_fields[] = $name;
         }
     }
