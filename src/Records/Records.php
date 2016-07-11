@@ -1,16 +1,20 @@
 <?php
 
-abstract class Nip_Records extends \Nip\Records\_Abstract\Table {
+abstract class Nip_Records extends \Nip\Records\_Abstract\Table
+{
 
     protected $_db;
+
     protected $_collectionClass = 'Nip_RecordCollection';
-    protected $_table;
-    protected $_tableStructure = NULL;
-    protected $_primaryKey;
     protected $_helpers = array();
+
+    protected $_table;
+    protected $_tableStructure = null;
+    protected $_primaryKey;
     protected $_fields = array();
 
-    public function __construct() {
+    public function __construct()
+    {
         parent::__construct();
 
         $this->setUpDB();
@@ -31,7 +35,8 @@ abstract class Nip_Records extends \Nip\Records\_Abstract\Table {
      *
      * @return mixed
      */
-    public function __call($name, $arguments) {
+    public function __call($name, $arguments)
+    {
         $operations = array("find", "delete", "count");
         foreach ($operations as $operation) {
             if (strpos($name, $operation . "By") !== false || strpos($name, $operation . "OneBy") !== false) {
@@ -61,7 +66,8 @@ abstract class Nip_Records extends \Nip\Records\_Abstract\Table {
         trigger_error("Call to undefined method $name", E_USER_ERROR);
     }
 
-    public function __wakeup() {
+    public function __wakeup()
+    {
         $this->setUpDB();
     }
 
@@ -70,14 +76,130 @@ abstract class Nip_Records extends \Nip\Records\_Abstract\Table {
         return \Nip\HelperBroker::get($name);
     }
 
+
+
+    public function exists(Record $item)
+    {
+        $params = array();
+        $params['where'] = array();
+
+        $fields = $this->getUniqueFields();
+
+        if (!$fields) {
+            return false;
+        }
+
+        foreach ($fields as $field) {
+            $params['where'][$field . '-UNQ'] = array("$field = ?", $item->$field);
+        }
+
+        $pk = $this->getPrimaryKey();
+        if ($item->$pk) {
+            $params['where'][] = array("$pk != ?", $item->$pk);
+        }
+
+        return $this->findOneByParams($params);
+    }
+
+    /**
+     * When searching by primary key, look for items in current registry before
+     * fetching them from the database
+     *
+     * @param array $pk_list
+     * @return Nip_RecordCollection
+     */
+    public function findByPrimary($pk_list = array())
+    {
+        $pk = $this->getPrimaryKey();
+        $return = new Nip_RecordCollection();
+
+        if ($pk_list) {
+            $pk_list = array_unique($pk_list);
+            foreach ($pk_list as $key => $value) {
+                $item = $this->getRegistry()->get($value);
+                if ($item) {
+                    unset($pk_list[$key]);
+                    $return[$item->$pk] = $item;
+                }
+            }
+            if ($pk_list) {
+                $query = $this->paramsToQuery();
+                $query->where("$pk IN ?", $pk_list);
+                $items = $this->findByQuery($query);
+
+                if (count($items)) {
+                    foreach ($items as $item) {
+                        $this->getRegistry()->set($item->$pk, $item);
+                        $return[$item->$pk] = $item;
+                    }
+                }
+            }
+        }
+
+        return $return;
+    }
+
+    /**
+     * Checks the registry before fetching from the database
+     * @param mixed $primary
+     * @return Record
+     */
+    public function findOne($primary)
+    {
+        $item = $this->getRegistry()->get($primary);
+        if (!$item) {
+            $all = $this->getRegistry()->get("all");
+            if ($all) {
+                $item = $all[$primary];
+            }
+            if (!$item) {
+                $item = parent::findOne($primary);
+                if ($item) {
+                    $this->getRegistry()->set($primary, $item);
+                }
+            }
+        }
+        return $item;
+    }
+
+    /**
+     * @return Nip_RecordCollection
+     */
+    public function getAll()
+    {
+        if (!$this->getRegistry()->exists("all")) {
+            $this->getRegistry()->set("all", parent::findAll());
+        }
+        return $this->getRegistry()->get("all");
+    }
+
+    /**
+     * @return Nip_RecordCollection
+     */
+    public function findAll()
+    {
+        if (!$this->getRegistry()->exists("all")) {
+            $this->getRegistry()->set("all", parent::findAll());
+        }
+        return $this->getRegistry()->get("all");
+    }
+
+    public function findLast($count = 9)
+    {
+        return $this->findByParams(array(
+            'limit' => $count,
+        ));
+    }
+
     /**
      * Factory
      * @return Nip_DB_Query_Abstract
      */
-    public function newQuery($type = 'select') {
+    public function newQuery($type = 'select')
+    {
         $query = $this->getDB()->newQuery($type);
         $query->cols("`$this->_table`.*");
-        $query->from($this->getDB()->getDatabase().'.'.$this->_table);
+        $query->from($this->getDB()->getDatabase() . '.' . $this->_table);
         $query->table($this->_table);
         return $query;
     }
@@ -88,7 +210,8 @@ abstract class Nip_Records extends \Nip\Records\_Abstract\Table {
      * @param Nip_DB_Query $query
      * @param string $class
      */
-    public function associateIntoQuery(Nip_DB_Query_Abstract $query, $class) {
+    public function associateIntoQuery(Nip_DB_Query_Abstract $query, $class)
+    {
         $manager = call_user_func(array($class, "instance"));
 
         $query->from($manager->getTable());
@@ -106,9 +229,10 @@ abstract class Nip_Records extends \Nip\Records\_Abstract\Table {
      * Factory
      *
      * @return Record
-     * @param array $data[optional]
+     * @param array $data [optional]
      */
-    public function getNew($data = array()) {
+    public function getNew($data = array())
+    {
 
         $pk = $this->getPrimaryKey();
         if (is_string($pk) && $this->getRegistry()->get($data[$pk])) {
@@ -122,12 +246,14 @@ abstract class Nip_Records extends \Nip\Records\_Abstract\Table {
         return $record;
     }
 
-    protected function setUpDB() {
+    protected function setUpDB()
+    {
         $this->_db = db();
     }
 
-    protected function setUpStructure() {
-        if ($this->_tableStructure === NULL) {
+    protected function setUpStructure()
+    {
+        if ($this->_tableStructure === null) {
             $this->_tableStructure = $this->getDB()->getMetadata()->describeTable($this->_table);
             $this->_fields = array_keys($this->_tableStructure['fields']);
 
@@ -141,7 +267,8 @@ abstract class Nip_Records extends \Nip\Records\_Abstract\Table {
     /**
      * Sets model and database table from the class name
      */
-    protected function inflect() {
+    protected function inflect()
+    {
         parent::inflect();
 
         if (!$this->_table) {
@@ -155,14 +282,16 @@ abstract class Nip_Records extends \Nip\Records\_Abstract\Table {
      * @param array $onDuplicate
      * @return mixed
      */
-    public function insert($model, $onDuplicate = false) {
+    public function insert($model, $onDuplicate = false)
+    {
         $query = $this->insertQuery($model, $onDuplicate);
         $query->execute();
 
         return $this->getDB()->lastInsertID();
     }
 
-    public function insertQuery($model, $onDuplicate) {
+    public function insertQuery($model, $onDuplicate)
+    {
         $inserts = array();
 
         $fields = $model->getFields() ? $model->getFields() : $this->getFields();
@@ -184,7 +313,8 @@ abstract class Nip_Records extends \Nip\Records\_Abstract\Table {
      * Updates a Record's database entry
      * @param Nip_Record $model
      */
-    public function update($model) {
+    public function update($model)
+    {
         $query = $this->updateQuery($model);
 
         if ($query) {
@@ -193,7 +323,8 @@ abstract class Nip_Records extends \Nip\Records\_Abstract\Table {
         return false;
     }
 
-    public function updateQuery($model) {
+    public function updateQuery($model)
+    {
         $pk = $this->getPrimaryKey();
         if (!is_array($pk)) {
             $pk = array($pk);
@@ -223,7 +354,8 @@ abstract class Nip_Records extends \Nip\Records\_Abstract\Table {
      * Saves a Record's database entry
      * @param Record $model
      */
-    public function save($model) {
+    public function save($model)
+    {
         $pk = $this->getPrimaryKey();
 
         if (isset($model->$pk)) {
@@ -255,7 +387,8 @@ abstract class Nip_Records extends \Nip\Records\_Abstract\Table {
      *
      * @param mixed $input
      */
-    public function delete($input) {
+    public function delete($input)
+    {
         $pk = $this->getPrimaryKey();
 
         if ($input instanceof $this->_model) {
@@ -275,7 +408,8 @@ abstract class Nip_Records extends \Nip\Records\_Abstract\Table {
      * Delete a Record's database entry
      * @param mixed $input
      */
-    public function deleteByParams(array $params = array()) {
+    public function deleteByParams(array $params = array())
+    {
         extract($params);
 
         $query = $this->newQuery('delete');
@@ -283,7 +417,7 @@ abstract class Nip_Records extends \Nip\Records\_Abstract\Table {
         if (isset($where)) {
             if (is_array($where)) {
                 foreach ($where as $condition) {
-                    $condition = (array) $condition;
+                    $condition = (array)$condition;
                     $query->where($condition[0], $condition[1]);
                 }
             } else {
@@ -308,7 +442,8 @@ abstract class Nip_Records extends \Nip\Records\_Abstract\Table {
      * @param Nip_Paginator $paginator
      * @param array $params
      */
-    public function paginate(Nip_Paginator $paginator, $params = array()) {
+    public function paginate(Nip_Paginator $paginator, $params = array())
+    {
         $query = $this->paramsToQuery($params);
 
         $countQuery = $this->getDB()->newQuery('select');
@@ -329,11 +464,13 @@ abstract class Nip_Records extends \Nip\Records\_Abstract\Table {
      *
      * @return array
      */
-    public function findAll() {
+    public function findAll()
+    {
         return $this->findByParams();
     }
 
-    protected function injectParams(&$params = array()) {
+    protected function injectParams(&$params = array())
+    {
 
     }
 
@@ -343,7 +480,8 @@ abstract class Nip_Records extends \Nip\Records\_Abstract\Table {
      * @param mixed $primary
      * @return Nip_Record
      */
-    public function findOne($primary) {
+    public function findOne($primary)
+    {
         if ($primary) {
             $item = $this->getRegistry()->get($primary);
             if (!$item) {
@@ -360,7 +498,8 @@ abstract class Nip_Records extends \Nip\Records\_Abstract\Table {
      * @param array $params
      * @return Nip_Record
      */
-    public function findOneByParams(array $params = array()) {
+    public function findOneByParams(array $params = array())
+    {
         $params['limit'] = 1;
         $records = $this->findByParams($params);
         if (count($records) > 0) {
@@ -375,17 +514,19 @@ abstract class Nip_Records extends \Nip\Records\_Abstract\Table {
      * @param array $params
      * @return mixed
      */
-    public function findByParams($params = array()) {
+    public function findByParams($params = array())
+    {
         $query = $this->paramsToQuery($params);
         return $this->findByQuery($query, $params);
     }
 
-    public function paramsToQuery($params = array()) {
+    public function paramsToQuery($params = array())
+    {
         $this->injectParams($params);
         extract($params);
 
         $query = $this->newQuery('select');
-        call_user_func_array(array($query, 'cols'), (array) $select);
+        call_user_func_array(array($query, 'cols'), (array)$select);
 
         if (isset($from)) {
             call_user_func_array(array($query, 'from'), $from);
@@ -393,7 +534,7 @@ abstract class Nip_Records extends \Nip\Records\_Abstract\Table {
 
         if (is_array($where)) {
             foreach ($where as $condition) {
-                $condition = (array) $condition;
+                $condition = (array)$condition;
                 $query->where($condition[0], $condition[1]);
             }
         }
@@ -411,13 +552,14 @@ abstract class Nip_Records extends \Nip\Records\_Abstract\Table {
         }
 
         if (isset($limit)) {
-            call_user_func_array(array($query, 'limit'), (array) $limit);
+            call_user_func_array(array($query, 'limit'), (array)$limit);
         }
 
         return $query;
     }
 
-    public function findOneByQuery($query, $params = array()) {
+    public function findOneByQuery($query, $params = array())
+    {
         $query->limit(1);
         $return = $this->findByQuery($query, $params);
         if (count($return) > 0) {
@@ -426,7 +568,8 @@ abstract class Nip_Records extends \Nip\Records\_Abstract\Table {
         return false;
     }
 
-    public function findByQuery($query, $params = array()) {
+    public function findByQuery($query, $params = array())
+    {
         $class = $this->getCollectionClass();
         $return = new $class();
 
@@ -449,7 +592,8 @@ abstract class Nip_Records extends \Nip\Records\_Abstract\Table {
         return $return;
     }
 
-    public function count($where = false) {
+    public function count($where = false)
+    {
         return $this->countByParams(array("where" => $where));
     }
 
@@ -457,7 +601,8 @@ abstract class Nip_Records extends \Nip\Records\_Abstract\Table {
      * Counts all the Record entries in the database
      * @return int
      */
-    public function countByParams($params = array()) {
+    public function countByParams($params = array())
+    {
         $this->injectParams($params);
         extract($params);
 
@@ -471,7 +616,7 @@ abstract class Nip_Records extends \Nip\Records\_Abstract\Table {
 
         if (is_array($where)) {
             foreach ($where as $condition) {
-                $condition = (array) $condition;
+                $condition = (array)$condition;
                 $query->where($condition[0], $condition[1]);
             }
         }
@@ -483,7 +628,8 @@ abstract class Nip_Records extends \Nip\Records\_Abstract\Table {
      * Counts all the Record entries in the database
      * @return int
      */
-    public function countByQuery($query) {
+    public function countByQuery($query)
+    {
         $query->setCols('count(*) as count');
 
         /* @var $result DBResult */
@@ -491,41 +637,49 @@ abstract class Nip_Records extends \Nip\Records\_Abstract\Table {
 
         if ($result->numRows()) {
             $row = $result->fetchResult();
-            $return = (int) $row['count'];
+            $return = (int)$row['count'];
         }
 
         return $return;
     }
 
-    public function cleanData($data) {
+    public function cleanData($data)
+    {
         return $this->getDB()->cleanData($data);
     }
 
-    public function getDB() {
+    public function getDB()
+    {
         return $this->_db;
     }
 
-    public function getTable() {
+    public function getTable()
+    {
         return $this->_table;
     }
 
-    public function getFullNameTable() {
-        return $this->getDB()->getDatabase().'.'.$this->getTable();
+    public function getFullNameTable()
+    {
+        return $this->getDB()->getDatabase() . '.' . $this->getTable();
     }
 
-    public function getCollectionClass() {
+    public function getCollectionClass()
+    {
         return $this->_collectionClass;
     }
 
-    public function getPrimaryKey() {
+    public function getPrimaryKey()
+    {
         return $this->_primaryKey;
     }
 
-    public function getFields() {
+    public function getFields()
+    {
         return $this->_fields;
     }
 
-    public function getUniqueFields() {
+    public function getUniqueFields()
+    {
         $return = array();
         foreach ($this->_tableStructure['indexes'] as $name => $index) {
             if ($index['unique']) {
@@ -539,7 +693,8 @@ abstract class Nip_Records extends \Nip\Records\_Abstract\Table {
         return $return;
     }
 
-    public function getFullTextFields() {
+    public function getFullTextFields()
+    {
         $return = array();
         foreach ($this->_tableStructure['indexes'] as $name => $index) {
             if ($index['fulltext']) {
@@ -552,12 +707,27 @@ abstract class Nip_Records extends \Nip\Records\_Abstract\Table {
     /**
      * @return Nip_Db_Records_Cache
      */
-    public function getCacheManager() {
+    public function getCacheManager()
+    {
         if (!$this->_cacheManager) {
-            $this->_cacheManager = new Nip_Db_Records_Cache();
-            $this->_cacheManager->setManager($this);
+            $this->initCacheManager();
         }
 
         return $this->_cacheManager;
+    }
+
+    public function initCacheManager()
+    {
+        $this->_cacheManager = $this->newCacheManager();
+        $this->_cacheManager->setManager($this);
+    }
+
+
+    /**
+     * @return Nip_Db_Records_Cache
+     */
+    public function newCacheManager()
+    {
+        return new Nip_Db_Records_Cache();
     }
 }

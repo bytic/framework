@@ -8,16 +8,12 @@ abstract class Table
     protected $_model = null;
     protected $_controller = null;
 
-    public function __construct()
-    {
-        $this->inflect();
-    }
-
     public function getNewRecord($data = array())
     {
         $model = $this->getModel();
-        $record = new $model($data);
+        $record = new $model();
         $record->setManager($this);
+        $record->writeData($data);
         return $record;
     }
 
@@ -26,7 +22,6 @@ abstract class Table
      */
     protected function inflect()
     {
-        $this->inflectModel();
         $this->inflectController();
     }
 
@@ -70,11 +65,17 @@ abstract class Table
 
     public function getModel()
     {
+        if ($this->_model == null) {
+            $this->inflectModel();
+        }
         return $this->_model;
     }
 
     public function getController()
     {
+        if ($this->_controller == null) {
+            $this->inflectController();
+        }
         return $this->_controller;
     }
 
