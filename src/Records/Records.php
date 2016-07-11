@@ -230,7 +230,7 @@ abstract class Nip_Records extends \Nip\Records\_Abstract\Table
     protected function getTableStructure()
     {
         if ($this->_tableStructure == null) {
-            $this->initTable();
+            $this->initTableStructure();
         }
         return $this->_tableStructure;
     }
