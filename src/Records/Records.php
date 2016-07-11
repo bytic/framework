@@ -3,21 +3,21 @@
 abstract class Nip_Records extends \Nip\Records\_Abstract\Table
 {
 
-    protected $_db;
+    protected $_db = null;
 
     protected $_collectionClass = 'Nip_RecordCollection';
     protected $_helpers = array();
 
-    protected $_table;
+    protected $_table = null;
     protected $_tableStructure = null;
-    protected $_primaryKey;
-    protected $_fields = array();
+    protected $_primaryKey = null;
+    protected $_fields = null;
+    protected $_uniqueFields = null;
 
     public function __construct()
     {
         parent::__construct();
 
-        $this->setUpDB();
         $this->setUpStructure();
     }
 
@@ -75,7 +75,6 @@ abstract class Nip_Records extends \Nip\Records\_Abstract\Table
     {
         return \Nip\HelperBroker::get($name);
     }
-
 
 
     public function exists(Record $item)
@@ -172,7 +171,7 @@ abstract class Nip_Records extends \Nip\Records\_Abstract\Table
     public function newQuery($type = 'select')
     {
         $query = $this->getDB()->newQuery($type);
-        $query->cols("`".$this->getTable()."`.*");
+        $query->cols("`" . $this->getTable() . "`.*");
         $query->from($this->getFullNameTable());
         $query->table($this->getTable());
         return $query;
@@ -221,22 +220,31 @@ abstract class Nip_Records extends \Nip\Records\_Abstract\Table
         return $record;
     }
 
+    public function getDB()
+    {
+        if ($this->_db == null) {
+            $this->setUpDB();
+        }
+        return $this->_db;
+    }
+
     protected function setUpDB()
     {
         $this->_db = db();
     }
 
-    protected function setUpStructure()
-    {
-        if ($this->_tableStructure === null) {
-            $this->_tableStructure = $this->getDB()->getMetadata()->describeTable($this->_table);
-            $this->_fields = array_keys($this->_tableStructure['fields']);
 
-            $this->_primaryKey = $this->_tableStructure['indexes']['PRIMARY']['fields'];
-            if (count($this->_primaryKey) == 1) {
-                $this->_primaryKey = reset($this->_primaryKey);
-            }
+    protected function getTableStructure()
+    {
+        if ($this->_tableStructure == null) {
+            $this->initTable();
         }
+        return $this->_tableStructure;
+    }
+
+    protected function initTableStructure()
+    {
+        $this->_tableStructure = $this->getDB()->getMetadata()->describeTable($this->_table);
     }
 
     /**
@@ -450,6 +458,7 @@ abstract class Nip_Records extends \Nip\Records\_Abstract\Table
         }
         return $item;
     }
+
     /**
      * Finds one Record using params array
      *
@@ -483,7 +492,7 @@ abstract class Nip_Records extends \Nip\Records\_Abstract\Table
         $this->injectParams($params);
 
         $query = $this->newQuery('select');
-        call_user_func_array(array($query, 'cols'), (array) $params['select']);
+        call_user_func_array(array($query, 'cols'), (array)$params['select']);
 
         if (isset($from)) {
             call_user_func_array(array($query, 'from'), $params['from']);
@@ -509,7 +518,7 @@ abstract class Nip_Records extends \Nip\Records\_Abstract\Table
         }
 
         if (isset($params['limit'])) {
-            call_user_func_array(array($query, 'limit'), (array) $params['limit']);
+            call_user_func_array(array($query, 'limit'), (array)$params['limit']);
         }
 
         return $query;
@@ -602,11 +611,6 @@ abstract class Nip_Records extends \Nip\Records\_Abstract\Table
         return $this->getDB()->cleanData($data);
     }
 
-    public function getDB()
-    {
-        return $this->_db;
-    }
-
     public function getTable()
     {
         if ($this->_table === null) {
@@ -630,35 +634,90 @@ abstract class Nip_Records extends \Nip\Records\_Abstract\Table
         return $this->_collectionClass;
     }
 
+    /**
+     * The name of the field used as a foreign key in other tables
+     * @return string
+     */
+    public function getPrimaryFK()
+    {
+        if (!$this->_foreignKey) {
+            $this->_foreignKey = $this->getPrimaryKey() . "_" . inflector()->underscore($this->getModel());
+        }
+        return $this->_foreignKey;
+    }
+
+    /**
+     * The name of the field used as a foreign key in other tables
+     * @return string
+     */
+    public function getUrlPK()
+    {
+        if (!$this->_urlPK) {
+            $this->_urlPK = $this->getPrimaryKey();
+        }
+        return $this->_urlPK;
+    }
+
     public function getPrimaryKey()
     {
+        if ($this->_primaryKey === null) {
+            $this->initPrimaryKey();
+        }
         return $this->_primaryKey;
+    }
+
+    protected function initPrimaryKey()
+    {
+        $structure = $this->getTableStructure();
+        $this->_primaryKey = $structure['indexes']['PRIMARY']['fields'];
+        if (count($this->_primaryKey) == 1) {
+            $this->_primaryKey = reset($this->_primaryKey);
+        }
     }
 
     public function getFields()
     {
+        if ($this->_fields === null) {
+            $this->initPrimaryKey();
+        }
         return $this->_fields;
+    }
+
+    public function initFields()
+    {
+        $structure = $this->getTableStructure();
+        $this->_fields = array_keys($structure['fields']);
     }
 
     public function getUniqueFields()
     {
-        $return = array();
-        foreach ($this->_tableStructure['indexes'] as $name => $index) {
+        if ($this->_uniqueFields === null) {
+            $this->initUniqueFields();
+        }
+        return $this->_uniqueFields;
+    }
+
+    public function initUniqueFields()
+    {
+        $this->_uniqueFields = array();
+        $structure = $this->getTableStructure();
+        foreach ($structure['indexes'] as $name => $index) {
             if ($index['unique']) {
                 foreach ($index['fields'] as $field) {
                     if ($field != $this->getPrimaryKey()) {
-                        $return[] = $field;
+                        $this->_uniqueFields[] = $field;
                     }
                 }
             }
         }
-        return $return;
+        return $this->_uniqueFields;
     }
 
     public function getFullTextFields()
     {
         $return = array();
-        foreach ($this->_tableStructure['indexes'] as $name => $index) {
+        $structure = $this->getTableStructure();
+        foreach ($structure['indexes'] as $name => $index) {
             if ($index['fulltext']) {
                 $return[$name] = $index['fields'];
             }
