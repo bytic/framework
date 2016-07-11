@@ -14,13 +14,6 @@ abstract class Nip_Records extends \Nip\Records\_Abstract\Table
     protected $_fields = null;
     protected $_uniqueFields = null;
 
-    public function __construct()
-    {
-        parent::__construct();
-
-        $this->setUpStructure();
-    }
-
     /**
      * Overloads findByRecord, findByField, deleteByRecord, deleteByField, countByRecord, countByField
      *
