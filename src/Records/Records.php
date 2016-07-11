@@ -172,9 +172,9 @@ abstract class Nip_Records extends \Nip\Records\_Abstract\Table
     public function newQuery($type = 'select')
     {
         $query = $this->getDB()->newQuery($type);
-        $query->cols("`$this->_table`.*");
-        $query->from($this->getDB()->getDatabase() . '.' . $this->_table);
-        $query->table($this->_table);
+        $query->cols("`".$this->getTable()."`.*");
+        $query->from($this->getFullNameTable());
+        $query->table($this->getTable());
         return $query;
     }
 
@@ -236,18 +236,6 @@ abstract class Nip_Records extends \Nip\Records\_Abstract\Table
             if (count($this->_primaryKey) == 1) {
                 $this->_primaryKey = reset($this->_primaryKey);
             }
-        }
-    }
-
-    /**
-     * Sets model and database table from the class name
-     */
-    protected function inflect()
-    {
-        parent::inflect();
-
-        if (!$this->_table) {
-            $this->_table = $this->_controller;
         }
     }
 
@@ -453,7 +441,7 @@ abstract class Nip_Records extends \Nip\Records\_Abstract\Table
                 $item = $all[$primary];
             }
             if (!$item) {
-                $params['where'][] = array("`{$this->_table}`.`{$this->getPrimaryKey()}` = ?", $primary);
+                $params['where'][] = array("`{$this->getTable()}`.`{$this->getPrimaryKey()}` = ?", $primary);
                 return $this->findOneByParams($params);
                 if ($item) {
                     $this->getRegistry()->set($primary, $item);
@@ -621,7 +609,15 @@ abstract class Nip_Records extends \Nip\Records\_Abstract\Table
 
     public function getTable()
     {
+        if ($this->_table === null) {
+            $this->initTable();
+        }
         return $this->_table;
+    }
+
+    public function initTable()
+    {
+        $this->_table = $this->getController();
     }
 
     public function getFullNameTable()

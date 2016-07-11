@@ -44,14 +44,6 @@ abstract class Table
         }
     }
 
-    protected function inflectController()
-    {
-        $class = get_class($this);
-        if ($this->_controller == null) {
-            $this->_controller = inflector()->unclassify($class);
-        }
-    }
-
     public function generateModelClass($class = null)
     {
         $class = $class ? $class : get_class($this);
@@ -88,6 +80,14 @@ abstract class Table
             $this->inflectController();
         }
         return $this->_controller;
+    }
+
+    protected function inflectController()
+    {
+        $class = get_class($this);
+        if ($this->_controller == null) {
+            $this->_controller = inflector()->unclassify($class);
+        }
     }
 
     /**
