@@ -8,6 +8,10 @@ abstract class Table
     protected $_model = null;
     protected $_controller = null;
 
+    public function __construct()
+    {
+    }
+
     public function getNewRecord($data = array())
     {
         $model = $this->getModel();

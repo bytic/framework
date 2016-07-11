@@ -140,35 +140,12 @@ abstract class Nip_Records extends \Nip\Records\_Abstract\Table
     }
 
     /**
-     * Checks the registry before fetching from the database
-     * @param mixed $primary
-     * @return Record
-     */
-    public function findOne($primary)
-    {
-        $item = $this->getRegistry()->get($primary);
-        if (!$item) {
-            $all = $this->getRegistry()->get("all");
-            if ($all) {
-                $item = $all[$primary];
-            }
-            if (!$item) {
-                $item = parent::findOne($primary);
-                if ($item) {
-                    $this->getRegistry()->set($primary, $item);
-                }
-            }
-        }
-        return $item;
-    }
-
-    /**
      * @return Nip_RecordCollection
      */
     public function getAll()
     {
         if (!$this->getRegistry()->exists("all")) {
-            $this->getRegistry()->set("all", parent::findAll());
+            $this->getRegistry()->set("all", $this->findAll());
         }
         return $this->getRegistry()->get("all");
     }
@@ -178,10 +155,7 @@ abstract class Nip_Records extends \Nip\Records\_Abstract\Table
      */
     public function findAll()
     {
-        if (!$this->getRegistry()->exists("all")) {
-            $this->getRegistry()->set("all", parent::findAll());
-        }
-        return $this->getRegistry()->get("all");
+        return $this->findByParams();
     }
 
     public function findLast($count = 9)
@@ -459,39 +433,34 @@ abstract class Nip_Records extends \Nip\Records\_Abstract\Table
         return $this->findByParams($params);
     }
 
-    /**
-     * Finds all the Records
-     *
-     * @return array
-     */
-    public function findAll()
-    {
-        return $this->findByParams();
-    }
-
     protected function injectParams(&$params = array())
     {
 
     }
 
     /**
-     * Finds one Record using primary key
-     *
+     * Checks the registry before fetching from the database
      * @param mixed $primary
-     * @return Nip_Record
+     * @return Record
      */
     public function findOne($primary)
     {
-        if ($primary) {
-            $item = $this->getRegistry()->get($primary);
+        $item = $this->getRegistry()->get($primary);
+        if (!$item) {
+            $all = $this->getRegistry()->get("all");
+            if ($all) {
+                $item = $all[$primary];
+            }
             if (!$item) {
                 $params['where'][] = array("`{$this->_table}`.`{$this->getPrimaryKey()}` = ?", $primary);
                 return $this->findOneByParams($params);
+                if ($item) {
+                    $this->getRegistry()->set($primary, $item);
+                }
             }
         }
-        return false;
+        return $item;
     }
-
     /**
      * Finds one Record using params array
      *
@@ -523,36 +492,35 @@ abstract class Nip_Records extends \Nip\Records\_Abstract\Table
     public function paramsToQuery($params = array())
     {
         $this->injectParams($params);
-        extract($params);
 
         $query = $this->newQuery('select');
-        call_user_func_array(array($query, 'cols'), (array)$select);
+        call_user_func_array(array($query, 'cols'), (array) $params['select']);
 
         if (isset($from)) {
-            call_user_func_array(array($query, 'from'), $from);
+            call_user_func_array(array($query, 'from'), $params['from']);
         }
 
-        if (is_array($where)) {
-            foreach ($where as $condition) {
+        if (is_array($params['where'])) {
+            foreach ($params['where'] as $condition) {
                 $condition = (array)$condition;
                 $query->where($condition[0], $condition[1]);
             }
         }
 
-        if (isset($order)) {
-            call_user_func_array(array($query, 'order'), $order);
+        if (isset($params['order'])) {
+            call_user_func_array(array($query, 'order'), $params['order']);
         }
 
-        if (isset($group)) {
-            call_user_func_array(array($query, 'group'), array($group));
+        if (isset($params['group'])) {
+            call_user_func_array(array($query, 'group'), array($params['group']));
         }
 
-        if (isset($having)) {
-            call_user_func_array(array($query, 'having'), $having);
+        if (isset($params['having'])) {
+            call_user_func_array(array($query, 'having'), $params['having']);
         }
 
-        if (isset($limit)) {
-            call_user_func_array(array($query, 'limit'), (array)$limit);
+        if (isset($params['limit'])) {
+            call_user_func_array(array($query, 'limit'), (array) $params['limit']);
         }
 
         return $query;
@@ -604,18 +572,15 @@ abstract class Nip_Records extends \Nip\Records\_Abstract\Table
     public function countByParams($params = array())
     {
         $this->injectParams($params);
-        extract($params);
-
-        $return = 0;
 
         $query = $this->newQuery('select');
 
-        if (isset($from)) {
-            call_user_func_array(array($query, 'from'), $from);
+        if (isset($params['from'])) {
+            call_user_func_array(array($query, 'from'), $params['from']);
         }
 
-        if (is_array($where)) {
-            foreach ($where as $condition) {
+        if (is_array($params['where'])) {
+            foreach ($params['where'] as $condition) {
                 $condition = (array)$condition;
                 $query->where($condition[0], $condition[1]);
             }
