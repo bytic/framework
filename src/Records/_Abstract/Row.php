@@ -9,7 +9,8 @@ abstract class Row extends \Nip_Object
     protected $_manager = null;
     protected $_managerName = null;
 
-    public function __construct() {
+    public function __construct()
+    {
 
     }
 
