@@ -23,19 +23,6 @@ class Nip_RecordCollection_Associated extends Nip_RecordCollection
         return $this;
 	}
 
-//	public function add($record)
-//	{
-//		$pk = $this->getWith()->getPrimaryKey();
-//		if ($record->$pk) {
-//			if (!$this->exists($record->$pk)) {
-//				$this[$record->$pk] = $record;
-//			}
-//		} else {
-//			$this[] = $record;
-//		}
-//		return $this;
-//	}
-
 	public function remove($record)
 	{
 		$pk = $this->getWith()->getPrimaryKey();
@@ -101,6 +88,9 @@ class Nip_RecordCollection_Associated extends Nip_RecordCollection
 		return $this->_params[$key];
 	}
 
+	/**
+	 * @return self
+	 */
 	public function setParams($params = array())
 	{
 		$this->_params = $params;
@@ -110,16 +100,26 @@ class Nip_RecordCollection_Associated extends Nip_RecordCollection
 		return $this;
 	}
 
+	/**
+	 * @return \Nip_DB_Query_Select
+     */
 	public function newQuery()
 	{		
 		return $this->getWith()->paramsToQuery();
 	}
 
+
+	/**
+	 * @return \Nip_DB_Wrapper
+	 */
 	public function getDB()
 	{		
 		return $this->getManager()->getDB();
 	}
-
+	
+	/**
+	 * @return self
+	 */
 	public function setQuery($query)
 	{
 		$this->_query = $query;
