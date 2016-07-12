@@ -1,13 +1,13 @@
 <?php
 
-class Nip_Record extends \Nip\Records\_Abstract\Row {
+class Nip_Record extends \Nip\Records\_Abstract\Row
+{
 
-
-    protected $_fields = array();
     protected $_dbData = array();
     protected $_helpers = array();
 
-    public function __construct() {
+    public function __construct()
+    {
         parent::__construct();
     }
 
@@ -18,7 +18,8 @@ class Nip_Record extends \Nip\Records\_Abstract\Row {
      * @param array $arguments
      * @return mixed
      */
-    public function __call($name, $arguments) {
+    public function __call($name, $arguments)
+    {
         if ($name === ucfirst($name)) {
             $class = 'Nip_Helper_' . $name;
 
@@ -31,59 +32,49 @@ class Nip_Record extends \Nip\Records\_Abstract\Row {
         trigger_error("Call to undefined method $name", E_USER_ERROR);
     }
 
-    public function __set($name, $value) {
-        parent::__set($name, $value);
-        if ($this->getManager()->hasField($name) && !in_array($name, $this->getFields())) {
-            $this->_fields[] = $name;
-        }
-    }
-
-    public function __unset($name) {
-        parent::__unset($name);
-        unset($this->_fields[array_search($name, $this->_fields)]);
-    }
-
-    public function writeDBData($data = false) {
+    public function writeDBData($data = false)
+    {
         foreach ($data as $key => $value) {
             $this->_dbData[$key] = $value;
         }
     }
 
-    public function getPrimaryKey() {
+    public function getPrimaryKey()
+    {
         $pk = $this->getManager()->getPrimaryKey();
         return $this->$pk;
     }
 
-    public function insert() {
+    public function insert()
+    {
         $pk = $this->getManager()->getPrimaryKey();
         $this->$pk = $this->getManager()->insert($this);
-        $this->_fields = array();
         return $this->$pk > 0;
     }
 
-    public function update() {
+    public function update()
+    {
         $return = $this->getManager()->update($this);
-        $this->_fields = array();
         return $return;
     }
 
-    public function save() {
+    public function save()
+    {
         $this->getManager()->save($this);
     }
 
-    public function saveRecord() {
+    public function saveRecord()
+    {
         $this->getManager()->save($this);
     }
 
-    public function delete() {
+    public function delete()
+    {
         $this->getManager()->delete($this);
     }
 
-    public function getFields() {
-        return $this->_fields;
-    }
-
-    public function isInDB() {
+    public function isInDB()
+    {
         $pk = $this->getManager()->getPrimaryKey();
         return $this->$pk > 0;
     }
