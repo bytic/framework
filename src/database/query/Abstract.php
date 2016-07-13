@@ -1,10 +1,20 @@
 <?php
 
+/**
+ * Class Nip_DB_Query_Abstract
+ * @method Nip_DB_Query_Abstract setCols
+ */
 abstract class Nip_DB_Query_Abstract
 {
 
+    /**
+     * @var Nip_DB_Wrapper
+     */
     protected $_db;
-    protected $_parts;
+    
+    protected $_parts = array(
+        'where' => null,
+    );
 
     public function setManager(Nip_DB_Wrapper $manager)
     {
@@ -76,8 +86,14 @@ abstract class Nip_DB_Query_Abstract
         return $this;
     }
 
+    /**
+     * @param $string
+     * @param array $values
+     * @return $this
+     */
     public function where($string, $values = array())
     {
+        /** @var \Nip_DB_Query_Condition $this->_parts[] */
         if ($string) {
             if (isset($this->_parts['where']) && $this->_parts['where'] instanceOf Nip_DB_Query_Condition) {
                 $this->_parts['where'] = $this->_parts['where']->and_($this->getCondition($string, $values));
