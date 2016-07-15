@@ -75,11 +75,21 @@ class Nip_Inflector
         }
     }
 
+    public function unclassify($word)
+    {
+        return $this->doInflection('unclassify', $word);
+    }
+
+    public function underscore($word)
+    {
+        return $this->doInflection('underscore', $word);
+    }
+
     public function singularize($word)
     {
         return $this->doInflection('singularize', $word);
     }
-    
+
     public function pluralize($word)
     {
         return $this->doInflection('pluralize', $word);

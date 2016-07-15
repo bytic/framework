@@ -2,6 +2,14 @@
 
 namespace Nip\Records\_Abstract;
 
+use Nip\Records\Relations\Relation;
+
+/**
+ * Class Row
+ * @package Nip\Records\_Abstract
+ *
+ * @method \Nip_Helper_Url URL()
+ */
 abstract class Row extends \Nip_Object
 {
 
@@ -35,13 +43,9 @@ abstract class Row extends \Nip_Object
     {
 
         if (substr($name, 0, 3) == "get") {
-            $relation = $this->getRelation(substr($name, 3), $arguments[0]);
+            $relation = $this->getRelation(substr($name, 3));
             if ($relation) {
-                return $relation;
-            }
-
-            if ($related) {
-                return $this->__getRecords($relationName, $arguments[0]);
+                return $relation->getResults();
             }
         }
 
@@ -193,10 +197,14 @@ abstract class Row extends \Nip_Object
         return ucfirst(inflector()->pluralize(get_class($this)));
     }
 
-    public function getRelation($relationName, $populate = true)
+    /**
+     * @param $relationName
+     * @return Relation|null
+     */
+    public function getRelation($relationName)
     {
         if (!$this->hasRelation($relationName)) {
-            $this->initRelation($relationName, $populate);
+            $this->initRelation($relationName);
         }
         return $this->relations[$relationName];
     }
@@ -206,37 +214,24 @@ abstract class Row extends \Nip_Object
         return array_key_exists($key, $this->relations);
     }
 
-    public function initRelation($relationName, $populate = true)
+    public function initRelation($relationName)
     {
         if (!$this->getManager()->hasRelation($relationName)) {
             return;
         }
         $this->relations[$relationName] = $this->newRelation($relationName);
-
-        if ($populate === true) {
-            $this->relations[$relationName]->populate();
-        }
     }
 
     public function newRelation($relationName)
     {
         $relation = clone $this->getManager()->getRelation($relationName);
-        $relation->setWith();
+        $relation->setItem($this);
         return $relation;
     }
 
     protected function __getRecords($name, $populate)
     {
 
-        $pk = $this->getManager()->getPrimaryKey();
-        if (!$this->$pk) {
-            $populate = false;
-        }
-
-        list($type, $params) = $this->getManager()->hasRelation($name);
-        if ($type == 'belongsTo') {
-            $populate = false;
-        }
 
         if (!isset($this->_associated[$name])) {
             if ($type == 'belongsTo') {
@@ -253,11 +248,5 @@ abstract class Row extends \Nip_Object
                 $this->setAssociated($name, $collection);
             }
         }
-
-        if ($populate) {
-            $this->_associated[$name]->populate();
-        }
-
-        return $this->_associated[$name];
     }
 }

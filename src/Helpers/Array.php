@@ -106,8 +106,9 @@ class Nip_Helper_Array extends Nip\Helpers\AbstractHelper
     /**
      * Fetch the same property for all the elements.
      *
-     * @param array $array
+     * @param array|Nip_RecordCollection $array
      * @param string $property
+     * @param bool|string $return
      * @return array The property values
      */
     public function pluck($array, $property, &$return = false)

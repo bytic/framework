@@ -26,7 +26,7 @@ class ControllerTest extends \Codeception\TestCase\Test
         $controller = new Controller();
 
         $this->assertInstanceOf('Nip_Helper_Url', $controller->Url());
-        $this->assertInstanceOf('Nip_Helper_XML', $controller->Xml());
+        $this->assertInstanceOf('Nip_Helper_Xml', $controller->Xml());
         $this->assertInstanceOf('Nip_Helper_Passwords', $controller->Passwords());
     }
 
@@ -35,7 +35,7 @@ class ControllerTest extends \Codeception\TestCase\Test
         $controller = new Controller();
 
         $this->assertInstanceOf('Nip_Helper_Url', $controller->getHelper('Url'));
-        $this->assertInstanceOf('Nip_Helper_XML', $controller->getHelper('XML'));
+        $this->assertInstanceOf('Nip_Helper_Xml', $controller->getHelper('Xml'));
         $this->assertInstanceOf('Nip_Helper_Passwords', $controller->getHelper('passwords'));
     }
 }

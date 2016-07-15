@@ -44,20 +44,4 @@ class Nip_RecordCollection_Associated extends Nip_RecordCollection
         return $this[$index];
 	}
 
-	public function getParam($key)
-	{
-		return $this->_params[$key];
-	}
-
-	/**
-	 * @return self
-	 */
-	public function setParams($params = array())
-	{
-		$this->_params = $params;
-        if ($this->_params['indexKey']) {
-            $this->_indexKey = $this->_params['indexKey'];
-        }
-		return $this;
-	}
 }

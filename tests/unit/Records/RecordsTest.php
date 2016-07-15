@@ -2,10 +2,8 @@
 
 namespace Nip\Tests\Records;
 
-use \Nip_RecordCollection;
-use \Nip_Records;
-
-use \Mockery as m;
+use Mockery as m;
+use Nip_Records;
 
 class RecordsTest extends \Codeception\TestCase\Test
 {
@@ -19,10 +17,44 @@ class RecordsTest extends \Codeception\TestCase\Test
      */
     protected $_object;
 
-
-    public function setUp()
+    protected function _before()
     {
+        $wrapper = new \Nip_DB_Wrapper();
+
         $this->_object = new Nip_Records();
+        $this->_object->setDB($wrapper);
+        $this->_object->setTable('pages');
+    }
+
+    protected function _after()
+    {
+    }
+
+    // tests
+
+    public function testSetModel()
+    {
+        $this->_object->setModel('Row');
+        $this->assertEquals($this->_object->getModel(), 'Row');
+
+        $this->_object->setModel('Row2');
+        $this->assertEquals($this->_object->getModel(), 'Row2');
+    }
+
+    public function testGetFullNameTable()
+    {
+        $this->assertEquals('pages', $this->_object->getFullNameTable());
+
+        $this->_object->getDB()->setDatabase('database_name');
+        $this->assertEquals('database_name.pages', $this->_object->getFullNameTable());
+    }
+
+    public function testGenerateModelClass()
+    {
+        $this->assertEquals($this->_object->generateModelClass('Notifications\Table'), 'Notifications\Row');
+        $this->assertEquals($this->_object->generateModelClass('Notifications_Tables'), 'Notifications_Table');
+        $this->assertEquals($this->_object->generateModelClass('Notifications'), 'Notification');
+        $this->assertEquals($this->_object->generateModelClass('Persons'), 'Person');
     }
 
     public function testGetRelationClass()
@@ -49,30 +81,35 @@ class RecordsTest extends \Codeception\TestCase\Test
         $this->assertInstanceOf('Nip\Records\Relations\HasAndBelongsToMany', $this->_object->newRelation('hasAndBelongsToMany'));
     }
 
-    public function testInitRelationsFromArrayBelongsTo()
+    public function testInitRelationsFromArrayBelongsToSimple()
     {
         $users = m::namedMock('Users', 'Nip_Records')->shouldDeferMissing()
-            ->shouldReceive('instance')->andReturnSelf()->getMock();
+            ->shouldReceive('instance')->andReturnSelf()
+            ->getMock();
+        $users->setPrimaryFK('id_user');
         m::namedMock('User', 'Nip_Record');
         m::namedMock('Articles', 'Nip_Records');
 
-//        $this->getMockBuilder('Nip_Records')->setMockClassName('Users')->getMock();
-//        $this->getMockBuilder('Nip_Record')->setMockClassName('User')->getMock();
-//        $this->getMockBuilder('Nip_Records')->setMockClassName('Articles')->getMock();
-
-        $this->_object->initRelationsFromArray('belongsTo',array('User'));
-        $this->assertTrue($this->_object->hasRelation('User'));
-        $this->assertInstanceOf('Nip\Records\Relations\BelongsTo', $this->_object->getRelation('User'));
-        $this->assertInstanceOf('Users', $this->_object->getRelation('User')->getWith());
-
         $this->_object->setPrimaryFK('id_object');
-        $this->_object->initRelationsFromArray('belongsTo',array(
-            'User' => array('with' => $users),
-        ));
-        $this->assertInstanceOf('Users', $this->_object->getRelation('User')->getWith());
-        $this->assertSame($users, $this->_object->getRelation('User')->getWith());
-        $this->assertEquals('id_object', $this->_object->getRelation('User')->getFK());
 
-        $this->assertEquals('id_object', $this->_object->getRelation('User')->getQuery()->assemble());
+        $this->_object->initRelationsFromArray('belongsTo', array('User'));
+        $this->_testInitRelationsFromArrayBelongsToUser('User');
+
+
+        $this->_object->initRelationsFromArray('belongsTo', array(
+            'UserName' => array('with' => $users),
+        ));
+        $this->_testInitRelationsFromArrayBelongsToUser('UserName');
+        $this->assertSame($users, $this->_object->getRelation('User')->getWith());
     }
+
+
+    protected function _testInitRelationsFromArrayBelongsToUser($name)
+    {
+        $this->assertTrue($this->_object->hasRelation($name));
+        $this->assertInstanceOf('Nip\Records\Relations\BelongsTo', $this->_object->getRelation($name));
+        $this->assertInstanceOf('Nip_Records', $this->_object->getRelation($name)->getWith());
+        $this->assertEquals($this->_object->getRelation($name)->getWith()->getPrimaryFK(), $this->_object->getRelation($name)->getFK());
+    }
+
 }

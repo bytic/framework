@@ -1,4 +1,5 @@
 <?php
+
 class Nip_RecordCollection_AssociatedAggregate extends Nip_RecordCollection_Associated
 {
     /**
@@ -6,31 +7,14 @@ class Nip_RecordCollection_AssociatedAggregate extends Nip_RecordCollection_Asso
      */
     protected $_models;
 
-	public function __call($name, $arguments = array())
-	{
-		foreach ($this as $item) {
-			call_user_func_array(array($item, $name), $arguments);
-		}
-	}
-
-    /**
-     * @return Nip_DB_Query_Select
-     */
-    public function getQuery()
+    public function __call($name, $arguments = array())
     {
-		if (count($this->getWith())) {
-			$method = "get" . $this->getParam("name");
-
-			$query = $this->getItem()->$method(false)->getQuery(false);
-            $query->where("`{$this->getParam("table")}`.`{$this->getParam("fk")}` IN ?", pluck($this->getModels(), $this->getManager()->getPrimaryKey()));
-                
-            return $query;
-		}
-        
-		return $return;
+        foreach ($this as $item) {
+            call_user_func_array(array($item, $name), $arguments);
+        }
     }
 
-    public function populate() 
+    public function populate()
     {
         $items = $this->getModels();
         $method = "get{$this->getParam("name")}";
@@ -55,6 +39,39 @@ class Nip_RecordCollection_AssociatedAggregate extends Nip_RecordCollection_Asso
         }
     }
 
+    public function getModels()
+    {
+        return $this->_models;
+    }
+
+    public function setModels($models)
+    {
+        $this->_models = $models;
+        return $this;
+    }
+
+    /**
+     * @return Nip_DB_Query_Select
+     */
+    public function getQuery()
+    {
+        if (count($this->getWith())) {
+            $method = "get" . $this->getParam("name");
+
+            $query = $this->getItem()->$method(false)->getQuery(false);
+            $query->where("`{$this->getParam("table")}`.`{$this->getParam("fk")}` IN ?", pluck($this->getModels(), $this->getManager()->getPrimaryKey()));
+
+            return $query;
+        }
+
+        return $return;
+    }
+
+    public function getItem()
+    {
+        return $this->getModels()->rewind();
+    }
+
     public function flatten()
     {
         $return = new Nip_RecordCollection();
@@ -69,22 +86,6 @@ class Nip_RecordCollection_AssociatedAggregate extends Nip_RecordCollection_Asso
             }
         }
         return $return;
-    }
-
-    public function getModels()
-    {
-        return $this->_models;
-    }
-
-    public function setModels($models)
-    {
-        $this->_models = $models;
-        return $this;
-    }
-
-    public function getItem()
-    {
-        return $this->getModels()->rewind();
     }
 
 }

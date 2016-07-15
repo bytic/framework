@@ -2,13 +2,20 @@
 
 namespace Nip\Records\Relations;
 
-class HasMany extends Relation
+use Nip_DB_Query_Select as Query;
+
+class HasMany extends HasOneOrMany
 {
 
-    public function populateQuerySpecific($query)
+    /**
+     * @param Query $query
+     * @return Query
+     */
+    public function populateQuerySpecific(Query $query)
     {
         $pk = $this->getManager()->getPrimaryKey();
-        $query->where('`' . $this->getParam("fk").'` = ?', $this->getItem()->$pk);
+        $query->where('`' . $this->getFK() . '` = ?', $this->getItem()->$pk);
         return $query;
     }
+
 }

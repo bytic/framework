@@ -2,24 +2,29 @@
 
 namespace Nip\Records\Relations;
 
+use Nip\Records\_Abstract\Table;
+use Nip_DB_Query_Select as Query;
+use Nip_Record as Record;
+use Nip_Records as Records;
+
 abstract class Relation
 {
 
     protected $_name;
 
     /**
-     * @var \Nip_Record
+     * @var Record
      */
     protected $_item;
 
     /**
-     * @var \Nip_Records
+     * @var Records
      */
     protected $_manager = null;
 
 
     /**
-     * @var \Nip_Records
+     * @var Records
      */
     protected $_with = null;
 
@@ -27,7 +32,7 @@ abstract class Relation
     protected $_fk = null;
 
     /**
-     * @var \Nip_DB_Query_Abstract
+     * @var Query
      */
     protected $_query;
 
@@ -35,6 +40,8 @@ abstract class Relation
     protected $_populated = false;
 
     protected $_params = array();
+
+    protected $_results = null;
 
     /**
      * @return mixed
@@ -52,14 +59,14 @@ abstract class Relation
         $this->_name = $name;
     }
 
-    public function setItem(\Nip_Record $item)
+    public function setItem(Record $item)
     {
         $this->_item = $item;
         return $this;
     }
 
     /**
-     * @return \Nip_Record
+     * @return Record
      */
     public function getItem()
     {
@@ -67,7 +74,7 @@ abstract class Relation
     }
 
     /**
-     * @return \Nip_Records
+     * @return Records
      */
     public function getManager()
     {
@@ -83,13 +90,16 @@ abstract class Relation
     }
 
     /**
-     * @param \Nip_Records $manager
+     * @param Table $manager
      */
     public function setManager($manager)
     {
         $this->_manager = $manager;
     }
 
+    /**
+     * @return Query
+     */
     public function getQuery()
     {
         if ($this->_query == null) {
@@ -106,12 +116,13 @@ abstract class Relation
         $this->_query = $query;
     }
 
-    public function populateQuerySpecific($query)
+    public function populateQuerySpecific(Query $query)
     {
     }
 
     /**
-     * @return self
+     * @param $query
+     * @return static
      */
     public function setQuery($query)
     {
@@ -178,7 +189,7 @@ abstract class Relation
 
 
     /**
-     * @return \Records
+     * @return Records
      */
     public function getWith()
     {
@@ -194,15 +205,23 @@ abstract class Relation
         $this->setWithClass($className);
     }
 
+    /**
+     * @param string $name
+     */
     public function setWithClass($name)
     {
         $object = call_user_func(array($name, "instance"));
         $this->setWith($object);
     }
 
-    public function setWith($object)
+    /**
+     * @param Record $object
+     * @return $this
+     */
+    public function setWith(Records $object)
     {
         $this->_with = $object;
+        return $this;
     }
 
     /**
@@ -248,4 +267,30 @@ abstract class Relation
     {
         $this->_fk = $name;
     }
+
+    /**
+     * Get the results of the relationship.
+     * @return Record|Records
+     */
+    public function getResults()
+    {
+        if (!$this->isPopulated()) {
+            $this->initResults();
+        }
+        return $this->_results;
+    }
+
+    public function setResults($results)
+    {
+        $this->_results = $results;
+        $this->_populated = true;
+        return $this->_results;
+    }
+
+    public function isPopulated()
+    {
+        return $this->_populated == true;
+    }
+
+    abstract public function initResults();
 }

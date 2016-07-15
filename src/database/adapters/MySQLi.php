@@ -19,7 +19,7 @@ class Nip_DB_Adapters_MySQLi extends Nip_DB_Adapters_Abstract implements Nip_DB_
 		$this->_connection = mysqli_connect($host, $user, $password, $newLink);
         
 		if ($this->_connection) {
-			if (mysqli_select_db($this->_connection, $database)) {
+			if ($this->selectDatabase($database)) {
 				$this->query("SET CHARACTER SET utf8");
 				$this->query("SET NAMES utf8");
 				return $this->_connection;
@@ -36,6 +36,12 @@ class Nip_DB_Adapters_MySQLi extends Nip_DB_Adapters_Abstract implements Nip_DB_
 
 		return false;
 	}
+
+
+    public function selectDatabase($database)
+    {
+        return mysqli_select_db($this->_connection, $database);
+    }
 
 	/**
 	 * Executes SQL query

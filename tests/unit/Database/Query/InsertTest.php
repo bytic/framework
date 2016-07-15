@@ -2,6 +2,7 @@
 
 namespace Nip\Tests\Database\Query;
 
+use Mockery as m;
 use Nip_DB_Wrapper;
 use Nip_DB_Query_Insert;
 
@@ -21,7 +22,13 @@ class InsertTest extends \Codeception\TestCase\Test
 	{
 		parent::setUp();
 		$this->_object = new Nip_DB_Query_Insert();
-        $manager = new Nip_DB_Wrapper('MySQL');
+
+
+        $adapterMock = m::mock('Nip_DB_Adapters_MySQLi')->shouldDeferMissing();
+        $adapterMock->shouldReceive('cleanData')->andReturnUsing(function ($data) {
+            return $data;
+        });
+        $manager = new Nip_DB_Wrapper($adapterMock);
 		$this->_object->setManager($manager);
 	}
 

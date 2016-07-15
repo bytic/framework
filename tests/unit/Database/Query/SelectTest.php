@@ -2,6 +2,7 @@
 
 namespace Nip\Tests\Database\Query;
 
+use Mockery as m;
 use Nip_DB_Wrapper;
 use Nip_DB_Query_Select;
 
@@ -26,7 +27,12 @@ class SelectTest extends \Codeception\TestCase\Test
 	{
 		parent::setUp();
 		$this->_object = new Nip_DB_Query_Select();
-		$this->_db = new Nip_DB_Wrapper('MySQL');
+
+        $adapterMock = m::mock('Nip_DB_Adapters_MySQLi')->shouldDeferMissing();
+        $adapterMock->shouldReceive('cleanData')->andReturnUsing(function ($data) {
+            return $data;
+        });
+		$this->_db = new Nip_DB_Wrapper($adapterMock);
 		$this->_object->setManager($this->_db);
 	}
 

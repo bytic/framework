@@ -1,4 +1,8 @@
 <?php
+
+/**
+ * Class Nip_Helper_Url
+ */
 class Nip_Helper_Url extends Nip\Helpers\AbstractHelper
 {
 
@@ -8,15 +12,20 @@ class Nip_Helper_Url extends Nip\Helpers\AbstractHelper
     public function __call($name, $arguments)
     {
         if ($name == ucfirst($name)) {
-			$this->_pieces[] = Nip\Dispatcher::reverseControllerName($name);
+            $this->_pieces[] = Nip\Dispatcher::reverseControllerName($name);
             return $this;
         } else {
-			$this->_pieces[] = $name;
-		}
+            $this->_pieces[] = $name;
+        }
 
         $name = $this->_pieces ? implode(".", $this->_pieces) : '';
         $this->_pieces = array();
         return $this->assemble($name, $arguments[0]);
+    }
+
+    public function get($name, $params = false)
+    {
+        return $this->assemble($name, $params);
     }
 
     public function assemble($name, $params = false)
@@ -31,60 +40,60 @@ class Nip_Helper_Url extends Nip\Helpers\AbstractHelper
 
     public function base($params = array())
     {
-        return $this->getRouter()->getCurrent()->getBase($params) . ($params ? "?".http_build_query($params) : '');
+        return $this->getRouter()->getCurrent()->getBase($params) . ($params ? "?" . http_build_query($params) : '');
     }
 
-	public function image($url = false)
+    public function image($url = false)
     {
         return IMAGES_URL . $url;
     }
 
-	public function flash($url = false)
+    public function flash($url = false)
     {
         return FLASH_URL . $url;
     }
 
-	/**
-	 * Reverse of the PHP built-in function parse_url
-	 * 
-	 * @see http://php.net/parse_url
-	 * @param array $params
-	 * @return string
-	 */
-	public function build($params)
-	{
-		return ((isset($params['scheme'])) ? $params['scheme'] . '://' : '')
-			.((isset($params['user'])) ? $params['user'] . ((isset($params['pass'])) ? ':' . $params['pass'] : '') .'@' : '')
-			.((isset($params['host'])) ? $params['host'] : '')
-			.((isset($params['port'])) ? ':' . $params['port'] : '')
-			.((isset($params['path'])) ? $params['path'] : '')
-			.((isset($params['query'])) ? '?' . $params['query'] : '')
-			.((isset($params['fragment'])) ? '#' . $params['fragment'] : '');
-	}
+    /**
+     * Reverse of the PHP built-in function parse_url
+     *
+     * @see http://php.net/parse_url
+     * @param array $params
+     * @return string
+     */
+    public function build($params)
+    {
+        return ((isset($params['scheme'])) ? $params['scheme'] . '://' : '')
+        . ((isset($params['user'])) ? $params['user'] . ((isset($params['pass'])) ? ':' . $params['pass'] : '') . '@' : '')
+        . ((isset($params['host'])) ? $params['host'] : '')
+        . ((isset($params['port'])) ? ':' . $params['port'] : '')
+        . ((isset($params['path'])) ? $params['path'] : '')
+        . ((isset($params['query'])) ? '?' . $params['query'] : '')
+        . ((isset($params['fragment'])) ? '#' . $params['fragment'] : '');
+    }
 
-	/**
-	 * Replaces all non-alphanumeric characters and returns dash-separated string
-	 *
-	 * @param string $input
-	 * @return string
-	 */
-	public function encode($input)
+    /**
+     * Replaces all non-alphanumeric characters and returns dash-separated string
+     *
+     * @param string $input
+     * @return string
+     */
+    public function encode($input)
     {
         $chars = array(
             '&#x102;' => 'a',
             '&#x103;' => 'a',
-            '&#xC2;'  => 'A',
-            '&#xE2;'  => 'a',
-            '&#xCE;'  => 'I',
-            '&#xEE;'  => 'i',
+            '&#xC2;' => 'A',
+            '&#xE2;' => 'a',
+            '&#xCE;' => 'I',
+            '&#xEE;' => 'i',
             '&#x218;' => 'S',
             '&#x219;' => 's',
             '&#x15E;' => 'S',
             '&#x15F;' => 's',
             '&#x21A;' => 'T',
             '&#x21B;' => 't',
-            '&#354;'  => 'T',
-            '&#355;'  => 't'
+            '&#354;' => 'T',
+            '&#355;' => 't'
         );
 
         $change = $with = array();
@@ -96,7 +105,7 @@ class Nip_Helper_Url extends Nip\Helpers\AbstractHelper
 
         preg_match_all("/[a-z0-9]+/i", $input, $sections);
         return strtolower(implode("-", $sections[0]));
-	}
+    }
 
     /**
      * @return Nip_Router;
@@ -118,16 +127,16 @@ class Nip_Helper_Url extends Nip\Helpers\AbstractHelper
         return \Nip\FrontController::instance()->getRouter();
     }
 
-	/**
-	 * Singleton
-	 * @return Nip_Helper_URL
-	 */
-	static public function instance()
+    /**
+     * Singleton
+     * @return Nip_Helper_URL
+     */
+    static public function instance()
     {
-		static $instance;
-		if (!($instance instanceof self)) {
-			$instance = new self();
-		}
-		return $instance;
-	}
+        static $instance;
+        if (!($instance instanceof self)) {
+            $instance = new self();
+        }
+        return $instance;
+    }
 }

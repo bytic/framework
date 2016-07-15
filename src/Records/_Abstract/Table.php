@@ -2,9 +2,12 @@
 
 namespace Nip\Records\_Abstract;
 
-use Nip\Database\Query\_Abstract;
+use Nip\Database\Query\_Abstract as Query;
+use Nip\HelperBroker;
 use Nip\Paginator;
 use Nip\Records\Relations\Relation;
+use Nip_Record as Record;
+use Nip_RecordCollection as RecordCollection;
 
 abstract class Table
 {
@@ -23,6 +26,8 @@ abstract class Table
     protected $_fields = null;
     protected $_uniqueFields = null;
     protected $_foreignKey = null;
+
+    protected $_urlPK = null;
 
     protected $_model = null;
     protected $_controller = null;
@@ -94,6 +99,7 @@ abstract class Table
     public function getNewRecord($data = array())
     {
         $model = $this->getModel();
+        /** @var Record $record */
         $record = new $model();
         $record->setManager($this);
         $record->writeData($data);
@@ -188,11 +194,11 @@ abstract class Table
 
     public function getHelper($name)
     {
-        return \Nip\HelperBroker::get($name);
+        return HelperBroker::get($name);
     }
 
 
-    public function exists(\Nip_Record $item)
+    public function exists(Record $item)
     {
         $params = array();
         $params['where'] = array();
@@ -220,12 +226,12 @@ abstract class Table
      * fetching them from the database
      *
      * @param array $pk_list
-     * @return Nip_RecordCollection
+     * @return RecordCollection
      */
     public function findByPrimary($pk_list = array())
     {
         $pk = $this->getPrimaryKey();
-        $return = new Nip_RecordCollection();
+        $return = new RecordCollection();
 
         if ($pk_list) {
             $pk_list = array_unique($pk_list);
@@ -254,7 +260,7 @@ abstract class Table
     }
 
     /**
-     * @return Nip_RecordCollection
+     * @return RecordCollection
      */
     public function getAll()
     {
@@ -265,7 +271,7 @@ abstract class Table
     }
 
     /**
-     * @return Nip_RecordCollection
+     * @return RecordCollection
      */
     public function findAll()
     {
@@ -280,9 +286,33 @@ abstract class Table
     }
 
     /**
+     * @return \Nip_DB_Query_Insert
+     */
+    public function newInsertQuery()
+    {
+        return $this->newQuery('insert');
+    }
+
+    /**
+     * @return \Nip_DB_Query_Update
+     */
+    public function newUpdateQuery()
+    {
+        return $this->newQuery('update');
+    }
+
+    /**
+     * @return \Nip_DB_Query_Delete
+     */
+    public function newDeleteQuery()
+    {
+        return $this->newQuery('delete');
+    }
+
+    /**
      * Factory
      * @param string $type
-     * @return _Abstract
+     * @return Query
      */
     public function newQuery($type = 'select')
     {
@@ -291,27 +321,6 @@ abstract class Table
         $query->from($this->getFullNameTable());
         $query->table($this->getTable());
         return $query;
-    }
-
-    /**
-     * Inserts foreign connections into Query according to the class relationships
-     *
-     * @param \Nip_DB_Query_Abstract $query
-     * @param string $class
-     */
-    public function associateIntoQuery(\Nip_DB_Query_Abstract $query, $class)
-    {
-        $manager = call_user_func(array($class, "instance"));
-
-        $query->from($manager->getTable());
-
-        if ($this->hasAndBelongsToMany($class)) {
-            $crossTable = $this->getCrossTable($this, $manager);
-            $query->from($crossTable);
-
-            $query->where("{$this->getTable()}.{$this->getPrimaryKey()} = {$crossTable}.{$this->getPrimaryFK()}");
-            $query->where("{$manager->getTable()}.{$manager->getPrimaryKey()} = {$crossTable}.{$manager->getPrimaryFK()}");
-        }
     }
 
     /**
@@ -348,6 +357,16 @@ abstract class Table
     }
 
     /**
+     * @param \Nip_DB_Wrapper $db
+     * @return $this
+     */
+    public function setDB($db)
+    {
+        $this->_db = $db;
+        return $this;
+    }
+
+    /**
      * @return \Nip_DB_Wrapper
      */
     protected function setUpDB()
@@ -371,7 +390,7 @@ abstract class Table
 
     /**
      * Inserts a Record into the database
-     * @param Nip_Record $model
+     * @param Record $model
      * @param array|bool $onDuplicate
      * @return mixed
      */
@@ -385,10 +404,9 @@ abstract class Table
 
     public function insertQuery($model, $onDuplicate)
     {
-
         $inserts = $this->getQueryModelData($model);
 
-        $query = $this->newQuery('insert');
+        $query = $this->newInsertQuery();
         $query->data($inserts);
 
         if ($onDuplicate !== false) {
@@ -413,10 +431,10 @@ abstract class Table
 
     /**
      * Updates a Record's database entry
-     * @param \Nip_Record $model
-     * @return bool|Nip_DB_Result
+     * @param Record $model
+     * @return bool|\Nip_DB_Result
      */
-    public function update(\Nip_Record $model)
+    public function update(Record $model)
     {
         $query = $this->updateQuery($model);
 
@@ -427,10 +445,10 @@ abstract class Table
     }
 
     /**
-     * @param \Nip_Record $model
-     * @return bool|Nip_DB_Query_Abstract
+     * @param Record $model
+     * @return bool|Query
      */
-    public function updateQuery(\Nip_Record $model)
+    public function updateQuery(Record $model)
     {
         $pk = $this->getPrimaryKey();
         if (!is_array($pk)) {
@@ -440,7 +458,7 @@ abstract class Table
         $data = $this->getQueryModelData($model);
 
         if ($data) {
-            $query = $this->newQuery('update');
+            $query = $this->newUpdateQuery();
             $query->data($data);
 
             foreach ($pk as $key) {
@@ -457,7 +475,7 @@ abstract class Table
      * Saves a Record's database entry
      * @param Record $model
      */
-    public function save($model)
+    public function save(Record $model)
     {
         $pk = $this->getPrimaryKey();
 
@@ -465,6 +483,7 @@ abstract class Table
             $model->update();
             return $model->$pk;
         } else {
+            /** @var Record $previous */
             $previous = $model->exists();
 
             if ($previous) {
@@ -537,7 +556,7 @@ abstract class Table
             call_user_func_array(array($query, 'limit'), $limit);
         }
 
-        $results = $this->getDB()->execute($query);
+        $this->getDB()->execute($query);
         return $this;
     }
 
@@ -584,10 +603,11 @@ abstract class Table
             }
             if (!$item) {
                 $params['where'][] = array("`{$this->getTable()}`.`{$this->getPrimaryKey()}` = ?", $primary);
-                return $this->findOneByParams($params);
+                $item = $this->findOneByParams($params);
                 if ($item) {
                     $this->getRegistry()->set($primary, $item);
                 }
+                return $item;
             }
         }
         return $item;
@@ -597,7 +617,7 @@ abstract class Table
      * Finds one Record using params array
      *
      * @param array $params
-     * @return Nip_Record
+     * @return Record|false
      */
     public function findOneByParams(array $params = array())
     {
@@ -631,6 +651,11 @@ abstract class Table
         return $query;
     }
 
+    /**
+     * @param Query $query
+     * @param array $params
+     * @return bool
+     */
     public function findOneByQuery($query, $params = array())
     {
         $query->limit(1);
@@ -644,6 +669,7 @@ abstract class Table
     public function findByQuery($query, $params = array())
     {
         $class = $this->getCollectionClass();
+        /** @var RecordCollection $return */
         $return = new $class();
 
         $results = $this->getDB()->execute($query);
@@ -672,6 +698,7 @@ abstract class Table
 
     /**
      * Counts all the Record entries in the database
+     * @param array $params
      * @return int
      */
     public function countByParams($params = array())
@@ -685,26 +712,25 @@ abstract class Table
 
     /**
      * Counts all the Record entries in the database
+     * @param Query $query
      * @return int
      */
     public function countByQuery($query)
     {
         $query->setCols('count(*) as count');
-
-        /* @var $result DBResult */
         $result = $this->getDB()->execute($query);
 
         if ($result->numRows()) {
             $row = $result->fetchResult();
-            $return = (int)$row['count'];
+            return (int)$row['count'];
         }
 
-        return $return;
+        return false;
     }
 
     public function cleanData($data)
     {
-        return $this->getDB()->cleanData($data);
+        return $this->getDB()->getAdapter()->cleanData($data);
     }
 
     public function getTable()
@@ -720,9 +746,18 @@ abstract class Table
         $this->_table = $this->getController();
     }
 
+    /**
+     * @param null $table
+     */
+    public function setTable($table)
+    {
+        $this->_table = $table;
+    }
+
     public function getFullNameTable()
     {
-        return $this->getDB()->getDatabase() . '.' . $this->getTable();
+        $database = $this->getDB()->getDatabase();
+        return $database ? $database . '.' . $this->getTable() : $this->getTable();
     }
 
     public function getCollectionClass()
@@ -758,7 +793,7 @@ abstract class Table
      */
     public function getUrlPK()
     {
-        if (!$this->_urlPK) {
+        if ($this->_urlPK == null) {
             $this->_urlPK = $this->getPrimaryKey();
         }
         return $this->_urlPK;
@@ -841,32 +876,6 @@ abstract class Table
     }
 
     /**
-     * @return Nip_Db_Records_Cache
-     */
-    public function getCacheManager()
-    {
-        if (!$this->_cacheManager) {
-            $this->initCacheManager();
-        }
-
-        return $this->_cacheManager;
-    }
-
-    public function initCacheManager()
-    {
-        $this->_cacheManager = $this->newCacheManager();
-        $this->_cacheManager->setManager($this);
-    }
-
-    /**
-     * @return \Nip_Db_Records_Cache
-     */
-    public function newCacheManager()
-    {
-        return new \Nip_Db_Records_Cache();
-    }
-
-    /**
      * Check if the model needs to initRelations
      * @return void
      */
@@ -885,10 +894,13 @@ abstract class Table
         }
     }
 
+    /**
+     * @param string $type
+     */
     protected function initRelationsType($type)
     {
         $array = $this->{'_' . $type};
-        $this->initRelationsFromArray($array);
+        $this->initRelationsFromArray($type, $array);
     }
 
     public function initRelationsFromArray($type, $array)

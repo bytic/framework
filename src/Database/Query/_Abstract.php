@@ -3,8 +3,17 @@
 namespace Nip\Database\Query;
 
 /**
- * Class \Nip_DB_Query_Abstract
- * @method _Abstract setCols
+ * Class _Abstract
+ * @package Nip\Database\Query
+ *
+ * @method _Abstract setCols() setCols(array|string $cols = null)
+ * @method _Abstract cols() cols(array|string $cols)
+ * @method _Abstract count() count(array|string $cols)
+ * @method _Abstract sum() sum(array|string $cols)
+ * @method _Abstract from() from(array|string $from)
+ * @method _Abstract data() data(array $data)
+ * @method _Abstract table() table(array|string $table)
+ * @method _Abstract order() order(array|string $order)
  */
 abstract class _Abstract
 {
