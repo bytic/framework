@@ -1,6 +1,8 @@
 <?php
 
-class Nip_DB_Query_Select extends Nip_DB_Query_Abstract
+use Nip\Database\Query\_Abstract;
+
+class Nip_DB_Query_Select extends _Abstract
 {
 
 	public function __call($name, $arguments)

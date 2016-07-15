@@ -1,6 +1,8 @@
 <?php
 
-class Nip_DB_Query_Insert extends Nip_DB_Query_Abstract
+use Nip\Database\Query\_Abstract;
+
+class Nip_DB_Query_Insert extends _Abstract
 {
 
     protected $_cols;

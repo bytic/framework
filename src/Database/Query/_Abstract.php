@@ -1,29 +1,31 @@
 <?php
 
+namespace Nip\Database\Query;
+
 /**
- * Class Nip_DB_Query_Abstract
- * @method Nip_DB_Query_Abstract setCols
+ * Class \Nip_DB_Query_Abstract
+ * @method _Abstract setCols
  */
-abstract class Nip_DB_Query_Abstract
+abstract class _Abstract
 {
 
     /**
-     * @var Nip_DB_Wrapper
+     * @var \Nip_DB_Wrapper
      */
     protected $_db;
-    
+
     protected $_parts = array(
         'where' => null,
     );
 
-    public function setManager(Nip_DB_Wrapper $manager)
+    public function setManager(\Nip_DB_Wrapper $manager)
     {
         $this->_db = $manager;
         return $this;
     }
 
     /**
-     * @return Nip_DB_Wrapper
+     * @return \Nip_DB_Wrapper
      */
     public function getManager()
     {
@@ -43,6 +45,69 @@ abstract class Nip_DB_Query_Abstract
         }
 
         return $this;
+    }
+
+    public function addParams($params)
+    {
+        $this->checkParamSelect($params);
+        $this->checkParamFrom($params);
+        $this->checkParamWhere($params);
+        $this->checkParamOrder($params);
+        $this->checkParamGroup($params);
+        $this->checkParamHaving($params);
+        $this->checkParamLimit($params);
+    }
+
+    protected function checkParamSelect($params)
+    {
+        if (isset($params['select']) && is_array($params['select'])) {
+            call_user_func_array(array($this, 'cols'), $params['select']);
+        }
+    }
+
+    protected function checkParamFrom($params)
+    {
+        if (isset($params['from']) && !empty($params['from'])) {
+            $this->from($params['from']);
+        }
+    }
+
+    protected function checkParamWhere($params)
+    {
+        if (isset($params['where']) && is_array($params['where'])) {
+            foreach ($params['where'] as $condition) {
+                $condition = (array)$condition;
+                $this->where($condition[0], $condition[1]);
+            }
+        }
+    }
+
+    protected function checkParamOrder($params)
+    {
+        if (isset($params['order']) && !empty($params['order'])) {
+            call_user_func_array(array($this, 'order'), $params['order']);
+        }
+    }
+
+    protected function checkParamGroup($params)
+    {
+        if (isset($params['group']) && !empty($params['group'])) {
+            call_user_func_array(array($this, 'group'), array($params['group']));
+        }
+    }
+
+    protected function checkParamHaving($params)
+    {
+        if (isset($params['having']) && !empty($params['having'])) {
+            call_user_func_array(array($this, 'having'), array($params['having']));
+        }
+    }
+
+    protected function checkParamLimit($params)
+    {
+        if (isset($params['limit']) && !empty($params['limit'])) {
+            call_user_func_array(array($this, 'limit'), array($params['limit']));
+        }
     }
 
     protected function addPart($name, $value)
@@ -93,9 +158,9 @@ abstract class Nip_DB_Query_Abstract
      */
     public function where($string, $values = array())
     {
-        /** @var \Nip_DB_Query_Condition $this->_parts[] */
+        /** @var \Nip_DB_Query_Condition $this ->_parts[] */
         if ($string) {
-            if (isset($this->_parts['where']) && $this->_parts['where'] instanceOf Nip_DB_Query_Condition) {
+            if (isset($this->_parts['where']) && $this->_parts['where'] instanceOf \Nip_DB_Query_Condition) {
                 $this->_parts['where'] = $this->_parts['where']->and_($this->getCondition($string, $values));
             } else {
                 $this->_parts['where'] = $this->getCondition($string, $values);
@@ -108,7 +173,7 @@ abstract class Nip_DB_Query_Abstract
     public function orWhere($string, $values = array())
     {
         if ($string) {
-            if ($this->_parts['where'] instanceOf Nip_DB_Query_Condition) {
+            if ($this->_parts['where'] instanceOf \Nip_DB_Query_Condition) {
                 $this->_parts['where'] = $this->_parts['where']->or_($this->getCondition($string, $values));
             } else {
                 $this->_parts['where'] = $this->getCondition($string, $values);
@@ -121,7 +186,7 @@ abstract class Nip_DB_Query_Abstract
     public function having($string, $values = array())
     {
         if ($string) {
-            if ($this->_parts['having'] instanceOf Nip_DB_Query_Condition) {
+            if ($this->_parts['having'] instanceOf \Nip_DB_Query_Condition) {
                 $this->_parts['having'] = $this->_parts['having']->and_($this->getCondition($string, $values));
             } else {
                 $this->_parts['having'] = $this->getCondition($string, $values);
@@ -134,13 +199,13 @@ abstract class Nip_DB_Query_Abstract
     /**
      * @param string $string
      * @param array $values
-     * @return Nip_DB_Query_Condition
+     * @return \Nip_DB_Query_Condition
      */
     public function getCondition($string, $values = array())
     {
         if (!is_object($string)) {
             $string = is_array($string) ? $this->parseCondition($string) : $string;
-            $condition = new Nip_DB_Query_Condition($string, $values);
+            $condition = new \Nip_DB_Query_Condition($string, $values);
             $condition->setQuery($this);
         } else {
             $condition = $string;
@@ -160,7 +225,7 @@ abstract class Nip_DB_Query_Abstract
     }
 
     /**
-     * @return Nip_DB_Result
+     * @return \Nip_DB_Result
      */
     public function execute()
     {

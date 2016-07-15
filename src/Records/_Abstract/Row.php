@@ -12,9 +12,15 @@ abstract class Row extends \Nip_Object
     protected $_dbData = array();
     protected $_helpers = array();
 
+
+    /**
+     * The loaded relationships for the model.
+     * @var array
+     */
+    protected $relations = [];
+
     public function __construct()
     {
-
     }
 
 
@@ -27,6 +33,18 @@ abstract class Row extends \Nip_Object
      */
     public function __call($name, $arguments)
     {
+
+        if (substr($name, 0, 3) == "get") {
+            $relation = $this->getRelation(substr($name, 3), $arguments[0]);
+            if ($relation) {
+                return $relation;
+            }
+
+            if ($related) {
+                return $this->__getRecords($relationName, $arguments[0]);
+            }
+        }
+
         if ($name === ucfirst($name)) {
             $class = 'Nip_Helper_' . $name;
 
@@ -173,5 +191,73 @@ abstract class Row extends \Nip_Object
     public function inflectManagerName()
     {
         return ucfirst(inflector()->pluralize(get_class($this)));
+    }
+
+    public function getRelation($relationName, $populate = true)
+    {
+        if (!$this->hasRelation($relationName)) {
+            $this->initRelation($relationName, $populate);
+        }
+        return $this->relations[$relationName];
+    }
+
+    public function hasRelation($key)
+    {
+        return array_key_exists($key, $this->relations);
+    }
+
+    public function initRelation($relationName, $populate = true)
+    {
+        if (!$this->getManager()->hasRelation($relationName)) {
+            return;
+        }
+        $this->relations[$relationName] = $this->newRelation($relationName);
+
+        if ($populate === true) {
+            $this->relations[$relationName]->populate();
+        }
+    }
+
+    public function newRelation($relationName)
+    {
+        $relation = clone $this->getManager()->getRelation($relationName);
+        $relation->setWith();
+        return $relation;
+    }
+
+    protected function __getRecords($name, $populate)
+    {
+
+        $pk = $this->getManager()->getPrimaryKey();
+        if (!$this->$pk) {
+            $populate = false;
+        }
+
+        list($type, $params) = $this->getManager()->hasRelation($name);
+        if ($type == 'belongsTo') {
+            $populate = false;
+        }
+
+        if (!isset($this->_associated[$name])) {
+            if ($type == 'belongsTo') {
+                $manager = call_user_func(array($params['class'], "instance"));
+                $this->setAssociated($name, $manager->findOne($this->$params['fk']));
+            } else {
+                $collectionClass = $params['associatedClass'] ? $params['associatedClass'] : $this->getManager()->getAssociatedClass($type,
+                    $name);
+                $collection = new $collectionClass();
+
+                $collection->setParams($params);
+                $collection->setItem($this);
+
+                $this->setAssociated($name, $collection);
+            }
+        }
+
+        if ($populate) {
+            $this->_associated[$name]->populate();
+        }
+
+        return $this->_associated[$name];
     }
 }
