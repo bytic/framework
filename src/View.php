@@ -61,7 +61,7 @@ class Nip_View
     public function getHelper($name)
     {
         if (!isset($this->_helpers[$name])) {
-            $this->_helpers[$name] = $this->initHelper($name);
+            $this->initHelper($name);
         }
 
         return $this->_helpers[$name];
@@ -113,9 +113,8 @@ class Nip_View
     {
         $html = $this->getContents($view, $variables);
 
-        if ($return === true) {
+        if ($return === true)
             return $html;
-        }
 
         echo $html;
         return true;
