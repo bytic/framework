@@ -6,6 +6,7 @@ use Nip\Records\_Abstract\Table;
 use Nip_DB_Query_Select as Query;
 use Nip_Record as Record;
 use Nip_Records as Records;
+use Nip_RecordCollection as RecordCollection;
 
 abstract class Relation
 {
@@ -269,6 +270,14 @@ abstract class Relation
     }
 
     /**
+     * @return string
+     */
+    public function getWithPK()
+    {
+        return $this->getWith()->getPrimaryKey();
+    }
+
+    /**
      * Get the results of the relationship.
      * @return Record|Records
      */
@@ -293,4 +302,60 @@ abstract class Relation
     }
 
     abstract public function initResults();
+
+    public function getEagerResults($collection)
+    {
+        $query = $this->getEagerQuery($collection);
+        return $this->getWith()->findByQuery($query);
+    }
+
+    /**
+     * @param RecordCollection $collection
+     * @return \Nip_DB_Query_Select
+     */
+    public function getEagerQuery(RecordCollection $collection)
+    {
+        $fkList = $this->getEagerFkList($collection);
+        $query = clone $this->getQuery();
+        $query->where($this->getWithPK().' IN ?',$fkList);
+        return $query;
+    }
+
+    /**
+     * @param RecordCollection $collection
+     * @return array
+     */
+    public function getEagerFkList(RecordCollection $collection)
+    {
+        return \Nip_Helper_Array::instance()->pluck($collection, $this->getFK());
+    }
+
+
+    /**
+     * @param RecordCollection $collection
+     * @param RecordCollection $records
+     *
+     * @return array
+     */
+    public function match(RecordCollection $collection, RecordCollection $records)
+    {
+        $dictionary = $this->buildDictionary($records);
+
+        foreach ($collection as $record) {
+            /** @var Record $record */
+            $results = $this->getResultsFromCollectionDictionary($dictionary, $collection, $record);
+            $record->getRelation($this->getName())->setResults($results);
+        }
+        return $records;
+    }
+
+    abstract function getResultsFromCollectionDictionary($dictionary, $collection, $record);
+
+    /**
+     * Build model dictionary keyed by the relation's foreign key.
+     *
+     * @param RecordCollection $collection
+     * @return array
+     */
+    abstract protected function buildDictionary(RecordCollection $collection);
 }

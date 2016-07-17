@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * Class Nip_View
+ *
+ * @method \Nip_Helper_View_StyleSheets StyleSheets()
+ *
+ */
 class Nip_View
 {
     protected $_request = null;
@@ -117,7 +123,7 @@ class Nip_View
             return $html;
 
         echo $html;
-        return true;
+        return;
     }
 
     public function getContents($view, $variables = array())
@@ -177,7 +183,7 @@ class Nip_View
             return $this->_basePath . ltrim($view, "/") . '.php';
         } else {
             $backtrace = debug_backtrace();
-            $caller = $backtrace[2]['file'];
+            $caller = $backtrace[3]['file'];
 
             return dirname($caller) . "/" . $view . ".php";
         }

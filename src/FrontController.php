@@ -52,7 +52,7 @@ class FrontController
         $this->_staging = $staging;
     }
 
-    public function dispatch($request)
+    public function dispatch(Request $request = null)
     {
         $this->getDispatcher()->dispatch($request);
     }
@@ -80,18 +80,26 @@ class FrontController
     }
 
     /**
-     * @return Nip_Dispatcher
+     * @return Dispatcher
      */
     public function getDispatcher()
     {
         if (!$this->_dispatcher) {
-            $this->_dispatcher = $this->initDispatcher();
+            $this->initDispatcher();
         }
 
         return $this->_dispatcher;
     }
 
     public function initDispatcher()
+    {
+        $this->_dispatcher = $this->newDispatcher();
+    }
+
+    /**
+     * @return Dispatcher
+     */
+    public function newDispatcher()
     {
         $dispatcher = Dispatcher::instance();
         $dispatcher->setFrontController($this);

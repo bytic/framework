@@ -2,6 +2,8 @@
 
 namespace Nip\Records\Relations;
 
+use Nip_RecordCollection as RecordCollection;
+
 abstract class HasOneOrMany extends Relation
 {
 
@@ -48,11 +50,42 @@ abstract class HasOneOrMany extends Relation
     {
         $class = $this->getCollectionClass();
         $collection = new $class();
+        /** @var RecordCollection $collection */
+        $collection->setManager($this->getWith());
         return $collection;
     }
 
     public function getCollectionClass()
     {
-        return 'Nip_RecordCollection_Associated';
+        return 'Nip_RecordCollection';
+    }
+
+    function getResultsFromCollectionDictionary($dictionary, $collection, $record)
+    {
+        $pk = $record->{$this->getFK()};
+        $collection = $this->newCollection();
+        if ($dictionary[$pk]) {
+            foreach ($dictionary[$pk] as $record) {
+                $collection->add($record);
+            }
+        }
+
+        return $collection;
+    }
+
+    /**
+     * Build model dictionary keyed by the relation's foreign key.
+     *
+     * @param RecordCollection $collection
+     * @return array
+     */
+    protected function buildDictionary(RecordCollection $collection)
+    {
+        $dictionary = [];
+        $pk = $this->getFK();
+        foreach ($collection as $record) {
+            $dictionary[$record->{$pk}][] = $record;
+        }
+        return $dictionary;
     }
 }

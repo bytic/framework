@@ -12,6 +12,32 @@ class Nip_RecordCollection extends Nip_Collection
      */
     protected $_manager = null;
 
+
+
+    public function loadRelations($relations)
+    {
+        if (is_string($relations)) {
+            $relations = func_get_args();
+        }
+
+        foreach ($relations as $relation) {
+            $this->loadRelation($relation);
+        }
+    }
+
+    public function loadRelation($name)
+    {
+        $relation = $this->getRelation($name);
+        $results = $relation->getEagerResults($this);
+        $relation->match($this, $results, $name);
+        return $results;
+    }
+
+    public function getRelation($name)
+    {
+        return $this->getManager()->getRelation($name);
+    }
+
 //	protected function _getRecords($class, $populate)
 //	{
 //		if (is_null($populate)) {
