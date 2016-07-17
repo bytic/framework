@@ -21,20 +21,17 @@ class Nip_View
         } else {
             trigger_error("Call to undefined method $name", E_USER_ERROR);
         }
+        return null;
     }
 
     public function __set($name, $value)
     {
-        $this->_data[$name] = $value;
+        return $this->set($name, $value);
     }
 
     public function &__get($name)
     {
-        if (isset($this->_data[$name])) {
-            return $this->_data[$name];
-        } else {
-            return null;
-        }
+        return $this->get($name);
     }
 
     public function __isset($name)
@@ -45,6 +42,20 @@ class Nip_View
     public function __unset($name)
     {
         unset($this->_data[$name]);
+    }
+
+    public function set($name, $value)
+    {
+        $this->_data[$name] = $value;
+    }
+
+    public function get($name)
+    {
+        if (isset($this->_data[$name])) {
+            return $this->_data[$name];
+        } else {
+            return null;
+        }
     }
 
     public function getHelper($name)
@@ -64,8 +75,14 @@ class Nip_View
 
     public function initHelper($name)
     {
+        $this->_helpers[$name] = $this->newHelper($name);
+    }
+
+    public function newHelper($name)
+    {
         $class = $this->getHelperClass($name);
         $helper = new $class();
+        /** @var Nip_Helper_View_Abstract $helper */
         $helper->setView($this);
         return $helper;
     }
@@ -94,21 +111,28 @@ class Nip_View
 
     public function load($view, $variables = array(), $return = false)
     {
+        $html = $this->getContents($view, $variables);
+
+        if ($return === true) {
+            return $html;
+        }
+
+        echo $html;
+        return true;
+    }
+
+    public function getContents($view, $variables = array())
+    {
         extract($variables);
 
         $path = $this->buildPath($view);
 
-        if ($return === true) {
-            ob_start();
-            include($path);
-            $html = ob_get_contents();
-            ob_end_clean();
-
-            return $html;
-        } else {
-            unset($view, $variables, $return);
-            include($path);
-        }
+        unset($view, $variables);
+        ob_start();
+        include($path);
+        $html = ob_get_contents();
+        ob_end_clean();
+        return $html;
     }
 
     public function existPath($view)
@@ -129,14 +153,16 @@ class Nip_View
      * Assigns variables in bulk in the current scope
      *
      * @param array $array
+     * @return $this
      */
-    public function assign($input = array())
+    public function assign($array = array())
     {
-        foreach ($input as $key => $value) {
+        foreach ($array as $key => $value) {
             if (is_string($key)) {
-                $this->$key = $value;
+                $this->set($key, $value);
             }
         }
+        return $this;
     }
 
     /**
