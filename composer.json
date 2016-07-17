@@ -17,8 +17,12 @@
       "src/functions/flash.php"
     ]
   },
+  "require": {
+    "maximebf/debugbar": "1.*",
+    "monolog/monolog": "1.20.*"
+  },
   "require-dev": {
     "codeception/codeception": "2.2.*",
-    "codeception/mockery-module": "*"
+    "codeception/mockery-module": "0.2.*"
   }
 }

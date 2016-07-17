@@ -2,6 +2,7 @@
 
 namespace Nip;
 
+use Nip\DebugBar\StandardDebugBar;
 use Nip\Staging\Stage;
 
 class Bootstrap
@@ -11,6 +12,8 @@ class Bootstrap
     protected $_frontController = null;
 
     protected $_staging;
+
+    protected $_debugBar = null;
 
     /**
      * @var Stage
@@ -103,20 +106,13 @@ class Bootstrap
     {
         fix_input_quotes();
 
+        $logger = new Logger\Manager();
+        $logger->setBootstrap($this);
+        $logger->init();
+
         if ($this->getStage()->inTesting()) {
-            ini_set('html_errors', 1);
-            ini_set('display_errors', 1);
-            error_reporting(E_ALL ^ E_NOTICE);
-        } else {
-            ini_set('display_errors', 0);
-            error_reporting(0);
+            $this->getDebugBar()->enable();
         }
-
-        $logger = new \Nip\Logger\Manager();
-        $adapter = new \Nip\Logger\Adapter\Console();
-        $logger->setAdapter($adapter);
-
-        set_error_handler(array($logger, "errorHandler"), E_ALL ^ E_NOTICE);
     }
 
     protected function determineBaseURL()
@@ -256,6 +252,7 @@ class Bootstrap
 
     public function postDispatch()
     {
+
     }
 
     public function preRouting()
@@ -271,5 +268,43 @@ class Bootstrap
         $this->determineBaseURL();
         define('CURRENT_URL', $this->getFrontController()->getRequest()->getHttp()->getURI());
     }
+
+    /**
+     * @return StandardDebugBar
+     */
+    public function getDebugBar()
+    {
+        if ($this->_debugBar == null) {
+            $this->initDebugBar();
+        }
+
+        return $this->_debugBar;
+    }
+
+    /**
+     * @return null
+     */
+    public function initDebugBar()
+    {
+        $this->setDebugBar($this->newDebugBar());
+    }
+
+    /**
+     * @return null
+     */
+    public function newDebugBar()
+    {
+        $debugBar = new StandardDebugBar();
+        return $debugBar;
+    }
+
+    /**
+     * @param null $debugBar
+     */
+    public function setDebugBar($debugBar)
+    {
+        $this->_debugBar = $debugBar;
+    }
+
 
 }

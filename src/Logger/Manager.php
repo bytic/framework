@@ -2,89 +2,363 @@
 
 namespace Nip\Logger;
 
-class Manager
+use ErrorException;
+use Monolog\Logger as MonologLogger;
+use Nip\Bootstrap;
+use Psr\Log\LoggerInterface as PsrLoggerInterface;
+
+class Manager implements PsrLoggerInterface
 {
-	const EVENT_ERROR = 'error';
-	const EVENT_WARNING = 'warning';
-	const EVENT_NOTICE = 'notice';
-	const EVENT_INFO = 'info';
+    /**
+     * container for the Monolog instance
+     * @var \Monolog\Logger
+     */
+    protected $monolog = null;
 
-	protected $_adapter;
-	protected $_eventTypes = array(self::EVENT_ERROR, self::EVENT_WARNING, self::EVENT_NOTICE, self::EVENT_INFO);
+    /**
+     * @var Bootstrap
+     */
+    protected $bootstrap;
 
-	public function error($data)
-	{
-		$this->logEvent(self::EVENT_ERROR, $data);
-	}
+    /**
+     * The Log levels.
+     *
+     * @var array
+     */
 
-	public function info($data)
-	{
-		$this->logEvent(self::EVENT_INFO, $data);
-	}
+    const EMERGENCY = MonologLogger::EMERGENCY;
+    const ALERT = MonologLogger::ALERT;
+    const CRITICAL = MonologLogger::CRITICAL;
+    const ERROR = MonologLogger::ERROR;
+    const WARNING = MonologLogger::WARNING;
+    const NOTICE = MonologLogger::NOTICE;
+    const INFO = MonologLogger::INFO;
+    const DEBUG = MonologLogger::DEBUG;
 
-	public function logEvent($type = self::EVENT_INFO, $data = null)
-	{
-		$event = Event::getNew($type);
-		$event->setData($data);
-		$event->setBacktrace(debug_backtrace());
+    /**
+     * Map native PHP errors to level
+     *
+     * @var array
+     */
+    public static $errorLevelMap = [
+        E_NOTICE => self::NOTICE,
+        E_USER_NOTICE => self::NOTICE,
+        E_WARNING => self::WARNING,
+        E_CORE_WARNING => self::WARNING,
+        E_USER_WARNING => self::WARNING,
+        E_ERROR => self::WARNING,
+        E_USER_ERROR => self::ERROR,
+        E_CORE_ERROR => self::ERROR,
+        E_RECOVERABLE_ERROR => self::ERROR,
+        E_PARSE => self::ERROR,
+        E_COMPILE_ERROR => self::ERROR,
+        E_COMPILE_WARNING => self::ERROR,
+        E_STRICT => self::DEBUG,
+        E_DEPRECATED => self::DEBUG,
+        E_USER_DEPRECATED => self::DEBUG,
+    ];
 
-		$this->getAdapter()->addEvent($event);
-	}
 
-	public function errorHandler($code, $string, $file, $line)
-	{
-		if (error_reporting() == 0) {
-			return;
-		}
+    /**
+     * Registered error handler
+     *
+     * @var bool
+     */
+    protected static $registeredErrorHandler = false;
 
-		$string .= " in $file on $line";
-		switch ($code) {
-			case E_WARNING:
-			case E_USER_WARNING:
-				$this->error($string);
-				break;
+    /**
+     * Registered exception handler
+     *
+     * @var bool
+     */
+    protected static $registeredExceptionHandler = false;
 
-			case E_NOTICE:
-			case E_USER_NOTICE:
-				$this->info($string);
-				break;
+    public function init()
+    {
+        if ($this->getBootstrap()->getStage()->inTesting()) {
+            ini_set('html_errors', 1);
+            ini_set('display_errors', 1);
+            error_reporting(E_ALL ^ E_NOTICE);
+        } else {
+            ini_set('display_errors', 0);
+            error_reporting(0);
+        }
 
-			case E_ERROR:
-			case E_USER_ERROR:
-				restore_error_handler();
-				trigger_error($string, E_USER_ERROR);
-				break;
-			default:
-				$this->error($string);
-				break;
-		}
-	}
+        self::registerErrorHandler($this);
+        self::registerExceptionHandler($this);
+    }
 
-	public function output()
-	{
-		return $this->getAdapter()->output($this->_events);
-	}
+    /**
+     * System is unusable.
+     *
+     * @param string $message
+     * @param array $context
+     * @return null
+     */
+    public function emergency($message, array $context = array())
+    {
+        return $this->log(self::EMERGENCY, $message, $context);
+    }
 
-	public function addEventType($type)
-	{
-		if (!in_array($type, $this->getEventTypes())) {
-			$this->_eventTypes[] = $type;
-		}
-	}
+    /**
+     * Action must be taken immediately.
+     *
+     * Example: Entire website down, database unavailable, etc. This should
+     * trigger the SMS alerts and wake you up.
+     *
+     * @param string $message
+     * @param array $context
+     * @return null
+     */
+    public function alert($message, array $context = array())
+    {
+        return $this->log(self::ALERT, $message, $context);
+    }
 
-	public function getEventTypes()
-	{
-		return $this->_eventTypes;
-	}
+    /**
+     * Critical conditions.
+     *
+     * Example: Application component unavailable, unexpected exception.
+     *
+     * @param string $message
+     * @param array $context
+     * @return null
+     */
+    public function critical($message, array $context = array())
+    {
+        return $this->log(self::CRITICAL, $message, $context);
+    }
 
-	public function setAdapter(\Nip\Logger\Adapter\AdapterAbstract $adapter)
-	{
-		$this->_adapter = $adapter;
-	}
+    /**
+     * Runtime errors that do not require immediate action but should typically
+     * be logged and monitored.
+     *
+     * @param string $message
+     * @param array $context
+     * @return null
+     */
+    public function error($message, array $context = array())
+    {
+        return $this->log(self::ERROR, $message, $context);
+    }
 
-	public function getAdapter()
-	{
-		return $this->_adapter;
-	}
-    
+    /**
+     * Exceptional occurrences that are not errors.
+     *
+     * Example: Use of deprecated APIs, poor use of an API, undesirable things
+     * that are not necessarily wrong.
+     *
+     * @param string $message
+     * @param array $context
+     * @return null
+     */
+    public function warning($message, array $context = array())
+    {
+        return $this->log(self::WARNING, $message, $context);
+    }
+
+    /**
+     * Normal but significant events.
+     *
+     * @param string $message
+     * @param array $context
+     * @return null
+     */
+    public function notice($message, array $context = array())
+    {
+        return $this->log(self::NOTICE, $message, $context);
+    }
+
+    /**
+     * Interesting events.
+     *
+     * Example: User logs in, SQL logs.
+     *
+     * @param string $message
+     * @param array $context
+     * @return null
+     */
+    public function info($message, array $context = array())
+    {
+        return $this->log(self::INFO, $message, $context);
+    }
+
+    /**
+     * Detailed debug information.
+     *
+     * @param string $message
+     * @param array $context
+     * @return null
+     */
+    public function debug($message, array $context = array())
+    {
+        return $this->log(self::DEBUG, $message, $context);
+    }
+
+    public function log($level, $message, array $context = array())
+    {
+        return $this->writeLog($level, $message, $context);
+    }
+
+    /**
+     * Write a message to Monolog.
+     *
+     * @param  string $level
+     * @param  string $message
+     * @param  array $context
+     * @return void
+     */
+    protected function writeLog($level, $message, $context)
+    {
+        $this->getMonolog()->addRecord($level, $message, $context);
+    }
+
+    /**
+     * Register logging system as an error handler to log PHP errors
+     * Based on Zend Logger
+     *
+     * @param Manager $logger
+     * @param bool $continueNativeHandler
+     * @return mixed  Returns result of set_error_handler
+     * @throws Exception if logger is null
+     */
+    public static function registerErrorHandler(Manager $logger, $continueNativeHandler = false)
+    {
+        // Only register once per instance
+        if (static::$registeredErrorHandler) {
+            return false;
+        }
+        if ($logger === null) {
+            throw new Exception('Invalid Logger specified');
+        }
+        $errorLevelMap = static::$errorLevelMap;
+
+        $previous = set_error_handler(function ($level, $message, $file, $line) use ($logger, $errorLevelMap, $continueNativeHandler) {
+            $iniLevel = error_reporting();
+            if ($iniLevel & $level) {
+                if (isset($errorLevelMap[$level])) {
+                    $level = $errorLevelMap[$level];
+                } else {
+                    $level = Manager::INFO;
+                }
+                $logger->log($level, $message, [
+                    'errno' => $level,
+                    'file' => $file,
+                    'line' => $line,
+                ]);
+            }
+            return !$continueNativeHandler;
+        });
+        static::$registeredErrorHandler = true;
+        return $previous;
+    }
+
+    /**
+     * Unregister error handler
+     *
+     */
+    public static function unregisterErrorHandler()
+    {
+        restore_error_handler();
+        static::$registeredErrorHandler = false;
+    }
+
+    /**
+     * Register logging system as an exception handler to log PHP exceptions
+     * Based on Zend Logger
+     *
+     * @param Manager $logger
+     * @return bool
+     * @throws Exception if logger is null
+     */
+    public static function registerExceptionHandler(Manager $logger)
+    {
+        // Only register once per instance
+        if (static::$registeredExceptionHandler) {
+            return false;
+        }
+        if ($logger === null) {
+            throw new Exception('Invalid Logger specified');
+        }
+        $errorLevelMap = static::$errorLevelMap;
+        set_exception_handler(function ($exception) use ($logger, $errorLevelMap) {
+            $logMessages = [];
+            do {
+                $level = Manager::ERROR;
+                if ($exception instanceof ErrorException && isset($errorLevelMap[$exception->getSeverity()])) {
+                    $level = $errorLevelMap[$exception->getSeverity()];
+                }
+                $extra = [
+                    'file' => $exception->getFile(),
+                    'line' => $exception->getLine(),
+                    'trace' => $exception->getTrace(),
+                ];
+                if (isset($exception->xdebug_message)) {
+                    $extra['xdebug'] = $exception->xdebug_message;
+                }
+                $logMessages[] = [
+                    'level' => $level,
+                    'message' => $exception->getMessage(),
+                    'extra' => $extra,
+                ];
+                $exception = $exception->getPrevious();
+            } while ($exception);
+
+            foreach (array_reverse($logMessages) as $logMessage) {
+                $logger->log($logMessage['level'], $logMessage['message'], $logMessage['extra']);
+            }
+        });
+        static::$registeredExceptionHandler = true;
+        return true;
+    }
+
+    /**
+     * Unregister exception handler
+     */
+    public static function unregisterExceptionHandler()
+    {
+        restore_exception_handler();
+        static::$registeredExceptionHandler = false;
+    }
+
+    /**
+     * @return MonologLogger
+     */
+    public function getMonolog()
+    {
+        if ($this->monolog == null) {
+            $this->initMonolog();
+        }
+        return $this->monolog;
+    }
+
+    public function initMonolog()
+    {
+        $monolog = new MonologLogger('Nip');
+        $this->setMonolog($monolog);
+    }
+
+    /**
+     * @param MonologLogger $monolog
+     */
+    public function setMonolog($monolog)
+    {
+        $this->monolog = $monolog;
+    }
+
+    /**
+     * @return Bootstrap
+     */
+    public function getBootstrap()
+    {
+        return $this->bootstrap;
+    }
+
+    /**
+     * @param Bootstrap $bootstrap
+     */
+    public function setBootstrap($bootstrap)
+    {
+        $this->bootstrap = $bootstrap;
+    }
 }

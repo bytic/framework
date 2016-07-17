@@ -1,4 +1,8 @@
 <?php
-class Logger_Exception extends Exception {
-    
+
+namespace Nip\Logger;
+
+class Exception extends \Exception
+{
+
 }
