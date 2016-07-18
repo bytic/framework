@@ -170,7 +170,7 @@ class AutoLoader
     /**
      * Singleton
      *
-     * @return Nip_AutoLoader
+     * @return self
      */
     static public function instance()
     {

@@ -3,6 +3,7 @@
 namespace Nip;
 
 use Nip\DebugBar\StandardDebugBar;
+use Nip\Logger\Manager;
 use Nip\Staging\Stage;
 
 class Bootstrap
@@ -12,6 +13,13 @@ class Bootstrap
     protected $_frontController = null;
 
     protected $_staging;
+
+    /**
+     * @var null|Manager
+     */
+    protected $_logger = null;
+
+    protected $_sessionManager = null;
 
     protected $_debugBar = null;
 
@@ -106,12 +114,13 @@ class Bootstrap
     {
         fix_input_quotes();
 
-        $logger = new Logger\Manager();
-        $logger->setBootstrap($this);
-        $logger->init();
+        $this->_logger = new Logger\Manager();
+        $this->_logger->setBootstrap($this);
+        $this->_logger->init();
 
         if ($this->getStage()->inTesting()) {
             $this->getDebugBar()->enable();
+            $this->getDebugBar()->addMonolog($this->_logger->getMonolog());
         }
     }
 
@@ -202,14 +211,17 @@ class Bootstrap
 
     public function setupRouting()
     {
-        $router = $this->initRouter();
+        $router = $this->newRouter();
         $router->setRequest($this->getFrontController()->getRequest());
         $this->getFrontController()->setRouter($router);
     }
 
-    public function initRouter()
+    /**
+     * @return \Nip_Router
+     */
+    public function newRouter()
     {
-        return new Nip_Router();
+        return new \Nip_Router();
     }
 
     protected function getFrontController()
@@ -222,7 +234,6 @@ class Bootstrap
 
     protected function initFrontController()
     {
-
         $fc = FrontController::instance();
         $fc->setBootstrap($this);
         return $fc;
@@ -241,8 +252,8 @@ class Bootstrap
             $this->getFrontController()->dispatch();
             ob_end_flush();
             $this->postDispatch();
-        } catch (\Nip_PHPException $e) {
-            $e->log();
+        } catch (\Exception $e) {
+            $this->_logger->handleException($e);
         }
     }
 
@@ -266,7 +277,7 @@ class Bootstrap
     public function setupURLConstants()
     {
         $this->determineBaseURL();
-        define('CURRENT_URL', $this->getFrontController()->getRequest()->getHttp()->getURI());
+        define('CURRENT_URL', $this->getFrontController()->getRequest()->getHttp()->getUri());
     }
 
     /**

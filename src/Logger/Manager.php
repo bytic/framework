@@ -78,7 +78,7 @@ class Manager implements PsrLoggerInterface
         if ($this->getBootstrap()->getStage()->inTesting()) {
             ini_set('html_errors', 1);
             ini_set('display_errors', 1);
-            error_reporting(E_ALL ^ E_NOTICE);
+            error_reporting(E_ALL);
         } else {
             ini_set('display_errors', 0);
             error_reporting(0);
@@ -218,11 +218,10 @@ class Manager implements PsrLoggerInterface
      * Based on Zend Logger
      *
      * @param Manager $logger
-     * @param bool $continueNativeHandler
      * @return mixed  Returns result of set_error_handler
      * @throws Exception if logger is null
      */
-    public static function registerErrorHandler(Manager $logger, $continueNativeHandler = false)
+    public static function registerErrorHandler(Manager $logger)
     {
         // Only register once per instance
         if (static::$registeredErrorHandler) {
@@ -231,26 +230,41 @@ class Manager implements PsrLoggerInterface
         if ($logger === null) {
             throw new Exception('Invalid Logger specified');
         }
-        $errorLevelMap = static::$errorLevelMap;
 
-        $previous = set_error_handler(function ($level, $message, $file, $line) use ($logger, $errorLevelMap, $continueNativeHandler) {
-            $iniLevel = error_reporting();
-            if ($iniLevel & $level) {
-                if (isset($errorLevelMap[$level])) {
-                    $level = $errorLevelMap[$level];
-                } else {
-                    $level = Manager::INFO;
-                }
-                $logger->log($level, $message, [
-                    'errno' => $level,
-                    'file' => $file,
-                    'line' => $line,
-                ]);
-            }
-            return !$continueNativeHandler;
-        });
+
+        $previous = set_error_handler([$logger, 'handleError']);
         static::$registeredErrorHandler = true;
         return $previous;
+    }
+
+    /**
+     * @param $level
+     * @param $message
+     * @param $file
+     * @param $line
+     * @return bool
+     */
+    public function handleError($level, $message, $file, $line)
+    {
+        $iniLevel = error_reporting();
+        $errorLevelMap = static::$errorLevelMap;
+
+        if ($iniLevel & $level) {
+            if (isset($errorLevelMap[$level])) {
+                $level = $errorLevelMap[$level];
+            } else {
+                $level = Manager::INFO;
+            }
+            $trace = debug_backtrace();
+
+            $this->log($level, $message, [
+                'errno' => $level,
+                'file' => $file,
+                'line' => $line,
+                'trace' => $trace,
+            ]);
+        }
+        return true;
     }
 
     /**
@@ -280,36 +294,44 @@ class Manager implements PsrLoggerInterface
         if ($logger === null) {
             throw new Exception('Invalid Logger specified');
         }
-        $errorLevelMap = static::$errorLevelMap;
-        set_exception_handler(function ($exception) use ($logger, $errorLevelMap) {
-            $logMessages = [];
-            do {
-                $level = Manager::ERROR;
-                if ($exception instanceof ErrorException && isset($errorLevelMap[$exception->getSeverity()])) {
-                    $level = $errorLevelMap[$exception->getSeverity()];
-                }
-                $extra = [
-                    'file' => $exception->getFile(),
-                    'line' => $exception->getLine(),
-                    'trace' => $exception->getTrace(),
-                ];
-                if (isset($exception->xdebug_message)) {
-                    $extra['xdebug'] = $exception->xdebug_message;
-                }
-                $logMessages[] = [
-                    'level' => $level,
-                    'message' => $exception->getMessage(),
-                    'extra' => $extra,
-                ];
-                $exception = $exception->getPrevious();
-            } while ($exception);
+        set_exception_handler([$logger, 'handleException']);
 
-            foreach (array_reverse($logMessages) as $logMessage) {
-                $logger->log($logMessage['level'], $logMessage['message'], $logMessage['extra']);
-            }
-        });
         static::$registeredExceptionHandler = true;
         return true;
+    }
+
+    /**
+     * @private
+     * @param \Exception $e
+     */
+    public function handleException(\Exception $e)
+    {
+        $errorLevelMap = static::$errorLevelMap;
+        $logMessages = [];
+        do {
+            $level = Manager::ERROR;
+            if ($e instanceof ErrorException && isset($errorLevelMap[$e->getSeverity()])) {
+                $level = $errorLevelMap[$e->getSeverity()];
+            }
+            $extra = [
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+                'trace' => $e->getTrace(),
+            ];
+            if (isset($e->xdebug_message)) {
+                $extra['xdebug'] = $e->xdebug_message;
+            }
+            $logMessages[] = [
+                'level' => $level,
+                'message' => $e->getMessage(),
+                'extra' => $extra,
+            ];
+            $e = $e->getPrevious();
+        } while ($e);
+
+        foreach (array_reverse($logMessages) as $logMessage) {
+            $this->log($logMessage['level'], $logMessage['message'], $logMessage['extra']);
+        }
     }
 
     /**
