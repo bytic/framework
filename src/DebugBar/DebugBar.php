@@ -5,7 +5,7 @@ namespace Nip\DebugBar;
 use DebugBar\DebugBar as DebugBarGeneric;
 use DebugBar\Bridge\MonologCollector;
 
-use Monolog\Formatter\HtmlFormatter;
+use Nip\DebugBar\Formatter\MonologFormatter;
 use Monolog\Logger as MonologLogger;
 
 abstract class DebugBar extends DebugBarGeneric
@@ -73,7 +73,7 @@ abstract class DebugBar extends DebugBarGeneric
     public function addMonolog(MonologLogger $monolog)
     {
         $colector = new MonologCollector($monolog);
-        $colector->setFormatter(new HtmlFormatter());
+        $colector->setFormatter(new MonologFormatter());
         $this->addCollector($colector);
     }
 
