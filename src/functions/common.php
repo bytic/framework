@@ -1,12 +1,14 @@
 <?php
 
+use Nip\Container\Container;
+
 if (!function_exists('app')) {
     /**
      * Get the available container instance.
      *
      * @param  string $make
      * @param  array $parameters
-     * @return mixed|\Illuminate\Foundation\Application
+     * @return mixed|Container
      */
     function app($make = null, $parameters = [])
     {
@@ -37,7 +39,7 @@ if (!function_exists("pr")) {
 /**
  * @param string $db_adapter
  * @param string $db_prefix
- * @return Nip_DB_Wrapper
+ * @return Nip\Database\Connection
  */
 function db()
 {

@@ -19,15 +19,17 @@ abstract class Nip_Form_Abstract
     protected $_options = array();
     protected $_displayGroups = array();
     
-    protected $_elements;
+    protected $_elements = array();
     protected $_elementsLabel;
-    protected $_elementsOrder;
+    protected $_elementsOrder = array();
     
     protected $_buttons;
     
     protected $_decorators = array();
     protected $_renderer;
-    protected $_messages = array();
+    protected $_messages = array(
+        'error' => array()
+    );
     protected $_messageTemplates = array();
     protected $_cache;
 
@@ -258,7 +260,7 @@ abstract class Nip_Form_Abstract
                     continue;
                 }
             }
-            if (is_array($params['attribs'])) {
+            if (isset($params['attribs']) && is_array($params['attribs'])) {
                 foreach ($params['attribs'] as $name => $value) {
                     if ($element->getAttrib($name) != $value) {
                         continue(2);
@@ -533,7 +535,7 @@ abstract class Nip_Form_Abstract
 
     public function getErrors()
     {
-        $errors = array_merge((array) $this->_messages['error'], $this->getElementsErrors());
+        $errors = array_merge((array) $this->getMessagesType('error'), $this->getElementsErrors());
         return $errors;
     }
 
@@ -541,6 +543,11 @@ abstract class Nip_Form_Abstract
     {
         $this->_messages['error'][] = $message;
         return $this;
+    }
+
+    public function getMessagesType($type = 'error')
+    {
+        return $this->_messages[$type];
     }
 
     public function addMessage($message, $type = 'error')

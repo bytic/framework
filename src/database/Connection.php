@@ -2,6 +2,8 @@
 
 namespace Nip\Database;
 
+use Nip\Database\Adapters\AbstractAdapter;
+
 class Connection
 {
 
@@ -21,7 +23,7 @@ class Connection
      * @param string $user
      * @param string $password
      * @param string $database
-     * @return Nip_DB_Wrapper
+     * @return self
      */
     public function connect($host, $user, $password, $database, $newLink = false)
     {
@@ -29,7 +31,7 @@ class Connection
             try {
                 $this->_connection = $this->getAdapter()->connect($host, $user, $password, $database, $newLink);
                 $this->setDatabase($database);
-            } catch (Nip_DB_Exception $e) {
+            } catch (\Nip_DB_Exception $e) {
                 $e->log();
             }
         }
@@ -37,7 +39,7 @@ class Connection
     }
 
     /**
-     * @return \Nip_DB_Adapters_Abstract
+     * @return AbstractAdapter
      */
     public function getAdapter()
     {
@@ -62,6 +64,10 @@ class Connection
         $this->setAdapterName('MySQLi');
     }
 
+    /**
+     * @param $name
+     * @return AbstractAdapter
+     */
     public function newAdapter($name)
     {
         $class = static::getAdapterClass($name);
@@ -92,7 +98,7 @@ class Connection
     public function getMetadata()
     {
         if (!$this->metadata) {
-            $this->metadata = new Nip_Db_Metadata();
+            $this->metadata = new \Nip_Db_Metadata();
             $this->metadata->setWrapper($this);
         }
         return $this->metadata;
@@ -115,7 +121,7 @@ class Connection
      */
     public function newQuery($type = "select")
     {
-        $className = 'Nip_DB_Query_' . inflector()->camelize($type);
+        $className = '\Nip_DB_Query_' . inflector()->camelize($type);
         $query = new $className;
         $query->setManager($this);
 
@@ -134,7 +140,7 @@ class Connection
 
         $query = (string)$query;
         $query = $this->getAdapter()->execute($query);
-        $result = new Nip_DB_Result($query, $this->getAdapter());
+        $result = new \Nip_DB_Result($query, $this->getAdapter());
 
         return $result;
     }
@@ -165,7 +171,7 @@ class Connection
         if ($this->_connection) {
             try {
                 $this->getAdapter()->disconnect();
-            } catch (Nip_DB_Exception $e) {
+            } catch (\Nip_DB_Exception $e) {
                 $e->log();
             }
         }
@@ -179,22 +185,6 @@ class Connection
     public function getQueries()
     {
         return $this->_queries;
-    }
-
-    /**
-     * Singleton
-     *
-     * @param string $adapter
-     * @param string $prefix
-     * @return self
-     */
-    static public function instance()
-    {
-        static $instance;
-        if (!($instance instanceof self)) {
-            $instance = new self();
-        }
-        return $instance;
     }
 
 }

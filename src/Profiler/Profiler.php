@@ -43,23 +43,50 @@ class Nip_Profiler
     }
 
 
-    public function start($profileID = false)
+    public function start($profileName = false)
     {
         if (!$this->checkEnabled()) {
             return;
         }
 
-        if ($profileID == false) {
-            $profilesCount = count($this->getProfiles(null, true));
-            $profileID = 'profile' . $profilesCount;
-        }
+        $profileID = $this->newProfileID($profileName);
 
-        $this->profiles[$profileID] = new Profile($profileID);
+        $profile = $this->newProfile($profileID);
+        $profile->setName($profileName);
+
+        $this->profiles[$profileID] = $profile;
         $this->addRunningProces($profileID);
+        return $profile;
+    }
+
+    public function newProfileID($name)
+    {
+        if ($name) {
+            return $name;
+        }
+        $profilesCount = count($this->getProfiles(null, true));
+        return 'profile' . $profilesCount;
+    }
+
+    public function newProfile($id)
+    {
+        return new Profile($id);
     }
 
 
     public function end($profileID = false)
+    {
+        $profileID = $this->endPreckeck($profileID);
+        if ($profileID) {
+            $profile = $this->endProfile($profileID);
+            if ($this->applyFilters($profile)) {
+                $this->outputWriters($profile);
+            }
+        }
+        return;
+    }
+
+    protected function endPreckeck($profileID)
     {
         if (!$this->checkEnabled()) {
             return;
@@ -68,13 +95,12 @@ class Nip_Profiler
         if ($profileID == false) {
             $profileID = $this->getLastRunningProces();
         }
+        return $profileID;
+    }
 
-        $profile = $this->endProfile($profileID);
-        if (is_object($profile)) {
-            $this->secondsFilter($profile);
-        }
-        $this->outputWriters($profile);
-        return;
+    protected function applyFilters($profile)
+    {
+        return $this->secondsFilter($profile);
     }
 
     public function outputWriters($profile)
@@ -86,13 +112,7 @@ class Nip_Profiler
 
     public function endProfile($profileID)
     {
-
         $profile = $this->getProfile($profileID);
-        // Ensure that the query profile has not already ended
-        if ($profile->hasEnded()) {
-            trigger_error("Profile with profiler handle '$profileID' has already ended.", E_USER_ERROR);
-        }
-
         $profile->end();
 
         $key = array_search($profileID, $this->runningProfiles);
@@ -125,10 +145,11 @@ class Nip_Profiler
 
     public function secondsFilter($profile)
     {
-        if (null !== $this->filterElapsedSecs && $profile->getElapsedSecs() < $this->filterElapsedSecs) {
+        if ($profile && null !== $this->filterElapsedSecs && $profile->getElapsedSecs() < $this->filterElapsedSecs) {
             $this->deleteProfile($profile);
-            return;
+            return false;
         }
+        return true;
     }
 
 
@@ -146,12 +167,15 @@ class Nip_Profiler
 
     public function getProfile($profileID)
     {
+        if (is_object($profileID)) {
+            return $profileID;
+        }
+
         if (!array_key_exists($profileID, $this->profiles)) {
             trigger_error("Profile handle '$profileID' not found in profiler log.", E_USER_ERROR);
         }
 
         $profile = $this->profiles[$profileID];
-        $profile->profileID = $profileID;
         return $profile;
     }
 

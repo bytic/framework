@@ -2,10 +2,17 @@
 
 namespace Nip\Container;
 
+use ArrayAccess;
 use Interop\Container\ContainerInterface;
 
 class Container implements ArrayAccess, ContainerInterface
 {
+    /**
+     * The current globally available container (if any).
+     *
+     * @var static
+     */
+    protected static $instance;
 
     /**
      * The container's bindings.
@@ -31,7 +38,7 @@ class Container implements ArrayAccess, ContainerInterface
     {
     }
 
-    public function add($alias, $concrete = null, $share = false)
+    public function set($alias, $concrete = null, $share = false)
     {
         $this->instances[$alias] = $concrete;
     }
@@ -45,6 +52,58 @@ class Container implements ArrayAccess, ContainerInterface
     public static function getInstance()
     {
         return static::$instance;
+    }
+
+    /**
+     * Set the shared instance of the container.
+     *
+     * @param  Container $container
+     * @return void
+     */
+    public static function setInstance(Container $container)
+    {
+        static::$instance = $container;
+    }
+
+    /**
+     * Determine if a given offset exists.
+     *
+     * @param  string $key
+     * @return bool
+     */
+    public function offsetExists($key)
+    {
+    }
+
+    /**
+     * Get the value at a given offset.
+     *
+     * @param  string $key
+     * @return mixed
+     */
+    public function offsetGet($key)
+    {
+    }
+
+    /**
+     * Set the value at a given offset.
+     *
+     * @param  string $key
+     * @param  mixed $value
+     * @return void
+     */
+    public function offsetSet($key, $value)
+    {
+    }
+
+    /**
+     * Unset the value at a given offset.
+     *
+     * @param  string $key
+     * @return void
+     */
+    public function offsetUnset($key)
+    {
     }
 
     /**

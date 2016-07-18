@@ -1,4 +1,4 @@
-<?
+<?php
 
 namespace Nip\Profiler\Adapters;
 

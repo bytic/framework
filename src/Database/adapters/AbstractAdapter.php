@@ -1,6 +1,7 @@
 <?php
 
-namespace \Nip\Database\Adapters;
+namespace Nip\Database\Adapters;
+
 use Nip\Database\Adapters\Profiler\Profiler;
 
 abstract class AbstractAdapter
@@ -20,25 +21,24 @@ abstract class AbstractAdapter
     public function execute($sql)
     {
         if ($this->_profiler) {
-            $queryProfileID = $this->_profiler->start($sql);
-            $this->_profiler->getProfile($queryProfileID)->setAdapter($this);
+            if ($profile = $this->_profiler->start()) {
+                $profile->setName($sql);
+                $profile->setAdapter($this);
+            }
         }
 
         $query = $this->query($sql);
 
-        if ($this->_profiler) {
-            $this->_profiler->end($queryProfileID);
+        if ($this->_profiler && $profile !== null) {
+            $this->_profiler->end($profile);
         }
 
         if ($query !== false) {
-            if ($this->_profiler) {
-                $this->_profiler->getProfile($queryProfileID)->importInfo($this);
-            }
-
             return $query;
         } else {
             trigger_error($this->error() . " [$sql]", E_USER_WARNING);
         }
+        return;
     }
 
     public function setProfiler($profiler)
@@ -53,5 +53,7 @@ abstract class AbstractAdapter
     }
 
     abstract public function cleanData($data);
+
+    abstract public function query($sql);
 
 }

@@ -63,10 +63,12 @@ class QueryCollector extends PDOCollector
 
         $this->queries[] = [
             'query' => $query,
-            'time' => $profile->getElapsedSecs(),
+            'time' => $profile->getTime(),
+            'row_count' => $profile->affectedRows,
+            'memory_str' => $profile->getMemory(),
             'source' => $source,
             'explain' => $explainResults,
-            'connection' => $connection->getDatabaseName()
+//            'connection' => $profile->getAdapter()->getDatabaseName()
         ];
 
         if ($this->timeCollector !== null) {
@@ -133,7 +135,9 @@ class QueryCollector extends PDOCollector
 
             $statements[] = [
                 'sql' => $this->formatSql($query['query']),
+                'row_count' => $query['row_count'],
                 'duration' => $query['time'],
+                'memory_str' => $query['memory_str'],
                 'duration_str' => $this->formatDuration($query['time']),
                 'stmt_id' => $query['source'],
                 'connection' => $query['connection'],

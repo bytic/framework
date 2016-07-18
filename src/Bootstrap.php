@@ -44,6 +44,7 @@ class Bootstrap
     public function prepare()
     {
         $this->includeVendorAutoload();
+        $this->setupContainer();
         $this->setupRequest();
         $this->setupStaging();
         $this->setupAutoloader();
@@ -98,6 +99,12 @@ class Bootstrap
         $this->setupAutoloaderPaths();
     }
 
+    public function setupContainer()
+    {
+        $container = new Container();
+        Container::setInstance($container);
+    }
+
     public function setupAutoloaderCache()
     {
     }
@@ -149,8 +156,19 @@ class Bootstrap
     public function setupDatabase()
     {
         $stageConfig = $this->getStage()->getConfig();
-        $connection = \Nip\Database\Connection::instance();
-        $connection->setAdapterName($stageConfig->DB->adapter);
+
+        $connection = new Database\Connection();
+
+        $adapter = $connection->newAdapter($stageConfig->DB->adapter);
+
+        if ($this->getDebugBar()->isEnabled()) {
+            $profiler = $adapter->newProfiler()->setEnabled(true);
+            $writer = $profiler->newWriter('DebugBar');
+            $writer->setCollector($this->getDebugBar()->getCollector('queries'));
+            $profiler->addWriter($writer);
+            $adapter->setProfiler($profiler);
+        }
+        $connection->setAdapter($adapter);
         $connection->connect(
             $stageConfig->DB->host,
             $stageConfig->DB->user,
