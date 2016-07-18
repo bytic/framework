@@ -1,33 +1,18 @@
 <?php
 
-class Nip_DB_Wrapper
+namespace Nip\Database;
+
+class Connection
 {
 
-    protected $_adapter;
+    protected $_adapter = null;
+
     protected $_connection;
     protected $_database;
     protected $metadata;
     protected $_query;
     protected $_queries = array();
 
-    /**
-     * Instantiates database engine adapter
-     *
-     * @param string $adapter
-     * @param string $db_prefix
-     */
-    public function __construct($adapter = false, $prefix = false)
-    {
-        if (is_object($adapter)) {
-            $this->_adapter = $adapter;
-        } else {
-            $adapter = $adapter ? $adapter : 'MySQLi';
-            $class = 'Nip_DB_Adapters_' . $adapter;
-            $this->_adapter = new $class();
-        }
-
-        $this->_prefix = $prefix;
-    }
 
     /**
      * Connects to SQL server
@@ -56,7 +41,36 @@ class Nip_DB_Wrapper
      */
     public function getAdapter()
     {
+        if ($this->_adapter == null) {
+            $this->initAdapter();
+        }
         return $this->_adapter;
+    }
+
+    public function setAdapter($adapter)
+    {
+        $this->_adapter = $adapter;
+    }
+
+    public function setAdapterName($name)
+    {
+        $this->setAdapter($this->newAdapter($name));
+    }
+
+    public function initAdapter()
+    {
+        $this->setAdapterName('MySQLi');
+    }
+
+    public function newAdapter($name)
+    {
+        $class = static::getAdapterClass($name);
+        return new $class();
+    }
+
+    public static function getAdapterClass($name)
+    {
+        return 'Nip_DB_Adapters_' . $name;
     }
 
     public function getDatabase()
@@ -172,13 +186,13 @@ class Nip_DB_Wrapper
      *
      * @param string $adapter
      * @param string $prefix
-     * @return Nip_DB_Wrapper
+     * @return self
      */
-    static public function instance($adapter = false, $prefix = false)
+    static public function instance()
     {
         static $instance;
         if (!($instance instanceof self)) {
-            $instance = new self($adapter, $prefix);
+            $instance = new self();
         }
         return $instance;
     }

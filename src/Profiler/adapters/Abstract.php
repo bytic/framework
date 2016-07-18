@@ -1,35 +1,11 @@
 <?php
 
-/**
- * Nip Framework
- *
- * @category   Nip
- * @copyright  2009 Nip Framework
- * @license    http://www.opensource.org/licenses/mit-license.php The MIT License
- * @version    SVN: $Id: Abstract.php 60 2009-04-28 14:50:04Z victor.stanciu $
- */
+namespace Nip\Profiler\Adapters;
 
-class Nip_Profiler_Adapters_Abstract {
-    protected $data;
-    protected $columns;
+use Nip\Profiler\Profile;
 
-    public function setProfiles($profiles) {
-        if (is_array($profiles)) {
-            foreach ($profiles as $p){
-                $this->addProfile($p);
-            }
-        }
-    }
+abstract class AbstractAdapter
+{
 
-
-    public function addProfile($profile) {
-        if (!is_array($this->columns)) {
-            $this->columns = $profile->columns;
-        }
-        $this->data[] = $profile;
-    }
-
-
-    public function output($name) {
-    }
+    abstract public function write(Profile $profile);
 }

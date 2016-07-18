@@ -2,6 +2,7 @@
 
 namespace Nip;
 
+use Nip\Container\Container;
 use Nip\DebugBar\StandardDebugBar;
 use Nip\Logger\Manager;
 use Nip\Staging\Stage;
@@ -148,10 +149,14 @@ class Bootstrap
     public function setupDatabase()
     {
         $stageConfig = $this->getStage()->getConfig();
-        \Nip_DB_Wrapper::instance($stageConfig->DB->adapter,
-            $stageConfig->DB->prefix)
-            ->connect($stageConfig->DB->host, $stageConfig->DB->user,
-                $stageConfig->DB->password, $stageConfig->DB->name);
+        $connection = \Nip\Database\Connection::instance();
+        $connection->setAdapterName($stageConfig->DB->adapter);
+        $connection->connect(
+            $stageConfig->DB->host,
+            $stageConfig->DB->user,
+            $stageConfig->DB->password,
+            $stageConfig->DB->name);
+        Container::getInstance()->set('database', $connection);
     }
 
     public function setupSession()

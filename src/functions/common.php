@@ -1,5 +1,23 @@
 <?php
 
+if (!function_exists('app')) {
+    /**
+     * Get the available container instance.
+     *
+     * @param  string $make
+     * @param  array $parameters
+     * @return mixed|\Illuminate\Foundation\Application
+     */
+    function app($make = null, $parameters = [])
+    {
+        if (is_null($make)) {
+            return Container::getInstance();
+        }
+        return Container::getInstance()->get($make, $parameters);
+    }
+}
+
+
 function __shutdown()
 {
     db()->disconnect();
@@ -21,9 +39,9 @@ if (!function_exists("pr")) {
  * @param string $db_prefix
  * @return Nip_DB_Wrapper
  */
-function db($db_adapter = false, $db_prefix = false)
+function db()
 {
-    return Nip_DB_Wrapper::instance($db_adapter, $db_prefix);
+    return Container::getInstance()->get('database');
 }
 
 /**

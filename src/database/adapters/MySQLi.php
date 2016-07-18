@@ -1,6 +1,8 @@
 <?php
 
-class Nip_DB_Adapters_MySQLi extends Nip_DB_Adapters_Abstract implements Nip_DB_Adapters_Interface
+use \Nip\Database\Adapters\AbstractAdapter;
+
+class Nip_DB_Adapters_MySQLi extends AbstractAdapter implements Nip_DB_Adapters_Interface
 {
 
 	protected $_connection;

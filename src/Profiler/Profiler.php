@@ -2,53 +2,25 @@
 
 /**
  * Nip Framework
- *
- * LICENSE
- *
- * This source file is subject to the license that is bundled
- * with this package in the file LICENSE.txt.
- *
- * @category   Nip
- * @copyright  2009 Nip Framework
- * @version    SVN: $Id: Profiler.php 60 2009-04-28 14:50:04Z victor.stanciu $
  */
+
+use Nip\Profiler\Adapters\AbstractAdapter;
+use Nip\Profiler\Profile;
+
 class Nip_Profiler
 {
 
-    protected $adapter = null;
+    public $enabled = false;
 
     public $profiles = array();
     public $runningProfiles = array();
 
-    public $enabled = false;
+    /**
+     * @var AbstractAdapter[]
+     */
+    protected $writers = [];
 
     public $filterElapsedSecs = null;
-
-
-    public function __construct()
-    {
-    }
-
-
-    public function output($adapter = false)
-    {
-        if (!$this->checkEnabled()) {
-            return;
-        }
-
-        if (!$adapter) {
-            $adapter = 'Console';
-        }
-
-        $adapter = 'Nip_Profiler_Adapters_' . ucfirst($adapter);
-        $this->adapter = new $adapter;
-
-        if ($this->enabled === true) {
-            $this->adapter->setProfiles($this->getProfiles());
-            $this->adapter->output(get_class($this));
-        }
-    }
-
 
     public function setEnabled($enabled = false)
     {
@@ -82,7 +54,7 @@ class Nip_Profiler
             $profileID = 'profile' . $profilesCount;
         }
 
-        $this->profiles[$profileID] = new Nip_Profile($profileID);
+        $this->profiles[$profileID] = new Profile($profileID);
         $this->addRunningProces($profileID);
     }
 
@@ -101,9 +73,16 @@ class Nip_Profiler
         if (is_object($profile)) {
             $this->secondsFilter($profile);
         }
+        $this->outputWriters($profile);
         return;
     }
 
+    public function outputWriters($profile)
+    {
+        foreach ($this->writers as $writer) {
+            $writer->write($profile);
+        }
+    }
 
     public function endProfile($profileID)
     {
@@ -147,7 +126,7 @@ class Nip_Profiler
     public function secondsFilter($profile)
     {
         if (null !== $this->filterElapsedSecs && $profile->getElapsedSecs() < $this->filterElapsedSecs) {
-            $this->deleteProfile($profileID);
+            $this->deleteProfile($profile);
             return;
         }
     }
@@ -208,6 +187,30 @@ class Nip_Profiler
         }
 
         return $profiles;
+    }
+
+    /**
+     * @param AbstractAdapter $writer
+     */
+    public function addWriter(AbstractAdapter $writer)
+    {
+        $this->writers[] = $writer;
+    }
+
+    /**
+     * @param $name
+     * @return AbstractAdapter
+     */
+    public function newWriter($name)
+    {
+        $class = $this->newWriterClass($name);
+        $writer = new $class();
+        return $writer;
+    }
+
+    public function newWriterClass($name)
+    {
+        return 'Nip\Profiler\Adapters\\' . ucfirst($name);
     }
 
 

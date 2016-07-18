@@ -1,19 +1,8 @@
 <?php
 
-/**
- * Nip Framework
- *
- * LICENSE
- *
- * This source file is subject to the license that is bundled
- * with this package in the file LICENSE.txt.
- *
- * @category   Nip
- * @copyright  2009 Nip Framework
- * @version    SVN: $Id: Profile.php 60 2009-04-28 14:50:04Z victor.stanciu $
- */
+namespace Nip\Profiler;
 
-class Nip_Profile {
+class Profile {
 
     public $columns = array('type', 'time', 'memory');
 
@@ -59,6 +48,15 @@ class Nip_Profile {
         return $this->endedMicrotime !== null;
     }
 
+    public function getStartMicrotime()
+    {
+        return $this->startedMicrotime;
+    }
+
+    public function getEndMicrotime()
+    {
+        return $this->endedMicrotime;
+    }
 
     public function getElapsedSecs() {
         if (null === $this->endedMicrotime) {
