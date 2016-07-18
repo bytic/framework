@@ -56,4 +56,14 @@ abstract class AbstractAdapter
 
     abstract public function query($sql);
 
+    abstract public function connect($host = false, $user = false, $password = false, $database = false, $newLink = false);
+
+    abstract public function describeTable($table);
+
+    abstract public function disconnect();
+
+    abstract public function lastInsertID();
+
+    abstract public function affectedRows();
+
 }

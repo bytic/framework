@@ -1,6 +1,7 @@
 <?php
 
 namespace Nip\Database\Query;
+use Nip\Database\Connection;
 
 /**
  * Class _Abstract
@@ -19,7 +20,7 @@ abstract class _Abstract
 {
 
     /**
-     * @var \Nip_DB_Wrapper
+     * @var Connection
      */
     protected $_db;
 
@@ -27,14 +28,14 @@ abstract class _Abstract
         'where' => null,
     );
 
-    public function setManager(\Nip_DB_Wrapper $manager)
+    public function setManager(Connection $manager)
     {
         $this->_db = $manager;
         return $this;
     }
 
     /**
-     * @return \Nip_DB_Wrapper
+     * @return Connection
      */
     public function getManager()
     {
@@ -213,7 +214,6 @@ abstract class _Abstract
     public function getCondition($string, $values = array())
     {
         if (!is_object($string)) {
-            $string = is_array($string) ? $this->parseCondition($string) : $string;
             $condition = new \Nip_DB_Query_Condition($string, $values);
             $condition->setQuery($this);
         } else {
@@ -243,7 +243,7 @@ abstract class _Abstract
 
     public function assemble()
     {
-
+        return null;
     }
 
     /**
@@ -258,10 +258,11 @@ abstract class _Abstract
 
     protected function getTable()
     {
-        if (is_array($this->_parts['table']) && count($this->_parts['table']) == 1) {
-            return reset($this->_parts['table']);
+        if (!is_array($this->_parts['table']) && count($this->_parts['table']) < 1) {
+            trigger_error("No Table defined", E_USER_WARNING);
         }
-        trigger_error("No Table defined", E_USER_WARNING);
+
+        return reset($this->_parts['table']);
     }
 
     protected function parseWhere()

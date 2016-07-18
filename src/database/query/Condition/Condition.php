@@ -1,7 +1,6 @@
 <?php
 
 use Nip\Database\Query\_Abstract as Query;
-use Nip_DB_Wrapper as Wrapper;
 
 class Nip_DB_Query_Condition
 {
@@ -45,7 +44,7 @@ class Nip_DB_Query_Condition
     }
 
     /**
-     * @param Wrapper $query
+     * @param Query $query
      * @return DB_Query_Condition
      */
     public function setQuery($query)

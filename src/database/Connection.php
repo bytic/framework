@@ -3,6 +3,7 @@
 namespace Nip\Database;
 
 use Nip\Database\Adapters\AbstractAdapter;
+use Nip\Database\Query\_Abstract as Query;
 
 class Connection
 {
@@ -116,13 +117,25 @@ class Connection
     }
 
     /**
+     * Prefixes table names
+     *
+     * @param string $table
+     * @return string
+     */
+    public function tableName($table)
+    {
+        return $table;
+    }
+
+    /**
      * @param string $type optional
      * @return \Nip\Database\Query\_Abstract
      */
     public function newQuery($type = "select")
     {
         $className = '\Nip_DB_Query_' . inflector()->camelize($type);
-        $query = new $className;
+        $query = new $className();
+        /** @var Query $query */
         $query->setManager($this);
 
         return $query;
@@ -147,7 +160,7 @@ class Connection
 
     /**
      * Gets the ID of the last inserted record
-     * @return numeric
+     * @return int
      */
     public function lastInsertID()
     {
@@ -156,7 +169,7 @@ class Connection
 
     /**
      * Gets the number of rows affected by the last operation
-     * @return numeric
+     * @return int
      */
     public function affectedRows()
     {
