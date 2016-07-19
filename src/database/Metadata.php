@@ -1,31 +1,36 @@
 <?php
 
-class Nip_Db_Metadata {
+class Nip_Db_Metadata
+{
 
-    protected $_wrapper;
+    protected $_connection;
     protected $_cache;
 
-    public function setWrapper($wrapper) {
-        $this->_wrapper = $wrapper;
+    public function setConnection($wrapper)
+    {
+        $this->_connection = $wrapper;
         return $this;
     }
 
     /**
-     * @return Nip_Db_Wrapper
+     * @return \Nip\Database\Connection
      */
-    public function getWrapper() {
-        return $this->_wrapper;
+    public function getConnection()
+    {
+        return $this->_connection;
     }
 
-    public function describeTable($table) {
+    public function describeTable($table)
+    {
         $data = $this->getCache()->describeTable($table);
-        if ($data) {
-            return $data;
+        if (!is_array($data)) {
+            return trigger_error("Cannot load metadata for table [$table]", E_USER_ERROR);
         }
-        trigger_error("Cannot load metadata for table [$table]", E_USER_ERROR);
+        return $data;
     }
 
-    public function getCache() {
+    public function getCache()
+    {
         if (!$this->_cache) {
             $this->_cache = new Nip_Db_Metadata_Cache();
             $this->_cache->setMetadata($this);

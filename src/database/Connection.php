@@ -24,7 +24,8 @@ class Connection
      * @param string $user
      * @param string $password
      * @param string $database
-     * @return self
+     * @param bool $newLink
+     * @return static
      */
     public function connect($host, $user, $password, $database, $newLink = false)
     {
@@ -100,7 +101,7 @@ class Connection
     {
         if (!$this->metadata) {
             $this->metadata = new \Nip_Db_Metadata();
-            $this->metadata->setWrapper($this);
+            $this->metadata->setConnection($this);
         }
         return $this->metadata;
     }
