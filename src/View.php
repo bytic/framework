@@ -4,6 +4,7 @@
  * Class Nip_View
  *
  * @method \Nip_Helper_View_StyleSheets StyleSheets()
+ * @method \Nip_Helper_View_Breadcrumbs Breadcrumbs()
  *
  */
 class Nip_View
