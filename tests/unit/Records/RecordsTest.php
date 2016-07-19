@@ -4,6 +4,7 @@ namespace Nip\Tests\Records;
 
 use Mockery as m;
 use Nip_Records;
+use \Nip\Database\Connection;
 
 class RecordsTest extends \Codeception\TestCase\Test
 {
@@ -19,7 +20,7 @@ class RecordsTest extends \Codeception\TestCase\Test
 
     protected function _before()
     {
-        $wrapper = new \Nip_DB_Wrapper();
+        $wrapper = new Connection();
 
         $this->_object = new Nip_Records();
         $this->_object->setDB($wrapper);

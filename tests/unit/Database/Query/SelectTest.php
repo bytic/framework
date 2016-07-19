@@ -3,7 +3,7 @@
 namespace Nip\Tests\Database\Query;
 
 use Mockery as m;
-use Nip_DB_Wrapper;
+use Nip\Database\Connection;
 use Nip_DB_Query_Select;
 
 class SelectTest extends \Codeception\TestCase\Test
@@ -14,7 +14,7 @@ class SelectTest extends \Codeception\TestCase\Test
 	protected $tester;
 
 	/**
-	 * @var Nip_DB_Wrapper
+	 * @var Connection
 	 */
 	protected $_db;
 
@@ -32,7 +32,8 @@ class SelectTest extends \Codeception\TestCase\Test
         $adapterMock->shouldReceive('cleanData')->andReturnUsing(function ($data) {
             return $data;
         });
-		$this->_db = new Nip_DB_Wrapper($adapterMock);
+        $this->_db = new Connection();
+        $this->_db->setAdapter($adapterMock);
 		$this->_object->setManager($this->_db);
 	}
 

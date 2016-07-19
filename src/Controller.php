@@ -6,7 +6,7 @@ namespace Nip;
  * Class Controller
  * @package Nip
  *
- * @method \Nip_Helper_View_URL URL()
+ * @method \Nip_Helper_Url Url()
  */
 class Controller
 {
@@ -14,8 +14,10 @@ class Controller
     protected $_dispatcher;
     protected $_frontController;
 
-    protected $_action;
-    protected $_name;
+    protected $_fullName = null;
+    protected $_name = null;
+    protected $_action = null;
+
     protected $_request;
     protected $_config;
     protected $_helpers = array();
@@ -26,6 +28,28 @@ class Controller
         $this->_name = inflector()->unclassify($name);
     }
 
+    public function getFullName()
+    {
+        if ($this->_fullName === null) {
+            $this->_fullName = inflector()->unclassify($this->getClassName());
+
+        }
+        return $this->_fullName;
+    }
+
+    public function getClassName()
+    {
+        return str_replace("Controller", "", get_class($this));
+    }
+
+    public function getName()
+    {
+        if ($this->_name === null) {
+            $this->_name = $this->getFullName();
+
+        }
+        return $this->_name;
+    }
 
     public function __call($name, $arguments)
     {
@@ -33,8 +57,7 @@ class Controller
             return $this->getHelper($name);
         }
 
-        trigger_error("Call to undefined method $name", E_USER_ERROR);
-        return;
+        return trigger_error("Call to undefined method $name", E_USER_ERROR);
     }
 
     public function getHelper($name)
@@ -45,8 +68,7 @@ class Controller
     public function dispatch($request = null)
     {
         $request = $request ? $request : $this->getRequest();
-        $this->_name = $request->getControllerName();
-        $this->_action = $request->getActionName();
+        $this->populateFromRequest($request);
         return $this->dispatchAction($request->getActionName());
     }
 
@@ -78,6 +100,7 @@ class Controller
         $controller = $this->getDispatcher()->generateController($newRequest);
         $controller->setView($this->getView());
         $controller->setRequest($newRequest);
+        $controller->populateFromRequest($newRequest);
         return call_user_func_array(array($controller, $action), $params);
     }
 
@@ -113,6 +136,12 @@ class Controller
     {
         $this->_request = $request;
         return $this;
+    }
+
+    public function populateFromRequest(Request $request)
+    {
+        $this->_name = $request->getControllerName();
+        $this->_action = $request->getActionName();
     }
 
     /**
@@ -173,10 +202,5 @@ class Controller
     protected function validAction($action)
     {
         return in_array($action, get_class_methods(get_class($this)));
-    }
-
-    public function getName()
-    {
-        return $this->_name;
     }
 }

@@ -7,10 +7,10 @@
 
 namespace Nip;
 
-use Nip\Request\ParameterBag;
 use Nip\Request\FileBag;
-use Nip\Request\ServerBag;
 use Nip\Request\HeaderBag;
+use Nip\Request\ParameterBag;
+use Nip\Request\ServerBag;
 
 class Request
 {
@@ -216,6 +216,7 @@ class Request
                 if (!isset($server['CONTENT_TYPE'])) {
                     $server['CONTENT_TYPE'] = 'application/x-www-form-urlencoded';
                 }
+            break;
             // no break
             case 'PATCH':
                 $body = $parameters;
@@ -447,9 +448,8 @@ class Request
 
     public function getMCA()
     {
-        return $this->getModuleName().'.'.$this->getControllerName().'.'.$this->getActionName();
+        return $this->getModuleName() . '.' . $this->getControllerName() . '.' . $this->getActionName();
     }
-
 
 
     public function setParams(array $params)
@@ -523,7 +523,7 @@ class Request
     /**
      * Singleton
      *
-     * @return Nip_Request
+     * @return self
      */
     static public function instance()
     {

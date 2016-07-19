@@ -3,7 +3,7 @@
 namespace Nip\Tests\Database\Query\Condition;
 
 use Mockery as m;
-use Nip_DB_Wrapper;
+use Nip\Database\Connection;
 
 class ConditionTest extends \Codeception\TestCase\Test
 {
@@ -13,7 +13,7 @@ class ConditionTest extends \Codeception\TestCase\Test
     protected $tester;
 
     /**
-     * @var Nip_DB_Wrapper
+     * @var Connection
      */
     protected $_object;
 
@@ -31,7 +31,8 @@ class ConditionTest extends \Codeception\TestCase\Test
             return $data;
         });
 
-        $this->_object = new Nip_DB_Wrapper($adapterMock);
+        $this->_object = new Connection();
+        $this->_object->setAdapter($adapterMock);
         $this->_query = $this->_object->newQuery();
     }
 

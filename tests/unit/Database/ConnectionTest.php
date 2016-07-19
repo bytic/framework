@@ -2,9 +2,9 @@
 
 namespace Nip\Tests\Database;
 
-use Nip_DB_Wrapper;
+use Nip\Database\Connection;
 
-class WrapperTest extends \Codeception\TestCase\Test
+class ConnectionTest extends \Codeception\TestCase\Test
 {
     /**
      * @var \UnitTester
@@ -12,13 +12,13 @@ class WrapperTest extends \Codeception\TestCase\Test
     protected $tester;
 
     /**
-     * @var Nip_DB_Wrapper
+     * @var Connection
      */
     protected $_object;
 
     protected function _before()
     {
-        $this->_object = new Nip_DB_Wrapper();
+        $this->_object = new Connection();
     }
 
     public function testInitializesQueryProvider()
