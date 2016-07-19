@@ -106,12 +106,19 @@ class FrontController
         return $dispatcher;
     }
 
+    /**
+     * @param bool|Dispatcher $dispatcher
+     * @return $this
+     */
     public function setDispatcher($dispatcher = false)
     {
         $this->_dispatcher = $dispatcher;
         return $this;
     }
 
+    /**
+     * @return Request
+     */
     public function getRequest()
     {
         if (!$this->_request) {
@@ -121,12 +128,19 @@ class FrontController
         return $this->_request;
     }
 
+    /**
+     * @param bool|Request $request
+     * @return $this
+     */
     public function setRequest($request = false)
     {
         $this->_request = $request;
         return $this;
     }
 
+    /**
+     * @return FrontController\Trace
+     */
     public function getTrace()
     {
         return FrontController\Trace::instance();
