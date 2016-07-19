@@ -3,8 +3,17 @@
 /**
  * Class Nip_View
  *
- * @method \Nip_Helper_View_StyleSheets StyleSheets()
  * @method \Nip_Helper_View_Breadcrumbs Breadcrumbs()
+ * @method \Nip_Helper_View_Breadcrumbs Doctype()
+ * @method \Nip_Helper_View_Breadcrumbs Flash()
+ * @method \Nip_Helper_View_Breadcrumbs HTML()
+ * @method \Nip_Helper_View_Breadcrumbs Messages()
+ * @method \Nip_Helper_View_Breadcrumbs Meta()
+ * @method \Nip_Helper_View_Breadcrumbs Paginator()
+ * @method \Nip_Helper_View_Breadcrumbs Scripts()
+ * @method \Nip_Helper_View_StyleSheets StyleSheets()
+ * @method \Nip_Helper_View_StyleSheets TinyMCE()
+ * @method \Nip_Helper_View_Breadcrumbs URL()
  *
  */
 class Nip_View
