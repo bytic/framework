@@ -2,6 +2,7 @@
 
 namespace Nip\Records\Relations;
 
+use Nip_Record as Record;
 use Nip_RecordCollection as RecordCollection;
 
 abstract class HasOneOrMany extends Relation
@@ -17,12 +18,12 @@ abstract class HasOneOrMany extends Relation
         }
     }
 
-    public function saveResult($item)
+    public function saveResult(Record $item)
     {
         $pk = $this->getManager()->getPrimaryKey();
         $fk = $this->getFK();
         $item->$fk = $this->getItem()->$pk;
-        $item->saveRecords();
+        $item->saveRecord();
     }
 
     public function hasResults()

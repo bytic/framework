@@ -2,11 +2,12 @@
 
 namespace Nip\Records\Relations;
 
+use Nip\Database\Connection;
 use Nip\Records\_Abstract\Table;
 use Nip_DB_Query_Select as Query;
 use Nip_Record as Record;
-use Nip_Records as Records;
 use Nip_RecordCollection as RecordCollection;
+use Nip_Records as Records;
 
 abstract class Relation
 {
@@ -111,7 +112,7 @@ abstract class Relation
 
     public function initQuery()
     {
-        $query = $this->getWith()->paramsToQuery();
+        $query = $this->newQuery();
         $this->populateQuerySpecific($query);
 
         $this->_query = $query;
@@ -140,11 +141,21 @@ abstract class Relation
     }
 
     /**
-     * @return \Nip_DB_Wrapper
+     * @return Connection
      */
     public function getDB()
     {
         return $this->getManager()->getDB();
+    }
+
+    public function setParams($params)
+    {
+        $this->_params = $params;
+    }
+
+    public function getParam($key)
+    {
+        return $this->_params[$key];
     }
 
     public function addParams($params)
@@ -153,7 +164,7 @@ abstract class Relation
         $this->checkParamWith($params);
         $this->checkParamTable($params);
         $this->checkParamFk($params);
-
+        $this->setParams($params);
     }
 
     public function checkParamClass($params)
@@ -317,7 +328,7 @@ abstract class Relation
     {
         $fkList = $this->getEagerFkList($collection);
         $query = clone $this->getQuery();
-        $query->where($this->getWithPK().' IN ?',$fkList);
+        $query->where($this->getWithPK() . ' IN ?', $fkList);
         return $query;
     }
 

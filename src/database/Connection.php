@@ -3,6 +3,7 @@
 namespace Nip\Database;
 
 use Nip\Database\Adapters\AbstractAdapter;
+use Nip_DB_Query_Select as SelectQuery;
 use Nip\Database\Query\_Abstract as Query;
 
 class Connection
@@ -130,7 +131,16 @@ class Connection
 
     /**
      * @param string $type optional
-     * @return \Nip\Database\Query\_Abstract
+     * @return SelectQuery
+     */
+    public function newSelect()
+    {
+        return $this->newQuery('select');
+    }
+
+    /**
+     * @param string $type optional
+     * @return Query
      */
     public function newQuery($type = "select")
     {

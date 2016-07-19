@@ -2,6 +2,7 @@
 
 namespace Nip\Records\_Abstract;
 
+use Nip\Database\Connection;
 use Nip\Database\Query\_Abstract as Query;
 use Nip\HelperBroker;
 use Nip\Paginator;
@@ -13,7 +14,7 @@ abstract class Table
 {
 
     /**
-     * @var \Nip_DB_Wrapper
+     * @var Connection
      */
     protected $_db = null;
 
@@ -346,7 +347,7 @@ abstract class Table
     }
 
     /**
-     * @return \Nip_DB_Wrapper
+     * @return Connection
      */
     public function getDB()
     {
@@ -357,7 +358,7 @@ abstract class Table
     }
 
     /**
-     * @param \Nip_DB_Wrapper $db
+     * @param Connection $db
      * @return $this
      */
     public function setDB($db)
@@ -367,7 +368,7 @@ abstract class Table
     }
 
     /**
-     * @return \Nip_DB_Wrapper
+     * @return Connection
      */
     protected function setUpDB()
     {
