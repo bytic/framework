@@ -9,8 +9,8 @@ abstract class Nip_Form_Abstract
     protected $_elementsTypes = array(
         'input', 'hidden', 'password', 'hash', 'file',
         'multiElement',
-        'dateinput', 'dateselect', 
-        'timeselect', 
+        'dateinput', 'dateselect',
+        'timeselect',
         'textarea', 'texteditor', 'textSimpleEditor', 'textMiniEditor',
         'select', 'radio', 'radioGroup', 'checkbox', 'checkboxGroup',
         'html',
@@ -18,13 +18,13 @@ abstract class Nip_Form_Abstract
     protected $_attribs = array();
     protected $_options = array();
     protected $_displayGroups = array();
-    
+
     protected $_elements = array();
     protected $_elementsLabel;
     protected $_elementsOrder = array();
-    
+
     protected $_buttons;
-    
+
     protected $_decorators = array();
     protected $_renderer;
     protected $_messages = array(
@@ -52,11 +52,11 @@ abstract class Nip_Form_Abstract
                 $isRequired = $arguments[2];
                 return $this->add($name, $label, $type, $isRequired);
             } else {
-                trigger_error('Undefined element type for add operation: ['.$type.']', E_USER_ERROR);
+                trigger_error('Undefined element type for add operation: [' . $type . ']', E_USER_ERROR);
             }
         }
 
-        trigger_error('Call to undefined method: ['.$name.']', E_USER_ERROR);
+        trigger_error('Call to undefined method: [' . $name . ']', E_USER_ERROR);
     }
 
     public function __get($name)
@@ -82,9 +82,9 @@ abstract class Nip_Form_Abstract
     {
         $label = ($label) ? $label : ucfirst($name);
         $element = $this->getNewElement($type)
-                        ->setName($name)
-                        ->setLabel($label)
-                        ->setRequired($isRequired);        
+            ->setName($name)
+            ->setLabel($label)
+            ->setRequired($isRequired);
         $this->addElement($element);
         return $this;
     }
@@ -93,9 +93,9 @@ abstract class Nip_Form_Abstract
     {
         $label = ($label) ? $label : ucfirst($name);
         $element = $this->getNewElementByClass($className)
-                        ->setName($name)
-                        ->setLabel($label)
-                        ->setRequired($isRequired);
+            ->setName($name)
+            ->setLabel($label)
+            ->setRequired($isRequired);
         $this->addElement($element);
         return $this;
     }
@@ -139,7 +139,7 @@ abstract class Nip_Form_Abstract
             trigger_error('No valid elements specified for display group');
         }
 
-        $name = (string) $name;
+        $name = (string)$name;
         $group->setLegend($name);
 
         $this->_displayGroups[$name] = $group;
@@ -172,10 +172,10 @@ abstract class Nip_Form_Abstract
 
     public function addButton($name, $label = false, $type = 'button')
     {
-        $class = 'Nip_Form_Button_'.ucfirst($type);        
+        $class = 'Nip_Form_Button_' . ucfirst($type);
         $this->_buttons[$name] = new $class($this);
         $this->_buttons[$name]->setName($name)
-                ->setLabel($label);
+            ->setLabel($label);
         return $this;
     }
 
@@ -215,10 +215,10 @@ abstract class Nip_Form_Abstract
     public function setElementOrder($element, $neighbour, $type = 'bellow')
     {
         if (in_array($element, $this->_elementsOrder) && in_array($neighbour, $this->_elementsOrder)) {
-            $newOrder = array();            
+            $newOrder = array();
             foreach ($this->_elementsOrder as $current) {
                 if ($current == $element) {
-                    
+
                 } elseif ($current == $neighbour) {
                     if ($type == 'above') {
                         $newOrder[] = $element;
@@ -304,7 +304,7 @@ abstract class Nip_Form_Abstract
      */
     public function getElementClassName($type)
     {
-        return 'Nip_Form_Element_'.ucfirst($type);
+        return 'Nip_Form_Element_' . ucfirst($type);
         $element = new $className($this);
         return $element;
     }
@@ -314,14 +314,14 @@ abstract class Nip_Form_Abstract
      */
     public function setOption($key, $value)
     {
-        $key = (string) $key;
+        $key = (string)$key;
         $this->_options[$key] = $value;
         return $this;
     }
 
     public function getOption($key)
     {
-        $key = (string) $key;
+        $key = (string)$key;
         if (!isset($this->_options[$key])) {
             return null;
         }
@@ -329,7 +329,8 @@ abstract class Nip_Form_Abstract
         return $this->_options[$key];
     }
 
-    public function addClass() {
+    public function addClass()
+    {
         $classes = func_get_args();
         if (is_array($classes)) {
             $oldClasses = explode(' ', $this->getAttrib('class'));
@@ -339,22 +340,24 @@ abstract class Nip_Form_Abstract
         return $this;
     }
 
-    public function removeClass() {
+    public function removeClass()
+    {
         $removeClasses = func_get_args();
         if (is_array($removeClasses)) {
             $classes = explode(' ', $this->getAttrib('class'));
             foreach ($removeClasses as $class) {
-                $key = array_search($class, $classes);                
+                $key = array_search($class, $classes);
                 if ($key !== false) {
                     unset($classes[$key]);
                 }
-            }            
+            }
             $this->setAttrib('class', implode(' ', $classes));
         }
         return $this;
     }
 
-    public function hasClass($class) {        
+    public function hasClass($class)
+    {
         return in_array($class, explode(' ', $this->getAttrib('class')));
     }
 
@@ -363,7 +366,7 @@ abstract class Nip_Form_Abstract
      */
     public function setAttrib($key, $value)
     {
-        $key = (string) $key;
+        $key = (string)$key;
         $this->_attribs[$key] = $value;
         return $this;
     }
@@ -392,7 +395,7 @@ abstract class Nip_Form_Abstract
 
     public function getAttrib($key)
     {
-        $key = (string) $key;
+        $key = (string)$key;
         if (!isset($this->_attribs[$key])) {
             return null;
         }
@@ -429,7 +432,7 @@ abstract class Nip_Form_Abstract
 
     public function setAction($action)
     {
-        return $this->setAttrib('action', (string) $action);
+        return $this->setAttrib('action', (string)$action);
     }
 
     public function setMethod($method)
@@ -450,8 +453,8 @@ abstract class Nip_Form_Abstract
     }
 
     public function execute()
-    {            
-        if ($this->submited()) {            
+    {
+        if ($this->submited()) {
             return $this->processRequest();
         }
         return false;
@@ -506,7 +509,7 @@ abstract class Nip_Form_Abstract
         $elements = $this->getElements();
         if (is_array($elements)) {
             foreach ($elements as $name => $element) {
-                if ($element->isGroup() && $element->isRequestArray()) {                
+                if ($element->isGroup() && $element->isRequestArray()) {
                     $name = str_replace('[]', '', $name);
                     $data = is_array($request[$name]) ? $request[$name] : array($request[$name]);
                     $element->getData($data, 'request');
@@ -535,7 +538,7 @@ abstract class Nip_Form_Abstract
 
     public function getErrors()
     {
-        $errors = array_merge((array) $this->getMessagesType('error'), $this->getElementsErrors());
+        $errors = array_merge((array)$this->getMessagesType('error'), $this->getElementsErrors());
         return $errors;
     }
 
@@ -601,7 +604,7 @@ abstract class Nip_Form_Abstract
      */
     public function getNewRenderer($type = 'basic')
     {
-        $name = 'Nip_Form_Renderer_'.ucfirst($type);
+        $name = 'Nip_Form_Renderer_' . ucfirst($type);
         $renderer = new $name();
         $renderer->setForm($this);
         return $renderer;
@@ -636,18 +639,13 @@ abstract class Nip_Form_Abstract
         return get_class($this);
     }
 
-    public function __toString()
-    {
-        return $this->render();
-    }
-
     public function getControllerView()
     {
-		if (!$this->_controllerView) {
-			$this->_controllerView = Nip_FrontController::instance()->getDispatcher()->getCurrentController()->getView();
-		}
+        if (!$this->_controllerView) {
+            $this->_controllerView = Nip_FrontController::instance()->getDispatcher()->getCurrentController()->getView();
+        }
 
-		return $this->_controllerView;
+        return $this->_controllerView;
     }
 
 }
