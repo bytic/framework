@@ -13,7 +13,6 @@ class Nip_RecordCollection extends Nip_Collection
     protected $_manager = null;
 
 
-
     public function loadRelations($relations)
     {
         if (is_string($relations)) {
@@ -100,6 +99,19 @@ class Nip_RecordCollection extends Nip_Collection
      */
     public function add(Record $record, $index = null)
     {
+        $index = $this->getRecordKey($record, $index);
+        return $this->offsetSet($index, $record);
+    }
+
+
+    public function has(Record $record)
+    {
+        $index = $this->getRecordKey($record);
+        return $this->offsetExists($index) && $this->offsetGet($index) == $record;
+    }
+
+    public function getRecordKey(Record $record, $index = null)
+    {
         if ($index) {
             $index = $record->$index;
         } else {
@@ -109,8 +121,7 @@ class Nip_RecordCollection extends Nip_Collection
                 $index = null;
             }
         }
-
-        return $this->offsetSet($index, $record);
+        return $index;
     }
 
     public function getIndexKey()

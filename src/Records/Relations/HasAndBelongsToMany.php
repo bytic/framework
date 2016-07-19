@@ -100,8 +100,9 @@ class HasAndBelongsToMany extends HasOneOrMany
         if ($this->hasResults()) {
             $query = $this->getDB()->newQuery("insert");
             $query->table($this->getTable());
+            $results = $this->getResults();
 
-            foreach ($this as $item) {
+            foreach ($results as $item) {
                 $data = array(
                     $this->getManager()->getPrimaryFK() => $this->getItem()->{$this->getManager()->getPrimaryKey()},
                     $this->getWith()->getPrimaryFK() => $item->{$this->getWith()->getPrimaryKey()}
@@ -116,8 +117,8 @@ class HasAndBelongsToMany extends HasOneOrMany
                 $query->data($data);
             }
 
+//            echo $query;
             $query->execute();
-            //echo $query;
         }
     }
 
@@ -126,7 +127,7 @@ class HasAndBelongsToMany extends HasOneOrMany
         $query = $this->getDB()->newQuery('delete');
         $query->table($this->getTable());
         $query->where("{$this->getManager()->getPrimaryFK()} = ?", $this->getItem()->{$this->getManager()->getPrimaryKey()});
-        //echo $query;
+//        echo $query;
         $query->execute();
     }
 

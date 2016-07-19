@@ -290,7 +290,7 @@ abstract class Relation
 
     /**
      * Get the results of the relationship.
-     * @return Record|Records
+     * @return Record|RecordCollection
      */
     public function getResults()
     {
