@@ -4,16 +4,16 @@
  * Class Nip_View
  *
  * @method \Nip_Helper_View_Breadcrumbs Breadcrumbs()
- * @method \Nip_Helper_View_Breadcrumbs Doctype()
- * @method \Nip_Helper_View_Breadcrumbs Flash()
- * @method \Nip_Helper_View_Breadcrumbs HTML()
- * @method \Nip_Helper_View_Breadcrumbs Messages()
- * @method \Nip_Helper_View_Breadcrumbs Meta()
- * @method \Nip_Helper_View_Breadcrumbs Paginator()
- * @method \Nip_Helper_View_Breadcrumbs Scripts()
+ * @method \Nip_Helper_View_Doctype Doctype()
+ * @method \Nip_Helper_View_Flash Flash()
+ * @method \Nip_Helper_View_HTML HTML()
+ * @method \Nip_Helper_View_Messages Messages()
+ * @method \Nip_Helper_View_Meta Meta()
+ * @method \Nip_Helper_View_Paginator Paginator()
+ * @method \Nip_Helper_View_Scripts Scripts()
  * @method \Nip_Helper_View_StyleSheets StyleSheets()
- * @method \Nip_Helper_View_StyleSheets TinyMCE()
- * @method \Nip_Helper_View_Breadcrumbs URL()
+ * @method \Nip_Helper_View_TinyMCE TinyMCE()
+ * @method \Nip_Helper_View_URL URL()
  *
  */
 class Nip_View
