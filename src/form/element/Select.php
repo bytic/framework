@@ -2,7 +2,8 @@
 class Nip_Form_Element_Select extends Nip_Form_Element_Abstract {
 
     protected $_type = 'select';
-    protected $_optionsElementsElements = array();
+
+    protected $_valueOptions = array();
     protected $_values = array();
 
     /**
@@ -50,7 +51,7 @@ class Nip_Form_Element_Select extends Nip_Form_Element_Abstract {
             $option['label'] = $label;
         }
         
-        $this->_optionsElements[$value] = $option;
+        $this->_valueOptions[$value] = $option;
         $this->_values[] = $value;
 
         return $this;
@@ -66,14 +67,14 @@ class Nip_Form_Element_Select extends Nip_Form_Element_Abstract {
             $option['label'] = $label;
         }
 
-        $this->_optionsElements[$optgroup][$value] = $option;
+        $this->_valueOptions[$optgroup][$value] = $option;
         $this->_values[] = $value;
 
         return $this;
     }
 
     public function getOptions() {
-        return $this->_optionsElements;
+        return $this->_valueOptions;
     }
 
     public function setValue($value) {
