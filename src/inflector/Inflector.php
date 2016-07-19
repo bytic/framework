@@ -95,6 +95,11 @@ class Nip_Inflector
         return $this->doInflection('camelize', $word);
     }
 
+    public function classify($word)
+    {
+        return $this->doInflection('classify', $word);
+    }
+
     public function pluralize($word)
     {
         return $this->doInflection('pluralize', $word);

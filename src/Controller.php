@@ -2,6 +2,12 @@
 
 namespace Nip;
 
+/**
+ * Class Controller
+ * @package Nip
+ *
+ * @method \Nip_Helper_View_URL URL()
+ */
 class Controller
 {
 
@@ -25,9 +31,10 @@ class Controller
     {
         if ($name === ucfirst($name)) {
             return $this->getHelper($name);
-        } else {
-            trigger_error("Call to undefined method $name", E_USER_ERROR);
         }
+
+        trigger_error("Call to undefined method $name", E_USER_ERROR);
+        return;
     }
 
     public function getHelper($name)
@@ -38,6 +45,8 @@ class Controller
     public function dispatch($request = null)
     {
         $request = $request ? $request : $this->getRequest();
+        $this->_name = $request->getControllerName();
+        $this->_action = $request->getActionName();
         return $this->dispatchAction($request->getActionName());
     }
 
@@ -52,12 +61,14 @@ class Controller
                 $this->beforeAction();
                 $this->{$this->_action}();
                 $this->afterAction();
+                return true;
             } else {
                 $this->getDispatcher()->throwError('Action [' . $action . '] is not valid for ' . get_class($this));
             }
         } else {
             trigger_error('No action specified', E_USER_ERROR);
         }
+        return false;
     }
 
     public function call($action = false, $controller = false, $module = false, $params = array())
