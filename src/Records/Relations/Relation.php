@@ -227,10 +227,10 @@ abstract class Relation
     }
 
     /**
-     * @param Record $object
+     * @param Records $object
      * @return $this
      */
-    public function setWith(Record $object)
+    public function setWith(Records $object)
     {
         $this->_with = $object;
         return $this;
