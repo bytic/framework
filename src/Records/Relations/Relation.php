@@ -230,7 +230,7 @@ abstract class Relation
      * @param Record $object
      * @return $this
      */
-    public function setWith(Records $object)
+    public function setWith(Record $object)
     {
         $this->_with = $object;
         return $this;
@@ -346,7 +346,7 @@ abstract class Relation
      * @param RecordCollection $collection
      * @param RecordCollection $records
      *
-     * @return array
+     * @return RecordCollection
      */
     public function match(RecordCollection $collection, RecordCollection $records)
     {

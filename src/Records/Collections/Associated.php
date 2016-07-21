@@ -12,7 +12,7 @@ class Associated extends RecordCollection
     /**
      * @var Relation
      */
-    protected $_relation;
+    protected $_withRelation;
 
     /**
      * @var Record
@@ -22,22 +22,22 @@ class Associated extends RecordCollection
     /**
      * @return Relation
      */
-    public function getRelation()
+    public function getWithRelation()
     {
-        return $this->_relation;
+        return $this->_withRelation;
     }
 
     /**
      * @param Relation $relation
      */
-    public function setRelation($relation)
+    public function setWithRelation($relation)
     {
-        $this->_relation = $relation;
+        $this->_withRelation = $relation;
     }
 
     public function initFromRelation(Relation $relation)
     {
-        $this->setRelation($relation);
+        $this->setWithRelation($relation);
         $this->setManager($relation->getWith());
         $this->setItem($relation->getItem());
     }

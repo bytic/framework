@@ -28,7 +28,7 @@ class Nip_RecordCollection extends Nip_Collection
     {
         $relation = $this->getRelation($name);
         $results = $relation->getEagerResults($this);
-        $relation->match($this, $results, $name);
+        $relation->match($this, $results);
         return $results;
     }
 
