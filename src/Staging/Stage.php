@@ -8,7 +8,10 @@ use Nip\Staging;
 class Stage
 {
     protected $_manager;
+
     protected $_name;
+    protected $_type = null;
+
     protected $_hosts;
     protected $_host;
     protected $_baseURL;
@@ -38,6 +41,24 @@ class Stage
         return $this;
     }
 
+    public function getType()
+    {
+        if ($this->_type === null) {
+            $this->initType();
+        }
+        return $this->_type;
+    }
+
+    public function initType()
+    {
+        $config = $this->getConfig();
+        if (isset($config->STAGE->type)) {
+            $this->_type = $config->STAGE->type;
+        } else {
+            $this->_type = 'local';
+        }
+    }
+
     /**
      * @return Staging
      */
@@ -53,12 +74,6 @@ class Stage
     {
         $this->_manager = $manager;
         return $this;
-    }
-
-
-    public function getType()
-    {
-        return $this->getConfig()->STAGE->type;
     }
 
     public function isCurrent()
@@ -165,11 +180,21 @@ class Stage
 
     public function isPublic()
     {
-        return !isset ($_SESSION['authorized']) && $this->getManager()->isInPublicStages($this->getName());
+        return !$this->isAuthorized() && $this->getManager()->isInPublicStages($this->getType());
     }
 
     public function inTesting()
     {
-        return isset ($_SESSION['authorized']) || $this->getManager()->isInTestingStages($this->getName());
+        return $this->isAuthorized() || $this->getManager()->isInTestingStages($this->getType());
+    }
+
+    public function doAuthorize()
+    {
+        $_COOKIE['authorized'] = 'true';
+    }
+
+    public function isAuthorized()
+    {
+        return $_COOKIE['authorized'] === 'true';
     }
 }

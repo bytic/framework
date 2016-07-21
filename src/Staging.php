@@ -14,7 +14,7 @@ class Staging
     protected $_testingStages = array('local');
 
     /**
-     * @return Nip\Staging\Stage
+     * @return Stage
      */
     public function getStage()
     {
@@ -84,7 +84,6 @@ class Staging
         if (isset($stages[$name])) {
             $stage->setHosts($stages[$name]);
         }
-
         return $stage;
     }
 
