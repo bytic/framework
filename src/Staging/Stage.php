@@ -190,11 +190,11 @@ class Stage
 
     public function doAuthorize()
     {
-        $_COOKIE['authorized'] = 'true';
+        setcookie('authorized','true',time()+60*60*24, '/');
     }
 
     public function isAuthorized()
     {
-        return $_COOKIE['authorized'] === 'true';
+        return isset($_COOKIE['authorized']) && $_COOKIE['authorized'] === 'true';
     }
 }
