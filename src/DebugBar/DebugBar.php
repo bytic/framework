@@ -22,7 +22,7 @@ abstract class DebugBar extends DebugBarGeneric
      *
      * @var bool
      */
-    protected $enabled = null;
+    protected $enabled = false;
 
 
     /**
