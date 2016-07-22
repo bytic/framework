@@ -75,17 +75,45 @@ class Manager implements PsrLoggerInterface
 
     public function init()
     {
+        $this->initErrorReporting();
+        $this->initErrorDisplay();
+        $this->registerHandler();
+        $this->initStreams();
+    }
+
+    public function initErrorReporting()
+    {
+        error_reporting(E_ALL ^ E_NOTICE);
+    }
+
+    public function initErrorDisplay()
+    {
         if ($this->getBootstrap()->getStage()->inTesting()) {
             ini_set('html_errors', 1);
             ini_set('display_errors', 1);
-            error_reporting(E_ALL ^ E_NOTICE);
         } else {
             ini_set('display_errors', 0);
-            error_reporting(0);
         }
+    }
 
+    public function registerHandler()
+    {
         self::registerErrorHandler($this);
         self::registerExceptionHandler($this);
+    }
+
+    public function initStreams()
+    {
+        $streams = $this->getStreams();
+        foreach ($streams as $stream) {
+            $this->getMonolog()->pushHandler($stream);
+        }
+
+    }
+
+    public function getStreams()
+    {
+        return array();
     }
 
     /**

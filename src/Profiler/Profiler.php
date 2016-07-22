@@ -22,6 +22,10 @@ class Nip_Profiler
 
     public $filterElapsedSecs = null;
 
+    /**
+     * @param bool $enabled
+     * @return $this
+     */
     public function setEnabled($enabled = false)
     {
         $this->enabled = (boolean)$enabled;

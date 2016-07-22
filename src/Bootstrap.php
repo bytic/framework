@@ -4,11 +4,15 @@ namespace Nip;
 
 use Nip\Container\Container;
 use Nip\DebugBar\StandardDebugBar;
-use Nip\Logger\Manager;
+use Nip\Logger\Manager as LoggerManager;
+use Nip\Profiler\Adapters\DebugBar as ProfilerDebugBar;
 use Nip\Staging\Stage;
 
 class Bootstrap
 {
+    /**
+     * @var AutoLoader
+     */
     protected $_autoloader = null;
 
     protected $_frontController = null;
@@ -16,7 +20,7 @@ class Bootstrap
     protected $_staging;
 
     /**
-     * @var null|Manager
+     * @var null|LoggerManager
      */
     protected $_logger = null;
 
@@ -122,13 +126,11 @@ class Bootstrap
     {
         fix_input_quotes();
 
-        $this->_logger = new Logger\Manager();
-        $this->_logger->setBootstrap($this);
-        $this->_logger->init();
+        $this->getLogger()->init();
 
         if ($this->getStage()->inTesting()) {
             $this->getDebugBar()->enable();
-            $this->getDebugBar()->addMonolog($this->_logger->getMonolog());
+            $this->getDebugBar()->addMonolog($this->getLogger()->getMonolog());
         }
     }
 
@@ -164,6 +166,7 @@ class Bootstrap
         if ($this->getDebugBar()->isEnabled()) {
             $profiler = $adapter->newProfiler()->setEnabled(true);
             $writer = $profiler->newWriter('DebugBar');
+            /** @var ProfilerDebugBar $writer */
             $writer->setCollector($this->getDebugBar()->getCollector('queries'));
             $profiler->addWriter($writer);
             $adapter->setProfiler($profiler);
@@ -301,6 +304,47 @@ class Bootstrap
     {
         $this->determineBaseURL();
         define('CURRENT_URL', $this->getFrontController()->getRequest()->getHttp()->getUri());
+    }
+
+    /**
+     * @return LoggerManager|null
+     */
+    public function getLogger()
+    {
+        if ($this->_logger == null) {
+            $this->initLogger();
+        }
+
+        return $this->_logger;
+    }
+
+    /**
+     * @param  LoggerManager $logger
+     * @return $this
+     */
+    public function setLogger($logger)
+    {
+        $this->_logger = $logger;
+        return $this;
+    }
+
+    /**
+     * @return null
+     */
+    public function initLogger()
+    {
+        $logger = $this->newLogger();
+        $logger->setBootstrap($this);
+        $this->setLogger($logger);
+    }
+
+    /**
+     * @return LoggerManager
+     */
+    public function newLogger()
+    {
+        $logger = new LoggerManager();
+        return $logger;
     }
 
     /**
