@@ -15,7 +15,10 @@ class Nip_Locale
      */
     public function getFromINI()
     {
-        return PhpLocale::getDefault();
+        if (class_exists('Locale', false)) {
+			return PhpLocale::getDefault();
+    }
+        return setlocale(LC_TIME, 0);
     }
 
     public function getCurrent()
