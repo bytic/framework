@@ -314,8 +314,15 @@ abstract class Relation
 
     abstract public function initResults();
 
+    /**
+     * @param RecordCollection $collection
+     * @return RecordCollection
+     */
     public function getEagerResults($collection)
     {
+        if ($collection->count() < 1) {
+            return $this->getWith()->newCollection();
+        }
         $query = $this->getEagerQuery($collection);
         return $this->getWith()->findByQuery($query);
     }
