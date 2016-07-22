@@ -5,6 +5,7 @@ namespace Nip\Tests\Records;
 use Mockery as m;
 use Nip_Records;
 use \Nip\Database\Connection;
+use Nip_RecordCollection as RecordCollection;
 
 class RecordsTest extends \Codeception\TestCase\Test
 {
@@ -111,6 +112,13 @@ class RecordsTest extends \Codeception\TestCase\Test
         $this->assertInstanceOf('Nip\Records\Relations\BelongsTo', $this->_object->getRelation($name));
         $this->assertInstanceOf('Nip_Records', $this->_object->getRelation($name)->getWith());
         $this->assertEquals($this->_object->getRelation($name)->getWith()->getPrimaryFK(), $this->_object->getRelation($name)->getFK());
+    }
+
+    public function testNewCollection()
+    {
+        $collection = $this->_object->newCollection();
+        $this->assertInstanceOf('Nip_RecordCollection', $collection);
+        $this->assertSame($this->_object, $collection->getManager());
     }
 
 }

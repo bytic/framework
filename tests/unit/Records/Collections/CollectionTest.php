@@ -1,12 +1,29 @@
 <?php
 
-namespace Nip\Tests\Records;
+namespace Nip\Tests\Records\Collections;
 
 use Nip_RecordCollection;
 use Nip_Records;
 
 class RecordCollectionTest extends \Codeception\TestCase\Test
 {
+    /**
+     * @var \UnitTester
+     */
+    protected $tester;
+
+    /**
+     * @var \Nip_RecordCollection
+     */
+    protected $_object;
+
+    protected function _before()
+    {
+    }
+
+    protected function _after()
+    {
+    }
 
 //	public function setUp()
 //	{

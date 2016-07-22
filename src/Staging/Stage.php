@@ -150,12 +150,30 @@ class Stage
     public function getConfig()
     {
         if (!$this->_config) {
-            $this->_config = new \Nip_Config();
-            if ($this->hasConfigFile()) {
-                $this->_config->parse($this->getConfigPath());
-            }
+            $this->initConfig();
         }
         return $this->_config;
+    }
+
+    public function initConfig()
+    {
+        $this->_config =$this->newConfig();
+        if ($this->hasConfigFile()) {
+            $this->_config->parse($this->getConfigPath());
+        }
+    }
+
+    public function setConfig($config)
+    {
+        $this->_config = $config;
+    }
+
+    /**
+     * @return \Nip_Config
+     */
+    public function newConfig()
+    {
+        return new \Nip_Config();
     }
 
     protected function hasConfigFile()

@@ -669,9 +669,7 @@ abstract class Table
 
     public function findByQuery($query, $params = array())
     {
-        $class = $this->getCollectionClass();
-        /** @var RecordCollection $return */
-        $return = new $class();
+        $return = $this->newCollection();
 
         $results = $this->getDB()->execute($query);
         if ($results->numRows() > 0) {
@@ -759,6 +757,18 @@ abstract class Table
     {
         $database = $this->getDB()->getDatabase();
         return $database ? $database . '.' . $this->getTable() : $this->getTable();
+    }
+
+    /**
+     * @return RecordCollection
+     */
+    public function newCollection()
+    {
+        $class = $this->getCollectionClass();
+        /** @var RecordCollection $collection */
+        $collection = new $class();
+        $collection->setManager($this);
+        return $collection;
     }
 
     public function getCollectionClass()
@@ -1004,6 +1014,5 @@ abstract class Table
         $this->relations = $relations;
         return $this;
     }
-
 
 }
