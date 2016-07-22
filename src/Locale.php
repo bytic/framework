@@ -1,5 +1,7 @@
 <?php
 
+use Locale as PhpLocale;
+
 class Nip_Locale
 {
 
@@ -8,28 +10,40 @@ class Nip_Locale
     protected $_default = 'en_US';
     protected $_current;
 
+    /**
+     * @return string
+     */
     public function getFromINI()
     {
-        return setLocale(LC_TIME, 0);
+        return PhpLocale::getDefault();
     }
 
     public function getCurrent()
     {
         if (!$this->_current) {
-            $locale = $this->getFromINI();
-            $data = $this->getData($locale);
-            if ($data) {
-                $this->_current = $locale;
-            } else {
-                $this->_current = $this->_default;
-            }
+            $this->initCurrent();
         }
         return $this->_current;
     }
 
+    public function initCurrent()
+    {
+        $locale = $this->getFromINI();
+        if ($this->isSupported($locale)) {
+            $this->_current = $locale;
+        } else {
+            $this->_current = $this->_default;
+        }
+    }
+
+    public function isSupported($name)
+    {
+        return $this->hasDataFile($name);
+    }
+
     public function getSupported()
     {
-        if (!$this->_supported) {            
+        if (!$this->_supported) {
             $files = Nip_File_System::instance()->scanDirectory($this->getDataFolder());
             foreach ($files as $file) {
                 if (substr($file, 0, 1) != '_') {
@@ -51,7 +65,7 @@ class Nip_Locale
             if (isset ($value[$key])) {
                 $value = $value[$key];
             } else {
-                trigger_error("invalid path [{$pathFlat}] for ". __CLASS__ ."->". __METHOD__, E_USER_WARNING);
+                trigger_error("invalid path [{$pathFlat}] for " . __CLASS__ . "->" . __METHOD__, E_USER_WARNING);
                 return false;
             }
         }
@@ -83,10 +97,16 @@ class Nip_Locale
                 $data = Nip_Helper_Array::instance()->merge_distinct($data, $_data);
             }
         } else {
-            trigger_error("no locale data file at [{$file}]", E_USER_WARNING);
+            trigger_error("no locale data file at [{$file}]", E_USER_NOTICE);
         }
 
         return $data;
+    }
+
+
+    protected function hasDataFile($name)
+    {
+        return is_file($this->_getDataFile($name));
     }
 
     protected function _getDataFile($name)
@@ -98,19 +118,19 @@ class Nip_Locale
     {
         return dirname(__FILE__) . '/locale/data/';
     }
-    
-	/**
-	 * Singleton pattern
-	 *
-	 * @return Nip_Locale
-	 */
-	static public function instance()
-	{
-		static $instance;
-		if (!($instance instanceof self)) {
-			$instance = new self();
-		}
-		return $instance;
-	}
-    
+
+    /**
+     * Singleton pattern
+     *
+     * @return self
+     */
+    static public function instance()
+    {
+        static $instance;
+        if (!($instance instanceof self)) {
+            $instance = new self();
+        }
+        return $instance;
+    }
+
 }
