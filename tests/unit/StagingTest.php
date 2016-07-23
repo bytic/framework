@@ -38,6 +38,12 @@ class StagingTest extends \Codeception\TestCase\Test
         $stageName = 'production';
         $newStage = $this->_object->newStage($stageName);
 
+        $config = $newStage->newConfig();
+        $STAGE = new \stdClass();
+        $STAGE->type = 'production';
+        $config->set('STAGE', $STAGE);
+        $newStage->setConfig($config);
+
         $this->assertInstanceOf('\Nip\Staging\Stage', $newStage);
         $this->assertEquals($stageName, $newStage->getName());
         $this->assertTrue($newStage->inProduction());

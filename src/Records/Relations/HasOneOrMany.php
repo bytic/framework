@@ -4,6 +4,7 @@ namespace Nip\Records\Relations;
 
 use Nip_Record as Record;
 use Nip_RecordCollection as RecordCollection;
+use Nip\Records\Collections\Associated as AssociatedCollection;
 
 abstract class HasOneOrMany extends Relation
 {
@@ -40,7 +41,11 @@ abstract class HasOneOrMany extends Relation
         $this->setResults($collection);
     }
 
-    public function populateCollection($collection, $items)
+    /**
+     * @param RecordCollection $collection
+     * @param $items
+     */
+    public function populateCollection(RecordCollection $collection, $items)
     {
         foreach ($items as $item) {
             $collection->add($item);
@@ -51,14 +56,18 @@ abstract class HasOneOrMany extends Relation
     {
         $class = $this->getCollectionClass();
         $collection = new $class();
-        /** @var RecordCollection $collection */
-        $collection->setManager($this->getWith());
+        /** @var AssociatedCollection $collection */
+        $collection->initFromRelation($this);
         return $collection;
     }
 
     public function getCollectionClass()
     {
-        return 'Nip_RecordCollection';
+        $collection = $this->getParam('collection');
+        if ($collection) {
+            return $collection;
+        }
+        return 'Nip\Records\Collections\Associated';
     }
 
     function getResultsFromCollectionDictionary($dictionary, $collection, $record)

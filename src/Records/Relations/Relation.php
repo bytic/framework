@@ -227,7 +227,7 @@ abstract class Relation
     }
 
     /**
-     * @param Record $object
+     * @param Records $object
      * @return $this
      */
     public function setWith(Records $object)
@@ -314,8 +314,15 @@ abstract class Relation
 
     abstract public function initResults();
 
+    /**
+     * @param RecordCollection $collection
+     * @return RecordCollection
+     */
     public function getEagerResults($collection)
     {
+        if ($collection->count() < 1) {
+            return $this->getWith()->newCollection();
+        }
         $query = $this->getEagerQuery($collection);
         return $this->getWith()->findByQuery($query);
     }
@@ -346,7 +353,7 @@ abstract class Relation
      * @param RecordCollection $collection
      * @param RecordCollection $records
      *
-     * @return array
+     * @return RecordCollection
      */
     public function match(RecordCollection $collection, RecordCollection $records)
     {

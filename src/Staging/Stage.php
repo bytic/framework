@@ -8,7 +8,10 @@ use Nip\Staging;
 class Stage
 {
     protected $_manager;
+
     protected $_name;
+    protected $_type = null;
+
     protected $_hosts;
     protected $_host;
     protected $_baseURL;
@@ -38,6 +41,24 @@ class Stage
         return $this;
     }
 
+    public function getType()
+    {
+        if ($this->_type === null) {
+            $this->initType();
+        }
+        return $this->_type;
+    }
+
+    public function initType()
+    {
+        $config = $this->getConfig();
+        if (isset($config->STAGE->type)) {
+            $this->_type = $config->STAGE->type;
+        } else {
+            $this->_type = 'local';
+        }
+    }
+
     /**
      * @return Staging
      */
@@ -53,12 +74,6 @@ class Stage
     {
         $this->_manager = $manager;
         return $this;
-    }
-
-
-    public function getType()
-    {
-        return $this->getConfig()->STAGE->type;
     }
 
     public function isCurrent()
@@ -135,12 +150,30 @@ class Stage
     public function getConfig()
     {
         if (!$this->_config) {
-            $this->_config = new \Nip_Config();
-            if ($this->hasConfigFile()) {
-                $this->_config->parse($this->getConfigPath());
-            }
+            $this->initConfig();
         }
         return $this->_config;
+    }
+
+    public function initConfig()
+    {
+        $this->_config =$this->newConfig();
+        if ($this->hasConfigFile()) {
+            $this->_config->parse($this->getConfigPath());
+        }
+    }
+
+    public function setConfig($config)
+    {
+        $this->_config = $config;
+    }
+
+    /**
+     * @return \Nip_Config
+     */
+    public function newConfig()
+    {
+        return new \Nip_Config();
     }
 
     protected function hasConfigFile()
@@ -165,11 +198,21 @@ class Stage
 
     public function isPublic()
     {
-        return !isset ($_SESSION['authorized']) && $this->getManager()->isInPublicStages($this->getName());
+        return !$this->isAuthorized() && $this->getManager()->isInPublicStages($this->getType());
     }
 
     public function inTesting()
     {
-        return isset ($_SESSION['authorized']) || $this->getManager()->isInTestingStages($this->getName());
+        return $this->isAuthorized() || $this->getManager()->isInTestingStages($this->getType());
+    }
+
+    public function doAuthorize()
+    {
+        setcookie('authorized','true',time()+60*60*24, '/');
+    }
+
+    public function isAuthorized()
+    {
+        return isset($_COOKIE['authorized']) && $_COOKIE['authorized'] === 'true';
     }
 }

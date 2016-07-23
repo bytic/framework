@@ -18,7 +18,7 @@
     ]
   },
   "require": {
-    "php": ">=5.4.0",
+    "php": ">=5.5.0",
     "container-interop/container-interop": "1.1.*",
     "maximebf/debugbar": "1.*",
     "monolog/monolog": "1.20.*"

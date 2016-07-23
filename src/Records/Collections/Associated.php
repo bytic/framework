@@ -1,47 +1,61 @@
 <?php
 
-class Nip_RecordCollection_Associated extends Nip_RecordCollection
+namespace Nip\Records\Collections;
+
+use Nip_Record as Record;
+use Nip\Records\Relations\HasOneOrMany as Relation;
+use Nip_RecordCollection as RecordCollection;
+
+class Associated extends RecordCollection
 {
 
+    /**
+     * @var Relation
+     */
+    protected $_withRelation;
 
-	public function populate()
-	{
-        if (!$this->_populated && !count($this->_items)) {
-            $this->_items = array();
-            $query = $this->getQuery();
-            $items = $this->getWith()->findByQuery($query);
-            foreach ($items as $item) {
-                $this->add($item);
-            }
-            $this->_populated = true;
-        }
-        return $this;
-	}
+    /**
+     * @var Record
+     */
+    protected $_item;
 
-	public function remove($record)
-	{
-		$pk = $this->getWith()->getPrimaryKey();
-		unset($this[$record->$pk]);
-		return $this;
-	}
+    /**
+     * @return Relation
+     */
+    public function getWithRelation()
+    {
+        return $this->_withRelation;
+    }
 
-	public function exists($index)
-	{
-        if (is_object($index)) {
-    		$pk = $this->getWith()->getPrimaryKey();
-            $index = $index->$pk;
-        }
-		return parent::exists($index);
-	}
+    /**
+     * @param Relation $relation
+     */
+    public function setWithRelation($relation)
+    {
+        $this->_withRelation = $relation;
+    }
 
-	public function get($index)
-	{
-        if (is_object($index)) {
-    		$pk = $this->getWith()->getPrimaryKey();
-            $index = $index->$pk;
-        }
+    public function initFromRelation(Relation $relation)
+    {
+        $this->setWithRelation($relation);
+        $this->setManager($relation->getWith());
+        $this->setItem($relation->getItem());
+    }
 
-        return $this[$index];
-	}
+    /**
+     * @return Record
+     */
+    public function getItem()
+    {
+        return $this->_item;
+    }
+
+    /**
+     * @param Record $item
+     */
+    public function setItem($item)
+    {
+        $this->_item = $item;
+    }
 
 }
