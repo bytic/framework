@@ -164,6 +164,11 @@ class Nip_View
         }
     }
 
+    public function isBlock($block = 'default')
+    {
+        return empty($this->_blocks[$block]) ? false : true;
+    }
+
     /**
      * Assigns variables in bulk in the current scope
      *
