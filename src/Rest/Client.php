@@ -1,5 +1,8 @@
 <?php
-class Nip_Rest_Client
+
+namespace Nip\Rest;
+
+class Client
 {
     const METHOD_POST = "post";
     const METOD_GET = "get";
@@ -32,9 +35,9 @@ class Nip_Rest_Client
         $ch = curl_init();
         $params = http_build_query($this->_params);
 
-        curl_setopt($ch, CURLOPT_URL, $this->_url .($this->getMethod() == self::METOD_GET ? '?'. $params : ''));
+        curl_setopt($ch, CURLOPT_URL, $this->_url . ($this->getMethod() == self::METOD_GET ? '?' . $params : ''));
         if ($this->getMethod() == self::METHOD_POST) {
-            curl_setopt($ch, CURLOPT_POST ,1);
+            curl_setopt($ch, CURLOPT_POST, 1);
             curl_setopt($ch, CURLOPT_POSTFIELDS, $params);
         }
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
