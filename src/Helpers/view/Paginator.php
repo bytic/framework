@@ -1,6 +1,8 @@
 <?php
 
-class Nip_Helper_View_Paginator extends Nip_Helper_View_Abstract
+namespace Nip\Helpers\View;
+
+class Paginator extends AbstractHelper
 {
 
 	protected $_url;
@@ -73,7 +75,7 @@ class Nip_Helper_View_Paginator extends Nip_Helper_View_Abstract
 	}
 
 	/**
-	 * @return Nip_Record_Paginator
+	 * @return \Nip_Record_Paginator
 	 */
 	public function getPaginator()
 	{
@@ -96,20 +98,6 @@ class Nip_Helper_View_Paginator extends Nip_Helper_View_Abstract
 	{
 		$this->_url = $url;
 		return $this;
-	}
-
-	/**
-	 * Singleton
-	 *
-	 * @return Nip_Helper_View_Paginator
-	 */
-	static public function instance()
-	{
-		static $instance;
-		if (!($instance instanceof self)) {
-			$instance = new self();
-		}
-		return $instance;
 	}
 
 }

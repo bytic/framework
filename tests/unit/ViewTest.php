@@ -2,7 +2,7 @@
 
 namespace Nip\Tests;
 
-use Nip_View;
+use Nip\View;
 
 class ViewTest extends \Codeception\TestCase\Test
 {

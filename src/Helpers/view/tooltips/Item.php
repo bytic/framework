@@ -1,5 +1,7 @@
 <?php
 
+namespace Nip\Helpers\View\Tooltips;
+
 /**
  * Nip Framework
  *
@@ -9,7 +11,7 @@
  * @version    SVN: $Id: Item.php 23 2009-04-13 14:07:42Z victor.stanciu $
  */
 
-class Nip_Helper_View_Tooltips_Item {
+class Item {
 
 	protected $_id;
 	protected $_content;

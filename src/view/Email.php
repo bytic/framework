@@ -1,21 +1,40 @@
 <?php
 
-class Nip_View_Email extends Nip_View
+namespace Nip\View;
+
+use Nip\Request;
+use Nip\View;
+
+class Email extends View
 {
 
 	protected $_layout = "/layouts/email";
 
+    /**
+     * @var \Nip_Mailer|null
+     */
+    protected $_mail = null;
+
 	public function __construct()
 	{
-		$this->_mail = new Nip_Mailer();
-		$this->setBasePath(MODULES_PATH . Nip_Request::instance()->module . '/views/');
+		$this->initMailer();
 	}
+
+    public function initMailer()
+    {
+        $this->_mail = new \Nip_Mailer();
+    }
+
+	public function initBasePath()
+    {
+		$this->setBasePath(MODULES_PATH . Request::instance()->getModuleName() . '/views/');
+    }
 
 	/**
 	 * @param string $host
 	 * @param string $username
 	 * @param string $password
-	 * @return Nip_ViewEmail
+	 * @return $this
 	 */
 	public function authSMTP($host, $username, $password)
 	{
@@ -25,7 +44,7 @@ class Nip_View_Email extends Nip_View
 
 	/**
 	 * Sets flag to show SMTP debugging information
-	 * @return Nip_ViewEmail
+	 * @return $this
 	 */
 	public function debugSMTP()
 	{
@@ -35,19 +54,19 @@ class Nip_View_Email extends Nip_View
 
 	/**
 	 * @param string $address
-	 * @param string $name
-	 * @return Nip_ViewEmail
+	 * @param string|bool $name
+	 * @return $this
 	 */
 	public function setFrom($address, $name = false)
 	{
-		$this->_mail->setFrom($address, $name = false);
+		$this->_mail->setFrom($address, $name);
 		return $this;
 	}
 
 	/**
 	 * @param string $address
-	 * @param string $name
-	 * @return Nip_ViewEmail
+	 * @param string|bool $name
+	 * @return $this
 	 */
 	public function addTo($address, $name = false)
 	{
@@ -58,37 +77,37 @@ class Nip_View_Email extends Nip_View
 	/**
 	 * @param string $address
 	 * @param string $name
-	 * @return Nip_ViewEmail
+	 * @return $this
 	 */
 	public function addBCC($address, $name = '')
 	{
-		$this->_mail->AddBCC($address, $name);
+		$this->_mail->addBCC($address, $name);
 		return $this;
 	}
 
 	/**
 	 * @param string $address
-	 * @param string $name
-	 * @return Nip_ViewEmail
+	 * @param string|bool $name
+	 * @return $this
 	 */
 	public function addReplyTo($address, $name = false)
 	{
-		$this->_mail->AddReplyTo($address, $name);
+		$this->_mail->addReplyTo($address, $name);
 		return $this;
 	}
 
 	/**
-	 * @return Nip_View_Email
+	 * @return $this
 	 */
 	public function clearAllRecipients()
 	{
-		$this->_mail->ClearAllRecipients();
+		$this->_mail->clearAllRecipients();
 		return $this;
 	}
 
 	/**
 	 * @param string $subject
-	 * @return Nip_ViewEmail
+	 * @return $this
 	 */
 	public function setSubject($subject)
 	{
@@ -101,11 +120,11 @@ class Nip_View_Email extends Nip_View
 	 *
 	 * @param string $path
 	 * @param string $name
-	 * @return Nip_ViewEmail
+	 * @return $this
 	 */
 	public function addAttachment($path, $name = '')
 	{
-		$this->_mail->AddAttachment($path, $name);
+		$this->_mail->addAttachment($path, $name);
 		return $this;
 	}
 
@@ -116,7 +135,7 @@ class Nip_View_Email extends Nip_View
 		}
 		$this->_mail->setAltBody($this->getBody());
 
-		return $this->_mail->Send();
+		return $this->_mail->send();
 	}
 
 	public function setLayout($layout)

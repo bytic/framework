@@ -2,14 +2,13 @@
 
 namespace Nip\Helpers\View;
 
-use Nip\HelperBroker;
-
-class Url extends AbstractHelper
+class Arrays extends AbstractHelper
 {
 
     public function __call($name, $arguments)
     {
-        $helper = HelperBroker::get('Url');
+        $helper = HelperBroker::get('Arrays');
+
         return call_user_func_array(array($helper, $name), $arguments);
     }
 

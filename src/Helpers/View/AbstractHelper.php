@@ -1,5 +1,10 @@
 <?php
 
+namespace Nip\Helpers\View;
+
+use Nip\Helpers\AbstractHelper as NipAbstractHelper;
+use Nip\View;
+
 /**
  * Nip Framework
  *
@@ -8,18 +13,20 @@
  * @license    http://www.opensource.org/licenses/mit-license.php The MIT License
  * @version    SVN: $Id: Abstract.php 14 2009-04-13 11:24:22Z victor.stanciu $
  */
-
-abstract class Nip_Helper_View_Abstract extends Nip\Helpers\AbstractHelper {
+abstract class AbstractHelper extends NipAbstractHelper
+{
 
     protected $_view;
 
-    public function setView(Nip_View $view) {
+    public function setView(View $view)
+    {
         $this->_view = $view;
     }
 
-    public function getView() {
+    public function getView()
+    {
         if (!$this->_view) {
-            $this->_view = Nip_View::instance();
+            $this->_view = View::instance();
         }
         return $this->_view;
     }

@@ -1,23 +1,25 @@
 <?php
 
-class Nip_Helper_View_Icontext extends Nip_Helper_View_Abstract
+namespace Nip\Helpers\View;
+
+class Icontext extends AbstractHelper
 {
 
-	protected $_symbols = array(
-		'unknown' => 'f016',
-		'image' => 'f03e',
-		'refresh' => 'f021',
-		'chevron_right' => 'f054',
-		'twitter' => 'f099',
-		'facebook' => 'f09a'
-	);
+    protected $_symbols = array(
+        'unknown' => 'f016',
+        'image' => 'f03e',
+        'refresh' => 'f021',
+        'chevron_right' => 'f054',
+        'twitter' => 'f099',
+        'facebook' => 'f09a'
+    );
 
-	public function __call($name, $arguments) 
-	{
-		if (!in_array($name, array_keys($this->_symbols))) {
-			$name = 'unknown';
-		}
-		return '&#x' . $this->_symbols[$name] . ';';
-	}
+    public function __call($name, $arguments)
+    {
+        if (!in_array($name, array_keys($this->_symbols))) {
+            $name = 'unknown';
+        }
+        return '&#x' . $this->_symbols[$name] . ';';
+    }
 
 }

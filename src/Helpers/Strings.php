@@ -1,5 +1,5 @@
 <?php
-class Nip_Helper_String extends Nip\Helpers\AbstractHelper {
+class Nip_Helper_Strings extends Nip\Helpers\AbstractHelper {
 
     /**
      * Limits a string to a certain number of words

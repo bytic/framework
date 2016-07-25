@@ -1,16 +1,18 @@
 <?php
 
-class Nip_Helper_View_HTML extends Nip_Helper_View_Abstract
+namespace Nip\Helpers\View;
+
+class HTML extends AbstractHelper
 {
 
     public function booleanOptions($selected = "")
     {
         $return = "";
 
-        $return .= '<option value="0"'.($selected !== "" && $selected == '0' ? ' selected="selected"'
-                    : '').'>'.__("NO").'</option>';
-        $return .= '<option value="1"'.($selected == '1' ? ' selected="selected"'
-                    : '').'>'.__("YES").'</option>';
+        $return .= '<option value="0"' . ($selected !== "" && $selected == '0' ? ' selected="selected"'
+                : '') . '>' . __("NO") . '</option>';
+        $return .= '<option value="1"' . ($selected == '1' ? ' selected="selected"'
+                : '') . '>' . __("YES") . '</option>';
 
         return $return;
     }
@@ -22,33 +24,33 @@ class Nip_Helper_View_HTML extends Nip_Helper_View_Abstract
             $return = '';
             foreach ($options as $key => $option) {
                 if (is_string($key) && is_array($option) && !isset($option[$value])) {
-                    $return .= '<optgroup label="'.$key.'">';
+                    $return .= '<optgroup label="' . $key . '">';
                     $return .= $this->options($option, $value, $string,
                         $selected);
                     $return .= '</optgroup>';
                 } else {
                     if (is_object($option)) {
-                        $oValue    = $option->$value;
-                        $oString   = $option->$string;
+                        $oValue = $option->$value;
+                        $oString = $option->$string;
                         $oDisabled = $option->disabled;
                     } elseif (is_array($option)) {
-                        $oValue    = $option[$value];
-                        $oString   = $option[$string];
+                        $oValue = $option[$value];
+                        $oString = $option[$string];
                         $oDisabled = $option['disabled'];
                     } elseif ($value == true) {
-                        $oValue  = $key;
+                        $oValue = $key;
                         $oString = $option;
                     } else {
-                        $oValue  = $option;
+                        $oValue = $option;
                         $oString = $option;
                     }
 
                     $oSelected = ($oValue == $selected) ? ' selected="selected" '
-                            : '';
+                        : '';
                     $oDisabled = ($oDisabled === true) ? ' disabled="disabled" '
-                            : '';
+                        : '';
 
-                    $return.= '<option value="'.$oValue.'"'.$oSelected.''.$oDisabled.'>'.$oString.'</option>';
+                    $return .= '<option value="' . $oValue . '"' . $oSelected . '' . $oDisabled . '>' . $oString . '</option>';
                 }
             }
             return $return;
@@ -98,19 +100,19 @@ class Nip_Helper_View_HTML extends Nip_Helper_View_Abstract
             $return = '';
             foreach ($options as $option) {
                 if (is_object($option)) {
-                    $oValue  = $option->$value;
+                    $oValue = $option->$value;
                     $oString = $option->$string;
                 } elseif (is_array($option)) {
 
-                    $oValue  = $option[$value];
+                    $oValue = $option[$value];
                     $oString = $option[$string];
                 } else {
 
-                    $oValue  = $option;
+                    $oValue = $option;
                     $oString = $option;
                 }
                 $oSelected = ($oValue == $selected) ? ' checked="checked" ' : '';
-                $return.= '<input type="radio" name="'.$name.'" value="'.$oValue.'" '.$oSelected.' >'.$oString.$separator;
+                $return .= '<input type="radio" name="' . $name . '" value="' . $oValue . '" ' . $oSelected . ' >' . $oString . $separator;
             }
             return $return;
         } else {
@@ -141,20 +143,6 @@ class Nip_Helper_View_HTML extends Nip_Helper_View_Abstract
             }
         }
 
-        return " ".implode(" ", $return);
-    }
-
-    /**
-     * Singleton
-     *
-     * @return Nip_Helper_View_HTML
-     */
-    static public function instance()
-    {
-        static $instance;
-        if (!($instance instanceof self)) {
-            $instance = new self();
-        }
-        return $instance;
+        return " " . implode(" ", $return);
     }
 }

@@ -1,6 +1,8 @@
 <?php
 
-class Nip_Helper_View_Messages extends Nip_Helper_View_Abstract
+namespace Nip\Helpers\View;
+
+class Messages extends AbstractHelper
 {
 
     private $_cssClass = array(
@@ -57,19 +59,5 @@ class Nip_Helper_View_Messages extends Nip_Helper_View_Abstract
         }
 
         return $return;
-    }
-
-    /**
-     * Singleton
-     *
-     * @return Nip_Helper_View_Errors
-     */
-    static public function instance()
-    {
-        static $instance;
-        if (!($instance instanceof self)) {
-            $instance = new self();
-        }
-        return $instance;
     }
 }

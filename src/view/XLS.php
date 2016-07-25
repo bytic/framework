@@ -1,12 +1,17 @@
 <?php
 
-class Nip_View_XLS extends Nip_View
+namespace Nip\View;
+
+use Nip\View;
+use Nip\Request;
+
+class XLS extends View
 {
 
-	public function __construct()
-	{
-		$this->setBasePath(MODULES_PATH . Nip_Request::instance()->module . '/views/');
-	}
+    public function initBasePath()
+    {
+        $this->setBasePath(MODULES_PATH . Request::instance()->getModuleName() . '/views/');
+    }
 
 	public function output($view, $name)
 	{
@@ -22,7 +27,7 @@ class Nip_View_XLS extends Nip_View
 	/**
 	 * Singleton
 	 *
-	 * @return Nip_View_XLS
+	 * @return self
 	 */
 	public static function instance()
 	{

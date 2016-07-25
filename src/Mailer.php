@@ -28,7 +28,7 @@ class Nip_Mailer
 	 * @param string $host
 	 * @param string $username
 	 * @param string $password
-	 * @return Nip_ViewEmail
+	 * @return $this
 	 */
 	public function authSMTP($host, $username, $password)
 	{
@@ -48,7 +48,7 @@ class Nip_Mailer
 
 	/**
 	 * Sets flag to show SMTP debugging information
-	 * @return Nip_ViewEmail
+	 * @return $this
 	 */
 	public function debugSMTP()
 	{
@@ -58,8 +58,8 @@ class Nip_Mailer
 
 	/**
 	 * @param string $address
-	 * @param string $name
-	 * @return Nip_ViewEmail
+	 * @param string|bool $name
+	 * @return $this
 	 */
 	public function setFrom($address, $name = false)
 	{
@@ -72,8 +72,8 @@ class Nip_Mailer
 
 	/**
 	 * @param string $address
-	 * @param string $name
-	 * @return Nip_ViewEmail
+	 * @param string|bool $name
+	 * @return $this
 	 */
 	public function addTo($address, $name = false)
 	{
@@ -84,7 +84,7 @@ class Nip_Mailer
 	/**
 	 * @param string $address
 	 * @param string $name
-	 * @return Nip_ViewEmail
+	 * @return $this
 	 */
 	public function addBCC($address, $name = '')
 	{
@@ -95,7 +95,7 @@ class Nip_Mailer
 	/**
 	 * @param string $address
 	 * @param string $name
-	 * @return Nip_ViewEmail
+	 * @return $this
 	 */
 	public function addReplyTo($address, $name = false)
 	{
@@ -104,7 +104,7 @@ class Nip_Mailer
 	}
 
 	/**
-	 * @return Nip_View_Email
+	 * @return $this
 	 */
 	public function clearAllRecipients()
 	{
@@ -114,7 +114,7 @@ class Nip_Mailer
 
 	/**
 	 * @param string $subject
-	 * @return Nip_ViewEmail
+	 * @return $this
 	 */
 	public function setSubject($subject)
 	{
@@ -127,7 +127,7 @@ class Nip_Mailer
 	 *
 	 * @param string $path
 	 * @param string $name
-	 * @return Nip_ViewEmail
+	 * @return $this
 	 */
 	public function addAttachment($path, $name = '')
 	{

@@ -1,22 +1,24 @@
 <?php
 
+namespace Nip;
+
 /**
- * Class Nip_View
+ * Class View
  *
- * @method \Nip_Helper_View_Breadcrumbs Breadcrumbs()
- * @method \Nip_Helper_View_Doctype Doctype()
- * @method \Nip_Helper_View_Flash Flash()
- * @method \Nip_Helper_View_HTML HTML()
- * @method \Nip_Helper_View_Messages Messages()
- * @method \Nip_Helper_View_Meta Meta()
- * @method \Nip_Helper_View_Paginator Paginator()
- * @method \Nip_Helper_View_Scripts Scripts()
- * @method \Nip_Helper_View_StyleSheets StyleSheets()
- * @method \Nip_Helper_View_TinyMCE TinyMCE()
- * @method \Nip_Helper_View_URL URL()
+ * @method \Nip\Helpers\View\Breadcrumbs Breadcrumbs()
+ * @method \Nip\Helpers\View\Doctype Doctype()
+ * @method \Nip\Helpers\View\Flash Flash()
+ * @method \Nip\Helpers\View\HTML HTML()
+ * @method \Nip\Helpers\View\Messages Messages()
+ * @method \Nip\Helpers\View\Meta Meta()
+ * @method \Nip\Helpers\View\Paginator Paginator()
+ * @method \Nip\Helpers\View\Scripts Scripts()
+ * @method \Nip\Helpers\View\StyleSheets StyleSheets()
+ * @method \Nip\Helpers\View\TinyMCE TinyMCE()
+ * @method \Nip\Helpers\View\Url Url()
  *
  */
-class Nip_View
+class View
 {
     protected $_request = null;
 
@@ -85,8 +87,7 @@ class Nip_View
 
     public function getHelperClass($name)
     {
-        return 'Nip_Helper_View_' . $name;
-
+        return '\Nip\Helpers\View\\' . $name;
     }
 
     public function initHelper($name)
@@ -98,7 +99,7 @@ class Nip_View
     {
         $class = $this->getHelperClass($name);
         $helper = new $class();
-        /** @var Nip_Helper_View_Abstract $helper */
+        /** @var \Nip\Helpers\View\AbstractHelper $helper */
         $helper->setView($this);
         return $helper;
     }
@@ -119,10 +120,18 @@ class Nip_View
      */
     public function getBasePath()
     {
-        if ($this->_basePath === null && defined('VIEWS_PATH')) {
-            $this->_basePath = VIEWS_PATH;
+        if ($this->_basePath === null) {
+            $this->initBasePath();
         }
         return $this->_basePath;
+    }
+
+    public function initBasePath()
+    {
+        if (defined('VIEWS_PATH')) {
+            $this->_basePath = VIEWS_PATH;
+        }
+        $this->_basePath = false;
     }
 
     public function load($view, $variables = array(), $return = false)
@@ -133,7 +142,7 @@ class Nip_View
             return $html;
 
         echo $html;
-        return;
+        return true;
     }
 
     public function getContents($view, $variables = array())
@@ -223,7 +232,7 @@ class Nip_View
     /**
      * Singleton
      *
-     * @return Nip_View
+     * @return self
      */
     public static function instance()
     {

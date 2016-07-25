@@ -1,6 +1,8 @@
 <?php
 
-class Nip_Helper_View_Errors extends Nip_Helper_View_Abstract
+namespace Nip\Helpers\View;
+
+class Errors extends AbstractHelper
 {
 
     public function render($items = array(), $wrap = true)
@@ -11,7 +13,7 @@ class Nip_Helper_View_Errors extends Nip_Helper_View_Abstract
             if ($wrap) {
                 $return .= '<div class="alert alert-danger">';
                 if (count($items) > 1) {
-                    $return .= '<strong>'.__('general.form.errors.explanation').':</strong>';
+                    $return .= '<strong>' . __('general.form.errors.explanation') . ':</strong>';
                     $return .= "<ul>";
                 }
             }
@@ -29,19 +31,5 @@ class Nip_Helper_View_Errors extends Nip_Helper_View_Abstract
         }
 
         return $return;
-    }
-
-    /**
-     * Singleton
-     *
-     * @return Nip_Helper_View_Errors
-     */
-    static public function instance()
-    {
-        static $instance;
-        if (!($instance instanceof self)) {
-            $instance = new self();
-        }
-        return $instance;
     }
 }

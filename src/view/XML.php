@@ -1,6 +1,10 @@
 <?php
 
-class Nip_View_XML extends Nip_View
+namespace Nip\View;
+
+use Nip\View;
+
+class XML extends View
 {
 
 	public function load($view = false, $variables = array(), $return = false)
@@ -12,7 +16,7 @@ class Nip_View_XML extends Nip_View
 	/**
 	 * Singleton
 	 *
-	 * @return Nip_View_XML
+	 * @return self
 	 */
 	public static function instance()
 	{

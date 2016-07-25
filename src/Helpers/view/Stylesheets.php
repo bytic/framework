@@ -1,5 +1,7 @@
 <?php
 
+namespace Nip\Helpers\View;
+
 /**
  * Nip Framework
  *
@@ -8,7 +10,7 @@
  * @license    http://www.opensource.org/licenses/mit-license.php The MIT License
  * @version    SVN: $Id: Stylesheets.php 138 2009-05-27 17:05:36Z victor.stanciu $
  */
-class Nip_Helper_View_StyleSheets extends Nip_Helper_View_Abstract
+class StyleSheets extends AbstractHelper
 {
 
     protected $_files = array();
@@ -123,20 +125,6 @@ class Nip_Helper_View_StyleSheets extends Nip_Helper_View_Abstract
     {
         $this->_pack = $pack;
         return $this;
-    }
-
-    /**
-     * Singleton
-     *
-     * @return Nip_Helper_View_StyleSheets
-     */
-    static public function instance()
-    {
-        static $instance;
-        if (!($instance instanceof self)) {
-            $instance = new self();
-        }
-        return $instance;
     }
 
 }
