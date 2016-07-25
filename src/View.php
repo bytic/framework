@@ -136,6 +136,12 @@ class View
         $this->_basePath = false;
     }
 
+    /**
+     * @param $view
+     * @param array $variables
+     * @param bool $return
+     * @return string
+     */
     public function load($view, $variables = array(), $return = false)
     {
         $html = $this->getContents($view, $variables);
@@ -144,7 +150,6 @@ class View
             return $html;
 
         echo $html;
-        return true;
     }
 
     public function getContents($view, $variables = array())
