@@ -23,30 +23,30 @@ class ViewTest extends \Codeception\TestCase\Test
 
     public function testGetHelperClass()
     {
-        $view = new Nip_View();
+        $view = new View();
 
-        $this->assertEquals('Nip_Helper_View_Messages', $view->getHelperClass('Messages'));
-        $this->assertEquals('Nip_Helper_View_Paginator', $view->getHelperClass('Paginator'));
-        $this->assertEquals('Nip_Helper_View_Scripts', $view->getHelperClass('Scripts'));
-        $this->assertEquals('Nip_Helper_View_TinyMCE', $view->getHelperClass('TinyMCE'));
+        $this->assertEquals('\Nip\Helpers\View\Messages', $view->getHelperClass('Messages'));
+        $this->assertEquals('\Nip\Helpers\View\Paginator', $view->getHelperClass('Paginator'));
+        $this->assertEquals('\Nip\Helpers\View\Scripts', $view->getHelperClass('Scripts'));
+        $this->assertEquals('\Nip\Helpers\View\TinyMCE', $view->getHelperClass('TinyMCE'));
     }
 
     public function testDynamicCallHelper()
     {
-        $view = new Nip_View();
+        $view = new View();
 
-        $this->assertInstanceOf('Nip_Helper_View_Messages', $view->Messages());
-        $this->assertInstanceOf('Nip_Helper_View_Paginator', $view->Paginator());
-        $this->assertInstanceOf('Nip_Helper_View_Scripts', $view->Scripts());
-        $this->assertInstanceOf('Nip_Helper_View_TinyMCE', $view->TinyMCE());
+        $this->assertInstanceOf('Nip\Helpers\View\Messages', $view->Messages());
+        $this->assertInstanceOf('Nip\Helpers\View\Paginator', $view->Paginator());
+        $this->assertInstanceOf('Nip\Helpers\View\Scripts', $view->Scripts());
+        $this->assertInstanceOf('Nip\Helpers\View\TinyMCE', $view->TinyMCE());
     }
 
     public function testHelperInjectView()
     {
-        $view = new Nip_View();
+        $view = new View();
 
-        $this->assertInstanceOf('Nip_View', $view->Messages()->getView());
-        $this->assertInstanceOf('Nip_View', $view->Paginator()->getView());
-        $this->assertInstanceOf('Nip_View', $view->Scripts()->getView());
+        $this->assertInstanceOf('Nip\View', $view->Messages()->getView());
+        $this->assertInstanceOf('Nip\View', $view->Paginator()->getView());
+        $this->assertInstanceOf('Nip\View', $view->Scripts()->getView());
     }
 }
