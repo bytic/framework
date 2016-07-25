@@ -2,8 +2,13 @@
 
 namespace Nip;
 
+use Nip\Dispatcher\ForwardException;
+
 class Dispatcher
 {
+    /**
+     * @var bool|FrontController
+     */
     protected $_frontController = false;
     protected $_request;
 
@@ -33,7 +38,7 @@ class Dispatcher
                     $this->_currentController = $controller;
                     $controller->setRequest($request);
                     $controller->dispatch();
-                } catch (\Nip_Dispatcher_ForwardException $e) {
+                } catch (ForwardException $e) {
                     $return = $this->dispatch();
                     \Nip_Profiler::instance()->end($profilerName);
                     return $return;
@@ -45,7 +50,7 @@ class Dispatcher
                 return $return;
             }
         } else {
-            trigger_error("Maximum number of hops ($this->_maxHops) has been reached for {$this->_module}-{$this->_controller}-{$this->_action}", E_USER_ERROR);
+            trigger_error("Maximum number of hops ($this->_maxHops) has been reached for {$request->getMCA()}", E_USER_ERROR);
         }
 
         \Nip_Profiler::instance()->end($profilerName);
@@ -67,7 +72,7 @@ class Dispatcher
             $this->getRequest()->attributes->add($params);
         }
 
-        throw new \Nip_Dispatcher_ForwardException;
+        throw new ForwardException;
     }
 
     public function generateController($request)
@@ -78,10 +83,10 @@ class Dispatcher
             AutoLoader::instance()->load($controllerClass);
         } catch (AutoLoader\Exception $e) {
             $this->getFrontController()->getTrace()->add($e->getMessage());
-            return;
+            return null;
         }
 
-        /* @var $controllerClass \Nip_Controller */
+        /* @var $controllerClass Controller */
         $controller = $this->newController($controllerClass);
         return $controller;
     }
@@ -89,6 +94,7 @@ class Dispatcher
     public function newController($class)
     {
         $controller = new $class();
+        /** @var Controller $controller */
         $controller->setDispatcher($this);
         return $controller;
     }
@@ -118,6 +124,10 @@ class Dispatcher
         return inflector()->classify($controller);
     }
 
+    /**
+     * @param Request $request
+     * @return string
+     */
     public function getFullControllerNameFromRequest($request)
     {
         $module = $this->formatModuleName($request->getModuleName());
@@ -150,13 +160,29 @@ class Dispatcher
         return $name;
     }
 
+    /**
+     * @return FrontController
+     */
     public function getFrontController()
     {
         if (!$this->_frontController) {
-            $this->_frontController = \Nip_FrontController::instance();
+            $this->initFrontController();
         }
 
         return $this->_frontController;
+    }
+
+    public function initFrontController()
+    {
+        $this->_frontController = $this->newFrontController();
+    }
+
+    /**
+     * @return FrontController
+     */
+    public function newFrontController()
+    {
+        return FrontController::instance();
     }
 
     public function setFrontController(FrontController $controller)
