@@ -117,17 +117,4 @@ class Nip_Helper_Strings extends Nip\Helpers\AbstractHelper {
 			
 		return $return;
 	}
-    
-	/**
-     * Singleton
-     *
-     * @return Nip_Helper_String
-     */
-    static public function instance() {
-        static $instance;
-        if (!($instance instanceof self)) {
-            $instance = new self();
-        }
-        return $instance;
-    }
 }
