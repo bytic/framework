@@ -1,6 +1,6 @@
 <?php
 
-class Nip_Helper_Array extends Nip\Helpers\AbstractHelper
+class Nip_Helper_Arrays extends Nip\Helpers\AbstractHelper
 {
 
     public function toXLS($array, $filename, $labels = array())
@@ -305,20 +305,6 @@ class Nip_Helper_Array extends Nip\Helpers\AbstractHelper
         }
 
         return $merged;
-    }
-
-    /**
-     * Singleton
-     *
-     * @return Nip_Helper_Array
-     */
-    static public function instance()
-    {
-        static $instance;
-        if (!($instance instanceof self)) {
-            $instance = new self();
-        }
-        return $instance;
     }
 
 }
