@@ -37,43 +37,6 @@ class Nip_RecordCollection extends Nip_Collection
         return $this->getManager()->getRelation($name);
     }
 
-//	protected function _getRecords($class, $populate)
-//	{
-//		if (is_null($populate)) {
-//			$populate = true;
-//		}
-//
-//		$return = new Nip_RecordCollection_AssociatedAggregate();
-//
-//		if (count($this)) {
-//			$manager = $this->current()->getManager();
-//
-//            list($type, $params) = $manager->hasRelation($class);
-//            if ($type == 'belongsTo') {
-//                $manager = call_user_func(array($params['class'], "instance"));
-//                $fkList = Nip_Helper_Array::instance()->pluck($this, $params['fk']);
-//
-//                $belongsTo = $manager->findByPrimary($fkList);
-//                foreach ($this as $item) {
-//                    $value = $belongsTo[$item->$params['fk']];
-//                    $item->setAssociated($class, $value ? $value : false);
-//                }
-//                foreach ($belongsTo as $item) {
-//                    $return->add($item);
-//                }
-//            } else {
-//                $return->setParams($params);
-//                $return->setModels($this);
-//
-//                if ($populate) {
-//                    $return->populate();
-//                }
-//            }
-//        }
-//
-//        return $return;
-//	}
-
     public function toJSON()
     {
         $return = array();
@@ -154,7 +117,7 @@ class Nip_RecordCollection extends Nip_Collection
                 }
             } else {
                 $pk = $this->getManager()->getPrimaryKey();
-                $pk_list = Nip_Helper_Array::instance()->pluck($this, $pk);
+                $pk_list = \Nip\HelperBroker::get('Arrays')->pluck($this, $pk);
 
                 $query = $this->getManager()->newQuery("delete");
                 $query->where("$pk IN ?", $pk_list);

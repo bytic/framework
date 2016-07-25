@@ -133,7 +133,7 @@ if (!function_exists("pluck")) {
 
     function pluck($array, $property)
     {
-        return Nip_Helper_Array::instance()->pluck($array, $property);
+        return \Nip\HelperBroker::get('Arrays')->pluck($array, $property);
     }
 
 }

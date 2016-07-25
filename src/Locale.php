@@ -97,7 +97,7 @@ class Nip_Locale
                 $data = $this->_getDataFromFile($_import);
             }
             if (isset ($_data)) {
-                $data = Nip_Helper_Array::instance()->merge_distinct($data, $_data);
+                $data = \Nip\HelperBroker::get('Arrays')->merge_distinct($data, $_data);
             }
         } else {
             trigger_error("no locale data file at [{$file}]", E_USER_NOTICE);
