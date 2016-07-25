@@ -1,5 +1,8 @@
 <?php
-class Nip_SoapClient extends SoapClient {
+
+namespace Nip\Soap;
+
+class SoapClient extends \SoapClient {
 
     public function __construct($wsdl, $options) {
         $url = parse_url($wsdl);
