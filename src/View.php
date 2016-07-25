@@ -8,6 +8,8 @@ namespace Nip;
  * @method \Nip\Helpers\View\Breadcrumbs Breadcrumbs()
  * @method \Nip\Helpers\View\Doctype Doctype()
  * @method \Nip\Helpers\View\Flash Flash()
+ * @method \Nip\Helpers\View\FacebookMeta FacebookMeta()
+ * @method \Nip\Helpers\View\GoogleAnalytics GoogleAnalytics()
  * @method \Nip\Helpers\View\HTML HTML()
  * @method \Nip\Helpers\View\Messages Messages()
  * @method \Nip\Helpers\View\Meta Meta()
