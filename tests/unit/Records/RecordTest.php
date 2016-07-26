@@ -3,9 +3,9 @@
 namespace Nip\Tests\Records;
 
 use Mockery as m;
-use \Nip\Database\Connection;
-use Nip_Records;
-use Nip_Record;
+use Nip\Database\Connection;
+use Nip\Records\RecordManager as Records;
+use Nip\Records\Record;
 
 class RecordTest extends \Codeception\TestCase\Test
 {
@@ -15,7 +15,7 @@ class RecordTest extends \Codeception\TestCase\Test
     protected $tester;
 
     /**
-     * @var \Nip_Record
+     * @var Record
      */
     protected $_object;
 
@@ -23,11 +23,11 @@ class RecordTest extends \Codeception\TestCase\Test
     {
         $wrapper = new Connection();
 
-        $manager = new Nip_Records();
+        $manager = new Records();
         $manager->setDB($wrapper);
         $manager->setTable('pages');
 
-        $this->_object = new Nip_Record();
+        $this->_object = new Record();
         $this->_object->setManager($manager);
     }
 
@@ -39,9 +39,9 @@ class RecordTest extends \Codeception\TestCase\Test
 
     public function testNewRelation()
     {
-        $users = m::namedMock('Users', 'Nip_Records')->shouldDeferMissing()
+        $users = m::namedMock('Users', 'Nip\Records\RecordManager')->shouldDeferMissing()
             ->shouldReceive('instance')->andReturnSelf()->getMock();
-        m::namedMock('User', 'Nip_Record');
+        m::namedMock('User', 'Record');
 
         $this->_object->getManager()->initRelationsFromArray('belongsTo', array('User'));
 

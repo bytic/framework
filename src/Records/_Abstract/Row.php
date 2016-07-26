@@ -2,6 +2,7 @@
 
 namespace Nip\Records\_Abstract;
 
+use Nip\HelperBroker;
 use Nip\Records\Relations\Relation;
 
 /**
@@ -50,12 +51,7 @@ abstract class Row extends \Nip_Object
         }
 
         if ($name === ucfirst($name)) {
-            $class = 'Nip_Helper_' . $name;
-
-            if (!isset($this->helpers[$class])) {
-                $this->_helpers[$class] = new $class;
-            }
-            return $this->_helpers[$class];
+            return $this->getHelper($name);
         }
 
         trigger_error("Call to undefined method $name", E_USER_ERROR);
@@ -80,6 +76,9 @@ abstract class Row extends \Nip_Object
         $this->_name = $name;
     }
 
+    /**
+     * @param bool|array $data
+     */
     public function writeDBData($data = false)
     {
         foreach ($data as $key => $value) {
@@ -158,6 +157,9 @@ abstract class Row extends \Nip_Object
         return $data;
     }
 
+    /**
+     * @param bool|array $data
+     */
     public function writeData($data = false)
     {
         foreach ($data as $key => $value) {
@@ -204,6 +206,11 @@ abstract class Row extends \Nip_Object
     public function inflectManagerName()
     {
         return ucfirst(inflector()->pluralize(get_class($this)));
+    }
+
+    public function getHelper($name)
+    {
+        return HelperBroker::get($name);
     }
 
     /**

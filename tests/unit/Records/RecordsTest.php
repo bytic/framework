@@ -3,8 +3,9 @@
 namespace Nip\Tests\Records;
 
 use Mockery as m;
-use Nip_Records;
-use \Nip\Database\Connection;
+use Nip\Records\RecordManager as Records;
+use Nip\Records\Record;
+use Nip\Database\Connection;
 use Nip_RecordCollection as RecordCollection;
 
 class RecordsTest extends \Codeception\TestCase\Test
@@ -15,7 +16,7 @@ class RecordsTest extends \Codeception\TestCase\Test
     protected $tester;
 
     /**
-     * @var \Nip_Records
+     * @var Records
      */
     protected $_object;
 
@@ -23,7 +24,7 @@ class RecordsTest extends \Codeception\TestCase\Test
     {
         $wrapper = new Connection();
 
-        $this->_object = new Nip_Records();
+        $this->_object = new Records();
         $this->_object->setDB($wrapper);
         $this->_object->setTable('pages');
     }
@@ -85,12 +86,12 @@ class RecordsTest extends \Codeception\TestCase\Test
 
     public function testInitRelationsFromArrayBelongsToSimple()
     {
-        $users = m::namedMock('Users', 'Nip_Records')->shouldDeferMissing()
+        $users = m::namedMock('Users', 'Records')->shouldDeferMissing()
             ->shouldReceive('instance')->andReturnSelf()
             ->getMock();
         $users->setPrimaryFK('id_user');
-        m::namedMock('User', 'Nip_Record');
-        m::namedMock('Articles', 'Nip_Records');
+        m::namedMock('User', 'Record');
+        m::namedMock('Articles', 'Records');
 
         $this->_object->setPrimaryFK('id_object');
 
@@ -110,7 +111,7 @@ class RecordsTest extends \Codeception\TestCase\Test
     {
         $this->assertTrue($this->_object->hasRelation($name));
         $this->assertInstanceOf('Nip\Records\Relations\BelongsTo', $this->_object->getRelation($name));
-        $this->assertInstanceOf('Nip_Records', $this->_object->getRelation($name)->getWith());
+        $this->assertInstanceOf('Nip\Records\RecordManager', $this->_object->getRelation($name)->getWith());
         $this->assertEquals($this->_object->getRelation($name)->getWith()->getPrimaryFK(), $this->_object->getRelation($name)->getFK());
     }
 

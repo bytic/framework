@@ -4,6 +4,8 @@ namespace Nip\Tests\Records\Relations;
 
 use Nip\Records\Relations\BelongsTo;
 use Mockery as m;
+use Nip\Records\RecordManager as Records;
+use Nip\Records\Record;
 
 class BelongsToTest extends \Codeception\TestCase\Test
 {
@@ -22,16 +24,16 @@ class BelongsToTest extends \Codeception\TestCase\Test
         $this->_object = new BelongsTo();
         $this->_object->setName('User');
 
-        $this->_user = new \Nip_Record();
+        $this->_user = new Record();
 
-        $users = m::namedMock('Users', 'Nip_Records')->shouldDeferMissing()
+        $users = m::namedMock('Users', 'Nip\Records\RecordManager')->shouldDeferMissing()
             ->shouldReceive('instance')->andReturnSelf()
             ->shouldReceive('findOne')->andReturn($this->_user)->getMock();
         $users->setPrimaryFK('id_user');
-//        m::namedMock('User', 'Nip_Record');
+//        m::namedMock('User', 'Record');
 
         $this->_object->setWith($users);
-        $article = new \Nip_Record();
+        $article = new Record();
         $article->id_user = 3;
         $this->_object->setItem($article);
     }
