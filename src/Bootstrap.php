@@ -204,7 +204,9 @@ class Bootstrap
                 array('domain' => '.' . $domain)
             );
         }
-        $this->_sessionManager->init();
+        if ($this->getFrontController()->getRequest()->isCLI() == false) {
+            $this->_sessionManager->init();
+        }
     }
 
     public function initSession()
