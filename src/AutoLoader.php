@@ -8,16 +8,7 @@ use Nip\AutoLoader\Exception as AutoloadException;
 function _autoload($class)
 {
     $autoloader = AutoLoader::instance();
-
-    try {
-        $autoloader->load($class);
-    } catch (AutoloadException $ex) {
-        if ($autoloader->isFatal()) {
-            trigger_error($ex, E_USER_ERROR);
-        } else {
-            trigger_error($ex, E_USER_NOTICE);
-        }
-    }
+    $autoloader->autoload($class);
 }
 
 spl_autoload_register('Nip\_autoload');
@@ -54,6 +45,18 @@ class AutoLoader
     public function isClass($class)
     {
         return is_file($this->getClassLocation($class));
+    }
+
+    public function autoload($class)
+    {
+        try {
+            return $this->load($class);
+        } catch (AutoloadException $ex) {
+            if ($this->isFatal()) {
+                trigger_error($ex, E_USER_ERROR);
+            }
+        }
+        return false;
     }
 
     public function load($class)

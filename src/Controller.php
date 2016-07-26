@@ -184,6 +184,15 @@ class Controller
     }
 
     /**
+     * @return string
+     */
+    public function getAction()
+    {
+        return $this->_action;
+    }
+
+
+    /**
      * Called before $this->action
      */
     protected function beforeAction()
