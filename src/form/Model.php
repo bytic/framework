@@ -1,11 +1,13 @@
 <?php
 
+use Nip\Records\Record as Record;
+
 class Nip_Form_Model extends Nip_Form
 {
 
     protected $_model;
 
-    public function setModel(Nip_Record $model)
+    public function setModel(Record $model)
     {
         $this->_model = $model;
         $this->getDataFromModel();

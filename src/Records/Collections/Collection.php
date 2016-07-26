@@ -1,6 +1,6 @@
 <?php
 
-use Nip_Record as Record;
+use Nip\Records\Record as Record;
 use Nip\Records\_Abstract\Table as Records;
 
 class Nip_RecordCollection extends Nip_Collection

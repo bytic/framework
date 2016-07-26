@@ -2,7 +2,7 @@
 
 namespace Nip\Records\Relations;
 
-use Nip_Record as Record;
+use Nip\Records\Record as Record;
 use Nip_RecordCollection as RecordCollection;
 use Nip\Records\Collections\Associated as AssociatedCollection;
 

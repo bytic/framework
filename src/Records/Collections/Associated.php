@@ -2,7 +2,7 @@
 
 namespace Nip\Records\Collections;
 
-use Nip_Record as Record;
+use Nip\Records\Record as Record;
 use Nip\Records\Relations\HasOneOrMany as Relation;
 use Nip_RecordCollection as RecordCollection;
 

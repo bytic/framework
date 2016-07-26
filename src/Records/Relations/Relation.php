@@ -6,9 +6,9 @@ use Nip\Database\Connection;
 use Nip\HelperBroker;
 use Nip\Records\_Abstract\Table;
 use Nip_DB_Query_Select as Query;
-use Nip_Record as Record;
+use Nip\Records\Record as Record;
 use Nip_RecordCollection as RecordCollection;
-use Nip_Records as Records;
+use Nip\Records\RecordManager as Records;
 
 abstract class Relation
 {

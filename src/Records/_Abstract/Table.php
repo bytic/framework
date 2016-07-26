@@ -7,7 +7,7 @@ use Nip\Database\Query\_Abstract as Query;
 use Nip\HelperBroker;
 use Nip\Paginator;
 use Nip\Records\Relations\Relation;
-use Nip_Record as Record;
+use Nip\Records\Record as Record;
 use Nip_RecordCollection as RecordCollection;
 
 abstract class Table

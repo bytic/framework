@@ -157,7 +157,7 @@ abstract class Row extends \Nip_Object
     }
 
     /**
-     * @return \Nip_Records
+     * @return \Nip\Records\RecordManager
      */
     public function getManager()
     {
