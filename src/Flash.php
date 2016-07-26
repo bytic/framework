@@ -69,7 +69,7 @@ class Nip_Flash {
 	/**
 	 * Returns static instance
 	 *
-	 * @return Nip_Flash
+	 * @return self
 	 */
 	static public function &instance() {
 		static $instance;

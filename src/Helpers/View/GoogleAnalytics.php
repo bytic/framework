@@ -8,28 +8,41 @@ class GoogleAnalytics extends AbstractHelper
 {
 
     protected $_UA = null;
+    protected $_domain = null;
+
     protected $page;
     protected $_operations = array();
 
-    public $transactions = array();
+    public $transactions = null;
+
+    protected $flashMemory = null;
+
+    public function getUA()
+    {
+        if ($this->_UA == null) {
+            $this->setUA(Nip_Config::instance()->ANALYTICS->UA);
+        }
+
+        return $this->_UA;
+    }
 
     public function setUA($code)
     {
         $this->_UA = $code;
     }
 
-    public function getUA()
-    {
-        if ($this->_UA == null) {
-            $this->_UA = Nip_Config::instance()->ANALYTICS->UA;
-        }
-
-        return $this->_UA;
-    }
-
     public function getDomain()
     {
-        return Nip_Config::instance()->ANALYTICS->domain;
+        if ($this->_domain == null) {
+            $this->setDomain(Nip_Config::instance()->ANALYTICS->domain);
+        }
+
+        return $this->_domain;
+    }
+
+    public function setDomain($domain)
+    {
+        $this->_domain = $domain;
     }
 
     public function addOperation($method, $params = array(), $position = 'below')
@@ -57,7 +70,7 @@ class GoogleAnalytics extends AbstractHelper
 
         $this->transactions[$order->orderId] = $order;
 
-        flash_add("analytics.transactions", $this->transactions);
+        $this->getFlashMemory()->add("analytics.transactions", $this->transactions);
     }
 
     /**
@@ -75,13 +88,20 @@ class GoogleAnalytics extends AbstractHelper
 
         $this->transactions[$item->orderId]->items[] = $item;
 
-        flash_add("analytics.transactions", json_encode($this->transactions));
+        $this->getFlashMemory()->add("analytics.transactions", json_encode($this->transactions));
     }
 
     public function getTransactions()
     {
-        $this->transactions = json_decode(flash_get("analytics.transactions"));
+        if ($this->transactions === null) {
+            $this->initTransactions();
+        }
         return $this->transactions;
+    }
+
+    public function initTransactions()
+    {
+        $this->transactions = json_decode($this->getFlashMemory()->get("analytics.transactions"));
     }
 
     public function parseTransactions($prefix = '')
@@ -179,4 +199,30 @@ class GoogleAnalytics extends AbstractHelper
         }
         return "'{$param}'";
     }
+
+    /**
+     * @return \Nip_Flash
+     */
+    public function getFlashMemory()
+    {
+        if ($this->flashMemory == null) {
+            $this->initFlashMemory();
+        }
+        return $this->flashMemory;
+    }
+
+    public function initFlashMemory()
+    {
+        $this->flashMemory = \Nip_Flash::instance();
+    }
+
+    /**
+     * @param \Nip_Flash $flashMemory
+     */
+    public function setFlashMemory($flashMemory)
+    {
+        $this->flashMemory = $flashMemory;
+    }
+
+
 }
