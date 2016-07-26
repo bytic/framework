@@ -41,7 +41,7 @@ class Nip_I18n_Backend_File extends Nip_I18n_Backend_Abstract
             $this->parseFile($file, $language);
             ob_end_clean();
         } else {
-            trigger_error("Language file [".$file."] does not exist", E_USER_ERROR);
+            trigger_error("Language file [".$file."][".$language."] does not exist", E_USER_ERROR);
         }
 
         return $this;

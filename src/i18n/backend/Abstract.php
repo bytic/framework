@@ -34,7 +34,7 @@ abstract class Nip_I18n_Backend_Abstract {
             return $return;
         }
 
-        trigger_error("Dictionary entry for [". $slug ."] does not exist.", E_USER_WARNING);
+        trigger_error("Dictionary entry for [". $slug ."][". $language ."] does not exist.", E_USER_WARNING);
         return $slug;
     }
 
