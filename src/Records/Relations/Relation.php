@@ -5,10 +5,10 @@ namespace Nip\Records\Relations;
 use Nip\Database\Connection;
 use Nip\HelperBroker;
 use Nip\Records\_Abstract\Table;
-use Nip_DB_Query_Select as Query;
 use Nip\Records\Record as Record;
-use Nip_RecordCollection as RecordCollection;
 use Nip\Records\RecordManager as Records;
+use Nip_DB_Query_Select as Query;
+use Nip_RecordCollection as RecordCollection;
 
 abstract class Relation
 {
@@ -377,4 +377,8 @@ abstract class Relation
      * @return array
      */
     abstract protected function buildDictionary(RecordCollection $collection);
+
+    public function save()
+    {
+    }
 }

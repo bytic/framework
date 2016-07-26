@@ -116,6 +116,15 @@ abstract class Row extends \Nip_Object
         $this->getManager()->save($this);
     }
 
+    public function saveRelations()
+    {
+        $relations = $this->getRelations();
+        foreach ($relations as $relation) {
+            /** @var Relation $relation */
+            $relation->save();
+        }
+    }
+
     public function delete()
     {
         $this->getManager()->delete($this);
@@ -195,6 +204,14 @@ abstract class Row extends \Nip_Object
     public function inflectManagerName()
     {
         return ucfirst(inflector()->pluralize(get_class($this)));
+    }
+
+    /**
+     * @return array
+     */
+    public function getRelations()
+    {
+        return $this->relations;
     }
 
     /**
