@@ -32,7 +32,7 @@ class GoogleAnalytics extends AbstractHelper
         return Nip_Config::instance()->ANALYTICS->domain;
     }
 
-    public function addOperation($method, $params, $position = 'below')
+    public function addOperation($method, $params = array(), $position = 'below')
     {
         if ($position == 'prepend') {
             array_unshift($this->_operations, array($method, $params));
@@ -49,7 +49,7 @@ class GoogleAnalytics extends AbstractHelper
      */
     public function addTransaction($data = array())
     {
-        $order = new stdClass();
+        $order = new \stdClass();
 
         foreach ($data as $key => $value) {
             $order->$key = $value;
@@ -67,7 +67,7 @@ class GoogleAnalytics extends AbstractHelper
      */
     public function addTransactionItem($data = array())
     {
-        $item = new stdClass();
+        $item = new \stdClass();
 
         foreach ($data as $key => $value) {
             $item->$key = $value;
