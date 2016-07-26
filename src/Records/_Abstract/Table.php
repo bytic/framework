@@ -1015,4 +1015,8 @@ abstract class Table
         return $this;
     }
 
+    public static function getRootNamespace()
+    {
+        return 'App\Models\\';
+    }
 }
