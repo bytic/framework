@@ -229,24 +229,4 @@ abstract class Row extends \Nip_Object
         return $relation;
     }
 
-    protected function __getRecords($name, $populate)
-    {
-
-
-        if (!isset($this->_associated[$name])) {
-            if ($type == 'belongsTo') {
-                $manager = call_user_func(array($params['class'], "instance"));
-                $this->setAssociated($name, $manager->findOne($this->$params['fk']));
-            } else {
-                $collectionClass = $params['associatedClass'] ? $params['associatedClass'] : $this->getManager()->getAssociatedClass($type,
-                    $name);
-                $collection = new $collectionClass();
-
-                $collection->setParams($params);
-                $collection->setItem($this);
-
-                $this->setAssociated($name, $collection);
-            }
-        }
-    }
 }
