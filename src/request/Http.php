@@ -422,6 +422,18 @@ class Http
         return false;
     }
 
+    public function isConsole()
+    {
+        if (php_sapi_name() === 'cli') {
+            return true;
+        }
+        if (php_sapi_name() === 'cgi-fcgi') {
+            return true;
+        }
+
+        return false;
+    }
+
     /**
      * @return mixed
      */
