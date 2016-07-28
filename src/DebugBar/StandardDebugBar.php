@@ -26,4 +26,15 @@ class StandardDebugBar extends DebugBar
         $this->addCollector(new ExceptionsCollector());
         $this->addCollector(new QueryCollector());
     }
+
+    public function initDatabaseAdapter($adapter)
+    {
+        $profiler = $adapter->newProfiler()->setEnabled(true);
+        $writer = $profiler->newWriter('DebugBar');
+
+        /** @var ProfilerDebugBar $writer */
+        $writer->setCollector($this->getCollector('queries'));
+        $profiler->addWriter($writer);
+        $adapter->setProfiler($profiler);
+    }
 }
