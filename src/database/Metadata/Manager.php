@@ -1,6 +1,8 @@
 <?php
 
-class Nip_Db_Metadata
+namespace Nip\Database\Metadata;
+
+class Manager
 {
 
     protected $_connection;
@@ -32,7 +34,7 @@ class Nip_Db_Metadata
     public function getCache()
     {
         if (!$this->_cache) {
-            $this->_cache = new Nip_Db_Metadata_Cache();
+            $this->_cache = new Cache();
             $this->_cache->setMetadata($this);
         }
 

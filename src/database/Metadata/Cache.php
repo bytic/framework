@@ -1,6 +1,8 @@
 <?php
 
-class Nip_Db_Metadata_Cache extends \Nip\Cache\Manager
+namespace Nip\Database\Metadata;
+
+class Cache extends \Nip\Cache\Manager
 {
 
     protected $_ttl = 10*24*60*60;
@@ -45,7 +47,7 @@ class Nip_Db_Metadata_Cache extends \Nip\Cache\Manager
     }
 
     /**
-     * @return Nip_Db_Metadata
+     * @return Data
      */
     public function getMetadata()
     {

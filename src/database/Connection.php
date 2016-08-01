@@ -96,12 +96,12 @@ class Connection
     }
 
     /**
-     * @return \Nip_Db_Metadata
+     * @return Metadata\Manager
      */
     public function getMetadata()
     {
         if (!$this->metadata) {
-            $this->metadata = new \Nip_Db_Metadata();
+            $this->metadata = new Metadata\Manager();
             $this->metadata->setConnection($this);
         }
         return $this->metadata;
