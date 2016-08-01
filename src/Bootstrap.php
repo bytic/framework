@@ -163,6 +163,7 @@ class Bootstrap
     public function initRequest()
     {
         $request = Request::createFromGlobals();
+        Request::instance($request);
         return $request;
     }
 
