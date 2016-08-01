@@ -2,7 +2,7 @@
 
 namespace Nip\Tests\Records\Collections;
 
-use Nip_RecordCollection;
+use Nip\Records\Collections\Collection as RecordCollection;
 use Nip_Records;
 
 class RecordCollectionTest extends \Codeception\TestCase\Test
@@ -13,7 +13,7 @@ class RecordCollectionTest extends \Codeception\TestCase\Test
     protected $tester;
 
     /**
-     * @var \Nip_RecordCollection
+     * @var RecordCollection
      */
     protected $_object;
 
@@ -27,7 +27,7 @@ class RecordCollectionTest extends \Codeception\TestCase\Test
 
 //	public function setUp()
 //	{
-//		$this->_collection = new Nip_RecordCollection();
+//		$this->_collection = new RecordCollection();
 //		$this->_records = new Nip_Records();
 //
 //		$this->_joe = $this->_records->getNew(array("id_company" => rand(999, 9999), "email" => rand(9999, 99999)));

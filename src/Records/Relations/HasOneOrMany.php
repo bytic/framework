@@ -3,7 +3,7 @@
 namespace Nip\Records\Relations;
 
 use Nip\Records\Record as Record;
-use Nip_RecordCollection as RecordCollection;
+use Nip\Records\Collections\Collection as RecordCollection;
 use Nip\Records\Collections\Associated as AssociatedCollection;
 
 abstract class HasOneOrMany extends Relation

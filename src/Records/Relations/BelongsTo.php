@@ -2,7 +2,7 @@
 
 namespace Nip\Records\Relations;
 
-use Nip_RecordCollection as RecordCollection;
+use Nip\Records\Collections\Collection as RecordCollection;
 
 class BelongsTo extends Relation
 {

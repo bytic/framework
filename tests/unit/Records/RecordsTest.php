@@ -6,7 +6,7 @@ use Mockery as m;
 use Nip\Records\RecordManager as Records;
 use Nip\Records\Record;
 use Nip\Database\Connection;
-use Nip_RecordCollection as RecordCollection;
+use Nip\Records\Collections\Collection as RecordCollection;
 
 class RecordsTest extends \Codeception\TestCase\Test
 {
@@ -118,7 +118,7 @@ class RecordsTest extends \Codeception\TestCase\Test
     public function testNewCollection()
     {
         $collection = $this->_object->newCollection();
-        $this->assertInstanceOf('Nip_RecordCollection', $collection);
+        $this->assertInstanceOf('Nip\Records\Collections\Collection', $collection);
         $this->assertSame($this->_object, $collection->getManager());
     }
 

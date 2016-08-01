@@ -8,7 +8,7 @@ use Nip\Records\_Abstract\Table;
 use Nip\Records\_Abstract\Row as Record;
 use Nip\Records\RecordManager as Records;
 use Nip\Database\Query\Select as Query;
-use Nip_RecordCollection as RecordCollection;
+use Nip\Records\Collections\Collection as RecordCollection;
 
 abstract class Relation
 {

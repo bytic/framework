@@ -4,7 +4,7 @@ namespace Nip\Records\Collections;
 
 use Nip\Records\Record as Record;
 use Nip\Records\Relations\HasOneOrMany as Relation;
-use Nip_RecordCollection as RecordCollection;
+use Nip\Records\Collections\Collection as RecordCollection;
 
 class Associated extends RecordCollection
 {

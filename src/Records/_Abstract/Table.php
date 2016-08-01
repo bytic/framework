@@ -13,7 +13,7 @@ use Nip\HelperBroker;
 use Nip\Paginator;
 use Nip\Records\Relations\Relation;
 use Nip\Records\_Abstract\Row as Record;
-use Nip_RecordCollection as RecordCollection;
+use Nip\Records\Collections\Collection as RecordCollection;
 
 abstract class Table
 {
@@ -23,7 +23,7 @@ abstract class Table
      */
     protected $_db = null;
 
-    protected $_collectionClass = 'Nip_RecordCollection';
+    protected $_collectionClass = '\Nip\Records\Collections\Collection';
     protected $_helpers = array();
 
     protected $_table = null;

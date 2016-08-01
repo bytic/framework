@@ -1,9 +1,11 @@
 <?php
 
+namespace Nip\Records\Collections;
+
 use Nip\Records\Record as Record;
 use Nip\Records\_Abstract\Table as Records;
 
-class Nip_RecordCollection extends Nip_Collection
+class Collection extends \Nip_Collection
 {
     protected $_indexKey = false;
 
@@ -106,7 +108,7 @@ class Nip_RecordCollection extends Nip_Collection
      * Otherwise, a delete query is built for the entire collection
      *
      * @param bool $each
-     * @return Nip_RecordCollection
+     * @return $this
      */
     public function delete($each = false)
     {
