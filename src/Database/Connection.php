@@ -34,7 +34,7 @@ class Connection
             try {
                 $this->_connection = $this->getAdapter()->connect($host, $user, $password, $database, $newLink);
                 $this->setDatabase($database);
-            } catch (\Nip_DB_Exception $e) {
+            } catch (Exception $e) {
                 $e->log();
             }
         }
@@ -156,7 +156,7 @@ class Connection
      * Executes SQL query
      *
      * @param mixed $query
-     * @return \Nip_DB_Result
+     * @return Result
      */
     public function execute($query)
     {
@@ -164,7 +164,7 @@ class Connection
 
         $query = (string)$query;
         $query = $this->getAdapter()->execute($query);
-        $result = new \Nip_DB_Result($query, $this->getAdapter());
+        $result = new Result($query, $this->getAdapter());
 
         return $result;
     }
@@ -195,7 +195,7 @@ class Connection
         if ($this->_connection) {
             try {
                 $this->getAdapter()->disconnect();
-            } catch (\Nip_DB_Exception $e) {
+            } catch (Exception $e) {
                 $e->log();
             }
         }

@@ -1,6 +1,8 @@
 <?php
 
-class Nip_DB_Result
+namespace Nip\Database;
+
+class Result
 {
 
 	protected $_data;
@@ -28,7 +30,7 @@ class Nip_DB_Result
 	{
 		try {
 			return $this->_adapter->fetchAssoc($this->_data);
-		} catch (Nip_DB_Exception $e) {
+		} catch (Exception $e) {
 			$e->log();
 		}
 	}
