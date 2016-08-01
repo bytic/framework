@@ -330,7 +330,7 @@ abstract class Relation
 
     /**
      * @param RecordCollection $collection
-     * @return \Nip_DB_Query_Select
+     * @return Query
      */
     public function getEagerQuery(RecordCollection $collection)
     {

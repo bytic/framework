@@ -39,7 +39,7 @@ class Nip_Record_Sorter
 	}
 
 	/**
-	 * @param Nip_DB_Query_Select $query
+	 * @param \Nip\Database\Query\Select $query
 	 * @return Nip_Record_Sorter
 	 */
 	public function setQuery($query)
@@ -49,7 +49,7 @@ class Nip_Record_Sorter
 	}
 
 	/**
-	 * @return Nip_DB_Query_Select
+	 * @return \Nip\Database\Query\Select
 	 */
 	public function getQuery()
 	{
