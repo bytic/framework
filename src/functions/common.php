@@ -51,7 +51,7 @@ function db()
  */
 function inflector()
 {
-    return Nip_Inflector::instance();
+    return Nip\Inflector\Inflector::instance();
 }
 
 function encode_url($input)

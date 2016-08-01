@@ -1,6 +1,8 @@
 <?php
 
-class Nip_Inflector
+namespace Nip\Inflector;
+
+class Inflector
 {
     protected $plural = array(
         '/(quiz)$/i' => '\1zes',

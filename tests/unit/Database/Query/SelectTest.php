@@ -28,7 +28,7 @@ class SelectTest extends \Codeception\TestCase\Test
 		parent::setUp();
 		$this->_object = new Nip_DB_Query_Select();
 
-        $adapterMock = m::mock('Nip_DB_Adapters_MySQLi')->shouldDeferMissing();
+        $adapterMock = m::mock('Nip\Database\Adapters\MySQLi')->shouldDeferMissing();
         $adapterMock->shouldReceive('cleanData')->andReturnUsing(function ($data) {
             return $data;
         });

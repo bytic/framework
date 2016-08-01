@@ -26,7 +26,7 @@ class ConditionTest extends \Codeception\TestCase\Test
     {
         parent::setUp();
 
-        $adapterMock = m::mock('Nip_DB_Adapters_MySQLi')->shouldDeferMissing();
+        $adapterMock = m::mock('Nip\Database\Adapters\MySQLi')->shouldDeferMissing();
         $adapterMock->shouldReceive('cleanData')->andReturnUsing(function ($data) {
             return $data;
         });

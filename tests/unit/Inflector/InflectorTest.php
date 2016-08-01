@@ -1,11 +1,13 @@
 <?php
 
+namespace Nip\Tests\Inflector;
+
 class InflectorTest extends  \Codeception\TestCase\Test
 {
 
 	protected function setUp()
 	{
-		$this->_inflector = Nip_Inflector::instance();
+		$this->_inflector = \Nip\Inflector\Inflector::instance();
 	}
 
 	public function providerClassTable()
