@@ -34,6 +34,12 @@ class Manager
         return $this->getData($cacheId);
     }
 
+    public function set($cacheId, $data)
+    {
+        $this->_data[$cacheId] = $data;
+        return $this;
+    }
+
     public function reload($cacheId)
     {
     }
