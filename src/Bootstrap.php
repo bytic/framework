@@ -206,7 +206,7 @@ class Bootstrap
         }
 
         if ($domain != 'localhost') {
-            \Nip_Cookie_Jar::instance()->setDefaults(
+            \Nip\Cookie\Jar::instance()->setDefaults(
                 array('domain' => '.' . $domain)
             );
         }

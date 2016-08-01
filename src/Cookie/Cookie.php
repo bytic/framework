@@ -1,6 +1,8 @@
 <?php
 
-class Nip_Cookie {
+namespace Nip\Cookie;
+
+class Cookie {
 
     protected $name;
     protected $value;

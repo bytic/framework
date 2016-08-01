@@ -1,6 +1,8 @@
 <?php
 
-class Nip_Cookie_Jar {
+namespace Nip\Cookie;
+
+class Jar {
 
     protected $_defaults;
 
@@ -11,10 +13,10 @@ class Nip_Cookie_Jar {
     }
 
     /**
-     * @return Nip_Cookie
+     * @return Cookie
     */
     public function newCookie() {
-        $cookie = new Nip_Cookie();
+        $cookie = new Cookie();
         $defaults = $this->getDefaults();
         $cookie->setPath($defaults['path']);
         $cookie->setDomain($defaults['domain']);
@@ -49,7 +51,7 @@ class Nip_Cookie_Jar {
 	/**
 	 * Singleton
 	 *
-	 * @return Nip_Cookie_Jar
+	 * @return self
 	 */
     public static function instance() {
         if (!self::$instance instanceof self) {
