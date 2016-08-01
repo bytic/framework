@@ -1,6 +1,6 @@
 <?php
 
-class Nip_Db_Metadata_Cache extends Nip_Cache_Manager
+class Nip_Db_Metadata_Cache extends \Nip\Cache\Manager
 {
 
     protected $_ttl = 10*24*60*60;
