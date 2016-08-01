@@ -1,8 +1,9 @@
 <?php
 
-use Nip\Database\Query\_Abstract;
 
-class Nip_DB_Query_Insert extends _Abstract
+namespace Nip\Database\Query;
+
+class Insert extends AbstractQuery
 {
 
     protected $_cols;
@@ -53,7 +54,7 @@ class Nip_DB_Query_Insert extends _Abstract
 
     public function parseValues()
     {
-        if ($this->_values instanceof Nip_DB_Query_Abstract) {
+        if ($this->_values instanceof AbstractQuery) {
             return ' ' . (string) $this->_values;
         } elseif (is_array($this->_parts['data'])) {
             return $this->parseData();

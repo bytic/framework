@@ -1,8 +1,8 @@
 <?php
 
-use Nip\Database\Query\_Abstract;
+namespace Nip\Database\Query;
 
-class Nip_DB_Query_Delete extends _Abstract
+class Delete extends AbstractQuery
 {
 
 	/**

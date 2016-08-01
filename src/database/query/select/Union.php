@@ -1,6 +1,10 @@
 <?php
 
-class Nip_DB_Query_SelectUnion extends Nip_DB_Query_Select
+namespace Nip\Database\Query\Select;
+
+use Nip\Database\Query\Select;
+
+class Union extends Select
 {
 
     protected $_query1;
@@ -14,9 +18,9 @@ class Nip_DB_Query_SelectUnion extends Nip_DB_Query_Select
 
     public function assemble()
     {
-        $query = ($this->_query1 instanceof Nip_DB_Query_SelectUnion) ? "(" . $this->_query1 . ")" : $this->_query1;
+        $query = ($this->_query1 instanceof Union) ? "(" . $this->_query1 . ")" : $this->_query1;
         $query .= " UNION ";
-        $query .= ($this->_query2 instanceof Nip_DB_Query_SelectUnion) ? "(" . $this->_query2 . ")" : $this->_query2;
+        $query .= ($this->_query2 instanceof Union) ? "(" . $this->_query2 . ")" : $this->_query2;
 
         $order = $this->parseOrder();
 

@@ -32,22 +32,22 @@ class ConnectionTest extends \Codeception\TestCase\Test
         $this->assertEquals('\Nip\Database\Adapters\MySQLi', $this->_object->getAdapterClass('MySQLi'));
     }
 
-    public function testInitializesQueryProvider()
+    public function testNewQueryProvider()
     {
         $types = array('select', 'insert', 'delete');
         $return = array();
         foreach ($types as $type) {
-            $return[] = array($type, 'Nip_DB_Query_'.ucfirst($type));
+            $return[] = array($type, 'Nip\Database\Query\\'.ucfirst($type));
         }
         return $return;
     }
 
     /**
-     * @dataProvider testInitializesQueryProvider
+     * @dataProvider testNewQueryProvider
      * @param $type
      * @param $class
      */
-    public function testInitializesQuery($type, $class)
+    public function testNewQuery($type, $class)
     {
         $query = $this->_object->newQuery($type);
         $this->assertInstanceOf($class, $query);

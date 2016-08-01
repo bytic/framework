@@ -3,7 +3,12 @@
 namespace Nip\Records\_Abstract;
 
 use Nip\Database\Connection;
-use Nip\Database\Query\_Abstract as Query;
+use Nip\Database\Query\AbstractQuery as AbstractQuery;
+use Nip\Database\Query\Insert as InsertQuery;
+use Nip\Database\Query\Select as SelectQuery;
+use Nip\Database\Query\Update as UpdateQuery;
+use Nip\Database\Query\Delete as DeleteQuery;
+use Nip\Database\Query\Update;
 use Nip\HelperBroker;
 use Nip\Paginator;
 use Nip\Records\Relations\Relation;
@@ -287,7 +292,7 @@ abstract class Table
     }
 
     /**
-     * @return \Nip_DB_Query_Insert
+     * @return InsertQuery
      */
     public function newInsertQuery()
     {
@@ -295,7 +300,7 @@ abstract class Table
     }
 
     /**
-     * @return \Nip_DB_Query_Update
+     * @return UpdateQuery
      */
     public function newUpdateQuery()
     {
@@ -303,7 +308,7 @@ abstract class Table
     }
 
     /**
-     * @return \Nip_DB_Query_Delete
+     * @return DeleteQuery
      */
     public function newDeleteQuery()
     {

@@ -1,8 +1,10 @@
 <?php
 
-use Nip\Database\Query\_Abstract;
+namespace Nip\Database\Query;
 
-class Nip_DB_Query_Select extends _Abstract
+use Nip\Database\Query\Select\Union;
+
+class Select extends AbstractQuery
 {
 
 	public function __call($name, $arguments)
@@ -292,7 +294,7 @@ class Nip_DB_Query_Select extends _Abstract
 
 	public function union($query)
 	{
-		return new Nip_DB_Query_SelectUnion($this, $query);
+		return new Union($this, $query);
 	}
 
 }

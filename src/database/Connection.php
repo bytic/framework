@@ -3,8 +3,8 @@
 namespace Nip\Database;
 
 use Nip\Database\Adapters\AbstractAdapter;
-use Nip_DB_Query_Select as SelectQuery;
-use Nip\Database\Query\_Abstract as Query;
+use Nip\Database\Query\Select as SelectQuery;
+use Nip\Database\Query\AbstractQuery as AbstractQuery;
 
 class Connection
 {
@@ -140,13 +140,13 @@ class Connection
 
     /**
      * @param string $type optional
-     * @return Query
+     * @return AbstractQuery
      */
     public function newQuery($type = "select")
     {
-        $className = '\Nip_DB_Query_' . inflector()->camelize($type);
+        $className = '\Nip\Database\Query\\' . inflector()->camelize($type);
         $query = new $className();
-        /** @var Query $query */
+        /** @var AbstractQuery $query */
         $query->setManager($this);
 
         return $query;

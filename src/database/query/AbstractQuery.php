@@ -8,19 +8,19 @@ use Nip\Database\Query\Condition\AndCondition;
 use Nip\Database\Query\Condition\OrCondition;
 
 /**
- * Class _Abstract
+ * Class AbstractQuery
  * @package Nip\Database\Query
  *
- * @method _Abstract setCols() setCols(array|string $cols = null)
- * @method _Abstract cols() cols(array|string $cols)
- * @method _Abstract count() count(array|string $cols)
- * @method _Abstract sum() sum(array|string $cols)
- * @method _Abstract from() from(array|string $from)
- * @method _Abstract data() data(array $data)
- * @method _Abstract table() table(array|string $table)
- * @method _Abstract order() order(array|string $order)
+ * @method AbstractQuery setCols() setCols(array|string $cols = null)
+ * @method AbstractQuery cols() cols(array|string $cols)
+ * @method AbstractQuery count() count(array|string $cols)
+ * @method AbstractQuery sum() sum(array|string $cols)
+ * @method AbstractQuery from() from(array|string $from)
+ * @method AbstractQuery data() data(array $data)
+ * @method AbstractQuery table() table(array|string $table)
+ * @method AbstractQuery order() order(array|string $order)
  */
-abstract class _Abstract
+abstract class AbstractQuery
 {
 
     /**

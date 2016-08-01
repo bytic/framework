@@ -1,8 +1,8 @@
 <?php
 
-use Nip\Database\Query\_Abstract;
+namespace Nip\Database\Query;
 
-class Nip_DB_Query_Update extends _Abstract
+class Update extends AbstractQuery
 {
 
     public function assemble()

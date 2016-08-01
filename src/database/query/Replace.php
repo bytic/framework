@@ -1,6 +1,8 @@
 <?php
 
-class Nip_DB_Query_Replace extends Nip_DB_Query_Insert
+namespace Nip\Database\Query;
+
+class Replace extends Insert
 {
 
 	public function assemble()

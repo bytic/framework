@@ -25,6 +25,8 @@ interface AdapterInterface
 
 	function describeTable($table);
 
+    function quote($value);
+
 	function cleanData($data);
 
 	function error();

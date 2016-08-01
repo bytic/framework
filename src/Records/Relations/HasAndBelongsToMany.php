@@ -3,7 +3,7 @@
 namespace Nip\Records\Relations;
 
 use Nip\Database\Connection;
-use Nip_DB_Query_Select as Query;
+use Nip\Database\Query\Select as Query;
 
 class HasAndBelongsToMany extends HasOneOrMany
 {

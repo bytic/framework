@@ -3,7 +3,7 @@
 
 namespace Nip\Database\Query\Condition;
 
-use Nip\Database\Query\_Abstract as Query;
+use Nip\Database\Query\AbstractQuery as Query;
 
 class Condition
 {

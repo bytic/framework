@@ -4,6 +4,7 @@ namespace Nip\Tests\Database\Query\Condition;
 
 use Mockery as m;
 use Nip\Database\Connection;
+use Nip\Database\Query\Select as SelectQuery;
 
 class ConditionTest extends \Codeception\TestCase\Test
 {
@@ -18,7 +19,7 @@ class ConditionTest extends \Codeception\TestCase\Test
     protected $_object;
 
     /**
-     * @var \Nip_DB_Query_Select
+     * @var SelectQuery
      */
     protected $_query;
 

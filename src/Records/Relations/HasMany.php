@@ -2,7 +2,7 @@
 
 namespace Nip\Records\Relations;
 
-use Nip_DB_Query_Select as Query;
+use Nip\Database\Query\Select as Query;
 
 class HasMany extends HasOneOrMany
 {

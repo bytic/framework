@@ -1,8 +1,8 @@
 <?php
 
-use Nip\Database\Query\_Abstract;
+namespace Nip\Database\Query;
 
-class Nip_DB_Query_Truncate extends _Abstract
+class Truncate extends AbstractQuery
 {
 
 	public function assemble()
