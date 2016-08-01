@@ -8,6 +8,8 @@ namespace Nip\Request;
 
 class ServerBag extends ParameterBag
 {
+    protected $_maxFileSize = null;
+
     /**
      * Gets the HTTP headers.
      *
@@ -79,5 +81,47 @@ class ServerBag extends ParameterBag
             $headers['AUTHORIZATION'] = $headers['PHP_AUTH_DIGEST'];
         }
         return $headers;
+    }
+
+    /**
+     * @return integer
+     */
+    public function getMaxFileSize()
+    {
+        if ($this->_maxFileSize == null) {
+            $ini = $this->convertIniToInteger(trim(ini_get('post_max_size')));
+            $max = $this->convertIniToInteger(trim(ini_get('upload_max_filesize')));
+            $min = min($ini, $max);
+            $this->_maxFileSize = $min;
+        }
+        return $this->_maxFileSize;
+    }
+
+    /**
+     * Converts a ini setting to a integer value
+     *
+     * @param  string $setting
+     * @return integer
+     */
+    protected function convertIniToInteger($setting)
+    {
+        if (!is_numeric($setting)) {
+            $type = strtoupper(substr($setting, -1));
+            $setting = (integer) substr($setting, 0, -1);
+            switch ($type) {
+                case 'K' :
+                    $setting *= 1024;
+                    break;
+                case 'M' :
+                    $setting *= 1024 * 1024;
+                    break;
+                case 'G' :
+                    $setting *= 1024 * 1024 * 1024;
+                    break;
+                default :
+                    break;
+            }
+        }
+        return (integer) $setting;
     }
 }

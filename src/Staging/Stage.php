@@ -52,10 +52,10 @@ class Stage
     public function initType()
     {
         $config = $this->getConfig();
-        if (isset($config->STAGE->type)) {
+        if (isset($config->STAGE) && isset($config->STAGE->type)) {
             $this->_type = $config->STAGE->type;
         } else {
-            $this->_type = 'local';
+            $this->_type = $this->_name;
         }
     }
 

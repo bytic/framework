@@ -91,16 +91,27 @@ class Bootstrap
         return $this->_stage;
     }
 
-    public function setupAutoloader()
+    public function getAutoloader()
+    {
+        if ($this->_autoloader == null) {
+            $this->initAutoloader();
+        }
+        return $this->_autoloader;
+    }
+
+    public function initAutoloader()
     {
         $this->_autoloader = AutoLoader::instance();
+    }
 
-        if ($this->getStage()->inProduction()) {
-            $this->_autoloader->setRetry(false);
-        }
-
+    public function setupAutoloader()
+    {
         $this->setupAutoloaderCache();
         $this->setupAutoloaderPaths();
+
+        if ($this->getStage()->inTesting()) {
+            $this->getAutoloader()->setRetry(true);
+        }
     }
 
     public function setupContainer()
@@ -162,16 +173,11 @@ class Bootstrap
         $connection = new Database\Connection();
 
         $adapter = $connection->newAdapter($stageConfig->DB->adapter);
+        $connection->setAdapter($adapter);
 
         if ($this->getDebugBar()->isEnabled()) {
-            $profiler = $adapter->newProfiler()->setEnabled(true);
-            $writer = $profiler->newWriter('DebugBar');
-            /** @var ProfilerDebugBar $writer */
-            $writer->setCollector($this->getDebugBar()->getCollector('queries'));
-            $profiler->addWriter($writer);
-            $adapter->setProfiler($profiler);
+            $this->getDebugBar()->initDatabaseAdapter($adapter);
         }
-        $connection->setAdapter($adapter);
         $connection->connect(
             $stageConfig->DB->host,
             $stageConfig->DB->user,

@@ -19,6 +19,7 @@ class AutoLoader
     protected $_map         = array();
     protected $_mapGenerator;
     protected $_cachePath;
+    protected $_rootPath = null;
 
     public function __construct()
     {
@@ -27,8 +28,8 @@ class AutoLoader
     /**
      * If true, if a class location is not mapped, it tries again by rewriting the cache file
      */
-    protected $_retry   = true;
-    protected $_isFatal = true;
+    protected $_retry   = false;
+    protected $_isFatal = false;
 
     public function addDirectory($dir)
     {
@@ -150,10 +151,32 @@ class AutoLoader
 
     public function getCacheName($dir)
     {
-        if (defined('ROOT_PATH')) {
-            $dir = str_replace(ROOT_PATH, '', $dir);
+        $root = $this->getRootPath();
+        if ($root) {
+            $dir = str_replace($root, '', $dir);
         }
-        return str_replace(DS, '-', $dir).'.php';
+        return Utility\Text::toAscii($dir).'.php';
+    }
+
+    public function setRootPath($path)
+    {
+        $this->_rootPath = $path;
+    }
+
+    public function getRootPath()
+    {
+        if ($this->_rootPath === null){
+            $this->initRootPath();
+        }
+        return $this->_rootPath;
+    }
+
+    public function initRootPath()
+    {
+        if (defined('ROOT_PATH')) {
+            $this->_rootPath = ROOT_PATH;
+        }
+        $this->_rootPath = false;
     }
 
     public function setRetry($retry)

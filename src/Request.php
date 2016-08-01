@@ -137,7 +137,7 @@ class Request
 
     /**
      * Creates a new request with values from PHP's super globals.
-     * @return Request
+     * @return self
      */
     public static function createFromGlobals()
     {
