@@ -8,7 +8,7 @@ use Nip\Database\Query\Insert as InsertQuery;
 use Nip\Database\Query\Select as SelectQuery;
 use Nip\Database\Query\Update as UpdateQuery;
 use Nip\Database\Query\Delete as DeleteQuery;
-use Nip\Database\Query\Update;
+use Nip\Database\Result;
 use Nip\HelperBroker;
 use Nip\Paginator;
 use Nip\Records\Relations\Relation;
@@ -438,7 +438,7 @@ abstract class Table
     /**
      * Updates a Record's database entry
      * @param Record $model
-     * @return bool|\Nip_DB_Result
+     * @return bool|Result
      */
     public function update(Record $model)
     {

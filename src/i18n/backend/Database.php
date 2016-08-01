@@ -41,7 +41,7 @@ class Nip_I18n_Backend_Database extends Nip_I18n_Backend_Abstract {
     public function addLanguage($language) {
         $this->languages[] = $language;
 
-        /* @var $results Nip_DB_Result */
+        /* @var $results \Nip\Database\Result */
         $results = $this->db->select()->from($this->table)->where(array("language", $language))->go();
         
         if ($results->numRows()) {
