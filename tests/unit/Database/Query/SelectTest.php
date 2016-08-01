@@ -77,7 +77,7 @@ class SelectTest extends \Codeception\TestCase\Test
 	public function testInitializeCondition()
 	{
 		$condition = $this->_object->getCondition("lorem ipsum");
-		$this->assertThat($condition, $this->isInstanceOf("Nip_DB_Query_Condition"));
+		$this->assertThat($condition, $this->isInstanceOf("Nip\Database\Query\Condition\Condition"));
 	}
 
 	public function testNested()

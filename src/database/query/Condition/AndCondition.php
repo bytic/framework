@@ -1,6 +1,8 @@
 <?php
 
-class Nip_DB_Query_AndCondition extends Nip_DB_Query_Condition
+namespace Nip\Database\Query\Condition;
+
+class AndCondition extends Condition
 {
 
 	protected $_condition;

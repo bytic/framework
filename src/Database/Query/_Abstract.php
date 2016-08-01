@@ -1,7 +1,11 @@
 <?php
 
 namespace Nip\Database\Query;
+
 use Nip\Database\Connection;
+use Nip\Database\Query\Condition\Condition;
+use Nip\Database\Query\Condition\AndCondition;
+use Nip\Database\Query\Condition\OrCondition;
 
 /**
  * Class _Abstract
@@ -168,9 +172,9 @@ abstract class _Abstract
      */
     public function where($string, $values = array())
     {
-        /** @var \Nip_DB_Query_Condition $this ->_parts[] */
+        /** @var Condition $this ->_parts[] */
         if ($string) {
-            if (isset($this->_parts['where']) && $this->_parts['where'] instanceOf \Nip_DB_Query_Condition) {
+            if (isset($this->_parts['where']) && $this->_parts['where'] instanceOf Condition) {
                 $this->_parts['where'] = $this->_parts['where']->and_($this->getCondition($string, $values));
             } else {
                 $this->_parts['where'] = $this->getCondition($string, $values);
@@ -183,7 +187,7 @@ abstract class _Abstract
     public function orWhere($string, $values = array())
     {
         if ($string) {
-            if ($this->_parts['where'] instanceOf \Nip_DB_Query_Condition) {
+            if ($this->_parts['where'] instanceOf Condition) {
                 $this->_parts['where'] = $this->_parts['where']->or_($this->getCondition($string, $values));
             } else {
                 $this->_parts['where'] = $this->getCondition($string, $values);
@@ -196,7 +200,7 @@ abstract class _Abstract
     public function having($string, $values = array())
     {
         if ($string) {
-            if ($this->_parts['having'] instanceOf \Nip_DB_Query_Condition) {
+            if ($this->_parts['having'] instanceOf Condition) {
                 $this->_parts['having'] = $this->_parts['having']->and_($this->getCondition($string, $values));
             } else {
                 $this->_parts['having'] = $this->getCondition($string, $values);
@@ -209,12 +213,12 @@ abstract class _Abstract
     /**
      * @param string $string
      * @param array $values
-     * @return \Nip_DB_Query_Condition
+     * @return Condition
      */
     public function getCondition($string, $values = array())
     {
         if (!is_object($string)) {
-            $condition = new \Nip_DB_Query_Condition($string, $values);
+            $condition = new Condition($string, $values);
             $condition->setQuery($this);
         } else {
             $condition = $string;

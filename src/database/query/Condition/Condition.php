@@ -1,8 +1,11 @@
 <?php
 
+
+namespace Nip\Database\Query\Condition;
+
 use Nip\Database\Query\_Abstract as Query;
 
-class Nip_DB_Query_Condition
+class Condition
 {
 
     protected $_string;
@@ -27,16 +30,16 @@ class Nip_DB_Query_Condition
 
     public function and_($condition)
     {
-        return new Nip_DB_Query_AndCondition($this, $condition);
+        return new AndCondition($this, $condition);
     }
 
     public function or_($condition)
     {
-        return new Nip_DB_Query_OrCondition($this, $condition);
+        return new OrCondition($this, $condition);
     }
 
     /**
-     * @return DB_Query
+     * @return Query
      */
     public function getQuery()
     {
@@ -45,7 +48,7 @@ class Nip_DB_Query_Condition
 
     /**
      * @param Query $query
-     * @return DB_Query_Condition
+     * @return $this
      */
     public function setQuery($query)
     {

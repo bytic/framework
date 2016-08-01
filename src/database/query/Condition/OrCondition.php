@@ -1,5 +1,8 @@
 <?php
-class Nip_DB_Query_OrCondition extends Nip_DB_Query_Condition {
+
+namespace Nip\Database\Query\Condition;
+
+class OrCondition extends Condition {
 
     protected $_condition;
     protected $_orCondition;
