@@ -1,6 +1,7 @@
 <?php
+namespace Nip\Helpers\View;
 
-class Nip_Helper_View_GoogleDFP extends Nip_Helper_View_Abstract
+class GoogleDFP extends AbstractHelper
 {
 
     protected $_slots = array();
@@ -24,8 +25,34 @@ class Nip_Helper_View_GoogleDFP extends Nip_Helper_View_Abstract
     public function renderHead()
     {
         if (count($this->_slots)) {
-            $return = "
+            $return = $this->renderHeadScriptTag();
+            $return .= $this->renderHeadScriptCommands();
+
+
+
+            return $return;
+        }
+        return;
+    }
+
+    public function renderAdUnit($id)
+    {
+        $add = $this->_slots[$id];
+        if ($add) {
+            return "
+                <!-- " . $add['unitName'] . " -->
+                <div id='" . $add['divId'] . "' style='width:" . $add['width'] . "px; height:" . $add['height'] . "px;'>
                 <script type='text/javascript'>
+                googletag.cmd.push(function() { googletag.display('" . $add['divId'] . "'); });
+                </script>
+                </div>";
+        }
+        return;
+    }
+
+    protected function renderHeadScriptTag()
+    {
+        $return = "<script type='text/javascript'>
                     var googletag = googletag || {};
                     googletag.cmd = googletag.cmd || [];
                     (function() {
@@ -38,38 +65,26 @@ class Nip_Helper_View_GoogleDFP extends Nip_Helper_View_Abstract
                     var node = document.getElementsByTagName('script')[0];
                     node.parentNode.insertBefore(gads, node);
                     })();
-                    </script>
-
-                    <script type='text/javascript'>
-                    googletag.cmd.push(function() {";
-            foreach ($this->_slots as $slot) {
-                $return .= "                    
-                    googletag.defineSlot('".$slot['unitName']."', [".$slot['width'].", ".$slot['height']."], '".$slot['divId']."').addService(googletag.pubads());";
-            } 
-            $return .= "
-                    googletag.pubads().enableSingleRequest();
-                    googletag.enableServices();
-                    });
-                </script>";
-
-            return $return;
-        }
-        return;
+                    </script>";
+        return $return;
     }
-    public function renderAdUnit($id)
+
+    protected function renderHeadScriptCommands()
     {
-        $add = $this->_slots[$id]; 
-        if ($add) {
-            return "
-                <!-- ".$add['unitName']." -->
-                <div id='".$add['divId']."' style='width:".$add['width']."px; height:".$add['height']."px;'>
-                <script type='text/javascript'>
-                googletag.cmd.push(function() { googletag.display('".$add['divId']."'); });
-                </script>
-                </div>            
-            ";
-        }
-        return;
+        $return = "<script type='text/javascript'>";
+        $return .= "googletag.cmd.push(function() { ";
+            $return .= $this->renderHeadSlots();
+            $return .= "googletag.pubads().enableSingleRequest(); 
+                        googletag.enableServices();";
+        $return .= "});";
+        $return .= " </script> ";
     }
-
+    protected function renderHeadSlots()
+    {
+        $return = '';
+        foreach ($this->_slots as $slot) {
+            $return .= "googletag.defineSlot('" . $slot['unitName'] . "', [" . $slot['width'] . ", " . $slot['height'] . "], '" . $slot['divId'] . "').addService(googletag.pubads());";
+        }
+        return $return;
+    }
 }

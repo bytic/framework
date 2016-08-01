@@ -1,15 +1,7 @@
 <?php
+namespace Nip\Helpers\View;
 
-/**
- * Nip Framework
- *
- * @category   Nip
- * @copyright  2009 Nip Framework
- * @license    http://www.opensource.org/licenses/mit-license.php The MIT License
- * @version    SVN: $Id: Doctype.php 14 2009-04-13 11:24:22Z victor.stanciu $
- */
-
-class Nip_Helper_View_GoogleWebFonts extends Nip_Helper_View_Abstract {
+class GoogleWebFonts extends AbstractHelper {
     
     protected $_fontSelected = array();
     protected $_fontStrings = array(
@@ -53,21 +45,8 @@ class Nip_Helper_View_GoogleWebFonts extends Nip_Helper_View_Abstract {
         return $this;
     }
     
-    public function renderFontVariable($fontName, $fontOptions)
+    public function renderFontVariable($fontName)
     {
         return $this->_fontStrings[$fontName];
-    }
-
-        /**
-     * Singleton
-     *
-     * @return Nip_Helper_View_GoogleWebFonts
-     */
-    static public function instance() {
-        static $instance;
-        if (!($instance instanceof self)) {
-            $instance = new self();
-        }
-        return $instance;
     }
 }

@@ -1,6 +1,8 @@
 <?php
 
-class Nip_Helper_View_CachebleBlocks_Block_Abstract {
+namespace Nip\Helpers\View\CachebleBlocks;
+
+class AbstractBlock {
 
 	protected $_name;
     
