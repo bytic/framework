@@ -17,6 +17,8 @@ class Bootstrap
 
     protected $_frontController = null;
 
+    protected $_request = null;
+
     protected $_staging;
 
     /**
@@ -156,15 +158,24 @@ class Bootstrap
 
     public function setupRequest()
     {
-        $request = $this->initRequest();
+        $request = $this->getRequest();
         $this->getFrontController()->setRequest($request);
+    }
+
+    public function getRequest()
+    {
+        if ($this->_request == null) {
+            $this->initRequest();
+        }
+        return $this->_request;
     }
 
     public function initRequest()
     {
         $request = Request::createFromGlobals();
         Request::instance($request);
-        return $request;
+        $this->_request = $request;
+        return $this;
     }
 
     public function setupDatabase()
