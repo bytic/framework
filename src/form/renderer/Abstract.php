@@ -7,10 +7,10 @@ abstract class Nip_Form_Renderer_Abstract
 {
 
     protected $_form;
-
+    
     protected $_elements;
     protected $_elementsRenderer;
-
+    
     protected $_buttonsRenderer;
 
     public function __construct()
@@ -51,8 +51,8 @@ abstract class Nip_Form_Renderer_Abstract
 
         $renderErrors = $this->getForm()->getOption('render_messages');
         if ($renderErrors !== false) {
-            $return .= $this->renderMessages();
-        }
+            $return .= $this->renderMessages();            
+        }        
         $return .= $this->renderGroups();
         $return .= $this->renderElements();
         $return .= $this->renderButtons();
@@ -93,30 +93,30 @@ abstract class Nip_Form_Renderer_Abstract
         }
         return $return;
     }
-
+    
     public function renderElements()
     {
     }
-
-    public function renderLabel($label, $required = false, $error = false)
-    {
+	
+	public function renderLabel($label, $required = false, $error = false)
+	{
         if (is_object($label)) {
             $element = $label;
             $label = $element->getLabel();
             $required = $element->isRequired();
-            $error = $element->isError();
+            $error = $element->isError();            
         }
 
-        $return = '<label class="col-sm-3 ' . ($error ? ' error' : '') . '">';
-        $return .= $label. ':';
+		$return = '<label class="col-sm-3 ' . ($error ? ' error' : '') . '">';
+			$return .= $label. ':';
 
-        if ($required) {
-            $return .= '<span class="required">*</span>';
-        }
+			if ($required) {
+				$return .= '<span class="required">*</span>';
+			}
 
-        $return .= "</label>";
-        return $return;
-    }
+		$return .= "</label>";
+		return $return;
+	}
 
 
     public function renderButtons()
@@ -139,7 +139,7 @@ abstract class Nip_Form_Renderer_Abstract
      * @return string
      */
     public function renderMessages()
-    {
+    {        
         $return = '';
         $messages = $this->getForm()->getMessages();
         foreach ($messages as $type => $lines) {

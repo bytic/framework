@@ -2,8 +2,7 @@
 class Nip_Form_Element_Select extends Nip_Form_Element_Abstract {
 
     protected $_type = 'select';
-
-    protected $_valueOptions = array();
+    protected $_optionsElementsElements = array();
     protected $_values = array();
 
     /**
@@ -12,7 +11,7 @@ class Nip_Form_Element_Select extends Nip_Form_Element_Abstract {
     public function addOptionsArray($options, $valueKey, $labelKey) {
         foreach ($options as $key => $option) {
             $option = (object) $option;
-            
+
             $oValue    = $option->$valueKey;
             $oLabel   = $option->$labelKey;
             $oDisabled = $option->disabled;
@@ -20,7 +19,7 @@ class Nip_Form_Element_Select extends Nip_Form_Element_Abstract {
             $atribs = array(
                 'label' => $oLabel,
             );
-            
+
             if ($oDisabled) {
                 $atribs['disabled'] = 'disabled';
             }
@@ -50,8 +49,8 @@ class Nip_Form_Element_Select extends Nip_Form_Element_Abstract {
         } else {
             $option['label'] = $label;
         }
-        
-        $this->_valueOptions[$value] = $option;
+
+        $this->_optionsElements[$value] = $option;
         $this->_values[] = $value;
 
         return $this;
@@ -67,14 +66,14 @@ class Nip_Form_Element_Select extends Nip_Form_Element_Abstract {
             $option['label'] = $label;
         }
 
-        $this->_valueOptions[$optgroup][$value] = $option;
+        $this->_optionsElements[$optgroup][$value] = $option;
         $this->_values[] = $value;
 
         return $this;
     }
 
     public function getOptions() {
-        return $this->_valueOptions;
+        return $this->_optionsElements;
     }
 
     public function setValue($value) {
@@ -84,5 +83,5 @@ class Nip_Form_Element_Select extends Nip_Form_Element_Abstract {
         }
         return false;
     }
-    
+
 }

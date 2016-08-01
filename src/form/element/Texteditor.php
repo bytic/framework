@@ -13,24 +13,24 @@ class Nip_Form_Element_Texteditor extends Nip_Form_Element_Textarea {
         $this->filterHTML();
         return $this;
     }
-    
+
     public function addAllowedTags() {
         $items = func_num_args();
         foreach ($items as $item) {
             $this->_allowedTags[] = $item;
         }
     }
-   
+
     public function addAllowedAttributes() {
         $items = func_num_args();
         foreach ($items as $item) {
             $this->_allowedAttributes[] = $item;
         }
     }
-    
+
     protected function filterHTML() {
-       $this->setValue($this->getInputFilter()->process($this->getValue()));
-       return $this;
+        $this->setValue($this->getInputFilter()->process($this->getValue()));
+        return $this;
     }
 
 

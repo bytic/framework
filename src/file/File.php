@@ -8,31 +8,31 @@ class Nip_File_Exception extends Exception
 class Nip_File extends Nip_Object
 {
 
-	protected $_path;
-	protected $_name;
-	protected $_extension;
+    protected $_path;
+    protected $_name;
+    protected $_extension;
 
-	public function __construct($path = false)
-	{
-		if ($path) {
-			$this->setPath($path);
-		}
-	}
+    public function __construct($path = false)
+    {
+        if ($path) {
+            $this->setPath($path);
+        }
+    }
 
-	public function move($target)
-	{
-		$dir = dirname($target);
-		if (!is_dir($target)) {
-			mkdir($dir, 0755, true);
-		}
+    public function move($target)
+    {
+        $dir = dirname($target);
+        if (!is_dir($target)) {
+            mkdir($dir, 0755, true);
+        }
 
-		if (rename($this->getPath(), $target)) {
-			$this->setPath($target);
-		} else {
-			throw new Nip_File_Exception("Cannot move $this->_path file to $target");
-		}
-		return $this;
-	}
+        if (rename($this->getPath(), $target)) {
+            $this->setPath($target);
+        } else {
+            throw new Nip_File_Exception("Cannot move $this->_path file to $target");
+        }
+        return $this;
+    }
 
     public function copy($target)
     {

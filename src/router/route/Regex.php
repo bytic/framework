@@ -1,4 +1,5 @@
 <?php
+
 class Nip_Route_Regex extends Nip_Route_Abstract
 {
     protected $_regex;
@@ -29,17 +30,17 @@ class Nip_Route_Regex extends Nip_Route_Abstract
     public function getRegex()
     {
         if (!$this->_regex) {
-			$map = $this->_map;
-			foreach ($this->_params as $key => $value) {
-			    if (stristr($map, ":" . $key) !== false) {
-					$map = str_replace(":" . $key, "(" . $value . ")", $map);
-					unset($params[$key]);
-					$this->_variables[] = $key;
-			    }
-			}
-			$this->_regex = $map;
+            $map = $this->_map;
+            foreach ($this->_params as $key => $value) {
+                if (stristr($map, ":" . $key) !== false) {
+                    $map = str_replace(":" . $key, "(" . $value . ")", $map);
+                    unset($params[$key]);
+                    $this->_variables[] = $key;
+                }
+            }
+            $this->_regex = $map;
         }
-        
+
         return $this->_regex;
     }
 }

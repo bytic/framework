@@ -4,17 +4,17 @@ class Nip_Form_Renderer_Elements_Select extends Nip_Form_Renderer_Elements_Abstr
     public function generateElement() {        
         $return = '<select ';
         $return .= $this->renderAttributes();
-        $return .= ' >'. $this->renderValueOptions() .'</select>';
+        $return .= ' >'. $this->renderOptions() .'</select>';
         return $return;
     }
 
-    public function renderValueOptions($options = false) {
+    public function renderOptions($options = false) {
         $options = $options ? $options : $this->getElement()->getOptions();
         $return = '';
         foreach ($options as $value=>$atribs) {
             if (is_string($value) && !isset($atribs['label'])) {
                 $return .= '<optgroup label="' . $value . '">';
-                $return .= $this->renderValueOptions($atribs);
+                $return .= $this->renderOptions($atribs);
                 $return .= '</optgroup>';
             } else {
                 $return .= '<option';

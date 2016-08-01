@@ -7,7 +7,7 @@ class Nip_Form_Element_Radio extends Nip_Form_Element_Input_Abstract {
         parent::init();
         $this->setAttrib('type', 'radio');
     }
-	
+
     public function isChecked() {
         return $this->getAttrib('checked') == 'checked';
     }
@@ -17,9 +17,9 @@ class Nip_Form_Element_Radio extends Nip_Form_Element_Input_Abstract {
         if ($checked === true) {
             $this->setAttrib('checked', 'checked');
         } else {
-            $this->delAttrib('checked');			
-		}
-		
+            $this->delAttrib('checked');
+        }
+
         return $this;
     }
 

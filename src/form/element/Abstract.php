@@ -2,17 +2,17 @@
 abstract class Nip_Form_Element_Abstract implements Nip_Form_Element_Interface {
 
     protected $_form;
-	
+
     protected $_attribs;
     protected $_options;
-	
+
     protected $_uniqueID;
     protected $_isRequired;
     protected $_isRendered = false;
     protected $_errors = array();
     protected $_decorators;
     protected $_policies;
-    
+
     protected $_type = 'abstract';
 
     public function  __construct($form) {
@@ -46,10 +46,10 @@ abstract class Nip_Form_Element_Abstract implements Nip_Form_Element_Interface {
         }
         return $this->_uniqueID;
     }
-    
+
     public function getJSID()
     {
-        $name = $this->getUniqueId();        
+        $name = $this->getUniqueId();
         return str_replace(array('][','[',']'), array('-','-',''), $this->getUniqueId());
     }
 
@@ -85,7 +85,7 @@ abstract class Nip_Form_Element_Abstract implements Nip_Form_Element_Interface {
         $this->setValue($request);
         return $this;
     }
-	
+
     public function getDataFromModel($data) {
         $this->setValue($data);
         return $this;
@@ -131,11 +131,11 @@ abstract class Nip_Form_Element_Abstract implements Nip_Form_Element_Interface {
         if (is_array($removeClasses)) {
             $classes = explode(' ', $this->getAttrib('class'));
             foreach ($removeClasses as $class) {
-                $key = array_search($class, $classes);                
+                $key = array_search($class, $classes);
                 if ($key !== false) {
                     unset($classes[$key]);
                 }
-            }            
+            }
             $this->setAttrib('class', implode(' ', $classes));
         }
         return $this;
@@ -144,13 +144,13 @@ abstract class Nip_Form_Element_Abstract implements Nip_Form_Element_Interface {
     public function validate() {
         if ($this->isRequired() && !$this->getValue()) {
             $message = $this->getForm()->getMessageTemplate('no-' . $this->getName());
-			if (!$message) {
-				$translateSlug = 'general.form.errors.required';
-				$message = nip__($translateSlug, array('label' => $this->getLabel()));
-				if ($message == $translateSlug) {
-					$message = $message ? $message : 'The field `' . $this->getLabel() . '` is mandatory.';
-				}
-			}
+            if (!$message) {
+                $translateSlug = 'general.form.errors.required';
+                $message = nip__($translateSlug, array('label' => $this->getLabel()));
+                if ($message == $translateSlug) {
+                    $message = $message ? $message : 'The field `' . $this->getLabel() . '` is mandatory.';
+                }
+            }
             $this->addError($message);
         }
     }
@@ -187,7 +187,7 @@ abstract class Nip_Form_Element_Abstract implements Nip_Form_Element_Interface {
     public function getType() {
         return $this->_type;
     }
-    
+
     /**
      * @return Nip_Form_Element_Abstract
      */
