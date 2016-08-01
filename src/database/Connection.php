@@ -79,7 +79,7 @@ class Connection
 
     public static function getAdapterClass($name)
     {
-        return 'Nip_DB_Adapters_' . $name;
+        return '\Nip\Database\Adapters\\' . $name;
     }
 
     public function getDatabase()

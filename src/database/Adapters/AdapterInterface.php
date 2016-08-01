@@ -1,5 +1,8 @@
 <?php
-interface Nip_DB_Adapters_Interface
+
+namespace Nip\Database\Adapters;
+
+interface AdapterInterface
 {
 
 	function execute($sql);

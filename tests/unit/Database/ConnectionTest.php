@@ -21,6 +21,17 @@ class ConnectionTest extends \Codeception\TestCase\Test
         $this->_object = new Connection();
     }
 
+    public function testNewAdapter()
+    {
+        $this->assertInstanceOf('Nip\Database\Adapters\MySQLi', $this->_object->newAdapter('MySQLi'));
+    }
+
+    public function testGetAdapterClass()
+    {
+        $this->assertEquals('\Nip\Database\Adapters\MySQL', $this->_object->getAdapterClass('MySQL'));
+        $this->assertEquals('\Nip\Database\Adapters\MySQLi', $this->_object->getAdapterClass('MySQLi'));
+    }
+
     public function testInitializesQueryProvider()
     {
         $types = array('select', 'insert', 'delete');
