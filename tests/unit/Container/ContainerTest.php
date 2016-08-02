@@ -62,4 +62,28 @@ class ContainerTest extends \Codeception\Test\Unit
         $this->assertTrue($container->has('service'));
         $this->assertSame($container->get('service'), $class);
     }
+
+
+
+    public function testSetAndGetServiceSharedOverwrite()
+    {
+        $container = new Container;
+
+        $container->add('service', '\Nip\Mvc\Modules', true);
+        $this->assertTrue($container->has('service'));
+
+        $modules1 = $container->get('service');
+        $this->assertInstanceOf('\Nip\Mvc\Modules', $modules1, '->assert service initial class');
+
+        $container->add('service', '\stdClass', true);
+        $modules2 = $container->get('service');
+        $this->assertInstanceOf('\stdClass', $modules2, '->assert service overwrite');
+
+
+        $container->add('service', new \stdClass);
+        $modules3 = $container->get('service');
+        $this->assertInstanceOf('\stdClass', $modules3, '->assert service overwrite');
+        $this->assertNotSame($modules2, $modules3);
+
+    }
 }

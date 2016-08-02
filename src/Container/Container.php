@@ -43,6 +43,8 @@ class Container implements ArrayAccess, ContainerInterface
             $concrete = $id;
         }
 
+        $this->dropStaleInstances($id);
+
         $definition = $this->newDefinition($id, $concrete);
         if ($definition instanceof DefinitionInterface) {
             $definition->setShared($share);
@@ -94,6 +96,17 @@ class Container implements ArrayAccess, ContainerInterface
     protected function hasInstance($id)
     {
         return array_key_exists($id, $this->instances);
+    }
+
+    /**
+     * Drop all of the stale instances and aliases.
+     *
+     * @param  string  $id
+     * @return void
+     */
+    protected function dropStaleInstances($id)
+    {
+        unset($this->instances[$id]);
     }
 
     /**
