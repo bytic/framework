@@ -56,6 +56,7 @@ abstract class AbstractParser
 
     public function match($uri)
     {
+        $this->_uri = $uri;
         return true;
     }
 
