@@ -2,7 +2,7 @@
 
 namespace Nip\Router\Parser;
 
-class Literal extends Dynamic
+class Standard extends Dynamic
 {
 
     protected $_map = ':controller/:action';
