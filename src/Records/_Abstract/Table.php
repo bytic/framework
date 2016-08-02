@@ -72,7 +72,8 @@ abstract class Table
      */
     public function __call($name, $arguments)
     {
-        if ($return = $this->isCallDatabaseOperation($name, $arguments)) {
+        $return = $this->isCallDatabaseOperation($name, $arguments);
+        if ($return !== null) {
             return $return;
         }
 
@@ -111,7 +112,7 @@ abstract class Table
                 return $this->$operation($params);
             }
         }
-        return false;
+        return null;
     }
 
     protected function isCallUrl($name, $arguments)
