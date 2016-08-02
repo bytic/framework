@@ -7,6 +7,11 @@ abstract class AbstractRoute
     /**
      * @var string
      */
+    protected $_name = null;
+
+    /**
+     * @var string
+     */
     protected $_type;
 
     protected $_parser = null;
@@ -198,5 +203,37 @@ abstract class AbstractRoute
     public function getUri()
     {
         return $this->_uri;
+    }
+
+    /**
+     * @return string
+     */
+    public function getName()
+    {
+        if($this->_name == null) {
+            $this->initName();
+        }
+        return $this->_name;
+    }
+
+    /**
+     * @return string
+     */
+    public function initName()
+    {
+        $this->setName($this->getClassName());
+    }
+
+    /**
+     * @param string $name
+     */
+    public function setName($name)
+    {
+        $this->_name = $name;
+    }
+
+    public function getClassName()
+    {
+        return get_class($this);
     }
 }

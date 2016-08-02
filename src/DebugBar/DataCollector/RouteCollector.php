@@ -3,7 +3,8 @@
 namespace Nip\DebugBar\DataCollector;
 
 use DebugBar\DataCollector\DataCollector;
-use DebugBar\DataCollector\Renderable;#
+use DebugBar\DataCollector\Renderable;
+use Nip\Router\Route\AbstractRoute as Route;
 use Nip\Router\Router as Router;
 
 class RouteCollector extends DataCollector implements Renderable
@@ -44,11 +45,17 @@ class RouteCollector extends DataCollector implements Renderable
         return $this->getRouteInformation($route);
     }
 
+    /**
+     * @param Route $route
+     * @return array
+     */
     public function getRouteInformation($route)
     {
 
         $result = [
             'uri' => $route->getUri(),
+            'name' => $route->getName(),
+            'class' => $route->getClassName(),
             'params' =>  $this->getDataFormatter()->formatVar($route->getParams())
         ];
 

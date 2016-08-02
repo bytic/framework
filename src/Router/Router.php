@@ -33,6 +33,7 @@ class Router
     public function connect($route, $name)
     {
         $route->setRequest($this->getRequest());
+        $route->setName($name);
         $this->_routes[$name] = $route;
     }
 
