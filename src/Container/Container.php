@@ -118,7 +118,7 @@ class Container implements ArrayAccess, ContainerInterface
     {
 //        if (is_callable($concrete)) {
 //            $concrete = new CallableDefinition($id, $concrete);
-        if (is_string($concrete) && class_exists($concrete)) {
+        if (is_string($concrete)) {
             $concrete = new ClassDefinition($id, $concrete);
         }
         // if the item is not defineable we just return the value to be stored

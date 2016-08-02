@@ -7,7 +7,7 @@ use ArrayAccess;
 class Modules implements ArrayAccess
 {
 
-    protected $modules = array('admin', 'default');
+    protected $modules = [];
 
     public function __construct()
     {
@@ -16,6 +16,8 @@ class Modules implements ArrayAccess
 
     public function init()
     {
+        $this->addModule('admin');
+        $this->addModule('default');
     }
 
     public function hasModule($name)
@@ -25,7 +27,9 @@ class Modules implements ArrayAccess
 
     public function addModule($name)
     {
-        $this[] = $name;
+        if (!$this->offsetExists($name)) {
+            $this->modules[$name] = $name;
+        }
     }
 
     public function getNames()
