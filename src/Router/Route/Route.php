@@ -2,7 +2,7 @@
 
 namespace Nip\Router\Route;
 
-class Route extends RouteAbstract
+class Route extends AbstractRoute
 {
 
 }

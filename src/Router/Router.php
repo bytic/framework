@@ -2,6 +2,11 @@
 
 namespace Nip\Router;
 
+use Nip\Request;
+use Nip\Router\Route\AbstractRoute as Route;
+
+use Nip_Profiler as Profiler;
+
 class Router
 {
 
@@ -10,9 +15,21 @@ class Router
      */
     protected $_request;
 
-    protected $_route;
-    protected $_routes;
 
+    /**
+     * @var Route
+     */
+    protected $_route;
+
+    /**
+     * @var Route[]
+     */
+    protected $_routes = [];
+
+    /**
+     * @param Route $route
+     * @param $name
+     */
     public function connect($route, $name)
     {
         $route->setRequest($this->getRequest());
@@ -21,24 +38,28 @@ class Router
 
     public function connected($name)
     {
-        return ($this->getRoute($name) instanceof \Nip\Router\Route\RouteAbstract);
+        return ($this->getRoute($name) instanceof Route);
     }
 
+    /**
+     * @param Request $request
+     * @return array
+     */
     public function route($request)
     {
         $this->_route = false;
-        $uri = $request->getHTTP()->getPathInfo();
+        $uri = $request->getHttp()->getPathInfo();
 
         foreach ($this->_routes as $name => $route) {
             $route->setRequest($request);
-            Nip_Profiler::instance()->start('route [' . $name . '] [' . $uri . ']');
+            Profiler::instance()->start('route [' . $name . '] [' . $uri . ']');
             if ($route->match($uri)) {
                 $this->_route = $route;
-                Nip_Profiler::instance()->end('route [' . $name . '] [' . $uri . ']');
+                Profiler::instance()->end('route [' . $name . '] [' . $uri . ']');
                 break;
             }
 
-            Nip_Profiler::instance()->end('route [' . $name . '] [' . $uri . ']');
+            Profiler::instance()->end('route [' . $name . '] [' . $uri . ']');
         }
 
         if ($this->_route) {

@@ -2,7 +2,7 @@
 
 namespace Nip\Router\Route;
 
-abstract class RouteAbstract
+abstract class AbstractRoute
 {
     /**
      * @var string
@@ -12,6 +12,8 @@ abstract class RouteAbstract
     protected $_parser = null;
 
     protected $_base;
+
+    protected $_request = null;
 
     /**
      * @var string
@@ -130,7 +132,7 @@ abstract class RouteAbstract
      */
     public function getParser()
     {
-        if ($this->_parser = null) {
+        if ($this->_parser === null) {
             $this->initParser();
         }
         return $this->_parser;
