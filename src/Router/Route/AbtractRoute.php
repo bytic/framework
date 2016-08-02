@@ -194,4 +194,9 @@ abstract class AbstractRoute
         }
         $this->getRequest()->attributes->add($this->getMatches());
     }
+
+    public function getUri()
+    {
+        return $this->_uri;
+    }
 }

@@ -288,6 +288,7 @@ class Application
         $router = $this->newRouter();
         $router->setRequest($this->getFrontController()->getRequest());
         $this->getFrontController()->setRouter($router);
+        $this->getDebugBar()->getCollector('route')->setRouter($router);
     }
 
     /**
