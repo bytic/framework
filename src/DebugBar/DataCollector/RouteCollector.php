@@ -3,16 +3,28 @@
 namespace Nip\DebugBar\DataCollector;
 
 use DebugBar\DataCollector\DataCollector;
-use DebugBar\DataCollector\Renderable;
+use DebugBar\DataCollector\Renderable;#
+use Nip\Router\Router as Router;
 
 class RouteCollector extends DataCollector implements Renderable
 {
 
+    /**
+     * @var Router
+     */
     protected $_router;
 
     public function getRouter()
     {
+        return $this->_router;
+    }
 
+    /**
+     * @param Router $router
+     */
+    public function setRouter($router)
+    {
+        $this->_router = $router;
     }
 
     /**
@@ -28,13 +40,19 @@ class RouteCollector extends DataCollector implements Renderable
      */
     public function collect()
     {
-        $route = $this->router->current();
+        $route = $this->getRouter()->getCurrent();
         return $this->getRouteInformation($route);
     }
 
-    public function getRouteInformation()
+    public function getRouteInformation($route)
     {
 
+        $result = [
+            'uri' => $route->getUri(),
+            'params' =>  $this->getDataFormatter()->formatVar($route->getParams())
+        ];
+
+        return $result;
     }
 
     /**
@@ -48,13 +66,13 @@ class RouteCollector extends DataCollector implements Renderable
                 "widget" => "PhpDebugBar.Widgets.VariableListWidget",
                 "map" => "route",
                 "default" => "{}"
+            ],
+            "currentroute" => [
+                "icon" => "share",
+                "tooltip" => "Route",
+                "map" => "route.uri",
+                "default" => ""
             ]
-        ];
-        $widgets['currentroute'] = [
-            "icon" => "share",
-            "tooltip" => "Route",
-            "map" => "route.uri",
-            "default" => ""
         ];
         return $widgets;
     }
@@ -67,6 +85,7 @@ class RouteCollector extends DataCollector implements Renderable
      */
     protected function displayRoutes(array $routes)
     {
+        $routes = array('1',2,5);
         $this->table->setHeaders($this->headers)->setRows($routes);
         $this->table->render($this->getOutput());
     }

@@ -1,18 +1,11 @@
 <?php
 
-/**
- * Nip Framework
- *
- * @category   Nip
- * @copyright  2009 Nip Framework
- * @license    http://www.opensource.org/licenses/mit-license.php The MIT License
- * @version    SVN: $Id: Dynamic.php 135 2009-05-27 16:48:23Z victor.stanciu $
- */
-class Nip_Route_Dynamic extends Nip_Route_Abstract
+namespace Nip\Router\Parser;
+
+class Dynamic extends AbstractParser
 {
 
     protected $_variables = array();
-    protected $_uri;
 
     public function parseMap()
     {
@@ -62,18 +55,20 @@ class Nip_Route_Dynamic extends Nip_Route_Abstract
 
     public function match($uri)
     {
-        $this->_uri = $uri;
+        $return = parent::match($uri);
 
-        if ($this->_uri[strlen($this->_uri) - 1] == '/') {
-            $this->_uri = substr($this->_uri, 0, -1);
-        }
+        if ($return) {
+            if ($this->_uri[strlen($this->_uri) - 1] == '/') {
+                $this->_uri = substr($this->_uri, 0, -1);
+            }
 
 
-        if ($this->getVariableParts($uri)) {
-            if ($this->preMatch() === true) {
-                $this->parseParams();
-                if ($this->postMatch() == true) {
-                    return true;
+            if ($this->getVariableParts($uri)) {
+                if ($this->preMatch() === true) {
+                    $this->parseParams();
+                    if ($this->postMatch() == true) {
+                        return true;
+                    }
                 }
             }
         }

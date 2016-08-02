@@ -1,14 +1,8 @@
 <?php
 
-/**
- * Nip Framework
- *
- * @category   Nip
- * @copyright  2009 Nip Framework
- * @license    http://www.opensource.org/licenses/mit-license.php The MIT License
- * @version    SVN: $Id: Dynamic.php 135 2009-05-27 16:48:23Z victor.stanciu $
- */
-class Nip_Route_Default extends Nip_Route_Dynamic
+namespace Nip\Router\Parser;
+
+class Literal extends Dynamic
 {
 
     protected $_map = ':controller/:action';
@@ -25,6 +19,7 @@ class Nip_Route_Default extends Nip_Route_Dynamic
     public function match($uri)
     {
         $return = parent::match($uri);
+
         if ($return && !empty($this->_params['controller'])) {
             return $return;
         }

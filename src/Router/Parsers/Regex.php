@@ -1,6 +1,8 @@
 <?php
 
-class Nip_Route_Regex extends Nip_Route_Abstract
+namespace Nip\Router\Parser;
+
+class Regex extends AbstractParser
 {
     protected $_regex;
     protected $_variables = array();
@@ -13,15 +15,19 @@ class Nip_Route_Regex extends Nip_Route_Abstract
 
     public function match($uri)
     {
-        $match = preg_match_all("`^" . $this->getRegex() . "$`i", $uri, $matches);
+        $return = parent::match($uri);
 
-        if ($match > 0) {
-            if ($this->_variables) {
-                foreach ($this->_variables as $key => $variable) {
-                    $this->_matches[$variable] = $matches[$key + 1][0];
+        if ($return) {
+            $match = preg_match_all("`^" . $this->getRegex() . "$`i", $uri, $matches);
+
+            if ($match > 0) {
+                if ($this->_variables) {
+                    foreach ($this->_variables as $key => $variable) {
+                        $this->_matches[$variable] = $matches[$key + 1][0];
+                    }
                 }
+                return true;
             }
-            return true;
         }
 
         return false;

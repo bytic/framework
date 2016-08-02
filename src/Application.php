@@ -291,11 +291,11 @@ class Application
     }
 
     /**
-     * @return \Nip_Router
+     * @return \Nip\Router\Router
      */
     public function newRouter()
     {
-        return new \Nip_Router();
+        return new \Nip\Router\Router();
     }
 
     protected function getFrontController()
