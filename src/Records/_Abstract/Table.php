@@ -294,7 +294,7 @@ abstract class Table
     public function findByPrimary($pk_list = array())
     {
         $pk = $this->getPrimaryKey();
-        $return = new RecordCollection();
+        $return = $this->newCollection();
 
         if ($pk_list) {
             $pk_list = array_unique($pk_list);
