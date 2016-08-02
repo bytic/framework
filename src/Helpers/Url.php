@@ -108,7 +108,7 @@ class Nip_Helper_Url extends Nip\Helpers\AbstractHelper
     }
 
     /**
-     * @return Nip_Router;
+     * @return \Nip_Router;
      */
     public function getRouter()
     {

@@ -75,6 +75,11 @@ class Nip_Router
         return $this->_routes[$name];
     }
 
+    public function hasRoute($name)
+    {
+        return array_key_exists($name, $this->_routes);
+    }
+
     public function getAll()
     {
         return $this->_routes;

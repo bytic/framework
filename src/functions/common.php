@@ -37,8 +37,6 @@ if (!function_exists("pr")) {
 }
 
 /**
- * @param string $db_adapter
- * @param string $db_prefix
  * @return Nip\Database\Connection
  */
 function db()
@@ -46,8 +44,25 @@ function db()
     return Container::getInstance()->get('database');
 }
 
+if (! function_exists('app')) {
+    /**
+     * Get the available container instance.
+     *
+     * @param  string  $id
+     * @param  array   $parameters
+     * @return mixed|Container
+     */
+    function app($id = null, $parameters = [])
+    {
+        if (is_null($id)) {
+            return Container::getInstance();
+        }
+        return Container::getInstance()->get($id, $parameters);
+    }
+}
+
 /**
- * @return Nip_Inflector
+ * @return Nip\Inflector\Inflector
  */
 function inflector()
 {

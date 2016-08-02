@@ -72,6 +72,24 @@ abstract class Table
      */
     public function __call($name, $arguments)
     {
+        if ($return = $this->isCallDatabaseOperation()) {
+            return $return;
+        }
+
+        if ($return = $this->isCallUrl()) {
+            return $return;
+        }
+
+        if ($name === ucfirst($name)) {
+            return $this->getHelper($name);
+        }
+
+        trigger_error("Call to undefined method $name", E_USER_ERROR);
+        return $this;
+    }
+
+    protected function isCallDatabaseOperation($name, $arguments)
+    {
         $operations = array("find", "delete", "count");
         foreach ($operations as $operation) {
             if (strpos($name, $operation . "By") !== false || strpos($name, $operation . "OneBy") !== false) {
@@ -93,13 +111,52 @@ abstract class Table
                 return $this->$operation($params);
             }
         }
+    }
 
-        if ($name === ucfirst($name)) {
-            return $this->getHelper($name);
+    protected function isCallUrl($name, $arguments)
+    {
+        if (substr($name, 0, 3) == "get" || substr($name, -3) == "URL") {
+            $action = substr($name, 3, -3);
+            $params = $arguments[0];
+
+            $controller = $this->getController();
+
+            if (substr($action, 0, 5) == 'Async') {
+                $controller = 'async-' . $controller;
+                $action = substr($action, 5);
+            }
+
+            if (substr($action, 0, 5) == 'Modal') {
+                $controller = 'modal-' . $controller;
+                $action = substr($action, 5);
+            }
+
+            $params['action'] = (!empty($action)) ? $action : 'index';
+            $params['controller'] = $controller;
+            if ($arguments[1]) {
+                $params['module'] = $arguments[1];
+            }
+
+            return $this->_getURL($params);
+        }
+        return false;
+    }
+
+    protected function _getURL($params = array())
+    {
+        $params['action'] = inflector()->unclassify($params['action']);
+        $params['action'] = ($params['action'] == 'index') ? false : $params['action'];
+        $params['controller'] = $params['controller'] ? $params['controller'] : $this->getController();
+        $params['module'] = $params['module'] ? $params['module'] : \Nip\Request::instance()->getModuleName();
+
+        $routeName = $params['module'].'.'.$params['controller'].'.'.$params['action'];
+        if ($this->Url()->getRouter()->hasRoute($routeName)) {
+            unset($params['module'], $params['controller'], $params['action']);
+        } else {
+            $routeName = $params['module'].'.default';
         }
 
-        trigger_error("Call to undefined method $name", E_USER_ERROR);
-        return $this;
+        return $this->Url()->assemble($routeName, $params);
     }
 
     public function getNewRecord($data = array())

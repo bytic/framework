@@ -445,7 +445,6 @@ class Request
         return $this;
     }
 
-
     public function getMCA()
     {
         return $this->getModuleName() . '.' . $this->getControllerName() . '.' . $this->getActionName();
