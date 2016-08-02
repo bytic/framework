@@ -9,6 +9,7 @@ use DebugBar\DataCollector\PhpInfoCollector;
 use DebugBar\DataCollector\RequestDataCollector;
 use DebugBar\DataCollector\TimeDataCollector;
 use Nip\DebugBar\DataCollector\QueryCollector;
+use Nip\DebugBar\DataCollector\RouteCollector;
 
 //use DebugBar\DataCollector\ConfigCollector;
 
@@ -25,6 +26,7 @@ class StandardDebugBar extends DebugBar
         $this->addCollector(new MemoryCollector());
         $this->addCollector(new ExceptionsCollector());
         $this->addCollector(new QueryCollector());
+        $this->addCollector(new RouteCollector());
     }
 
     public function initDatabaseAdapter($adapter)
