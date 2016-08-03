@@ -2,12 +2,12 @@
 
 namespace Nip\Records;
 
-use Nip\Records\_Abstract\Table as RecordManager;
+use Nip\Records\_Abstract\Table as Records;
 
 class CacheManager extends \Nip\Cache\Manager {
 
     /**
-     * @var RecordManager
+     * @var Records
      */
     protected $_manager;
 
@@ -18,7 +18,7 @@ class CacheManager extends \Nip\Cache\Manager {
 
 
     /**
-     * @param RecordManager $manager
+     * @param Records $manager
      * @return $this
      */
     public function setManager($manager)
@@ -28,7 +28,7 @@ class CacheManager extends \Nip\Cache\Manager {
     }
 
     /**
-     * @return RecordManager
+     * @return Records
      */
     public function getManager()
     {
