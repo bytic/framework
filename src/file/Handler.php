@@ -16,8 +16,10 @@ class Nip_File_Handler
 
 
     public $name;
-    public $path;
-    public $url;
+
+    public $path = null;
+    public $url = null;
+
     public $data;
     public $extension;
     public $permissions = 0777;
@@ -99,6 +101,33 @@ class Nip_File_Handler
         }
 
         return $this;
+    }
+
+
+    public function getUrl()
+    {
+        if ($this->url === null) {
+            $this->initUrl();
+        }
+        return $this->url;
+    }
+
+    public function initUrl()
+    {
+        $this->url = '';
+    }
+
+    public function getPath()
+    {
+        if ($this->path === null) {
+            $this->initPath();
+        }
+        return $this->path;
+    }
+
+    public function initPath()
+    {
+        $this->path = '';
     }
 
 }
