@@ -3,7 +3,7 @@
 namespace Nip\Records\_Abstract;
 
 use Nip\Database\Connection;
-use Nip\Database\Query\AbstractQuery as AbstractQuery;
+use Nip\Database\Query\AbstractQuery as Query;
 use Nip\Database\Query\Insert as InsertQuery;
 use Nip\Database\Query\Select as SelectQuery;
 use Nip\Database\Query\Update as UpdateQuery;
@@ -14,7 +14,14 @@ use Nip\Paginator;
 use Nip\Records\Relations\Relation;
 use Nip\Records\_Abstract\Row as Record;
 use Nip\Records\Collections\Collection as RecordCollection;
+use Nip\Request;
 
+/**
+ * Class Table
+ * @package Nip\Records\_Abstract
+ *
+ * @method \Nip_Helper_Url Url()
+ */
 abstract class Table
 {
 
@@ -149,7 +156,7 @@ abstract class Table
         $params['action'] = inflector()->unclassify($params['action']);
         $params['action'] = ($params['action'] == 'index') ? false : $params['action'];
         $params['controller'] = $params['controller'] ? $params['controller'] : $this->getController();
-        $params['module'] = $params['module'] ? $params['module'] : \Nip\Request::instance()->getModuleName();
+        $params['module'] = $params['module'] ? $params['module'] : Request::instance()->getModuleName();
 
         $routeName = $params['module'].'.'.$params['controller'].'.'.$params['action'];
         if ($this->Url()->getRouter()->hasRoute($routeName)) {
@@ -511,7 +518,7 @@ abstract class Table
 
     /**
      * @param Record $model
-     * @return bool|Query
+     * @return bool|UpdateQuery
      */
     public function updateQuery(Record $model)
     {
@@ -584,7 +591,7 @@ abstract class Table
             $primary = $input;
         }
 
-        $query = $this->newQuery('delete');
+        $query = $this->newDeleteQuery();
         $query->where("$pk = ?", $primary);
         $query->limit(1);
 
@@ -600,7 +607,7 @@ abstract class Table
     {
         extract($params);
 
-        $query = $this->newQuery('delete');
+        $query = $this->newDeleteQuery();
 
         if (isset($where)) {
             if (is_array($where)) {
