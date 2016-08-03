@@ -1,17 +1,28 @@
 <?php
 
+use Nip\Records\_Abstract\Row as Record;
+
+/**
+ * Class Nip_Form_Model
+ */
 class Nip_Form_Model extends Nip_Form
 {
 
+    /**
+     * @var Record
+     */
     protected $_model;
 
-    public function setModel(Nip_Record $model)
+    public function setModel(Record $model)
     {
         $this->_model = $model;
         $this->getDataFromModel();
         return $this;
     }
 
+    /**
+     * @return Record
+     */
     public function getModel()
     {
         return $this->_model;
