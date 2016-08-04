@@ -2,6 +2,9 @@
 
 namespace Nip\Helpers\View\CachebleBlocks;
 
+use Nip_File_System as FileSystem;
+use Nip\Staging as Staging;
+
 class AbstractBlock {
 
 	protected $_name;
@@ -59,7 +62,7 @@ class AbstractBlock {
         
 		$dir = dirname($file);
         if (!is_dir($dir)) {
-            Nip_File_System::instance()->createDirectory($dir, 0777);            
+            FileSystem::instance()->createDirectory($dir, 0777);
         }
 
         $content = $this->_manager->getView()->HTML()->compress($content);
@@ -69,7 +72,7 @@ class AbstractBlock {
 			return true;
 		} else {
 			$message = "Cannot open CachebleBlocks file for writing: ";
-			if (Nip_Staging::instance()->getStage()->inTesting()) {
+			if (Staging::instance()->getStage()->inTesting()) {
 				$message .= " [ ".$file." ] ";
 			}
 			die($message);
