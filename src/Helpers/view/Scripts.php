@@ -54,6 +54,7 @@ class Scripts extends AbstractHelper
 
     public function renderHMTL($files)
     {
+        $return = '';
         if (is_array($files)) {
             $internal = array();
             $external = array();
@@ -66,20 +67,21 @@ class Scripts extends AbstractHelper
                 }
             }
 
-            $return .= $this->pack($internal);
 
             if ($external) {
                 foreach ($external as $file) {
                     $return .= $this->buildTag($file);
                 }
             }
+
+            $return .= $this->pack($internal);
         }
         return $return;
     }
 
     public function buildURL($source)
     {
-        return SCRIPTS_URL . $source . (in_array(\Nip_File_System::instance()->getExtension($source), array("js", "php")) ? '' : '.js');
+        return $this->getBaseUrl() . $source . (in_array(\Nip_File_System::instance()->getExtension($source), array("js", "php")) ? '' : '.js');
     }
 
     public function buildTag($path)
@@ -101,7 +103,7 @@ class Scripts extends AbstractHelper
             } else {
                 $lastUpdated = 0;
                 foreach ($files as $file) {
-                    $path = SCRIPTS_PATH . $file . ".js";
+                    $path = $this->getBasePath() . $file . ".js";
                     if (file_exists($path)) {
                         $lastUpdated = max($lastUpdated, filemtime($path));
                     }
@@ -113,7 +115,7 @@ class Scripts extends AbstractHelper
                 if (!file_exists($path . ".js")) {
                     $content = "";
                     foreach ($files as $file) {
-                        $content .= file_get_contents(SCRIPTS_PATH . $file . ".js") . "\r\n";
+                        $content .= file_get_contents($this->getBasePath() . $file . ".js") . "\r\n";
                     }
                     $packer = new \JavaScriptPacker($content, "Normal", true, false);
                     $content = $packer->pack();
@@ -137,6 +139,16 @@ class Scripts extends AbstractHelper
     {
         $this->_pack = $pack;
         return $this;
+    }
+
+    public function getBaseUrl()
+    {
+        return SCRIPTS_URL;
+    }
+
+    public function getBasePath()
+    {
+        return SCRIPTS_PATH;
     }
 
 }
