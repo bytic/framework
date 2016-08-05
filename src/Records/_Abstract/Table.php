@@ -208,9 +208,13 @@ abstract class Table
         if (strpos($class, '\\')) {
             $nsParts = explode('\\', $class);
             $class = array_pop($nsParts);
+
             if ($class == 'Table') {
-                return implode($nsParts, '\\') . '\Row';
+                $class = 'Row';
+            } else {
+                $class = ucfirst(inflector()->singularize($class));
             }
+            return implode($nsParts, '\\') . '\\'.$class;
         }
         return ucfirst(inflector()->singularize($class));
     }
