@@ -335,7 +335,7 @@ abstract class Relation
     public function getEagerQuery(RecordCollection $collection)
     {
         $fkList = $this->getEagerFkList($collection);
-        $query = clone $this->getQuery();
+        $query = $this->newQuery();
         $query->where($this->getWithPK() . ' IN ?', $fkList);
         return $query;
     }
@@ -346,7 +346,8 @@ abstract class Relation
      */
     public function getEagerFkList(RecordCollection $collection)
     {
-        return HelperBroker::get('Arrays')->pluck($collection, $this->getFK());
+        $return = HelperBroker::get('Arrays')->pluck($collection, $this->getFK());
+        return array_unique($return);
     }
 
 
