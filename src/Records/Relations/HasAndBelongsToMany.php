@@ -3,6 +3,7 @@
 namespace Nip\Records\Relations;
 
 use Nip\Database\Connection;
+use Nip\Records\Collections\Collection as RecordCollection;
 use Nip\Database\Query\Select as Query;
 
 class HasAndBelongsToMany extends HasOneOrMany
@@ -85,6 +86,38 @@ class HasAndBelongsToMany extends HasOneOrMany
         }
 
         return $query;
+    }
+
+
+
+    /**
+     * @param RecordCollection $collection
+     * @return RecordCollection
+     */
+    public function getEagerResults($collection)
+    {
+        if ($collection->count() < 1) {
+            return $this->getWith()->newCollection();
+        }
+        $query = $this->getEagerQuery($collection);
+
+        $return = $this->newCollection();
+        $results = $this->getDB()->execute($query);
+        if ($results->numRows() > 0) {
+            $i = 1;
+            while ($row = $results->fetchResult()) {
+                $row['relation_key'] = $i++;
+                $item = $this->getWith()->getNew($row);
+                $return->add($item, 'relation_key');
+            }
+        }
+
+        return $return;
+    }
+
+    protected function getDictionaryKey()
+    {
+        return '__'.$this->getFK();
     }
 
     public function save()

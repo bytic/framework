@@ -114,7 +114,6 @@ abstract class HasOneOrMany extends Relation
                 $collection->add($record);
             }
         }
-
         return $collection;
     }
 
@@ -127,10 +126,15 @@ abstract class HasOneOrMany extends Relation
     protected function buildDictionary(RecordCollection $collection)
     {
         $dictionary = [];
-        $pk = $this->getFK();
+        $pk = $this->getDictionaryKey();
         foreach ($collection as $record) {
             $dictionary[$record->{$pk}][] = $record;
         }
         return $dictionary;
+    }
+
+    protected function getDictionaryKey()
+    {
+        return $this->getFK();
     }
 }
