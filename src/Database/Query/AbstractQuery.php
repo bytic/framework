@@ -13,13 +13,16 @@ use Nip\Database\Result;
  * @package Nip\Database\Query
  *
  * @method AbstractQuery setCols() setCols(array|string $cols = null)
+ * @method AbstractQuery setWhere() setWhere(array|string $cols = null)
+ *
  * @method AbstractQuery cols() cols(array|string $cols)
  * @method AbstractQuery count() count(array|string $cols)
  * @method AbstractQuery sum() sum(array|string $cols)
  * @method AbstractQuery from() from(array|string $from)
  * @method AbstractQuery data() data(array $data)
  * @method AbstractQuery table() table(array|string $table)
- * @method AbstractQuery order() order(array|string $order)
+ * @method AbstractQuery order() order(array|string $order)\
+ * @method AbstractQuery group() group(array|string $group)\
  */
 abstract class AbstractQuery
 {
