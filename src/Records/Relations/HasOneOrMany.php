@@ -20,6 +20,7 @@ abstract class HasOneOrMany extends Relation
                 $this->saveResult($item);
             }
         }
+        return true;
     }
 
     public function saveResult(Record $item)

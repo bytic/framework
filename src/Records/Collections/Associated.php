@@ -42,6 +42,11 @@ class Associated extends RecordCollection
         $this->setItem($relation->getItem());
     }
 
+    public function save()
+    {
+        return $this->getWithRelation()->save();
+    }
+
     /**
      * @return Record
      */
