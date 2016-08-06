@@ -1031,6 +1031,7 @@ abstract class Table
         /** @var \Nip\Records\Relations\Relation $relation */
         $relation = new $class();
         $relation->setManager($this);
+        $relation->setManager($this);
         return $relation;
     }
 

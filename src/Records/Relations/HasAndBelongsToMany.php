@@ -8,6 +8,9 @@ use Nip\Database\Query\Select as Query;
 
 class HasAndBelongsToMany extends HasOneOrMany
 {
+
+    protected $_type = 'hasAndBelongsToMany';
+
     protected $_joinFields = null;
 
 

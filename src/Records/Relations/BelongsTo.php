@@ -7,6 +7,8 @@ use Nip\Records\Collections\Collection as RecordCollection;
 class BelongsTo extends Relation
 {
 
+    protected $_type = 'belongsTo';
+
     public function initFK()
     {
         $name = $this->getWith()->getPrimaryFK();

@@ -12,6 +12,8 @@ use Nip\Records\Collections\Collection as RecordCollection;
 abstract class HasOneOrMany extends Relation
 {
 
+    protected $_type = 'hasMany';
+
     public function save()
     {
         if ($this->hasResults()) {

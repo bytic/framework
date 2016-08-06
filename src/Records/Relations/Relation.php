@@ -3,17 +3,19 @@
 namespace Nip\Records\Relations;
 
 use Nip\Database\Connection;
-use Nip\HelperBroker;
-use Nip\Records\_Abstract\Table;
-use Nip\Records\_Abstract\Row as Record;
-use Nip\Records\RecordManager as Records;
 use Nip\Database\Query\Select as Query;
+use Nip\HelperBroker;
+use Nip\Records\_Abstract\Row as Record;
+use Nip\Records\_Abstract\Table;
 use Nip\Records\Collections\Collection as RecordCollection;
+use Nip\Records\RecordManager as Records;
 
 abstract class Relation
 {
 
     protected $_name;
+
+    protected $_type = 'relation';
 
     /**
      * @var Record
@@ -382,4 +384,13 @@ abstract class Relation
     public function save()
     {
     }
+
+    /**
+     * @return string
+     */
+    public function getType()
+    {
+        return $this->_type;
+    }
+
 }
