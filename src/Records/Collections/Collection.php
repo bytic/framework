@@ -2,6 +2,7 @@
 
 namespace Nip\Records\Collections;
 
+use Nip\HelperBroker;
 use Nip\Records\Record as Record;
 use Nip\Records\_Abstract\Table as Records;
 
@@ -94,6 +95,11 @@ class Collection extends \Nip_Collection
         return $this->_indexKey;
     }
 
+    public function setIndexKey($key)
+    {
+        return $this->_indexKey = $key;
+    }
+
     public function remove($record)
     {
         foreach ($this as $key => $item) {
@@ -119,7 +125,7 @@ class Collection extends \Nip_Collection
                 }
             } else {
                 $pk = $this->getManager()->getPrimaryKey();
-                $pk_list = \Nip\HelperBroker::get('Arrays')->pluck($this, $pk);
+                $pk_list = HelperBroker::get('Arrays')->pluck($this, $pk);
 
                 $query = $this->getManager()->newQuery("delete");
                 $query->where("$pk IN ?", $pk_list);

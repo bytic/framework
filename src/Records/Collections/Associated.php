@@ -40,6 +40,10 @@ class Associated extends RecordCollection
         $this->setWithRelation($relation);
         $this->setManager($relation->getWith());
         $this->setItem($relation->getItem());
+        $indexKey = $relation->getParam('indexKey');
+        if ($indexKey) {
+            $this->setIndexKey($indexKey);
+        }
     }
 
     public function save()
