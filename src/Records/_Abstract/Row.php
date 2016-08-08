@@ -279,11 +279,11 @@ abstract class Row extends \Nip_Object
     }
 
     /**
-     * @param Row $to
+     * @param Row $from
      * @return Row
      */
-    public function cloneRelations($to)
+    public function cloneRelations($from)
     {
-        return $this->getManager()->cloneRelations($this, $to);
+        return $this->getManager()->cloneRelations($from, $this);
     }
 }
