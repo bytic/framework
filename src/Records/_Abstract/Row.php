@@ -253,11 +253,18 @@ abstract class Row extends \Nip_Object
         return $relation;
     }
 
+    public function updateDataFromRecord($record)
+    {
+        $data = $record->toArray();
+        $this->writeData($data);
+
+        unset($this->{$this->getManager()->getPrimaryKey()}, $this->created);
+    }
+
     public function getClone()
     {
-        $data = $this->toArray();
         $clone = $this->getManager()->getNew();
-        $clone->writeData($data);
+        $clone->updateDataFromRecord($this);
 
         unset($clone->{$this->getManager()->getPrimaryKey()}, $clone->created);
         return $clone;
