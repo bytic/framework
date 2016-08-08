@@ -253,4 +253,30 @@ abstract class Row extends \Nip_Object
         return $relation;
     }
 
+    public function getClone()
+    {
+        $data = $this->toArray();
+        $clone = $this->getManager()->getNew();
+        $clone->writeData($data);
+
+        unset($clone->{$this->getManager()->getPrimaryKey()}, $clone->created);
+        return $clone;
+    }
+
+    public function getCloneWithRelations()
+    {
+        $item = $this->getClone();
+        $this->cloneRelations($item);
+
+        return $item;
+    }
+
+    /**
+     * @param Row $to
+     * @return Row
+     */
+    public function cloneRelations($to)
+    {
+        return $this->getManager()->cloneRelations($this, $to);
+    }
 }

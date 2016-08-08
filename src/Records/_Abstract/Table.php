@@ -1095,4 +1095,29 @@ abstract class Table
     {
         return 'App\Models\\';
     }
+
+    /**
+     * @param Row $from
+     * @param Row $to
+     * @return Row
+     */
+    public function cloneRelations($from, $to)
+    {
+        $relations = $this->getRelations();
+        foreach ($relations as $name=>$relation) {
+            /** @var \Nip\Records\Relations\HasMany $relation */
+            if ($relation->getType() != 'belongsTo') {
+                $associatedOld = $from->{'get'. $name}();
+                if (count($associatedOld)) {
+                    $associatedNew = $to->getRelation($name)->newCollection();
+                    foreach ($associatedOld as $associated) {
+                        $aItem = $associated->rClone();
+                        $associatedNew[] = $aItem;
+                    }
+                    $to->getRelation($name)->setResults($associatedNew);
+                }
+            }
+        }
+        return $to;
+    }
 }
