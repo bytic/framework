@@ -1111,7 +1111,7 @@ abstract class Table
                 if (count($associatedOld)) {
                     $associatedNew = $to->getRelation($name)->newCollection();
                     foreach ($associatedOld as $associated) {
-                        $aItem = $associated->rClone();
+                        $aItem = $associated->getCloneWithRelations();
                         $associatedNew[] = $aItem;
                     }
                     $to->getRelation($name)->setResults($associatedNew);
