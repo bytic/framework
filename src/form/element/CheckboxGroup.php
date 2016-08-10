@@ -20,7 +20,7 @@ class Nip_Form_Element_CheckboxGroup extends Nip_Form_Element_Input_Group {
         return $this->getDataFromRequest($value);
     }
 
-    public function getDataFromRequest($request) {		        
+    public function getDataFromRequest($request) {
 //        var_dump($request);
         if (is_array($request)) {
             $elements = $this->getElements();
@@ -28,10 +28,10 @@ class Nip_Form_Element_CheckboxGroup extends Nip_Form_Element_Input_Group {
                 $element->setChecked(in_array($key, $request));
             }
         } else {
-            foreach ($elements as $key=>$element) {				
+            foreach ($elements as $key=>$element) {
                 $element->setChecked(false);
             }
-		}
+        }
         return $this;
     }
 

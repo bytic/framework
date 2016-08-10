@@ -3,17 +3,19 @@
 namespace Nip\Records\Relations;
 
 use Nip\Database\Connection;
+use Nip\Database\Query\Select as Query;
 use Nip\HelperBroker;
-use Nip\Records\_Abstract\Table;
 use Nip\Records\_Abstract\Row as Record;
+use Nip\Records\_Abstract\Table;
+use Nip\Records\Collections\Collection as RecordCollection;
 use Nip\Records\RecordManager as Records;
-use Nip_DB_Query_Select as Query;
-use Nip_RecordCollection as RecordCollection;
 
 abstract class Relation
 {
 
     protected $_name;
+
+    protected $_type = 'relation';
 
     /**
      * @var Record
@@ -134,7 +136,7 @@ abstract class Relation
     }
 
     /**
-     * @return \Nip_DB_Query_Select
+     * @return Query
      */
     public function newQuery()
     {
@@ -330,12 +332,12 @@ abstract class Relation
 
     /**
      * @param RecordCollection $collection
-     * @return \Nip_DB_Query_Select
+     * @return Query
      */
     public function getEagerQuery(RecordCollection $collection)
     {
         $fkList = $this->getEagerFkList($collection);
-        $query = clone $this->getQuery();
+        $query = $this->newQuery();
         $query->where($this->getWithPK() . ' IN ?', $fkList);
         return $query;
     }
@@ -346,7 +348,8 @@ abstract class Relation
      */
     public function getEagerFkList(RecordCollection $collection)
     {
-        return HelperBroker::get('Arrays')->pluck($collection, $this->getFK());
+        $return = HelperBroker::get('Arrays')->pluck($collection, $this->getFK());
+        return array_unique($return);
     }
 
 
@@ -381,4 +384,13 @@ abstract class Relation
     public function save()
     {
     }
+
+    /**
+     * @return string
+     */
+    public function getType()
+    {
+        return $this->_type;
+    }
+
 }

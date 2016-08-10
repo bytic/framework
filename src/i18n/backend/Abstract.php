@@ -1,6 +1,8 @@
 <?php
-abstract class Nip_I18n_Backend_Abstract {
-    
+
+abstract class Nip_I18n_Backend_Abstract
+{
+
     protected $_i18n;
     protected $languages;
 
@@ -18,7 +20,8 @@ abstract class Nip_I18n_Backend_Abstract {
     }
 
 
-    public function getLanguages() {
+    public function getLanguages()
+    {
         return $this->languages;
     }
 
@@ -28,19 +31,20 @@ abstract class Nip_I18n_Backend_Abstract {
      * @param string $language
      * @return string
      */
-    public function translate($slug, $language = false) {
+    public function translate($slug, $language = false)
+    {
         $return = $this->_translate($slug, $language);
         if ($return) {
             return $return;
         }
 
-        trigger_error("Dictionary entry for [". $slug ."][". $language ."] does not exist.", E_USER_WARNING);
+        trigger_error("Dictionary entry for [" . $slug . "][" . $language . "] does not exist.", E_USER_WARNING);
         return $slug;
     }
 
     public function hasTranslation($slug, $language = false)
     {
         $return = $this->_translate($slug, $language);
-        return (bool) $return;
+        return (bool)$return;
     }
 }

@@ -1,26 +1,28 @@
 <?php
-class Nip_Form_Element_Select extends Nip_Form_Element_Abstract {
+
+class Nip_Form_Element_Select extends Nip_Form_Element_Abstract
+{
 
     protected $_type = 'select';
-
-    protected $_valueOptions = array();
+    protected $_optionsElements = array();
     protected $_values = array();
 
     /**
      * @return Nip_Form_Element_Select
      */
-    public function addOptionsArray($options, $valueKey, $labelKey) {
+    public function addOptionsArray($options, $valueKey, $labelKey)
+    {
         foreach ($options as $key => $option) {
-            $option = (object) $option;
-            
-            $oValue    = $option->$valueKey;
-            $oLabel   = $option->$labelKey;
+            $option = (object)$option;
+
+            $oValue = $option->$valueKey;
+            $oLabel = $option->$labelKey;
             $oDisabled = $option->disabled;
 
             $atribs = array(
                 'label' => $oLabel,
             );
-            
+
             if ($oDisabled) {
                 $atribs['disabled'] = 'disabled';
             }
@@ -33,7 +35,8 @@ class Nip_Form_Element_Select extends Nip_Form_Element_Abstract {
     /**
      * @return Nip_Form_Element_Select
      */
-    public function addOptions(array $array) {
+    public function addOptions(array $array)
+    {
         foreach ($array as $value => $label) {
             $this->addOption($value, $label);
         }
@@ -44,14 +47,15 @@ class Nip_Form_Element_Select extends Nip_Form_Element_Abstract {
     /**
      * @return Nip_Form_Element_Select
      */
-    public function addOption($value, $label) {
+    public function addOption($value, $label)
+    {
         if (is_array($label)) {
             $option = $label;
         } else {
             $option['label'] = $label;
         }
-        
-        $this->_valueOptions[$value] = $option;
+
+        $this->_optionsElements[$value] = $option;
         $this->_values[] = $value;
 
         return $this;
@@ -60,29 +64,45 @@ class Nip_Form_Element_Select extends Nip_Form_Element_Abstract {
     /**
      * @return Nip_Form_Element_Select
      */
-    public function appendOptgroupOption($optgroup, $value, $label) {
+    public function appendOptgroupOption($optgroup, $value, $label)
+    {
         if (is_array($label)) {
             $option = $label;
         } else {
             $option['label'] = $label;
         }
 
-        $this->_valueOptions[$optgroup][$value] = $option;
+        $this->_optionsElements[$optgroup][$value] = $option;
         $this->_values[] = $value;
 
         return $this;
     }
 
-    public function getOptions() {
-        return $this->_valueOptions;
+    /**
+     * @deprecated to stop confusion from select options and element options
+     * @return array
+     */
+    public function getOptions()
+    {
+        return $this->_optionsElements;
     }
 
-    public function setValue($value) {
+    /**
+     * @return array
+     */
+    public function getOptionsElements()
+    {
+        return $this->_optionsElements;
+    }
+
+    public function setValue($value)
+    {
 
         if (in_array($value, $this->_values)) {
             return parent::setValue($value);
         }
+
         return false;
     }
-    
+
 }

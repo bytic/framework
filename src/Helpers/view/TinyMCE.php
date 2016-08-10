@@ -6,6 +6,7 @@ class TinyMCE extends AbstractHelper
 {
 
     protected $_enabled = false;
+    protected $_base = 'tinymce';
 
     public function setEnabled($enabled = true)
     {
@@ -16,12 +17,22 @@ class TinyMCE extends AbstractHelper
     {
         if ($this->_enabled) {
             $this->getView()->Scripts()->setPack(false)
-                ->add('tinymce/jquery.tinymce.min', 'tinymce')
-                ->add('tinymce/tinymce.min', 'tinymce')
-                ->add('tinymce/init', 'tinymce');
+                ->add($this->getBase() . '/jquery.tinymce.min.js', 'tinymce')
+                ->add($this->getBase() . '/tinymce.min.js', 'tinymce')
+                ->add($this->getBase() . '/init.js', 'tinymce');
         }
 
         return $this->getView()->Scripts()->render('tinymce');
+    }
+
+    public function getBase()
+    {
+        return $this->_base;
+    }
+
+    public function setBase($base)
+    {
+        $this->_base = $base;
     }
 
 }

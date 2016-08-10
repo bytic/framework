@@ -16,8 +16,8 @@ class Nip_Locale
     public function getFromINI()
     {
         if (class_exists('Locale', false)) {
-			return PhpLocale::getDefault();
-    }
+            return PhpLocale::getDefault();
+        }
         return setlocale(LC_TIME, 0);
     }
 
@@ -32,6 +32,15 @@ class Nip_Locale
     public function initCurrent()
     {
         $locale = $this->getFromINI();
+        if ($this->isSupported($locale)) {
+            $this->setCurrent($locale);
+        } else {
+            $this->setCurrent($this->_default);
+        }
+    }
+
+    public function setCurrent($locale)
+    {
         if ($this->isSupported($locale)) {
             $this->_current = $locale;
         } else {
@@ -114,10 +123,10 @@ class Nip_Locale
 
     protected function _getDataFile($name)
     {
-        return $this->_getDataFolder() . $name . '.php';
+        return $this->getDataFolder() . $name . '.php';
     }
 
-    protected function _getDataFolder()
+    protected function getDataFolder()
     {
         return dirname(__FILE__) . '/locale/data/';
     }

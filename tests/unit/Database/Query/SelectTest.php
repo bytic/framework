@@ -4,7 +4,7 @@ namespace Nip\Tests\Database\Query;
 
 use Mockery as m;
 use Nip\Database\Connection;
-use Nip_DB_Query_Select;
+use Nip\Database\Query\Select;
 
 class SelectTest extends \Codeception\TestCase\Test
 {
@@ -19,16 +19,16 @@ class SelectTest extends \Codeception\TestCase\Test
 	protected $_db;
 
 	/**
-	 * @var Nip_DB_Query_Select
+	 * @var Select
 	 */
 	protected $_object;
 
 	protected function setUp()
 	{
 		parent::setUp();
-		$this->_object = new Nip_DB_Query_Select();
+		$this->_object = new Select();
 
-        $adapterMock = m::mock('Nip_DB_Adapters_MySQLi')->shouldDeferMissing();
+        $adapterMock = m::mock('Nip\Database\Adapters\MySQLi')->shouldDeferMissing();
         $adapterMock->shouldReceive('cleanData')->andReturnUsing(function ($data) {
             return $data;
         });
@@ -77,7 +77,7 @@ class SelectTest extends \Codeception\TestCase\Test
 	public function testInitializeCondition()
 	{
 		$condition = $this->_object->getCondition("lorem ipsum");
-		$this->assertThat($condition, $this->isInstanceOf("Nip_DB_Query_Condition"));
+		$this->assertThat($condition, $this->isInstanceOf("Nip\Database\Query\Condition\Condition"));
 	}
 
 	public function testNested()

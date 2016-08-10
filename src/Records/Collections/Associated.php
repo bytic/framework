@@ -4,7 +4,7 @@ namespace Nip\Records\Collections;
 
 use Nip\Records\Record as Record;
 use Nip\Records\Relations\HasOneOrMany as Relation;
-use Nip_RecordCollection as RecordCollection;
+use Nip\Records\Collections\Collection as RecordCollection;
 
 class Associated extends RecordCollection
 {
@@ -40,6 +40,15 @@ class Associated extends RecordCollection
         $this->setWithRelation($relation);
         $this->setManager($relation->getWith());
         $this->setItem($relation->getItem());
+        $indexKey = $relation->getParam('indexKey');
+        if ($indexKey) {
+            $this->setIndexKey($indexKey);
+        }
+    }
+
+    public function save()
+    {
+        return $this->getWithRelation()->save();
     }
 
     /**

@@ -1,10 +1,16 @@
 <?php
 
-use Nip\Records\Record as Record;
+use Nip\Records\_Abstract\Row as Record;
 
+/**
+ * Class Nip_Form_Model
+ */
 class Nip_Form_Model extends Nip_Form
 {
 
+    /**
+     * @var Record
+     */
     protected $_model;
 
     public function setModel(Record $model)
@@ -14,6 +20,9 @@ class Nip_Form_Model extends Nip_Form
         return $this;
     }
 
+    /**
+     * @return Record
+     */
     public function getModel()
     {
         return $this->_model;
@@ -42,12 +51,12 @@ class Nip_Form_Model extends Nip_Form
         return $this->addError($this->getModelMessage($name));
     }
 
-    public function addInputModelError($input,$name,$variables = array())
+    public function addInputModelError($input, $name, $variables = array())
     {
         return $this->$input->addError($this->getModelMessage($name, $variables));
     }
-    
-    public function getModelMessage($name,$variables = array())
+
+    public function getModelMessage($name, $variables = array())
     {
         return $this->getModel()->getManager()->getMessage('form.' . $name, $variables);
     }
@@ -70,7 +79,12 @@ class Nip_Form_Model extends Nip_Form
 
     public function process()
     {
-        $this->saveToModel();        
+        $this->saveToModel();
+        $this->saveModel();
+    }
+
+    public function saveModel()
+    {
         $this->getModel()->save();
     }
 

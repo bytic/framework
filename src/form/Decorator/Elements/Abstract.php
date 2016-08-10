@@ -32,7 +32,7 @@ abstract class Nip_Form_Decorator_Elements_Abstract {
 
     /**
      * @return Nip_Form_Element_Abstract
-    */
+     */
     public function getElement() {
         return $this->_element;
     }

@@ -8,8 +8,8 @@ class Nip_Form_Element_RadioGroup extends Nip_Form_Element_Input_Group {
         $element->setName($this->getName());
         return $element;
     }
-    
-    public function setValue($value) {       
+
+    public function setValue($value) {
         $elements = $this->getElements();
         foreach ($elements as $element) {
             if ($element->getValue() == $value) {
@@ -17,7 +17,7 @@ class Nip_Form_Element_RadioGroup extends Nip_Form_Element_Input_Group {
                 break;
             }
         }
-        
+
         return parent::setValue($value);
     }
 

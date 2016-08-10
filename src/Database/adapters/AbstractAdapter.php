@@ -52,6 +52,8 @@ abstract class AbstractAdapter
         return $profiler;
     }
 
+    abstract public function quote($value);
+
     abstract public function cleanData($data);
 
     abstract public function query($sql);

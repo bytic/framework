@@ -59,6 +59,7 @@ class Time
     public function getFormatedString()
     {
         $seconds = $this->getSeconds();
+        $return = '';
 
         if ($hours = intval((floor($seconds / 3600))) OR $return) {
             $seconds = $seconds - $hours * 3600;

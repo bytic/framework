@@ -108,7 +108,7 @@ class Nip_Helper_Url extends Nip\Helpers\AbstractHelper
     }
 
     /**
-     * @return Nip_Router;
+     * @return \Nip\Router\Router;
      */
     public function getRouter()
     {
@@ -120,7 +120,7 @@ class Nip_Helper_Url extends Nip\Helpers\AbstractHelper
     }
 
     /**
-     * @return Nip_Router;
+     * @return Nip\Router\Router;
      */
     public function initRouter()
     {

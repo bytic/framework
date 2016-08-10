@@ -70,7 +70,7 @@ abstract class Nip_Form_Abstract
 
     public function init()
     {
-        $this->setAction(CURRENT_URL);
+        $this->setAction(current_url());
     }
 
     public function postInit()
@@ -202,6 +202,14 @@ abstract class Nip_Form_Abstract
     }
 
     /**
+     * @return boolean
+     */
+    public function hasElement($name)
+    {
+        return array_key_exists($name, $this->_elements);
+    }
+
+    /**
      * @return Nip_Form_Element_Abstract
      */
     public function getElementByLabel($label)
@@ -305,8 +313,6 @@ abstract class Nip_Form_Abstract
     public function getElementClassName($type)
     {
         return 'Nip_Form_Element_' . ucfirst($type);
-        $element = new $className($this);
-        return $element;
     }
 
     /**
@@ -637,6 +643,16 @@ abstract class Nip_Form_Abstract
     public function getName()
     {
         return get_class($this);
+    }
+
+    public function __toString()
+    {
+        $backtrace = debug_backtrace();
+        if ($backtrace[1]['class'] == 'Monolog\Formatter\NormalizerFormatter') {
+            return;
+        }
+        trigger_error('form __toString', E_USER_WARNING);
+        return $this->render();
     }
 
     public function getControllerView()

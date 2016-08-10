@@ -3,13 +3,25 @@
 namespace Nip\Records\_Abstract;
 
 use Nip\Database\Connection;
-use Nip\Database\Query\_Abstract as Query;
+use Nip\Database\Query\AbstractQuery as Query;
+use Nip\Database\Query\Insert as InsertQuery;
+use Nip\Database\Query\Select as SelectQuery;
+use Nip\Database\Query\Update as UpdateQuery;
+use Nip\Database\Query\Delete as DeleteQuery;
+use Nip\Database\Result;
 use Nip\HelperBroker;
 use Nip\Paginator;
 use Nip\Records\Relations\Relation;
 use Nip\Records\_Abstract\Row as Record;
-use Nip_RecordCollection as RecordCollection;
+use Nip\Records\Collections\Collection as RecordCollection;
+use Nip\Request;
 
+/**
+ * Class Table
+ * @package Nip\Records\_Abstract
+ *
+ * @method \Nip_Helper_Url Url()
+ */
 abstract class Table
 {
 
@@ -18,7 +30,7 @@ abstract class Table
      */
     protected $_db = null;
 
-    protected $_collectionClass = 'Nip_RecordCollection';
+    protected $_collectionClass = '\Nip\Records\Collections\Collection';
     protected $_helpers = array();
 
     protected $_table = null;
@@ -67,6 +79,25 @@ abstract class Table
      */
     public function __call($name, $arguments)
     {
+        $return = $this->isCallDatabaseOperation($name, $arguments);
+        if ($return !== null) {
+            return $return;
+        }
+
+        if ($return = $this->isCallUrl($name, $arguments)) {
+            return $return;
+        }
+
+        if ($name === ucfirst($name)) {
+            return $this->getHelper($name);
+        }
+
+        trigger_error("Call to undefined method $name", E_USER_ERROR);
+        return $this;
+    }
+
+    protected function isCallDatabaseOperation($name, $arguments)
+    {
         $operations = array("find", "delete", "count");
         foreach ($operations as $operation) {
             if (strpos($name, $operation . "By") !== false || strpos($name, $operation . "OneBy") !== false) {
@@ -88,13 +119,53 @@ abstract class Table
                 return $this->$operation($params);
             }
         }
+        return null;
+    }
 
-        if ($name === ucfirst($name)) {
-            return $this->getHelper($name);
+    protected function isCallUrl($name, $arguments)
+    {
+        if (substr($name, 0, 3) == "get" || substr($name, -3) == "URL") {
+            $action = substr($name, 3, -3);
+            $params = $arguments[0];
+
+            $controller = $this->getController();
+
+            if (substr($action, 0, 5) == 'Async') {
+                $controller = 'async-' . $controller;
+                $action = substr($action, 5);
+            }
+
+            if (substr($action, 0, 5) == 'Modal') {
+                $controller = 'modal-' . $controller;
+                $action = substr($action, 5);
+            }
+
+            $params['action'] = (!empty($action)) ? $action : 'index';
+            $params['controller'] = $controller;
+            if ($arguments[1]) {
+                $params['module'] = $arguments[1];
+            }
+
+            return $this->_getURL($params);
+        }
+        return false;
+    }
+
+    protected function _getURL($params = array())
+    {
+        $params['action'] = inflector()->unclassify($params['action']);
+        $params['action'] = ($params['action'] == 'index') ? false : $params['action'];
+        $params['controller'] = $params['controller'] ? $params['controller'] : $this->getController();
+        $params['module'] = $params['module'] ? $params['module'] : Request::instance()->getModuleName();
+
+        $routeName = $params['module'].'.'.$params['controller'].'.'.$params['action'];
+        if ($this->Url()->getRouter()->hasRoute($routeName)) {
+            unset($params['module'], $params['controller'], $params['action']);
+        } else {
+            $routeName = $params['module'].'.default';
         }
 
-        trigger_error("Call to undefined method $name", E_USER_ERROR);
-        return $this;
+        return $this->Url()->assemble($routeName, $params);
     }
 
     public function getNewRecord($data = array())
@@ -137,9 +208,13 @@ abstract class Table
         if (strpos($class, '\\')) {
             $nsParts = explode('\\', $class);
             $class = array_pop($nsParts);
+
             if ($class == 'Table') {
-                return implode($nsParts, '\\') . '\Row';
+                $class = 'Row';
+            } else {
+                $class = ucfirst(inflector()->singularize($class));
             }
+            return implode($nsParts, '\\') . '\\'.$class;
         }
         return ucfirst(inflector()->singularize($class));
     }
@@ -232,7 +307,7 @@ abstract class Table
     public function findByPrimary($pk_list = array())
     {
         $pk = $this->getPrimaryKey();
-        $return = new RecordCollection();
+        $return = $this->newCollection();
 
         if ($pk_list) {
             $pk_list = array_unique($pk_list);
@@ -287,7 +362,7 @@ abstract class Table
     }
 
     /**
-     * @return \Nip_DB_Query_Insert
+     * @return InsertQuery
      */
     public function newInsertQuery()
     {
@@ -295,7 +370,7 @@ abstract class Table
     }
 
     /**
-     * @return \Nip_DB_Query_Update
+     * @return UpdateQuery
      */
     public function newUpdateQuery()
     {
@@ -303,7 +378,7 @@ abstract class Table
     }
 
     /**
-     * @return \Nip_DB_Query_Delete
+     * @return DeleteQuery
      */
     public function newDeleteQuery()
     {
@@ -417,13 +492,17 @@ abstract class Table
         return $query;
     }
 
+    /**
+     * @param Row $model
+     * @return array
+     */
     public function getQueryModelData($model)
     {
         $data = array();
 
         $fields = $this->getFields();
         foreach ($fields as $field) {
-            if ($model->$field) {
+            if (isset($model->$field)) {
                 $data[$field] = $model->$field;
             }
         }
@@ -433,7 +512,7 @@ abstract class Table
     /**
      * Updates a Record's database entry
      * @param Record $model
-     * @return bool|\Nip_DB_Result
+     * @return bool|Result
      */
     public function update(Record $model)
     {
@@ -447,7 +526,7 @@ abstract class Table
 
     /**
      * @param Record $model
-     * @return bool|Query
+     * @return bool|UpdateQuery
      */
     public function updateQuery(Record $model)
     {
@@ -520,7 +599,7 @@ abstract class Table
             $primary = $input;
         }
 
-        $query = $this->newQuery('delete');
+        $query = $this->newDeleteQuery();
         $query->where("$pk = ?", $primary);
         $query->limit(1);
 
@@ -536,7 +615,7 @@ abstract class Table
     {
         extract($params);
 
-        $query = $this->newQuery('delete');
+        $query = $this->newDeleteQuery();
 
         if (isset($where)) {
             if (is_array($where)) {
@@ -956,6 +1035,7 @@ abstract class Table
         /** @var \Nip\Records\Relations\Relation $relation */
         $relation = new $class();
         $relation->setManager($this);
+        $relation->setManager($this);
         return $relation;
     }
 
@@ -1018,5 +1098,31 @@ abstract class Table
     public static function getRootNamespace()
     {
         return 'App\Models\\';
+    }
+
+    /**
+     * @param Row $from
+     * @param Row $to
+     * @return Row
+     */
+    public function cloneRelations($from, $to)
+    {
+        $relations = $from->getManager()->getRelations();
+        foreach ($relations as $name=>$relation) {
+            /** @var \Nip\Records\Relations\HasMany $relation */
+            if ($relation->getType() != 'belongsTo') {
+                /** @var Row[] $associatedOld */
+                $associatedOld = $from->{'get'. $name}();
+                if (count($associatedOld)) {
+                    $associatedNew = $to->getRelation($name)->newCollection();
+                    foreach ($associatedOld as $associated) {
+                        $aItem = $associated->getCloneWithRelations();
+                        $associatedNew[] = $aItem;
+                    }
+                    $to->getRelation($name)->setResults($associatedNew);
+                }
+            }
+        }
+        return $to;
     }
 }

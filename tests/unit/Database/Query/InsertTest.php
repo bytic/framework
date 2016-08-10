@@ -4,7 +4,7 @@ namespace Nip\Tests\Database\Query;
 
 use Mockery as m;
 use Nip\Database\Connection;
-use Nip_DB_Query_Insert;
+use Nip\Database\Query\Insert;
 
 class InsertTest extends \Codeception\TestCase\Test
 {
@@ -21,10 +21,10 @@ class InsertTest extends \Codeception\TestCase\Test
 	protected function setUp()
 	{
 		parent::setUp();
-		$this->_object = new Nip_DB_Query_Insert();
+		$this->_object = new Insert();
 
 
-        $adapterMock = m::mock('Nip_DB_Adapters_MySQLi')->shouldDeferMissing();
+        $adapterMock = m::mock('Nip\Database\Adapters\MySQLi')->shouldDeferMissing();
         $adapterMock->shouldReceive('cleanData')->andReturnUsing(function ($data) {
             return $data;
         });

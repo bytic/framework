@@ -20,6 +20,7 @@
   "require": {
     "php": ">=5.5.0",
     "container-interop/container-interop": "1.1.*",
+    "nesbot/carbon": "^1.21",
     "maximebf/debugbar": "1.*",
     "monolog/monolog": "1.20.*"
   },

@@ -86,6 +86,11 @@ abstract class Row extends \Nip_Object
         }
     }
 
+    public function getDBData()
+    {
+        return $this->_dbData;
+    }
+
     public function getPrimaryKey()
     {
         $pk = $this->getManager()->getPrimaryKey();
@@ -253,4 +258,40 @@ abstract class Row extends \Nip_Object
         return $relation;
     }
 
+    /**
+     * @param Row $record
+     */
+    public function updateDataFromRecord($record)
+    {
+        $data = $record->toArray();
+        $this->writeData($data);
+
+        unset($this->{$this->getManager()->getPrimaryKey()}, $this->created);
+    }
+
+    public function getClone()
+    {
+        $clone = $this->getManager()->getNew();
+        $clone->updateDataFromRecord($this);
+
+        unset($clone->{$this->getManager()->getPrimaryKey()}, $clone->created);
+        return $clone;
+    }
+
+    public function getCloneWithRelations()
+    {
+        $item = $this->getClone();
+        $this->cloneRelations($item);
+
+        return $item;
+    }
+
+    /**
+     * @param Row $from
+     * @return Row
+     */
+    public function cloneRelations($from)
+    {
+        return $this->getManager()->cloneRelations($from, $this);
+    }
 }

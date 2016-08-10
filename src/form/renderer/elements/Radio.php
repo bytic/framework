@@ -11,6 +11,11 @@ class Nip_Form_Renderer_Elements_Radio extends Nip_Form_Renderer_Elements_Input_
         return $return;
     }
 
+    public function renderInput()
+    {
+        return parent::generateElement();
+    }
+
     public function getelementattribs() {
         $attribs = parent::getelementattribs();
         $attribs[] = 'checked';

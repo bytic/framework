@@ -145,4 +145,14 @@ class HTML extends AbstractHelper
 
         return " " . implode(" ", $return);
     }
+
+    public function compress($buffer)
+    {
+        // remove comments, tabs, spaces, newlines, etc.
+        $search = array(
+            "/ +/" => " ",
+            "/<!--(.*?)-->|[\t\r\n]|<!--|-->|\/\/ <!--|\/\/ -->|<!--\[CDATA\[|\/\/ \]\]-->|\]\]>|\/\/\]\]>|\/\/<!--\[CDATA\[/" => ""
+        );
+        return preg_replace(array_keys($search), array_values($search), $buffer);
+    }
 }

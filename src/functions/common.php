@@ -37,8 +37,6 @@ if (!function_exists("pr")) {
 }
 
 /**
- * @param string $db_adapter
- * @param string $db_prefix
  * @return Nip\Database\Connection
  */
 function db()
@@ -46,12 +44,29 @@ function db()
     return Container::getInstance()->get('database');
 }
 
+if (! function_exists('app')) {
+    /**
+     * Get the available container instance.
+     *
+     * @param  string  $id
+     * @param  array   $parameters
+     * @return mixed|Container
+     */
+    function app($id = null, $parameters = [])
+    {
+        if (is_null($id)) {
+            return Container::getInstance();
+        }
+        return Container::getInstance()->get($id, $parameters);
+    }
+}
+
 /**
- * @return Nip_Inflector
+ * @return Nip\Inflector\Inflector
  */
 function inflector()
 {
-    return Nip_Inflector::instance();
+    return Nip\Inflector\Inflector::instance();
 }
 
 function encode_url($input)
@@ -74,7 +89,6 @@ function encode_url($input)
         '&#039;' => ''
     );
 
-    $change = $with = array();
     foreach ($chars as $i => $v) {
         $chars[html_entity_decode($i, ENT_QUOTES, 'UTF-8')] = $v;
     }
@@ -84,6 +98,11 @@ function encode_url($input)
     preg_match_all("/[a-z0-9]+/i", $input, $chunks);
     $return_ = strtolower(implode("-", $chunks[0]));
     return $return_;
+}
+
+function current_url()
+{
+    return CURRENT_URL;
 }
 
 /**
@@ -123,9 +142,20 @@ function _strtotime($date, $format = false)
  */
 function _strftime($datetime, $format = false)
 {
-    $format = $format ? $format : Nip_Locale::instance()->getOption(array('time', 'dateStringFormat'));
-    $time = is_numeric($datetime) ? $datetime : strtotime($datetime);
-    return $time > 0 ? iconv("ISO-8859-2", "ASCII//TRANSLIT", strftime($format, $time)) : '';
+    if ($datetime && strpos($datetime, '0000-00-00') === false) {
+        $format = $format ? $format : Nip_Locale::instance()->getOption(array('time','dateStringFormat'));
+        if (is_numeric($datetime)) {
+            $time = $datetime;
+        } else {
+            $time = strtotime($datetime);
+        }
+
+        if ($time !== false && $time !== -1) {
+            return iconv("ISO-8859-2", "ASCII//TRANSLIT",strftime($format, $time));
+        }
+    }
+
+    return false;
 }
 
 
@@ -517,7 +547,9 @@ if (!function_exists("json_decode")) {
 
 }
 
-function _htmlDistance($distance)
-{
-    return intval($distance) . '<small>' . substr($distance, strrpos($distance, '.')) . '</small>';
+function _htmlDistance($distance) {
+    $integer = intval($distance);
+    $decimalPosition = strrpos($distance,'.');
+    $decimal = $decimalPosition === false ? false : substr($distance, $decimalPosition);
+    return intval($distance). ($decimal ? '<small>'.$decimal.'</small>' : '');
 }

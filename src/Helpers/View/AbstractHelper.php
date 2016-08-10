@@ -26,9 +26,15 @@ abstract class AbstractHelper extends NipAbstractHelper
     public function getView()
     {
         if (!$this->_view) {
-            $this->_view = View::instance();
+            $this->initView();
         }
         return $this->_view;
     }
+
+    public function initView()
+    {
+        $this->_view = View::instance();
+    }
+
 
 }

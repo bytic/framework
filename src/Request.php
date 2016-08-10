@@ -445,7 +445,6 @@ class Request
         return $this;
     }
 
-
     public function getMCA()
     {
         return $this->getModuleName() . '.' . $this->getControllerName() . '.' . $this->getActionName();
@@ -523,11 +522,17 @@ class Request
     /**
      * Singleton
      *
-     * @return self
+     * @param null $newInstance
+     * @return static
      */
-    static public function instance()
+    static public function instance($newInstance = null)
     {
         static $instance;
+
+        if ($newInstance instanceof self) {
+            $instance = $newInstance;
+        }
+
         if (!($instance instanceof self)) {
             $instance = new self();
         }

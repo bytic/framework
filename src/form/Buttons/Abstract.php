@@ -1,58 +1,71 @@
 <?php
-abstract class Nip_Form_Button_Abstract {
+
+abstract class Nip_Form_Button_Abstract
+{
 
     protected $_form;
     protected $_attribs;
     protected $_uniqueID;
-    
+
     protected $_type = 'abstract';
 
-    public function  __construct($form) {
+    public function __construct($form)
+    {
         $this->setForm($form);
         $this->init();
     }
 
-    public function init() {
-        $this->addClass('btn','btn-primary');
+    public function init()
+    {
+        $this->addClass('btn', 'btn-primary');
     }
 
-    public function setId($id) {
+    public function setId($id)
+    {
         $this->setAttrib('id', $id);
         return $this;
     }
 
-    public function getId() {
+    public function getId()
+    {
         return $this->getAttrib('id');
-    }    
+    }
 
-    public function setName($name) {
+    public function setName($name)
+    {
         $this->setAttrib('name', $name);
         return $this;
     }
 
-    public function getName() {
+    public function getName()
+    {
         return $this->getAttrib('name');
     }
 
-    public function setLabel($label) {
+    public function setLabel($label)
+    {
         $this->setAttrib('label', $label);
         return $this;
     }
 
-    public function getLabel() {
+    public function getLabel()
+    {
         return $this->getAttrib('label');
     }
 
-    public function setValue($value) {
+    public function setValue($value)
+    {
         $this->setAttrib('value', $value);
         return $this;
     }
 
-    public function getValue($requester = 'abstract') {
+    public function getValue($requester = 'abstract')
+    {
         return $this->getAttrib('value');
     }
 
-    public function addClass() {
+    public function addClass()
+    {
         $classes = func_get_args();
         if (is_array($classes)) {
             $oldClasses = explode(' ', $this->getAttrib('class'));
@@ -62,7 +75,8 @@ abstract class Nip_Form_Button_Abstract {
         return $this;
     }
 
-    public function setForm(Nip_Form_Abstract $form) {
+    public function setForm(Nip_Form_Abstract $form)
+    {
         $this->_form = $form;
         return $this;
     }
@@ -70,15 +84,17 @@ abstract class Nip_Form_Button_Abstract {
     /**
      * @return Nip_Form_Abstract
      */
-    public function getForm() {
+    public function getForm()
+    {
         return $this->_form;
     }
-    
+
     /**
      * @return Nip_Form_Element_Abstract
      */
-    public function setAttrib($key, $value)  {
-        $key = (string) $key;
+    public function setAttrib($key, $value)
+    {
+        $key = (string)$key;
         $this->_attribs[$key] = $value;
         return $this;
     }
@@ -87,7 +103,8 @@ abstract class Nip_Form_Button_Abstract {
      * @param  array $attribs
      * @return Nip_Form_Element_Abstract
      */
-    public function addAttribs(array $attribs) {
+    public function addAttribs(array $attribs)
+    {
         foreach ($attribs as $key => $value) {
             $this->setAttrib($key, $value);
         }
@@ -98,13 +115,15 @@ abstract class Nip_Form_Button_Abstract {
      * @param  array $attribs
      * @return Nip_Form_Element_Abstract
      */
-    public function setAttribs(array $attribs) {
+    public function setAttribs(array $attribs)
+    {
         $this->clearAttribs();
         return $this->addAttribs($attribs);
     }
 
-    public function getAttrib($key) {
-        $key = (string) $key;
+    public function getAttrib($key)
+    {
+        $key = (string)$key;
         if (!isset($this->_attribs[$key])) {
             return null;
         }
@@ -112,21 +131,24 @@ abstract class Nip_Form_Button_Abstract {
         return $this->_attribs[$key];
     }
 
-    public function delAttrib($key) {
-        $key = (string) $key;
+    public function delAttrib($key)
+    {
+        $key = (string)$key;
         unset($this->_attribs[$key]);
 
         return true;
     }
 
-    public function getAttribs() {
+    public function getAttribs()
+    {
         return $this->_attribs;
     }
 
     /**
      * @return bool
      */
-    public function removeAttrib($key) {
+    public function removeAttrib($key)
+    {
         if (isset($this->_attribs[$key])) {
             unset($this->_attribs[$key]);
             return true;
@@ -138,20 +160,24 @@ abstract class Nip_Form_Button_Abstract {
     /**
      * @return Nip_Form_Element_Abstract
      */
-    public function clearAttribs() {
+    public function clearAttribs()
+    {
         $this->_attribs = array();
         return $this;
     }
 
-    public function getRenderer() {
+    public function getRenderer()
+    {
         return $this->getForm()->getRenderer()->getButtonRenderer($this);
     }
 
-    public function render() {
+    public function render()
+    {
         return $this->getRenderer()->render($this);
     }
 
-    public function getType() {
+    public function getType()
+    {
         return $this->_type;
     }
 

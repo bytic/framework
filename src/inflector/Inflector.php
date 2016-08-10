@@ -1,6 +1,8 @@
 <?php
 
-class Nip_Inflector
+namespace Nip\Inflector;
+
+class Inflector
 {
     protected $plural = array(
         '/(quiz)$/i' => '\1zes',
@@ -142,7 +144,7 @@ class Nip_Inflector
     public function writeCache()
     {
         if ($this->dictionary && $this->cacheFile) {
-            $file = new Nip_File_Handler(array("path" => $this->cacheFile));
+            $file = new \Nip_File_Handler(array("path" => $this->cacheFile));
             $data = '<?php $inflector = ' . var_export($this->dictionary, true) . ";";
             $file->rewrite($data);
         }
@@ -161,8 +163,8 @@ class Nip_Inflector
 
     public function getCacheTTL()
     {
-        if (isset(Nip_Config::instance()->MISC) && isset(Nip_Config::instance()->MISC->inflector_cache)) {
-            return Nip_Config::instance()->MISC->inflector_cache;
+        if (isset(\Nip_Config::instance()->MISC) && isset(\Nip_Config::instance()->MISC->inflector_cache)) {
+            return \Nip_Config::instance()->MISC->inflector_cache;
         }
         return 86400;
     }

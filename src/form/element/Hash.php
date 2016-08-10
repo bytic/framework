@@ -24,7 +24,7 @@ class Nip_Form_Element_Hash extends Nip_Form_Element_Hidden {
         $_SESSION[$name] = $hash;
         $this->setValue($hash);
     }
-    
+
     public function validate() {
         if (!$this->getValue()) {
             $this->addError('Request received without security hash');

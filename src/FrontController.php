@@ -67,13 +67,13 @@ class FrontController
     public function getRouter()
     {
         if (!$this->_router) {
-            $this->_router = new \Nip_Router();
+            $this->_router = new \Nip\Router\Router();
         }
 
         return $this->_router;
     }
 
-    public function setRouter(\Nip_Router $router = NULL)
+    public function setRouter(\Nip\Router\Router $router = NULL)
     {
         $this->_router = $router;
         return $this;
