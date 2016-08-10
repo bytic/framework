@@ -86,6 +86,11 @@ abstract class Row extends \Nip_Object
         }
     }
 
+    public function getDBData()
+    {
+        return $this->_dbData;
+    }
+
     public function getPrimaryKey()
     {
         $pk = $this->getManager()->getPrimaryKey();
@@ -253,6 +258,9 @@ abstract class Row extends \Nip_Object
         return $relation;
     }
 
+    /**
+     * @param Row $record
+     */
     public function updateDataFromRecord($record)
     {
         $data = $record->toArray();
