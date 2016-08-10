@@ -80,6 +80,11 @@ class Nip_Form_Model extends Nip_Form
     public function process()
     {
         $this->saveToModel();
+        $this->saveModel();
+    }
+
+    public function saveModel()
+    {
         $this->getModel()->save();
     }
 
