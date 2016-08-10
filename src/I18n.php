@@ -1,7 +1,5 @@
 <?php
 
-use Nip_I18n_Backend_Abstract;
-
 /**
  * Class Nip_I18n
  */
@@ -9,7 +7,7 @@ class Nip_I18n
 {
 
     protected $_languageCodes = array(
-        'en' => 'en_US'
+        'en' => 'en_US',
     );
 
     /**
@@ -31,6 +29,7 @@ class Nip_I18n
     {
         $this->_backend = $backend;
         $this->_backend->setI18n($this);
+
         return $this;
     }
 
@@ -53,9 +52,9 @@ class Nip_I18n
         $this->selectedLanguage = $language;
         $_SESSION['language'] = $language;
 
-        $code = $this->_languageCodes[$language] ? $this->_languageCodes[$language] : $language . "_" . strtoupper($language);
+        $code = $this->_languageCodes[$language] ? $this->_languageCodes[$language] : $language."_".strtoupper($language);
 
-        putenv('LC_ALL=' . $code);
+        putenv('LC_ALL='.$code);
         setlocale(LC_ALL, $code);
 
         return $this;
@@ -70,6 +69,7 @@ class Nip_I18n
     public function setDefaultLanguage($language)
     {
         $this->defaultLanguage = $language;
+
         return $this;
     }
 
@@ -82,6 +82,7 @@ class Nip_I18n
         if (!$this->defaultLanguage) {
             $this->setDefaultLanguage(substr(setlocale(LC_ALL, 0), 0, 2));
         }
+
         return $this->defaultLanguage;
     }
 
@@ -100,7 +101,7 @@ class Nip_I18n
     public function getLanguage()
     {
         if (!$this->selectedLanguage) {
-            $language = false ;
+            $language = false;
 
             if (isset($_SESSION['language'])) {
                 $language = $_SESSION['language'];
@@ -127,8 +128,9 @@ class Nip_I18n
 
     public function changeLangURL($lang)
     {
-        $newURL = str_replace('language=' . $this->getLanguage(), '', CURRENT_URL);
-        $newURL = $newURL . (strpos($newURL, '?') == false ? '?' : '&') . 'language=' . $lang;
+        $newURL = str_replace('language='.$this->getLanguage(), '', CURRENT_URL);
+        $newURL = $newURL.(strpos($newURL, '?') == false ? '?' : '&').'language='.$lang;
+
         return $newURL;
     }
 
@@ -152,7 +154,7 @@ class Nip_I18n
         if ($return) {
             if ($params) {
                 foreach ($params as $key => $value) {
-                    $return = str_replace("#{" . $key . "}", $value, $return);
+                    $return = str_replace("#{".$key."}", $value, $return);
                 }
             }
         }
@@ -203,6 +205,7 @@ class Nip_I18n
         if (!($instance instanceof self)) {
             $instance = new self();
         }
+
         return $instance;
     }
 
