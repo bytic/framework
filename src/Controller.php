@@ -80,6 +80,7 @@ class Controller
             if ($this->validAction($action)) {
                 $this->setAction($action);
 
+                $this->parseRequest();
                 $this->beforeAction();
                 $this->{$this->_action}();
                 $this->afterAction();
@@ -191,6 +192,14 @@ class Controller
         return $this->_action;
     }
 
+
+    /**
+     * Called before action
+     */
+    protected function parseRequest()
+    {
+        return true;
+    }
 
     /**
      * Called before $this->action
