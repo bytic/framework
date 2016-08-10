@@ -492,13 +492,17 @@ abstract class Table
         return $query;
     }
 
+    /**
+     * @param Row $model
+     * @return array
+     */
     public function getQueryModelData($model)
     {
         $data = array();
 
         $fields = $this->getFields();
         foreach ($fields as $field) {
-            if ($model->$field) {
+            if (isset($model->$field)) {
                 $data[$field] = $model->$field;
             }
         }
@@ -1107,6 +1111,7 @@ abstract class Table
         foreach ($relations as $name=>$relation) {
             /** @var \Nip\Records\Relations\HasMany $relation */
             if ($relation->getType() != 'belongsTo') {
+                /** @var Row[] $associatedOld */
                 $associatedOld = $from->{'get'. $name}();
                 if (count($associatedOld)) {
                     $associatedNew = $to->getRelation($name)->newCollection();
