@@ -4,6 +4,7 @@ namespace Nip\Logger;
 
 use ErrorException;
 use Monolog\Logger as MonologLogger;
+use Nip\Application;
 use Nip\Bootstrap;
 use Psr\Log\LoggerInterface as PsrLoggerInterface;
 
@@ -16,7 +17,7 @@ class Manager implements PsrLoggerInterface
     protected $monolog = null;
 
     /**
-     * @var Bootstrap
+     * @var Application
      */
     protected $bootstrap;
 
@@ -397,7 +398,7 @@ class Manager implements PsrLoggerInterface
     }
 
     /**
-     * @return Bootstrap
+     * @return Application
      */
     public function getBootstrap()
     {
@@ -405,7 +406,7 @@ class Manager implements PsrLoggerInterface
     }
 
     /**
-     * @param Bootstrap $bootstrap
+     * @param Application $bootstrap
      */
     public function setBootstrap($bootstrap)
     {

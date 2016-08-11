@@ -246,7 +246,7 @@ class Application
         }
 
         if ($domain != 'localhost') {
-            \Nip\Cookie\Jar::instance()->setDefaults(
+            Cookie\Jar::instance()->setDefaults(
                 array('domain' => '.' . $domain)
             );
         }
@@ -294,11 +294,11 @@ class Application
     }
 
     /**
-     * @return \Nip\Router\Router
+     * @return Router\Router
      */
     public function newRouter()
     {
-        return new \Nip\Router\Router();
+        return new Router\Router();
     }
 
     protected function getFrontController()
@@ -328,10 +328,10 @@ class Application
 
             $this->getFrontController()->dispatch();
             ob_end_flush();
-            $this->postDispatch();
         } catch (\Exception $e) {
             $this->_logger->handleException($e);
         }
+        $this->postDispatch();
     }
 
     public function preDispatch()
@@ -434,6 +434,5 @@ class Application
     {
         $this->_debugBar = $debugBar;
     }
-
 
 }
