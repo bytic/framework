@@ -63,19 +63,46 @@ class View
     {
         unset($this->_data[$name]);
     }
-
+    /**
+     * @param string $name
+     * @param mixed $value
+     */
     public function set($name, $value)
     {
         $this->_data[$name] = $value;
     }
 
+    /**
+     * @param  string $name
+     * @return mixed|null
+     */
     public function get($name)
     {
-        if (isset($this->_data[$name])) {
+        if ($this->has($name)) {
             return $this->_data[$name];
         } else {
             return null;
         }
+    }
+
+    /**
+     * @param string $name
+     * @return bool
+     */
+    public function has($name)
+    {
+        return isset($this->_data[$name]);
+    }
+
+    /**
+     * @param string $name
+     * @param string $appended
+     */
+    public function append($name, $appended)
+    {
+        $value = $this->has($name) ? $this->get($name) : '';
+        $value .= $appended;
+        return $this->set($name, $value);
     }
 
     public function getHelper($name)
