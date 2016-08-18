@@ -5,19 +5,19 @@ namespace Nip;
 /**
  * Class View
  *
- * @method \Nip\Helpers\View\Breadcrumbs Breadcrumbs()
- * @method \Nip\Helpers\View\Doctype Doctype()
- * @method \Nip\Helpers\View\Flash Flash()
- * @method \Nip\Helpers\View\FacebookMeta FacebookMeta()
- * @method \Nip\Helpers\View\GoogleAnalytics GoogleAnalytics()
- * @method \Nip\Helpers\View\HTML HTML()
- * @method \Nip\Helpers\View\Messages Messages()
- * @method \Nip\Helpers\View\Meta Meta()
- * @method \Nip\Helpers\View\Paginator Paginator()
- * @method \Nip\Helpers\View\Scripts Scripts()
- * @method \Nip\Helpers\View\StyleSheets StyleSheets()
- * @method \Nip\Helpers\View\TinyMCE TinyMCE()
- * @method \Nip\Helpers\View\Url Url()
+ * @method Helpers\View\Breadcrumbs Breadcrumbs()
+ * @method Helpers\View\Doctype Doctype()
+ * @method Helpers\View\Flash Flash()
+ * @method Helpers\View\FacebookMeta FacebookMeta()
+ * @method Helpers\View\GoogleAnalytics GoogleAnalytics()
+ * @method Helpers\View\HTML HTML()
+ * @method Helpers\View\Messages Messages()
+ * @method Helpers\View\Meta Meta()
+ * @method Helpers\View\Paginator Paginator()
+ * @method Helpers\View\Scripts Scripts()
+ * @method Helpers\View\StyleSheets StyleSheets()
+ * @method Helpers\View\TinyMCE TinyMCE()
+ * @method Helpers\View\Url Url()
  *
  */
 class View
@@ -63,19 +63,46 @@ class View
     {
         unset($this->_data[$name]);
     }
-
+    /**
+     * @param string $name
+     * @param mixed $value
+     */
     public function set($name, $value)
     {
         $this->_data[$name] = $value;
     }
 
+    /**
+     * @param  string $name
+     * @return mixed|null
+     */
     public function get($name)
     {
-        if (isset($this->_data[$name])) {
+        if ($this->has($name)) {
             return $this->_data[$name];
         } else {
             return null;
         }
+    }
+
+    /**
+     * @param string $name
+     * @return bool
+     */
+    public function has($name)
+    {
+        return isset($this->_data[$name]);
+    }
+
+    /**
+     * @param string $name
+     * @param string $appended
+     */
+    public function append($name, $appended)
+    {
+        $value = $this->has($name) ? $this->get($name) : '';
+        $value .= $appended;
+        return $this->set($name, $value);
     }
 
     public function getHelper($name)
@@ -136,11 +163,12 @@ class View
         $this->_basePath = false;
     }
 
-    /**
+    /** @noinspection PhpInconsistentReturnPointsInspection
+     *
      * @param $view
      * @param array $variables
      * @param bool $return
-     * @return string
+     * @return string|null
      */
     public function load($view, $variables = array(), $return = false)
     {
@@ -160,6 +188,7 @@ class View
 
         unset($view, $variables);
         ob_start();
+        /** @noinspection PhpIncludeInspection */
         include($path);
         $html = ob_get_contents();
         ob_end_clean();

@@ -56,6 +56,7 @@ class Nip_I18n
 
         putenv('LC_ALL='.$code);
         setlocale(LC_ALL, $code);
+        setlocale(LC_NUMERIC, 'en_US');
 
         return $this;
     }
