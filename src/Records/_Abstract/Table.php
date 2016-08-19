@@ -665,7 +665,6 @@ abstract class Table
 
     protected function injectParams(&$params = array())
     {
-
     }
 
     /**
@@ -721,6 +720,10 @@ abstract class Table
         return $this->findByQuery($query, $params);
     }
 
+    /**
+     * @param array $params
+     * @return SelectQuery
+     */
     public function paramsToQuery($params = array())
     {
         $this->injectParams($params);
@@ -746,6 +749,11 @@ abstract class Table
         return false;
     }
 
+    /**
+     * @param $query
+     * @param array $params
+     * @return RecordCollection
+     */
     public function findByQuery($query, $params = array())
     {
         $return = $this->newCollection();
@@ -769,6 +777,10 @@ abstract class Table
         return $return;
     }
 
+    /**
+     * @param bool|array $where
+     * @return int
+     */
     public function count($where = false)
     {
         return $this->countByParams(array("where" => $where));
@@ -806,11 +818,18 @@ abstract class Table
         return false;
     }
 
+    /**
+     * @param $data
+     * @return mixed
+     */
     public function cleanData($data)
     {
         return $this->getDB()->getAdapter()->cleanData($data);
     }
 
+    /**
+     * @return string
+     */
     public function getTable()
     {
         if ($this->_table === null) {
@@ -832,6 +851,9 @@ abstract class Table
         $this->_table = $table;
     }
 
+    /**
+     * @return string
+     */
     public function getFullNameTable()
     {
         $database = $this->getDB()->getDatabase();
@@ -850,6 +872,9 @@ abstract class Table
         return $collection;
     }
 
+    /**
+     * @return string
+     */
     public function getCollectionClass()
     {
         return $this->_collectionClass;
@@ -889,6 +914,9 @@ abstract class Table
         return $this->_urlPK;
     }
 
+    /**
+     * @return string
+     */
     public function getPrimaryKey()
     {
         if ($this->_primaryKey === null) {
@@ -1095,6 +1123,9 @@ abstract class Table
         return $this;
     }
 
+    /**
+     * @return string
+     */
     public static function getRootNamespace()
     {
         return 'App\Models\\';
