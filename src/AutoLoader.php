@@ -16,19 +16,22 @@ spl_autoload_register('Nip\_autoload');
 class AutoLoader
 {
     protected $_directories = array();
-    protected $_map         = array();
+    protected $_map = array();
     protected $_mapGenerator;
     protected $_cachePath;
     protected $_rootPath = null;
+
+    protected $_ignoreTokens = [];
 
     public function __construct()
     {
         $this->_mapGenerator = new ClassMapGenerator();
     }
+
     /**
      * If true, if a class location is not mapped, it tries again by rewriting the cache file
      */
-    protected $_retry   = false;
+    protected $_retry = false;
     protected $_isFatal = false;
 
     public function addDirectory($dir)
@@ -62,6 +65,9 @@ class AutoLoader
 
     public function load($class)
     {
+        if ($this->hasIgnoreTokens($class)) {
+            return true;
+        }
         if (class_exists($class, false)) {
             return true;
         }
@@ -70,7 +76,8 @@ class AutoLoader
         if ($file) {
             if (include($file)) {
                 if (class_exists($class, false) || interface_exists($class,
-                        false) || trait_exists($class, false)) {
+                        false) || trait_exists($class, false)
+                ) {
                     return true;
                 } else {
                     throw new AutoloadException("Cannot find the $class class in $file");
@@ -115,7 +122,7 @@ class AutoLoader
     public function generateMapDir($dir)
     {
         $fileName = $this->getCacheName($dir);
-        $filePath = $this->_cachePath.$fileName;
+        $filePath = $this->_cachePath . $fileName;
         $this->_mapGenerator->dump($dir, $filePath);
     }
 
@@ -124,7 +131,7 @@ class AutoLoader
         if (!$this->_map) {
             foreach ($this->_directories as $dir) {
                 $fileName = $this->getCacheName($dir);
-                $filePath = $this->_cachePath.$fileName;
+                $filePath = $this->_cachePath . $fileName;
 
                 if (!$this->readCacheFile($filePath)) {
                     \Nip_Profiler::instance()->start('autoloader [readCache]');
@@ -155,7 +162,7 @@ class AutoLoader
         if ($root) {
             $dir = str_replace($root, '', $dir);
         }
-        return Utility\Text::toAscii($dir).'.php';
+        return Utility\Text::toAscii($dir) . '.php';
     }
 
     public function setRootPath($path)
@@ -165,7 +172,7 @@ class AutoLoader
 
     public function getRootPath()
     {
-        if ($this->_rootPath === null){
+        if ($this->_rootPath === null) {
             $this->initRootPath();
         }
         return $this->_rootPath;
@@ -191,6 +198,33 @@ class AutoLoader
         }
 
         return $this->_isFatal == true;
+    }
+
+
+    public function hasIgnoreTokens($token)
+    {
+        return in_array($token, $this->_ignoreTokens);
+    }
+
+    public function addIgnoreTokens($token)
+    {
+        $this->_ignoreTokens[] = $token;
+    }
+
+    /**
+     * @return array
+     */
+    public function getIgnoreTokens()
+    {
+        return $this->_ignoreTokens;
+    }
+
+    /**
+     * @param array $ignoreTokens
+     */
+    public function setIgnoreTokens($ignoreTokens)
+    {
+        $this->_ignoreTokens = $ignoreTokens;
     }
 
     /**

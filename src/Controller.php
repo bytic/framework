@@ -7,6 +7,8 @@ namespace Nip;
  * @package Nip
  *
  * @method \Nip_Helper_Url Url()
+ * @method \Nip_Helper_Arrays Arrays()
+ * @method \Nip_Helper_Async Async()
  */
 class Controller
 {
