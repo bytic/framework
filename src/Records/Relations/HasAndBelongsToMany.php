@@ -74,6 +74,7 @@ class HasAndBelongsToMany extends HasOneOrMany
 
     /**
      * Simple select query from the link table
+     * @param bool $specific
      * @return Query
      */
     public function getLinkQuery($specific = true)
@@ -90,8 +91,6 @@ class HasAndBelongsToMany extends HasOneOrMany
 
         return $query;
     }
-
-
 
     /**
      * @param RecordCollection $collection
@@ -167,6 +166,11 @@ class HasAndBelongsToMany extends HasOneOrMany
         $query->execute();
     }
 
+
+    public function getWithClass()
+    {
+        return $this->getName();
+    }
 
     /**
      * @return Connection

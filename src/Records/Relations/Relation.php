@@ -216,8 +216,13 @@ abstract class Relation
 
     public function initWith()
     {
-        $className = inflector()->pluralize($this->getName());
+        $className = $this->getWithClass();
         $this->setWithClass($className);
+    }
+
+    public function getWithClass()
+    {
+        return inflector()->pluralize($this->getName());
     }
 
     /**
