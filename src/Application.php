@@ -20,9 +20,6 @@ class Application
     protected $_container = null;
 
     protected $_request = null;
-
-    protected $_staging;
-
     /**
      * @var null|LoggerManager
      */
@@ -31,6 +28,11 @@ class Application
     protected $_sessionManager = null;
 
     protected $_debugBar = null;
+
+    /**
+     * @var Staging
+     */
+    protected $_staging;
 
     /**
      * @var Stage
@@ -77,22 +79,42 @@ class Application
 
     public function setupStaging()
     {
-        $this->_staging = $this->initStaging();
+        $this->getFrontController()->setStaging($this->getStaging());
+        $this->getFrontController()->setStage($this->getStage());
+    }
 
-        $this->_stage = $this->_staging->getStage();
-
-        $this->getFrontController()->setStaging($this->_staging);
-        $this->getFrontController()->setStage($this->_stage);
+    /**
+     * @return Staging
+     */
+    public function getStaging()
+    {
+        if ($this->_staging == null) {
+            $this->initStaging();
+        }
+        return $this->_staging;
     }
 
     public function initStaging()
+    {
+        $this->_staging = $this->newStaging();
+    }
+
+    public function newStaging()
     {
         return Staging::instance();
     }
 
     public function getStage()
     {
+        if ($this->_staging == null) {
+            $this->initStage();
+        }
         return $this->_stage;
+    }
+
+    public function initStage()
+    {
+        $this->_stage = $this->getStaging()->getStage();
     }
 
     public function getAutoloader()
