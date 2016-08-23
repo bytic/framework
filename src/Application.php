@@ -32,12 +32,12 @@ class Application
     /**
      * @var Staging
      */
-    protected $_staging;
+    protected $_staging = null;
 
     /**
      * @var Stage
      */
-    protected $_stage;
+    protected $_stage = null;
 
     public function run()
     {
@@ -106,7 +106,7 @@ class Application
 
     public function getStage()
     {
-        if ($this->_staging == null) {
+        if ($this->_stage == null) {
             $this->initStage();
         }
         return $this->_stage;
