@@ -36,6 +36,7 @@ class Controller
             $this->_fullName = inflector()->unclassify($this->getClassName());
 
         }
+
         return $this->_fullName;
     }
 
@@ -48,8 +49,8 @@ class Controller
     {
         if ($this->_name === null) {
             $this->_name = $this->getFullName();
-
         }
+
         return $this->_name;
     }
 
@@ -71,6 +72,7 @@ class Controller
     {
         $request = $request ? $request : $this->getRequest();
         $this->populateFromRequest($request);
+
         return $this->dispatchAction($request->getActionName());
     }
 
@@ -86,13 +88,15 @@ class Controller
                 $this->beforeAction();
                 $this->{$this->_action}();
                 $this->afterAction();
+
                 return true;
             } else {
-                $this->getDispatcher()->throwError('Action [' . $action . '] is not valid for ' . get_class($this));
+                $this->getDispatcher()->throwError('Action ['.$action.'] is not valid for '.get_class($this));
             }
         } else {
             trigger_error('No action specified', E_USER_ERROR);
         }
+
         return false;
     }
 
@@ -104,6 +108,7 @@ class Controller
         $controller->setView($this->getView());
         $controller->setRequest($newRequest);
         $controller->populateFromRequest($newRequest);
+
         return call_user_func_array(array($controller, $action), $params);
     }
 
@@ -116,6 +121,7 @@ class Controller
         if (!$this->_config instanceof \Nip_Config) {
             $this->_config = \Nip_Config::instance();
         }
+
         return $this->_config;
     }
 
@@ -128,6 +134,7 @@ class Controller
         if (!$this->_request instanceof Request) {
             $this->_request = new Request();
         }
+
         return $this->_request;
     }
 
@@ -138,6 +145,7 @@ class Controller
     public function setRequest(Request $request)
     {
         $this->_request = $request;
+
         return $this;
     }
 
@@ -164,6 +172,7 @@ class Controller
     {
         $this->_dispatcher = $dispatcher;
         $this->_frontController = $dispatcher->getFrontController();
+
         return $this;
     }
 
@@ -183,6 +192,7 @@ class Controller
     public function setAction($action)
     {
         $this->_action = $action;
+
         return $this;
     }
 
@@ -222,5 +232,28 @@ class Controller
     protected function validAction($action)
     {
         return in_array($action, get_class_methods(get_class($this)));
+    }
+
+    protected function forward($action = false, $controller = false, $module = false, $params = array())
+    {
+        $this->getDispatcher()->forward($action, $controller, $module, $params);
+    }
+
+    protected function flashRedirect($message, $url, $type = 'success', $name = false)
+    {
+        $name = $name ? $name : $this->getName();
+        Nip_Flash_Messages::instance()->add($name, $type, $message);
+        $this->redirect($url);
+    }
+
+    protected function redirect($url, $code = null)
+    {
+        switch ($code) {
+            case '301' :
+                header("HTTP/1.1 301 Moved Permanently");
+                break;
+        }
+        header("Location: ".$url);
+        exit();
     }
 }
