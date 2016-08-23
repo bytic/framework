@@ -4,297 +4,310 @@ namespace Nip\Database\Query;
 
 use Nip\Database\Query\Select\Union;
 
+/**
+ * Class Select
+ * @package Nip\Database\Query
+ *
+ * @method AbstractQuery setOrder() setOrder(array|string $cols = null)
+ */
 class Select extends AbstractQuery
 {
 
-	public function __call($name, $arguments)
-	{
-		if (in_array($name, array('min', 'max', 'count', 'avg', 'sum'))) {
-			$input = reset($arguments);
+    public function __call($name, $arguments)
+    {
+        if (in_array($name, array('min', 'max', 'count', 'avg', 'sum'))) {
+            $input = reset($arguments);
 
-			if (is_array($input)) {
-				$input[] = false;
-			} else {
-				$input = array($input, $arguments[1], $arguments[2]);
-			}
+            if (is_array($input)) {
+                $input[] = false;
+            } else {
+                $input = array($input, $arguments[1], $arguments[2]);
+            }
 
-			$input[0] = strtoupper($name) . '(' . $this->protect($input[0]) . ')';
+            $input[0] = strtoupper($name).'('.$this->protect($input[0]).')';
 
-			return $this->cols($input);
-		}
-		return parent::__call($name, $arguments);
-	}
+            return $this->cols($input);
+        }
 
-	/**
-	 * Inserts FULLTEXT statement into $this->select and $this->where
-	 *
-	 * @param mixed $fields
-	 * @param string $against
-	 * @param string $alias
-	 * @param boolean $boolean_mode
-	 * @return Nip_DB_Wrapper
-	 */
-	public function match($fields, $against, $alias, $boolean_mode = true)
-	{
-		if (!is_array($fields)) {
-			$fields = array();
-		}
+        return parent::__call($name, $arguments);
+    }
 
-		$match = array();
-		foreach ($fields as $itemField) {
-			if (!is_array($itemField)) {
-				$itemField = array($itemField);
+    /**
+     * Inserts FULLTEXT statement into $this->select and $this->where
+     *
+     * @param mixed $fields
+     * @param string $against
+     * @param string $alias
+     * @param boolean $boolean_mode
+     * @return $this
+     */
+    public function match($fields, $against, $alias, $boolean_mode = true)
+    {
+        if (!is_array($fields)) {
+            $fields = array();
+        }
 
-				$field = isset($itemField[0]) ? $itemField[0] : false;
-				$protected = isset($itemField[1]) ? $itemField[1] : true;
+        $match = array();
+        foreach ($fields as $itemField) {
+            if (!is_array($itemField)) {
+                $itemField = array($itemField);
 
-				$match[] = $protected ? $this->protect($field) : $field;
-			}
-		}
-		$match = "MATCH(" . implode(",", $match) . ") AGAINST ('" . $against . "'" . ($boolean_mode ? " IN BOOLEAN MODE" : "") . ")";
+                $field = isset($itemField[0]) ? $itemField[0] : false;
+                $protected = isset($itemField[1]) ? $itemField[1] : true;
 
-		return $this->cols(array($match, $alias, false))->where(array($match));
-	}
+                $match[] = $protected ? $this->protect($field) : $field;
+            }
+        }
+        $match = "MATCH(".implode(",",
+                $match).") AGAINST ('".$against."'".($boolean_mode ? " IN BOOLEAN MODE" : "").")";
 
-	/**
-	 * Inserts JOIN entry for the last table inserted by $this->from()
-	 *
-	 * @param mixed $table the table to be joined, given as simple string or name - alias pair
-	 * @param string $on
-	 * @param string $type SQL join type (INNER, OUTER, LEFT INNER, etc.)
-	 * @return Nip_DB_Wrapper
-	 */
-	public function join($table, $on = false, $type = '')
-	{
-		$lastTable = end($this->_parts['from']);
+        return $this->cols(array($match, $alias, false))->where(array($match));
+    }
 
-		if (!$lastTable) {
-			trigger_error('No previous table to JOIN', E_USER_ERROR);
-		}
+    /**
+     * Inserts JOIN entry for the last table inserted by $this->from()
+     *
+     * @param mixed $table the table to be joined, given as simple string or name - alias pair
+     * @param string|boolean $on
+     * @param string $type SQL join type (INNER, OUTER, LEFT INNER, etc.)
+     * @return $this
+     */
+    public function join($table, $on = false, $type = '')
+    {
+        $lastTable = end($this->_parts['from']);
 
-		if (is_array($lastTable)) {
-			$lastTable = $lastTable[1];
-		}
+        if (!$lastTable) {
+            trigger_error('No previous table to JOIN', E_USER_ERROR);
+        }
 
-		$this->_parts['join'][$lastTable][] = array($table, $on, $type);
+        if (is_array($lastTable)) {
+            $lastTable = $lastTable[1];
+        }
 
-		return $this;
-	}
+        $this->_parts['join'][$lastTable][] = array($table, $on, $type);
 
-	/**
-	 * Sets the group paramater for the query
-	 *
-	 * @param array $fields
-	 * @param boolean $rollup suport for modifier WITH ROLLUP
-	 * @return Nip_DB_Wrapper
-	 */
-	public function group($fields, $rollup = false)
-	{
-		$this->_parts['group']['fields'] = $fields;
-		$this->_parts['group']['rollup'] = $rollup;
-		return $this;
-	}
+        return $this;
+    }
 
-	public function assemble()
-	{
-		$select = $this->parseCols();
-		$options = $this->parseOptions();
-		$from = $this->parseFrom();
+    /**
+     * Sets the group paramater for the query
+     *
+     * @param array $fields
+     * @param boolean $rollup suport for modifier WITH ROLLUP
+     * @return $this
+     */
+    public function group($fields, $rollup = false)
+    {
+        $this->_parts['group']['fields'] = $fields;
+        $this->_parts['group']['rollup'] = $rollup;
 
-		$where = $this->parseWhere();
-		$group = $this->parseGroup();
-		$having = $this->parseHaving();
+        return $this;
+    }
 
-		$order = $this->parseOrder();
+    public function assemble()
+    {
+        $select = $this->parseCols();
+        $options = $this->parseOptions();
+        $from = $this->parseFrom();
 
-		$query = "SELECT";
+        $where = $this->parseWhere();
+        $group = $this->parseGroup();
+        $having = $this->parseHaving();
 
-		if (!empty($options)) {
-			$query .= " $options";
-		}
+        $order = $this->parseOrder();
 
-		if (!empty($select)) {
-			$query .= " $select";
-		}
+        $query = "SELECT";
 
-		if (!empty($from)) {
-			$query .= " FROM $from";
-		}
+        if (!empty($options)) {
+            $query .= " $options";
+        }
 
-		if (!empty($where)) {
-			$query .= " WHERE $where";
-		}
+        if (!empty($select)) {
+            $query .= " $select";
+        }
 
-		if (!empty($group)) {
-			$query .= " GROUP BY $group";
-		}
+        if (!empty($from)) {
+            $query .= " FROM $from";
+        }
 
-		if (!empty($having)) {
-			$query .= " HAVING $having";
-		}
+        if (!empty($where)) {
+            $query .= " WHERE $where";
+        }
 
-		if (!empty($order)) {
-			$query .= " ORDER BY $order";
-		}
+        if (!empty($group)) {
+            $query .= " GROUP BY $group";
+        }
 
-		if (!empty($this->_parts['limit'])) {
-			$query .= " LIMIT {$this->_parts['limit']}";
-		}
+        if (!empty($having)) {
+            $query .= " HAVING $having";
+        }
 
-		return $query;
-	}
+        if (!empty($order)) {
+            $query .= " ORDER BY $order";
+        }
 
-	/**
-	 * Parses SELECT entries
-	 *
-	 * @return string
-	 */
-	protected function parseCols()
-	{
-		if (!isset($this->_parts['cols']) OR !is_array($this->_parts['cols']) OR count($this->_parts['cols']) < 1) {
-			return '*';
-		} else {
-			$selectParts = array();
+        if (!empty($this->_parts['limit'])) {
+            $query .= " LIMIT {$this->_parts['limit']}";
+        }
 
-			foreach ($this->_parts['cols'] as $itemSelect) {
-				if (is_array($itemSelect)) {
-					$field = isset($itemSelect[0]) ? $itemSelect[0] : false;
-					$alias = isset($itemSelect[1]) ? $itemSelect[1] : false;
-					$protected = isset($itemSelect[2]) ? $itemSelect[2] : true;
+        return $query;
+    }
 
-					$selectParts[] = ($protected ? $this->protect($field) : $field) . (!empty($alias) ? ' AS ' . $this->protect($alias) : '');
-				} else {
-					$selectParts[] = $itemSelect;
-				}
-			}
+    /**
+     * Parses SELECT entries
+     *
+     * @return string
+     */
+    protected function parseCols()
+    {
+        if (!isset($this->_parts['cols']) OR !is_array($this->_parts['cols']) OR count($this->_parts['cols']) < 1) {
+            return '*';
+        } else {
+            $selectParts = array();
 
-			return implode(', ', $selectParts);
-		}
-	}
+            foreach ($this->_parts['cols'] as $itemSelect) {
+                if (is_array($itemSelect)) {
+                    $field = isset($itemSelect[0]) ? $itemSelect[0] : false;
+                    $alias = isset($itemSelect[1]) ? $itemSelect[1] : false;
+                    $protected = isset($itemSelect[2]) ? $itemSelect[2] : true;
 
-	public function parseOptions()
-	{
-		if (!empty($this->_parts['options'])) {
-			return implode(" ", array_map("strtoupper", $this->_parts['options']));
-		}
-	}
+                    $selectParts[] = ($protected ? $this->protect($field) : $field).(!empty($alias) ? ' AS '.$this->protect($alias) : '');
+                } else {
+                    $selectParts[] = $itemSelect;
+                }
+            }
 
-	/**
-	 * Parses FROM entries
-	 * @return string
-	 */
-	private function parseFrom()
-	{
-		if (!empty($this->_parts['from'])) {
-			$parts = array();
+            return implode(', ', $selectParts);
+        }
+    }
 
-			foreach ($this->_parts['from'] as $key => $item) {
-				if (is_array($item)) {
-					$table = isset($item[0]) ? $item[0] : false;
-					$alias = isset($item[1]) ? $item[1] : false;
+    public function parseOptions()
+    {
+        if (!empty($this->_parts['options'])) {
+            return implode(" ", array_map("strtoupper", $this->_parts['options']));
+        }
 
-					if (is_object($table)) {
-						if (!$alias) {
-							trigger_error('Select statements in for need aliases defined', E_USER_ERROR);
-						}
-						$parts[$key] = '(' . $table . ') AS ' . $this->protect($alias) . $this->parseJoin($alias);
-					} else {
-						$parts[$key] = $this->protect($table) . ' AS ' . $this->protect((!empty($alias) ? $alias : $table)) . $this->parseJoin($alias);
-					}
-				} elseif (!strpos($item, ' ')) {                    
-					$parts[] = $this->protect($item) . $this->parseJoin($item);
-				} else {
-					$parts[] = $item;
-				}
-			}
+        return null;
+    }
 
-			return implode(", ", array_unique($parts));
-		}
-	}
+    /**
+     * Parses FROM entries
+     * @return string
+     */
+    private function parseFrom()
+    {
+        if (!empty($this->_parts['from'])) {
+            $parts = array();
 
-	/**
-	 * Parses JOIN entries for a given table
-	 * Concatenates $this->join entries for input table
-	 *
-	 * @param string $table table to build JOIN statement for
-	 * @return string
-	 */
-	private function parseJoin($table)
-	{
-		$result = '';
+            foreach ($this->_parts['from'] as $key => $item) {
+                if (is_array($item)) {
+                    $table = isset($item[0]) ? $item[0] : false;
+                    $alias = isset($item[1]) ? $item[1] : false;
 
-		if (isset($this->_parts['join'][$table])) {
-			foreach ($this->_parts['join'][$table] as $join) {
-				if (!is_array($join[0])) {
-					$join[0] = array($join[0]);
-				}
+                    if (is_object($table)) {
+                        if (!$alias) {
+                            trigger_error('Select statements in for need aliases defined', E_USER_ERROR);
+                        }
+                        $parts[$key] = '('.$table.') AS '.$this->protect($alias).$this->parseJoin($alias);
+                    } else {
+                        $parts[$key] = $this->protect($table).' AS '.$this->protect((!empty($alias) ? $alias : $table)).$this->parseJoin($alias);
+                    }
+                } elseif (!strpos($item, ' ')) {
+                    $parts[] = $this->protect($item).$this->parseJoin($item);
+                } else {
+                    $parts[] = $item;
+                }
+            }
 
-				$joinTable = isset($join[0][0]) ? $join[0][0] : false;
-				$joinAlias = isset($join[0][1]) ? $join[0][1] : false;
-				$joinOn = isset($join[1]) ? $join[1] : false;
+            return implode(", ", array_unique($parts));
+        }
+
+        return null;
+    }
+
+    /**
+     * Parses JOIN entries for a given table
+     * Concatenates $this->join entries for input table
+     *
+     * @param string $table table to build JOIN statement for
+     * @return string
+     */
+    private function parseJoin($table)
+    {
+        $result = '';
+
+        if (isset($this->_parts['join'][$table])) {
+            foreach ($this->_parts['join'][$table] as $join) {
+                if (!is_array($join[0])) {
+                    $join[0] = array($join[0]);
+                }
+
+                $joinTable = isset($join[0][0]) ? $join[0][0] : false;
+                $joinAlias = isset($join[0][1]) ? $join[0][1] : false;
+                $joinOn = isset($join[1]) ? $join[1] : false;
 
 
-				$joinType = isset($join[2]) ? $join[2] : '';
+                $joinType = isset($join[2]) ? $join[2] : '';
 
-				$result .= ( $joinType ? ' ' . strtoupper($joinType) : '') . ' JOIN ';
+                $result .= ($joinType ? ' '.strtoupper($joinType) : '').' JOIN ';
                 if (strpos($joinTable, '(') !== false) {
                     $result .= $joinTable;
                 } else {
                     $result .= $this->protect($joinTable);
                 }
-                $result .= (!empty($joinAlias) ? ' AS ' . $this->protect($joinAlias) : '');
+                $result .= (!empty($joinAlias) ? ' AS '.$this->protect($joinAlias) : '');
 
-				if ($joinOn) {
+                if ($joinOn) {
                     $result .= ' ON ';
                     if (is_array($joinOn)) {
-                        $result .= $this->protect($table . '.' . $joinOn[0]) . ' = ' . $this->protect($joinTable . '.' . $joinOn[1]);
+                        $result .= $this->protect($table.'.'.$joinOn[0]).' = '.$this->protect($joinTable.'.'.$joinOn[1]);
                     } else {
-                        $result .= '('. $joinOn .')';
+                        $result .= '('.$joinOn.')';
                     }
                 }
 
-			}
-		}
+            }
+        }
 
-		return $result;
-	}
+        return $result;
+    }
 
-	/**
-	 * Parses GROUP entries
-	 *
-	 * @uses $this->group['fields'] array with elements to group by
-	 * @return string
-	 */
-	private function parseGroup()
-	{
+    /**
+     * Parses GROUP entries
+     *
+     * @uses $this->group['fields'] array with elements to group by
+     * @return string
+     */
+    private function parseGroup()
+    {
         $group = '';
-		if (isset ($this->_parts['group']['fields'])) {
+        if (isset ($this->_parts['group']['fields'])) {
             if (is_array($this->_parts['group']['fields'])) {
-			$groupFields = array();
-			foreach ($this->_parts['group']['fields'] as $field) {
-				$field = is_array($field) ? $field : array($field);
-				$column = isset($field[0]) ? $field[0] : false;
-				$type = isset($field[1]) ? $field[1] : '';
+                $groupFields = array();
+                foreach ($this->_parts['group']['fields'] as $field) {
+                    $field = is_array($field) ? $field : array($field);
+                    $column = isset($field[0]) ? $field[0] : false;
+                    $type = isset($field[1]) ? $field[1] : '';
 
-				$groupFields[] = $this->protect($column) . ($type ? ' ' . strtoupper($type) : '');
-			}
+                    $groupFields[] = $this->protect($column).($type ? ' '.strtoupper($type) : '');
+                }
 
-			$group .= implode(', ', $groupFields);
+                $group .= implode(', ', $groupFields);
             } else {
                 $group .= $this->_parts['group']['fields'];
             }
         }
 
-		if (isset($this->_parts['group']['rollup']) && $this->_parts['group']['rollup'] !== false) {
-			$group .= ' WITH ROLLUP';
-		}
+        if (isset($this->_parts['group']['rollup']) && $this->_parts['group']['rollup'] !== false) {
+            $group .= ' WITH ROLLUP';
+        }
 
-		return $group;
-	}
+        return $group;
+    }
 
-	public function union($query)
-	{
-		return new Union($this, $query);
-	}
+    public function union($query)
+    {
+        return new Union($this, $query);
+    }
 
 }
