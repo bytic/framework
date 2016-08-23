@@ -2,6 +2,8 @@
 
 namespace Nip;
 
+use Nip_Flash_Messages as FlashMessages;
+
 /**
  * Class Controller
  * @package Nip
@@ -30,30 +32,6 @@ class Controller
         $this->_name = inflector()->unclassify($name);
     }
 
-    public function getFullName()
-    {
-        if ($this->_fullName === null) {
-            $this->_fullName = inflector()->unclassify($this->getClassName());
-
-        }
-
-        return $this->_fullName;
-    }
-
-    public function getClassName()
-    {
-        return str_replace("Controller", "", get_class($this));
-    }
-
-    public function getName()
-    {
-        if ($this->_name === null) {
-            $this->_name = $this->getFullName();
-        }
-
-        return $this->_name;
-    }
-
     public function __call($name, $arguments)
     {
         if ($name === ucfirst($name)) {
@@ -74,55 +52,6 @@ class Controller
         $this->populateFromRequest($request);
 
         return $this->dispatchAction($request->getActionName());
-    }
-
-    public function dispatchAction($action = false)
-    {
-        $action = Dispatcher::formatActionName($action);
-
-        if ($action) {
-            if ($this->validAction($action)) {
-                $this->setAction($action);
-
-                $this->parseRequest();
-                $this->beforeAction();
-                $this->{$this->_action}();
-                $this->afterAction();
-
-                return true;
-            } else {
-                $this->getDispatcher()->throwError('Action ['.$action.'] is not valid for '.get_class($this));
-            }
-        } else {
-            trigger_error('No action specified', E_USER_ERROR);
-        }
-
-        return false;
-    }
-
-    public function call($action = false, $controller = false, $module = false, $params = array())
-    {
-        $newRequest = $this->getRequest()->duplicateWithParams($action, $controller, $module, $params);
-
-        $controller = $this->getDispatcher()->generateController($newRequest);
-        $controller->setView($this->getView());
-        $controller->setRequest($newRequest);
-        $controller->populateFromRequest($newRequest);
-
-        return call_user_func_array(array($controller, $action), $params);
-    }
-
-    /**
-     * Returns the config Object
-     * @return \Nip_Config
-     */
-    public function getConfig()
-    {
-        if (!$this->_config instanceof \Nip_Config) {
-            $this->_config = \Nip_Config::instance();
-        }
-
-        return $this->_config;
     }
 
     /**
@@ -155,55 +84,34 @@ class Controller
         $this->_action = $request->getActionName();
     }
 
-    /**
-     * Returns the dispatcher Object
-     * @return Dispatcher
-     */
-    public function getDispatcher()
+    public function dispatchAction($action = false)
     {
-        return $this->_dispatcher;
+        $action = Dispatcher::formatActionName($action);
+
+        if ($action) {
+            if ($this->validAction($action)) {
+                $this->setAction($action);
+
+                $this->parseRequest();
+                $this->beforeAction();
+                $this->{$this->_action}();
+                $this->afterAction();
+
+                return true;
+            } else {
+                $this->getDispatcher()->throwError('Action ['.$action.'] is not valid for '.get_class($this));
+            }
+        } else {
+            trigger_error('No action specified', E_USER_ERROR);
+        }
+
+        return false;
     }
 
-    /**
-     * @param Dispatcher $dispatcher
-     * @return self
-     */
-    public function setDispatcher(Dispatcher $dispatcher)
+    protected function validAction($action)
     {
-        $this->_dispatcher = $dispatcher;
-        $this->_frontController = $dispatcher->getFrontController();
-
-        return $this;
+        return in_array($action, get_class_methods(get_class($this)));
     }
-
-    /**
-     * Returns the dispatcher Object
-     * @return FrontController
-     */
-    public function getFrontController()
-    {
-        return $this->_frontController;
-    }
-
-    /**
-     * @param string $action
-     * @return self
-     */
-    public function setAction($action)
-    {
-        $this->_action = $action;
-
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getAction()
-    {
-        return $this->_action;
-    }
-
 
     /**
      * Called before action
@@ -229,9 +137,78 @@ class Controller
         return true;
     }
 
-    protected function validAction($action)
+    /**
+     * Returns the dispatcher Object
+     * @return Dispatcher
+     */
+    public function getDispatcher()
     {
-        return in_array($action, get_class_methods(get_class($this)));
+        return $this->_dispatcher;
+    }
+
+    /**
+     * @param Dispatcher $dispatcher
+     * @return self
+     */
+    public function setDispatcher(Dispatcher $dispatcher)
+    {
+        $this->_dispatcher = $dispatcher;
+        $this->_frontController = $dispatcher->getFrontController();
+
+        return $this;
+    }
+
+    public function call($action = false, $controller = false, $module = false, $params = array())
+    {
+        $newRequest = $this->getRequest()->duplicateWithParams($action, $controller, $module, $params);
+
+        $controller = $this->getDispatcher()->generateController($newRequest);
+        $controller->setView($this->getView());
+        $controller->setRequest($newRequest);
+        $controller->populateFromRequest($newRequest);
+
+        return call_user_func_array(array($controller, $action), $params);
+    }
+
+    /**
+     * Returns the config Object
+     * @return \Nip_Config
+     */
+    public function getConfig()
+    {
+        if (!$this->_config instanceof \Nip_Config) {
+            $this->_config = \Nip_Config::instance();
+        }
+
+        return $this->_config;
+    }
+
+    /**
+     * Returns the dispatcher Object
+     * @return FrontController
+     */
+    public function getFrontController()
+    {
+        return $this->_frontController;
+    }
+
+    /**
+     * @return string
+     */
+    public function getAction()
+    {
+        return $this->_action;
+    }
+
+    /**
+     * @param string $action
+     * @return self
+     */
+    public function setAction($action)
+    {
+        $this->_action = $action;
+
+        return $this;
     }
 
     protected function forward($action = false, $controller = false, $module = false, $params = array())
@@ -242,8 +219,32 @@ class Controller
     protected function flashRedirect($message, $url, $type = 'success', $name = false)
     {
         $name = $name ? $name : $this->getName();
-        Nip_Flash_Messages::instance()->add($name, $type, $message);
+        FlashMessages::instance()->add($name, $type, $message);
         $this->redirect($url);
+    }
+
+    public function getName()
+    {
+        if ($this->_name === null) {
+            $this->_name = $this->getFullName();
+        }
+
+        return $this->_name;
+    }
+
+    public function getFullName()
+    {
+        if ($this->_fullName === null) {
+            $this->_fullName = inflector()->unclassify($this->getClassName());
+
+        }
+
+        return $this->_fullName;
+    }
+
+    public function getClassName()
+    {
+        return str_replace("Controller", "", get_class($this));
     }
 
     protected function redirect($url, $code = null)
