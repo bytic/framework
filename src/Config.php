@@ -5,6 +5,21 @@ class Nip_Config
 
     protected $_data;
 
+    /**
+     * Singleton
+     *
+     * @return self
+     */
+    static public function instance()
+    {
+        static $instance;
+        if (!($instance instanceof self)) {
+            $instance = new self();
+        }
+
+        return $instance;
+    }
+
     public function parse($filename)
     {
         $config = parse_ini_file($filename, true);
@@ -25,6 +40,15 @@ class Nip_Config
 
     public function __get($name)
     {
+        return $this->get($name);
+    }
+
+    /**
+     * @param string $name
+     * @return stdClass|string
+     */
+    public function get($name)
+    {
         return $this->_data[$name];
     }
 
@@ -36,19 +60,5 @@ class Nip_Config
     public function set($name, $value)
     {
         $this->_data[$name] = $value;
-    }
-
-    /**
-     * Singleton
-     *
-     * @return self
-     */
-    static public function instance()
-    {
-        static $instance;
-        if (!($instance instanceof self)) {
-            $instance = new self();
-        }
-        return $instance;
     }
 }

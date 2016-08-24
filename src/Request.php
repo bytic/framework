@@ -15,83 +15,70 @@ use Nip\Request\ServerBag;
 class Request
 {
     /**
-     * Has the action been dispatched?
-     * @var boolean
-     */
-    protected $_dispatched = false;
-
-    /**
-     * Module
-     * @var string
-     */
-    protected $_module;
-
-    /**
-     * Module key for retrieving module from params
-     * @var string
-     */
-    protected $_moduleKey = 'module';
-
-    /**
-     * Controller
-     * @var string
-     */
-    protected $_controller;
-
-    /**
-     * Controller key for retrieving controller from params
-     * @var string
-     */
-    protected $_controllerKey = 'controller';
-
-    /**
-     * Action
-     * @var string
-     */
-    protected $_action;
-
-    /**
-     * Action key for retrieving action from params
-     * @var string
-     */
-    protected $_actionKey = 'action';
-
-    /**
      * Custom parameters.
      * @var \Nip\Request\ParameterBag
      */
     public $attributes;
-
     /**
      * Request body parameters ($_POST).
      * @var \Nip\Request\ParameterBag
      */
     public $body;
-
     /**
      * Query string parameters ($_GET).
      * @var \Nip\Request\ParameterBag
      */
     public $query;
-
     /**
      * Server and execution environment parameters ($_SERVER).
      * @var \Nip\Request\ParameterBag
      */
     public $server;
-
     /**
      * Uploaded files ($_FILES).
      * @var \Nip\Request\FileBag
      */
     public $files;
-
     /**
      * Cookies ($_COOKIE).
      * @var \Nip\Request\ParameterBag
      */
     public $cookies;
-
+    /**
+     * Has the action been dispatched?
+     * @var boolean
+     */
+    protected $_dispatched = false;
+    /**
+     * Module
+     * @var string
+     */
+    protected $_module;
+    /**
+     * Module key for retrieving module from params
+     * @var string
+     */
+    protected $_moduleKey = 'module';
+    /**
+     * Controller
+     * @var string
+     */
+    protected $_controller;
+    /**
+     * Controller key for retrieving controller from params
+     * @var string
+     */
+    protected $_controllerKey = 'controller';
+    /**
+     * Action
+     * @var string
+     */
+    protected $_action;
+    /**
+     * Action key for retrieving action from params
+     * @var string
+     */
+    protected $_actionKey = 'action';
     protected $_http;
 
     public function __construct()
@@ -103,36 +90,6 @@ class Request
         $this->files = new FileBag();
         $this->server = new ServerBag();
         $this->headers = new HeaderBag();
-    }
-
-    public function __get($name)
-    {
-        return $this->get($name);
-    }
-
-    /**
-     * Sets the parameters for this request.
-     *
-     * This method also re-initializes all properties.
-     *
-     * @param array $query The GET parameters
-     * @param array $body The POST parameters
-     * @param array $attributes The request attributes (parameters parsed from the PATH_INFO, ...)
-     * @param array $cookies The COOKIE parameters
-     * @param array $files The FILES parameters
-     * @param array $server The SERVER parameters
-     * @param string|resource $content The raw body data
-     */
-    public function initialize(array $query = array(), array $body = array(), array $attributes = array(), array $cookies = array(), array $files = array(), array $server = array(), $content = null)
-    {
-        $this->body->replace($body);
-        $this->query->replace($query);
-        $this->attributes->replace($attributes);
-        $this->cookies->replace($cookies);
-        $this->files->replace($files);
-        $this->server->replace($server);
-        $this->headers->replace($this->server->getHeaders());
-        $this->content = $content;
     }
 
     /**
@@ -162,6 +119,38 @@ class Request
         }
 
         return $request;
+    }
+
+    /**
+     * Sets the parameters for this request.
+     *
+     * This method also re-initializes all properties.
+     *
+     * @param array $query The GET parameters
+     * @param array $body The POST parameters
+     * @param array $attributes The request attributes (parameters parsed from the PATH_INFO, ...)
+     * @param array $cookies The COOKIE parameters
+     * @param array $files The FILES parameters
+     * @param array $server The SERVER parameters
+     * @param string|resource $content The raw body data
+     */
+    public function initialize(
+        array $query = array(),
+        array $body = array(),
+        array $attributes = array(),
+        array $cookies = array(),
+        array $files = array(),
+        array $server = array(),
+        $content = null
+    ) {
+        $this->body->replace($body);
+        $this->query->replace($query);
+        $this->attributes->replace($attributes);
+        $this->cookies->replace($cookies);
+        $this->files->replace($files);
+        $this->server->replace($server);
+        $this->headers->replace($this->server->getHeaders());
+        $this->content = $content;
     }
 
     /**
@@ -251,6 +240,32 @@ class Request
     }
 
     /**
+     * Singleton
+     *
+     * @param null $newInstance
+     * @return static
+     */
+    static public function instance($newInstance = null)
+    {
+        static $instance;
+
+        if ($newInstance instanceof self) {
+            $instance = $newInstance;
+        }
+
+        if (!($instance instanceof self)) {
+            $instance = new self();
+        }
+
+        return $instance;
+    }
+
+    public function __get($name)
+    {
+        return $this->get($name);
+    }
+
+    /**
      * Gets a "parameter" value from any bag.
      *
      * This method is mainly useful for libraries that want to provide some flexibility. If you don't need the
@@ -295,6 +310,33 @@ class Request
     }
 
     /**
+     * Retrieve the action key
+     *
+     * @return string
+     */
+    public function getActionKey()
+    {
+        return $this->_actionKey;
+    }
+
+    /**
+     * Set the action key
+     *
+     * @param string $key
+     * @return self
+     */
+    public function setActionKey($key)
+    {
+        $this->_actionKey = (string)$key;
+        return $this;
+    }
+
+    public function getMCA()
+    {
+        return $this->getModuleName().'.'.$this->getControllerName().'.'.$this->getActionName();
+    }
+
+    /**
      * Retrieve the module name
      * @return string
      */
@@ -305,78 +347,6 @@ class Request
         }
 
         return $this->_module;
-    }
-
-    /**
-     * Set the module name to use
-     * @param string $value
-     * @return self
-     */
-    public function setModuleName($value)
-    {
-        if ($value) {
-            $this->_module = $value;
-        }
-        return $this;
-    }
-
-    /**
-     * Retrieve the controller name
-     * @return string
-     */
-    public function getControllerName()
-    {
-        if (null === $this->_controller) {
-            $this->_controller = $this->attributes->get($this->getControllerKey());
-        }
-
-        return $this->_controller;
-    }
-
-    /**
-     * Set the controller name to use
-     *
-     * @param string $value
-     * @return self
-     */
-    public function setControllerName($value)
-    {
-        if ($value) {
-            $this->_controller = $value;
-        }
-        return $this;
-    }
-
-    /**
-     * Retrieve the action name
-     *
-     * @return string
-     */
-    public function getActionName()
-    {
-        if (null === $this->_action) {
-            $this->setActionName($this->getActionDefault());
-        }
-
-        return $this->_action;
-    }
-
-    public function getActionDefault()
-    {
-        return 'index';
-    }
-
-    /**
-     * Set the action name
-     * @param string $value
-     * @return self
-     */
-    public function setActionName($value)
-    {
-        if ($value) {
-            $this->_action = $value;
-        }
-        return $this;
     }
 
     /**
@@ -402,6 +372,19 @@ class Request
     }
 
     /**
+     * Retrieve the controller name
+     * @return string
+     */
+    public function getControllerName()
+    {
+        if (null === $this->_controller) {
+            $this->_controller = $this->attributes->get($this->getControllerKey());
+        }
+
+        return $this->_controller;
+    }
+
+    /**
      * Retrieve the controller key
      *
      * @return string
@@ -424,32 +407,36 @@ class Request
     }
 
     /**
-     * Retrieve the action key
+     * Retrieve the action name
      *
      * @return string
      */
-    public function getActionKey()
+    public function getActionName()
     {
-        return $this->_actionKey;
+        if (null === $this->_action) {
+            $this->setActionName($this->getActionDefault());
+        }
+
+        return $this->_action;
     }
 
     /**
-     * Set the action key
-     *
-     * @param string $key
+     * Set the action name
+     * @param string $value
      * @return self
      */
-    public function setActionKey($key)
+    public function setActionName($value)
     {
-        $this->_actionKey = (string)$key;
+        if ($value) {
+            $this->_action = $value;
+        }
         return $this;
     }
 
-    public function getMCA()
+    public function getActionDefault()
     {
-        return $this->getModuleName() . '.' . $this->getControllerName() . '.' . $this->getActionName();
+        return 'index';
     }
-
 
     public function setParams(array $params)
     {
@@ -475,7 +462,7 @@ class Request
 
     public function isCLI()
     {
-        return php_sapi_name() == 'cli';
+        return php_sapi_name() == 'cli' || (is_numeric($_SERVER['argc']) && $_SERVER['argc'] > 0);
     }
 
     /**
@@ -504,11 +491,6 @@ class Request
         exit();
     }
 
-    public function duplicate()
-    {
-        return clone $this;
-    }
-
     public function duplicateWithParams($action = false, $controller = false, $module = false, $params = array())
     {
         $newRequest = $this->duplicate();
@@ -519,23 +501,37 @@ class Request
         return $newRequest;
     }
 
-    /**
-     * Singleton
-     *
-     * @param null $newInstance
-     * @return static
-     */
-    static public function instance($newInstance = null)
+    public function duplicate()
     {
-        static $instance;
+        return clone $this;
+    }
 
-        if ($newInstance instanceof self) {
-            $instance = $newInstance;
+    /**
+     * Set the controller name to use
+     *
+     * @param string $value
+     * @return self
+     */
+    public function setControllerName($value)
+    {
+        if ($value) {
+            $this->_controller = $value;
         }
 
-        if (!($instance instanceof self)) {
-            $instance = new self();
+        return $this;
+    }
+
+    /**
+     * Set the module name to use
+     * @param string $value
+     * @return self
+     */
+    public function setModuleName($value)
+    {
+        if ($value) {
+            $this->_module = $value;
         }
-        return $instance;
+
+        return $this;
     }
 }
