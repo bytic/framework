@@ -2,6 +2,9 @@
 
 namespace Nip\Cache;
 
+use Nip\Filesystem\Exception\IOException;
+use Nip_File_System as FileSystem;
+
 class Manager
 {
 
@@ -26,6 +29,7 @@ class Manager
                 return true;
             }
         }
+
         return false;
     }
 
@@ -34,9 +38,10 @@ class Manager
         return $this->_active;
     }
 
-    public function setActive(bool $active)
+    public function setActive($active)
     {
         $this->_active = $active;
+
         return $this;
     }
 
@@ -75,6 +80,7 @@ class Manager
                 return false;
             }
             $this->reload($cacheId);
+
             return $this->loadData($cacheId, false);
         }
 
@@ -96,6 +102,7 @@ class Manager
     {
         $file = $this->filePath($cacheId);
         $content = serialize($data);
+
         return $this->save($file, $content);
     }
 
@@ -114,6 +121,7 @@ class Manager
             } catch (IOException $e) {
                 // discard chmod failure (some filesystem may not support it)
             }
+
             return true;
         } else {
             $message = "Cannot open cache file for writing: ";
