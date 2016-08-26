@@ -1,5 +1,7 @@
 <?php
 
+use Nip\Filesystem\Exception\IOException;
+
 class Nip_File_System
 {
 
@@ -9,8 +11,23 @@ class Nip_File_System
         2 => "The uploaded file exceeds the MAX_FILE_SIZE directive that was specified in the HTML form",
         3 => "The uploaded file was only partially uploaded",
         4 => "No file was uploaded",
-        6 => "Missing a temporary folder"
+        6 => "Missing a temporary folder",
     );
+
+    /**
+     * Singleton
+     *
+     * @return self
+     */
+    public static function instance()
+    {
+        static $instance;
+        if (!($instance instanceof self)) {
+            $instance = new self();
+        }
+
+        return $instance;
+    }
 
     /**
      * Returns error message on upload, if any
@@ -32,9 +49,11 @@ class Nip_File_System
         $errorCode = $this->getUploadErrorNo($file, $extensions);
         if (is_int($errorCode)) {
             $translateSlug = 'general.errors.upload.code-'.$errorCode;
+
             return Nip_I18n::instance()->hasTranslation($translateSlug) ? __($translateSlug) : $this->_uploadErrors[$errorCode];
         } elseif (is_string($errorCode)) {
             $translateSlug = 'general.errors.upload.'.$errorCode;
+
             return Nip_I18n::instance()->hasTranslation($translateSlug) ? __($translateSlug) : $messages[$errorCode];
         }
 
@@ -56,18 +75,24 @@ class Nip_File_System
         $unit = strtoupper(substr($maxUpload, -1));
         $multiplier = $unit == 'M' ? 1048576 : ($unit == 'K' ? 1024 : ($unit == 'G' ? 1073741824 : 1));
 
-        if ($maxUpload && ((int) $_SERVER['CONTENT_LENGTH'] > $multiplier * (int) $maxUpload)) {
+        if ($maxUpload && ((int)$_SERVER['CONTENT_LENGTH'] > $multiplier * (int)$maxUpload)) {
             $result = "max_post";
         }
 
         if (!isset($file)) {
             $result = "no_upload";
-        } else if (isset($file["error"]) && $file["error"] != 0) {
-            $result = $file["error"];
-        } else if (!isset($file["tmp_name"]) || !@is_uploaded_file($file["tmp_name"])) {
-            $result = "bad_upload";
-        } else if (!isset($file['name'])) {
-            $result = "no_name";
+        } else {
+            if (isset($file["error"]) && $file["error"] != 0) {
+                $result = $file["error"];
+            } else {
+                if (!isset($file["tmp_name"]) || !@is_uploaded_file($file["tmp_name"])) {
+                    $result = "bad_upload";
+                } else {
+                    if (!isset($file['name'])) {
+                        $result = "no_name";
+                    }
+                }
+            }
         }
 
         if ($extensions && !in_array($this->getExtension($file['name']), $extensions)) {
@@ -75,6 +100,17 @@ class Nip_File_System
         }
 
         return $result;
+    }
+
+    /**
+     * Get file extension
+     *
+     * @param string $str
+     * @return string
+     */
+    public function getExtension($str)
+    {
+        return strtolower(pathinfo($str, PATHINFO_EXTENSION));
     }
 
     /**
@@ -93,7 +129,7 @@ class Nip_File_System
                 $iterator = new RecursiveDirectoryIterator($dir);
                 foreach (new RecursiveIteratorIterator($iterator, RecursiveIteratorIterator::CHILD_FIRST) as $file) {
                     if ($file->isFile()) {
-                        $result[] = ($fullPaths ? $file->getPath() . DIRECTORY_SEPARATOR : '') . $file->getFilename();
+                        $result[] = ($fullPaths ? $file->getPath().DIRECTORY_SEPARATOR : '').$file->getFilename();
                     }
                 }
             } else {
@@ -134,7 +170,7 @@ class Nip_File_System
         $d = dir($dir);
 
         while (false != ($entry = $d->read())) {
-            $complete = $d->path . "/" . $entry;
+            $complete = $d->path."/".$entry;
             if (!in_array($entry, array(".", "..", ".svn"))) {
                 if (is_dir($complete)) {
                     $tree[$entry] = $this->directoryTree($complete, $tree[$dir][$entry]);
@@ -145,33 +181,8 @@ class Nip_File_System
         }
 
         $d->close();
+
         return $tree;
-    }
-
-    /**
-     * Recursively removes a directory
-     * @param string $dir
-     */
-    public function removeDirectory($dir)
-    {
-        $dir = rtrim($dir, "/");
-
-        if (is_dir($dir)) {
-            $files = scandir($dir);
-
-            foreach ($files as $file) {
-                if (!in_array($file, array(".", ".."))) {
-                    $file = $dir . DIRECTORY_SEPARATOR . $file;
-                    if (is_dir($file)) {
-                        $this->removeDirectory($file);
-                    } else {
-                        unlink($file);
-                    }
-                }
-            }
-
-            rmdir($dir);
-        }
     }
 
     /**
@@ -188,7 +199,7 @@ class Nip_File_System
         array_shift($files);
 
         foreach ($files as $file) {
-            $file = $dir . '/' . $file;
+            $file = $dir.'/'.$file;
             if (is_dir($file)) {
                 $this->removeDirectory($file);
             } else {
@@ -199,11 +210,38 @@ class Nip_File_System
         return $this;
     }
 
+    /**
+     * Recursively removes a directory
+     * @param string $dir
+     */
+    public function removeDirectory($dir)
+    {
+        $dir = rtrim($dir, "/");
+
+        if (is_dir($dir)) {
+            $files = scandir($dir);
+
+            foreach ($files as $file) {
+                if (!in_array($file, array(".", ".."))) {
+                    $file = $dir.DIRECTORY_SEPARATOR.$file;
+                    if (is_dir($file)) {
+                        $this->removeDirectory($file);
+                    } else {
+                        unlink($file);
+                    }
+                }
+            }
+
+            rmdir($dir);
+        }
+    }
+
     public function deleteFile($path)
     {
         if (file_exists($path)) {
             unlink($path);
         }
+
         return $this;
     }
 
@@ -213,6 +251,7 @@ class Nip_File_System
             mkdir($destination, 0755, true);
         }
         $process = new Nip_Process("cp -R -f $source/* $destination");
+
         return $process->run();
     }
 
@@ -225,31 +264,14 @@ class Nip_File_System
         $s = array('b', 'kb', 'MB', 'GB', 'TB', 'PB');
         $e = floor(log($bytes) / log(1024));
 
-        return sprintf('%.2f ' . $s[$e], ($bytes / pow(1024, floor($e))));
+        return sprintf('%.2f '.$s[$e], ($bytes / pow(1024, floor($e))));
     }
 
-    /**
-     * Get file extension
-     *
-     * @param string $str
-     * @return string
-     */
-    public function getExtension($str) {
-        return strtolower(pathinfo($str, PATHINFO_EXTENSION));
-    }
-
-    /**
-     * Singleton
-     *
-     * @return Nip_File_System
-     */
-    public static function instance()
+    public function chmod($file, $mode)
     {
-        static $instance;
-        if (!($instance instanceof self)) {
-            $instance = new self();
+        if (true !== @chmod($file, $mode)) {
+            throw new IOException(sprintf('Failed to chmod file "%s".', $file), 0, null, $file);
         }
-        return $instance;
     }
 
 }

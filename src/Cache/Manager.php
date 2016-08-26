@@ -9,9 +9,13 @@ class Manager
     protected $_ttl = 180;
     protected $_data;
 
-    public function exists($cacheId)
+    public function get($cacheId)
     {
-        return file_exists($this->filePath($cacheId));
+        if (!$this->valid($cacheId)) {
+            return;
+        }
+
+        return $this->getData($cacheId);
     }
 
     public function valid($cacheId)
@@ -25,23 +29,30 @@ class Manager
         return false;
     }
 
-    public function get($cacheId)
+    public function isActive()
     {
-        if (!$this->valid($cacheId)) {
-            return;
-        }
-
-        return $this->getData($cacheId);
+        return $this->_active;
     }
 
-    public function set($cacheId, $data)
+    public function setActive(bool $active)
     {
-        $this->_data[$cacheId] = $data;
+        $this->_active = $active;
         return $this;
     }
 
-    public function reload($cacheId)
+    public function exists($cacheId)
     {
+        return file_exists($this->filePath($cacheId));
+    }
+
+    public function filePath($cacheId)
+    {
+        return $this->cachePath().$cacheId.'.php';
+    }
+
+    public function cachePath()
+    {
+        return CACHE_PATH;
     }
 
     public function getData($cacheId)
@@ -70,6 +81,17 @@ class Manager
         return $data;
     }
 
+    public function reload($cacheId)
+    {
+    }
+
+    public function set($cacheId, $data)
+    {
+        $this->_data[$cacheId] = $data;
+
+        return $this;
+    }
+
     public function saveData($cacheId, $data)
     {
         $file = $this->filePath($cacheId);
@@ -80,12 +102,18 @@ class Manager
     public function save($file, $content)
     {
         $dir = dirname($file);
+        $filesystem = FileSystem::instance();
+
         if (!is_dir($dir)) {
-            mkdir($dir, 0777, true);
+            $filesystem->createDirectory($dir, 0777);
         }
 
         if (file_put_contents($file, $content)) {
-            chmod($file, 0777);
+            try {
+                $filesystem->chmod($file, 0777);
+            } catch (IOException $e) {
+                // discard chmod failure (some filesystem may not support it)
+            }
             return true;
         } else {
             $message = "Cannot open cache file for writing: ";
@@ -102,27 +130,6 @@ class Manager
         if (is_file($file)) {
             unlink($file);
         }
-    }
-
-    public function filePath($cacheId)
-    {
-        return $this->cachePath() . $cacheId . '.php';
-    }
-
-    public function cachePath()
-    {
-        return CACHE_PATH;
-    }
-
-    public function isActive()
-    {
-        return $this->_active;
-    }
-
-    public function setActive(bool $active)
-    {
-        $this->_active = $active;
-        return $this;
     }
 
 }

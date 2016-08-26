@@ -2,6 +2,7 @@
 
 namespace Nip\Helpers\View\CachebleBlocks;
 
+use Nip\Filesystem\Exception\IOException;
 use Nip\Staging as Staging;
 use Nip_File_System as FileSystem;
 
@@ -18,24 +19,28 @@ class AbstractBlock
     public function setName($name)
     {
         $this->_name = $name;
+
         return $this;
     }
 
     public function setModel($model)
     {
         $this->_model = $model;
+
         return $this;
     }
 
     public function setManager($manager)
     {
         $this->_manager = $manager;
+
         return $this;
     }
 
     public function setViewPath($path)
     {
         $this->_viewPath = $path;
+
         return $this;
     }
 
@@ -44,6 +49,18 @@ class AbstractBlock
         $file = $this->filePath();
 //        echo gzuncompress(file_get_contents($file));
         readfile($file);
+    }
+
+    public function filePath()
+    {
+        $fileName = str_replace('/', '+', $this->_viewPath);
+
+        return $this->cachePath().$fileName.'.html';
+    }
+
+    public function cachePath()
+    {
+        return $this->_model->getCacheBlocksPath();
     }
 
     public function valid($ttl)
@@ -58,32 +75,8 @@ class AbstractBlock
                 return true;
             }
         }
+
         return false;
-    }
-
-
-    public function regenerate()
-    {
-        $file = $this->filePath();
-        $content = $this->_manager->getView()->load($this->_viewPath, array(), true);
-
-        $dir = dirname($file);
-        if (!is_dir($dir)) {
-            FileSystem::instance()->createDirectory($dir, 0777);
-        }
-
-        $content = $this->_manager->getView()->HTML()->compress($content);
-//        $content = gzcompress($content);
-        if (file_put_contents($file, $content)) {
-            chmod($file, 0777);
-            return true;
-        } else {
-            $message = "Cannot open CachebleBlocks file for writing: ";
-            if (Staging::instance()->getStage()->inTesting()) {
-                $message .= " [ " . $file . " ] ";
-            }
-            die($message);
-        }
     }
 
     public function exists()
@@ -91,14 +84,33 @@ class AbstractBlock
         return file_exists($this->filePath());
     }
 
-    public function filePath()
+    public function regenerate()
     {
-        $fileName = str_replace('/', '+', $this->_viewPath);
-        return $this->cachePath() . $fileName . '.html';
-    }
+        $file = $this->filePath();
+        $filesystem = FileSystem::instance();
+        $content = $this->_manager->getView()->load($this->_viewPath, array(), true);
 
-    public function cachePath()
-    {
-        return $this->_model->getCacheBlocksPath();
+        $dir = dirname($file);
+        if (!is_dir($dir)) {
+            $filesystem->createDirectory($dir, 0777);
+        }
+
+        $content = $this->_manager->getView()->HTML()->compress($content);
+//        $content = gzcompress($content);
+        if (file_put_contents($file, $content)) {
+            try {
+                $filesystem->chmod($file, 0777);
+            } catch (IOException $e) {
+                // discard chmod failure (some filesystem may not support it)
+            }
+
+            return true;
+        } else {
+            $message = "Cannot open CachebleBlocks file for writing: ";
+            if (Staging::instance()->getStage()->inTesting()) {
+                $message .= " [ ".$file." ] ";
+            }
+            die($message);
+        }
     }
 }
