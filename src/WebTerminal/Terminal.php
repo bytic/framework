@@ -26,7 +26,7 @@ class Terminal
 
     public function initHTML()
     {
-        require('./Layout/header.html');
+        require(dirname(__FILE__).'/Layout/header.html');
     }
 
     public function printHeader()
