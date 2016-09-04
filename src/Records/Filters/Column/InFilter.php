@@ -4,7 +4,7 @@ namespace Nip\Records\Filters\Column;
 
 use Nip\Database\Query\Select as SelectQuery;
 
-class LikeFilter extends AbstractFilter implements FilterInterface
+class InFilter extends AbstractFilter implements FilterInterface
 {
 
     /**
@@ -14,4 +14,5 @@ class LikeFilter extends AbstractFilter implements FilterInterface
     {
         $query->where("{$this->getDbName()} IN ?", $this->getValue());
     }
+
 }
