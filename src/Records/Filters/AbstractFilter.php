@@ -27,28 +27,9 @@ class AbstractFilter implements FilterInterface
      */
     protected $manager;
 
-    /**
-     * @return null
-     */
-    public function getName()
+    public function hasValue()
     {
-        if ($this->name === null) {
-            $this->initName();
-        }
-
-        return $this->name;
-    }
-
-    public function initName()
-    {
-    }
-
-    /**
-     * @param null $name
-     */
-    public function setName($name)
-    {
-        $this->name = $name;
+        return $this->getValue() !== false;
     }
 
     /**
@@ -63,12 +44,6 @@ class AbstractFilter implements FilterInterface
         return $this->value;
     }
 
-    public function initValue()
-    {
-        $value = $this->getProcessedRequestValue();
-        $this->setValue($value);
-    }
-
     /**
      * @param null $value
      */
@@ -77,9 +52,10 @@ class AbstractFilter implements FilterInterface
         $this->value = $value;
     }
 
-    public function hasValue()
+    public function initValue()
     {
-        return $this->getValue() !== false;
+        $value = $this->getProcessedRequestValue();
+        $this->setValue($value);
     }
 
     public function getProcessedRequestValue()
@@ -92,6 +68,44 @@ class AbstractFilter implements FilterInterface
         return false;
     }
 
+    public function getValueFromRequest()
+    {
+        $request = $this->getRequest();
+        $name = $this->getName();
+        if ($name) {
+            $return = $request->get($name);
+            if ($return) {
+                return trim($return);
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * @return null
+     */
+    public function getName()
+    {
+        if ($this->name === null) {
+            $this->initName();
+        }
+
+        return $this->name;
+    }
+
+    /**
+     * @param null $name
+     */
+    public function setName($name)
+    {
+        $this->name = $name;
+    }
+
+    public function initName()
+    {
+    }
+
     /**
      * @param $value
      * @return bool
@@ -99,17 +113,6 @@ class AbstractFilter implements FilterInterface
     public function isValidRequestValue($value)
     {
         return !empty($value);
-    }
-
-    public function getValueFromRequest()
-    {
-        $request = $this->getRequest();
-        $name = $this->getName();
-        if ($name) {
-            return $request->get($name);
-        }
-
-        return false;
     }
 
     public function cleanRequestValue($value)
