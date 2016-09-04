@@ -12,7 +12,6 @@ use Nip\Database\Result;
 use Nip\HelperBroker;
 use Nip\Paginator;
 use Nip\Records\Collections\Collection as RecordCollection;
-use Nip\Records\Filters\Column\BasicFilter;
 use Nip\Records\Filters\FilterManager;
 use Nip\Records\Relations\Relation;
 use Nip\Request;
@@ -309,67 +308,6 @@ abstract class RecordManager
     }
 
     /**
-     * @return FilterManager
-     */
-    public function getFilterManager()
-    {
-        if ($this->_filterManager === null) {
-            $this->initFilterManager();
-        }
-        return $this->_filterManager;
-    }
-
-    public function initFilterManager()
-    {
-        $class = $this->getFilterManagerClass();
-        /** @var FilterManager $manager */
-        $manager = new $class();
-        $manager->setRecordManager($this);
-        $this->setFilterManager($manager);
-        $this->initFilters();
-    }
-
-    public function getFilterManagerClass()
-    {
-        return '\Nip\Records\Filters\FilterManager';
-    }
-
-    /**
-     * @param FilterManager $filterManager
-     */
-    public function setFilterManager($filterManager)
-    {
-        $this->_filterManager = $filterManager;
-    }
-
-    public function initFilters()
-    {
-    }
-
-    /**
-     * @param Request|array $request
-     * @return mixed
-     */
-    public function requestFilters($request = array())
-    {
-        $this->getFilterManager()->setRequest($request);
-
-        return $this->getFilterManager()->getFiltersArray();
-    }
-
-    /**
-     * @param SelectQuery $query
-     * @param array $filters
-     * @return mixed
-     */
-    public function filter($query, $filters = array())
-    {
-        $table = $this->getTable();
-
-        return $query;
-    }
-
-    /**
      * @param array $params
      * @return SelectQuery
      */
@@ -575,6 +513,66 @@ abstract class RecordManager
     public function getHelper($name)
     {
         return HelperBroker::get($name);
+    }
+
+    /**
+     * @param Request|array $request
+     * @return mixed
+     */
+    public function requestFilters($request = array())
+    {
+        $this->getFilterManager()->setRequest($request);
+
+        return $this->getFilterManager()->getFiltersArray();
+    }
+
+    /**
+     * @return FilterManager
+     */
+    public function getFilterManager()
+    {
+        if ($this->_filterManager === null) {
+            $this->initFilterManager();
+        }
+
+        return $this->_filterManager;
+    }
+
+    /**
+     * @param FilterManager $filterManager
+     */
+    public function setFilterManager($filterManager)
+    {
+        $this->_filterManager = $filterManager;
+    }
+
+    public function initFilterManager()
+    {
+        $class = $this->getFilterManagerClass();
+        /** @var FilterManager $manager */
+        $manager = new $class();
+        $manager->setRecordManager($this);
+        $this->setFilterManager($manager);
+        $this->initFilters();
+    }
+
+    public function getFilterManagerClass()
+    {
+        return '\Nip\Records\Filters\FilterManager';
+    }
+
+    public function initFilters()
+    {
+    }
+
+    /**
+     * @param SelectQuery $query
+     * @param array $filters
+     * @return mixed
+     */
+    public function filterQuery($query)
+    {
+        return $this->getFilterManager()->filterQuery($query);
     }
 
     public function __wakeup()

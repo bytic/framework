@@ -27,6 +27,15 @@ class AbstractFilter implements FilterInterface
      */
     protected $manager;
 
+    public function filterQuery($query)
+    {
+    }
+
+    public function isActive()
+    {
+        return $this->hasValue();
+    }
+
     public function hasValue()
     {
         return $this->getValue() !== false;

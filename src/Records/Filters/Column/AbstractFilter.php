@@ -7,6 +7,8 @@ class AbstractFilter extends \Nip\Records\Filters\AbstractFilter implements Filt
 
     protected $field;
 
+    protected $dbName;
+
     public function initName()
     {
         $this->setName($this->getField());
@@ -27,7 +29,15 @@ class AbstractFilter extends \Nip\Records\Filters\AbstractFilter implements Filt
     public function setField($field)
     {
         $this->field = $field;
+
         return $this;
+    }
+
+    public function getDbName()
+    {
+        $table = $this->getManager()->getRecordManager()->getTable();
+
+        return $table.'.`'.$this->getField().'`';
     }
 
 }

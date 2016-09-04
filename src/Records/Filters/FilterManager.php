@@ -2,6 +2,7 @@
 
 namespace Nip\Records\Filters;
 
+use Nip\Database\Query\Select as SelectQuery;
 use Nip\Records\AbstractModels\RecordManager;
 use Nip\Records\Filters\Column\AbstractFilter as AbstractColumnFilter;
 use Nip\Utility\Traits\HasRequestTrait;
@@ -38,6 +39,14 @@ class FilterManager
         return $this->filtersArray;
     }
 
+    /**
+     * @param null $filtersArray
+     */
+    public function setFiltersArray($filtersArray)
+    {
+        $this->filtersArray = $filtersArray;
+    }
+
     public function initFiltersArray()
     {
         $filtersArray = array();
@@ -45,7 +54,7 @@ class FilterManager
         $request = $this->getRequest();
         foreach ($filters as $filter) {
             $filter->setRequest($request);
-            if ($filter->hasValue()) {
+            if ($filter->isActive()) {
                 $filtersArray[$filter->getName()] = $filter->getValue();
             }
         }
@@ -53,11 +62,24 @@ class FilterManager
     }
 
     /**
-     * @param null $filtersArray
+     * @return AbstractFilter[]|AbstractColumnFilter[]
      */
-    public function setFiltersArray($filtersArray)
+    public function getFilters()
     {
-        $this->filtersArray = $filtersArray;
+        return $this->filters;
+    }
+
+    /**
+     * @param SelectQuery $query
+     */
+    public function filterQuery($query)
+    {
+        $filters = $this->getFilters();
+        foreach ($filters as $filter) {
+            if ($filter->isActive()) {
+                $filter->filterQuery($query);
+            }
+        }
     }
 
     /**
@@ -84,14 +106,6 @@ class FilterManager
     {
         $this->prepareFilter($filter);
         $this->filters[] = $filter;
-    }
-
-    /**
-     * @return AbstractFilter[]|AbstractColumnFilter[]
-     */
-    public function getFilters()
-    {
-        return $this->filters;
     }
 
     /**
