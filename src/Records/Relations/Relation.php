@@ -5,8 +5,7 @@ namespace Nip\Records\Relations;
 use Nip\Database\Connection;
 use Nip\Database\Query\Select as Query;
 use Nip\HelperBroker;
-use Nip\Records\_Abstract\Row as Record;
-use Nip\Records\_Abstract\Table;
+use Nip\Records\AbstractModels\Record as Record;
 use Nip\Records\Collections\Collection as RecordCollection;
 use Nip\Records\RecordManager as Records;
 
@@ -49,6 +48,79 @@ abstract class Relation
     protected $_results = null;
 
     /**
+     * @return Query
+     */
+    public function getQuery()
+    {
+        if ($this->_query == null) {
+            $this->initQuery();
+        }
+
+        return $this->_query;
+    }
+
+    /**
+     * @param $query
+     * @return static
+     */
+    public function setQuery($query)
+    {
+        $this->_query = $query;
+
+        return $this;
+    }
+
+    public function initQuery()
+    {
+        $query = $this->newQuery();
+        $this->populateQuerySpecific($query);
+
+        $this->_query = $query;
+    }
+
+    /**
+     * @return Query
+     */
+    public function newQuery()
+    {
+        return $this->getWith()->paramsToQuery();
+    }
+
+    /**
+     * @return Records
+     */
+    public function getWith()
+    {
+        if ($this->_with == null) {
+            $this->initWith();
+        }
+
+        return $this->_with;
+    }
+
+    /**
+     * @param Records $object
+     * @return $this
+     */
+    public function setWith(Records $object)
+    {
+        $this->_with = $object;
+
+        return $this;
+    }
+
+    public function initWith()
+    {
+        $className = $this->getWithClass();
+        $this->setWithClass($className);
+    }
+
+    public function getWithClass()
+    {
+        return inflector()->pluralize($this->getName());
+    }
+
+    /**
      * @return mixed
      */
     public function getName()
@@ -64,83 +136,17 @@ abstract class Relation
         $this->_name = $name;
     }
 
-    public function setItem(Record $item)
-    {
-        $this->_item = $item;
-        return $this;
-    }
-
     /**
-     * @return Record
+     * @param string $name
      */
-    public function getItem()
+    public function setWithClass($name)
     {
-        return $this->_item;
-    }
-
-    /**
-     * @return Records
-     */
-    public function getManager()
-    {
-        if ($this->_manager == null) {
-            $this->initManager();
-        }
-        return $this->_manager;
-    }
-
-    public function initManager()
-    {
-        $this->_manager = $this->getItem()->getManager();
-    }
-
-    /**
-     * @param Table $manager
-     */
-    public function setManager($manager)
-    {
-        $this->_manager = $manager;
-    }
-
-    /**
-     * @return Query
-     */
-    public function getQuery()
-    {
-        if ($this->_query == null) {
-            $this->initQuery();
-        }
-        return $this->_query;
-    }
-
-    public function initQuery()
-    {
-        $query = $this->newQuery();
-        $this->populateQuerySpecific($query);
-
-        $this->_query = $query;
+        $object = call_user_func(array($name, "instance"));
+        $this->setWith($object);
     }
 
     public function populateQuerySpecific(Query $query)
     {
-    }
-
-    /**
-     * @param $query
-     * @return static
-     */
-    public function setQuery($query)
-    {
-        $this->_query = $query;
-        return $this;
-    }
-
-    /**
-     * @return Query
-     */
-    public function newQuery()
-    {
-        return $this->getWith()->paramsToQuery();
     }
 
     /**
@@ -151,9 +157,44 @@ abstract class Relation
         return $this->getManager()->getDB();
     }
 
-    public function setParams($params)
+    /**
+     * @return Records
+     */
+    public function getManager()
     {
-        $this->_params = $params;
+        if ($this->_manager == null) {
+            $this->initManager();
+        }
+
+        return $this->_manager;
+    }
+
+    /**
+     * @param Table $manager
+     */
+    public function setManager($manager)
+    {
+        $this->_manager = $manager;
+    }
+
+    public function initManager()
+    {
+        $this->_manager = $this->getItem()->getManager();
+    }
+
+    /**
+     * @return Record
+     */
+    public function getItem()
+    {
+        return $this->_item;
+    }
+
+    public function setItem(Record $item)
+    {
+        $this->_item = $item;
+
+        return $this;
     }
 
     public function getParam($key)
@@ -202,46 +243,9 @@ abstract class Relation
         }
     }
 
-
-    /**
-     * @return Records
-     */
-    public function getWith()
+    public function setParams($params)
     {
-        if ($this->_with == null) {
-            $this->initWith();
-        }
-        return $this->_with;
-    }
-
-    public function initWith()
-    {
-        $className = $this->getWithClass();
-        $this->setWithClass($className);
-    }
-
-    public function getWithClass()
-    {
-        return inflector()->pluralize($this->getName());
-    }
-
-    /**
-     * @param string $name
-     */
-    public function setWithClass($name)
-    {
-        $object = call_user_func(array($name, "instance"));
-        $this->setWith($object);
-    }
-
-    /**
-     * @param Records $object
-     * @return $this
-     */
-    public function setWith(Records $object)
-    {
-        $this->_with = $object;
-        return $this;
+        $this->_params = $params;
     }
 
     /**
@@ -255,45 +259,15 @@ abstract class Relation
         return $this->_table;
     }
 
-    public function initTable()
-    {
-        $tableName = $this->getWith()->getTable();
-        $this->setTable($tableName);
-    }
-
     public function setTable($name)
     {
         $this->_table = $name;
     }
 
-    /**
-     * @return string
-     */
-    public function getFK()
+    public function initTable()
     {
-        if ($this->_fk == null) {
-            $this->initFK();
-        }
-        return $this->_fk;
-    }
-
-    public function initFK()
-    {
-        $name = $this->getManager()->getPrimaryFK();
-        $this->setFK($name);
-    }
-
-    public function setFK($name)
-    {
-        $this->_fk = $name;
-    }
-
-    /**
-     * @return string
-     */
-    public function getWithPK()
-    {
-        return $this->getWith()->getPrimaryKey();
+        $tableName = $this->getWith()->getTable();
+        $this->setTable($tableName);
     }
 
     /**
@@ -357,6 +331,36 @@ abstract class Relation
         return array_unique($return);
     }
 
+    /**
+     * @return string
+     */
+    public function getFK()
+    {
+        if ($this->_fk == null) {
+            $this->initFK();
+        }
+
+        return $this->_fk;
+    }
+
+    public function setFK($name)
+    {
+        $this->_fk = $name;
+    }
+
+    public function initFK()
+    {
+        $name = $this->getManager()->getPrimaryFK();
+        $this->setFK($name);
+    }
+
+    /**
+     * @return string
+     */
+    public function getWithPK()
+    {
+        return $this->getWith()->getPrimaryKey();
+    }
 
     /**
      * @param RecordCollection $collection
@@ -376,8 +380,6 @@ abstract class Relation
         return $records;
     }
 
-    abstract function getResultsFromCollectionDictionary($dictionary, $collection, $record);
-
     /**
      * Build model dictionary keyed by the relation's foreign key.
      *
@@ -385,6 +387,8 @@ abstract class Relation
      * @return array
      */
     abstract protected function buildDictionary(RecordCollection $collection);
+
+    abstract function getResultsFromCollectionDictionary($dictionary, $collection, $record);
 
     public function save()
     {

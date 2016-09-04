@@ -4,7 +4,7 @@ namespace Nip\Records\Relations;
 
 use Nip\Database\Query\Select as Query;
 use Nip\HelperBroker;
-use Nip\Records\_Abstract\Row as Record;
+use Nip\Records\AbstractModels\Record as Record;
 use Nip\Records\Collections\Associated as AssociatedCollection;
 use Nip\Records\Collections\Collection;
 use Nip\Records\Collections\Collection as RecordCollection;
@@ -25,17 +25,17 @@ abstract class HasOneOrMany extends Relation
         return true;
     }
 
+    public function hasResults()
+    {
+        return $this->isPopulated() && count($this->getResults()) > 0;
+    }
+
     public function saveResult(Record $item)
     {
         $pk = $this->getManager()->getPrimaryKey();
         $fk = $this->getFK();
         $item->$fk = $this->getItem()->$pk;
         $item->saveRecord();
-    }
-
-    public function hasResults()
-    {
-        return $this->isPopulated() && count($this->getResults()) > 0;
     }
 
     public function initResults()
@@ -47,15 +47,35 @@ abstract class HasOneOrMany extends Relation
         $this->setResults($collection);
     }
 
+    public function newCollection()
+    {
+        $class = $this->getCollectionClass();
+        $collection = new $class();
+        /** @var AssociatedCollection $collection */
+        $collection->initFromRelation($this);
+
+        return $collection;
+    }
+
+    public function getCollectionClass()
+    {
+        $collection = $this->getParam('collection');
+        if ($collection) {
+            return $collection;
+        }
+
+        return 'Nip\Records\Collections\Associated';
+    }
+
     /**
      * @param RecordCollection $collection
-     * @return array
+     * @param $items
      */
-    public function getEagerFkList(RecordCollection $collection)
+    public function populateCollection(RecordCollection $collection, $items)
     {
-        $key = $collection->getManager()->getPrimaryKey();
-        $return = HelperBroker::get('Arrays')->pluck($collection, $key);
-        return array_unique($return);
+        foreach ($items as $item) {
+            $collection->add($item);
+        }
     }
 
     /**
@@ -72,31 +92,14 @@ abstract class HasOneOrMany extends Relation
 
     /**
      * @param RecordCollection $collection
-     * @param $items
+     * @return array
      */
-    public function populateCollection(RecordCollection $collection, $items)
+    public function getEagerFkList(RecordCollection $collection)
     {
-        foreach ($items as $item) {
-            $collection->add($item);
-        }
-    }
+        $key = $collection->getManager()->getPrimaryKey();
+        $return = HelperBroker::get('Arrays')->pluck($collection, $key);
 
-    public function newCollection()
-    {
-        $class = $this->getCollectionClass();
-        $collection = new $class();
-        /** @var AssociatedCollection $collection */
-        $collection->initFromRelation($this);
-        return $collection;
-    }
-
-    public function getCollectionClass()
-    {
-        $collection = $this->getParam('collection');
-        if ($collection) {
-            return $collection;
-        }
-        return 'Nip\Records\Collections\Associated';
+        return array_unique($return);
     }
 
     /**

@@ -1,6 +1,6 @@
 <?php
 
-namespace Nip\Records\_Abstract;
+namespace Nip\Records\AbstractModels;
 
 use Nip\HelperBroker;
 use Nip\Records\Relations\Relation;
@@ -11,7 +11,7 @@ use Nip\Records\Relations\Relation;
  *
  * @method \Nip_Helper_Url URL()
  */
-abstract class Row extends \Nip_Object
+abstract class Record extends \Nip_Object
 {
 
     protected $_name = null;
@@ -55,6 +55,82 @@ abstract class Row extends \Nip_Object
         }
 
         trigger_error("Call to undefined method $name", E_USER_ERROR);
+    }
+
+    /**
+     * @param $relationName
+     * @return Relation|null
+     */
+    public function getRelation($relationName)
+    {
+        if (!$this->hasRelation($relationName)) {
+            $this->initRelation($relationName);
+        }
+
+        return $this->relations[$relationName];
+    }
+
+    public function hasRelation($key)
+    {
+        return array_key_exists($key, $this->relations);
+    }
+
+    public function initRelation($relationName)
+    {
+        if (!$this->getManager()->hasRelation($relationName)) {
+            return;
+        }
+        $this->relations[$relationName] = $this->newRelation($relationName);
+    }
+
+    /**
+     * @return \Nip\Records\RecordManager
+     */
+    public function getManager()
+    {
+        if ($this->_manager == null) {
+            $this->initManager();
+        }
+
+        return $this->_manager;
+    }
+
+    public function setManager($manager)
+    {
+        $this->_manager = $manager;
+    }
+
+    public function initManager()
+    {
+        $class = $this->getManagerName();
+        $this->_manager = call_user_func(array($class, 'instance'));
+    }
+
+    public function getManagerName()
+    {
+        if ($this->_managerName == null) {
+            $this->inflectManagerName();
+        }
+
+        return $this->_managerName;
+    }
+
+    public function inflectManagerName()
+    {
+        return ucfirst(inflector()->pluralize(get_class($this)));
+    }
+
+    public function newRelation($relationName)
+    {
+        $relation = clone $this->getManager()->getRelation($relationName);
+        $relation->setItem($this);
+
+        return $relation;
+    }
+
+    public function getHelper($name)
+    {
+        return HelperBroker::get($name);
     }
 
     /**
@@ -129,6 +205,14 @@ abstract class Row extends \Nip_Object
         }
     }
 
+    /**
+     * @return array
+     */
+    public function getRelations()
+    {
+        return $this->relations;
+    }
+
     public function delete()
     {
         $this->getManager()->delete($this);
@@ -145,15 +229,15 @@ abstract class Row extends \Nip_Object
         return $this->getManager()->exists($this);
     }
 
+    public function toJSON()
+    {
+        return json_encode($this->toArray());
+    }
+
     public function toArray()
     {
         $vars = get_object_vars($this);
         return $vars['_data'];
-    }
-
-    public function toJSON()
-    {
-        return json_encode($this->toArray());
     }
 
     public function toApiArray()
@@ -162,100 +246,27 @@ abstract class Row extends \Nip_Object
         return $data;
     }
 
-    /**
-     * @param bool|array $data
-     */
-    public function writeData($data = false)
-    {
-        foreach ($data as $key => $value) {
-            $this->__set($key, $value);
-        }
-    }
-
-    /**
-     * @return \Nip\Records\RecordManager
-     */
-    public function getManager()
-    {
-        if ($this->_manager == null) {
-            $this->initManager();
-        }
-
-        return $this->_manager;
-    }
-
-    public function initManager()
-    {
-        $class = $this->getManagerName();
-        $this->_manager = call_user_func(array($class, 'instance'));
-    }
-
-    public function setManager($manager)
-    {
-        $this->_manager = $manager;
-    }
-
-    public function getManagerName()
-    {
-        if ($this->_managerName == null) {
-            $this->inflectManagerName();
-        }
-        return $this->_managerName;
-    }
-
     public function initManagerName()
     {
         $this->_managerName = $this->inflectManagerName();
     }
 
-    public function inflectManagerName()
+    public function getCloneWithRelations()
     {
-        return ucfirst(inflector()->pluralize(get_class($this)));
+        $item = $this->getClone();
+        $this->cloneRelations($item);
+
+        return $item;
     }
 
-    public function getHelper($name)
+    public function getClone()
     {
-        return HelperBroker::get($name);
-    }
+        $clone = $this->getManager()->getNew();
+        $clone->updateDataFromRecord($this);
 
-    /**
-     * @return array
-     */
-    public function getRelations()
-    {
-        return $this->relations;
-    }
+        unset($clone->{$this->getManager()->getPrimaryKey()}, $clone->created);
 
-    /**
-     * @param $relationName
-     * @return Relation|null
-     */
-    public function getRelation($relationName)
-    {
-        if (!$this->hasRelation($relationName)) {
-            $this->initRelation($relationName);
-        }
-        return $this->relations[$relationName];
-    }
-
-    public function hasRelation($key)
-    {
-        return array_key_exists($key, $this->relations);
-    }
-
-    public function initRelation($relationName)
-    {
-        if (!$this->getManager()->hasRelation($relationName)) {
-            return;
-        }
-        $this->relations[$relationName] = $this->newRelation($relationName);
-    }
-
-    public function newRelation($relationName)
-    {
-        $relation = clone $this->getManager()->getRelation($relationName);
-        $relation->setItem($this);
-        return $relation;
+        return $clone;
     }
 
     /**
@@ -269,21 +280,14 @@ abstract class Row extends \Nip_Object
         unset($this->{$this->getManager()->getPrimaryKey()}, $this->created);
     }
 
-    public function getClone()
+    /**
+     * @param bool|array $data
+     */
+    public function writeData($data = false)
     {
-        $clone = $this->getManager()->getNew();
-        $clone->updateDataFromRecord($this);
-
-        unset($clone->{$this->getManager()->getPrimaryKey()}, $clone->created);
-        return $clone;
-    }
-
-    public function getCloneWithRelations()
-    {
-        $item = $this->getClone();
-        $this->cloneRelations($item);
-
-        return $item;
+        foreach ($data as $key => $value) {
+            $this->__set($key, $value);
+        }
     }
 
     /**

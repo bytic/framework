@@ -1,19 +1,18 @@
 <?php
 
-namespace Nip\Records\_Abstract;
+namespace Nip\Records\AbstractModels;
 
 use Nip\Database\Connection;
 use Nip\Database\Query\AbstractQuery as Query;
+use Nip\Database\Query\Delete as DeleteQuery;
 use Nip\Database\Query\Insert as InsertQuery;
 use Nip\Database\Query\Select as SelectQuery;
 use Nip\Database\Query\Update as UpdateQuery;
-use Nip\Database\Query\Delete as DeleteQuery;
 use Nip\Database\Result;
 use Nip\HelperBroker;
 use Nip\Paginator;
-use Nip\Records\Relations\Relation;
-use Nip\Records\_Abstract\Row as Record;
 use Nip\Records\Collections\Collection as RecordCollection;
+use Nip\Records\Relations\Relation;
 use Nip\Request;
 
 /**
@@ -22,7 +21,7 @@ use Nip\Request;
  *
  * @method \Nip_Helper_Url Url()
  */
-abstract class Table
+abstract class RecordManager
 {
 
     /**
@@ -61,6 +60,14 @@ abstract class Table
 
     public function __construct()
     {
+    }
+
+    /**
+     * @return string
+     */
+    public static function getRootNamespace()
+    {
+        return 'App\Models\\';
     }
 
     /**
@@ -122,117 +129,95 @@ abstract class Table
         return null;
     }
 
-    protected function isCallUrl($name, $arguments)
+    /**
+     * @return string
+     */
+    public function getPrimaryKey()
     {
-        if (substr($name, 0, 3) == "get" || substr($name, -3) == "URL") {
-            $action = substr($name, 3, -3);
-            $params = $arguments[0];
-
-            $controller = $this->getController();
-
-            if (substr($action, 0, 5) == 'Async') {
-                $controller = 'async-' . $controller;
-                $action = substr($action, 5);
-            }
-
-            if (substr($action, 0, 5) == 'Modal') {
-                $controller = 'modal-' . $controller;
-                $action = substr($action, 5);
-            }
-
-            $params['action'] = (!empty($action)) ? $action : 'index';
-            $params['controller'] = $controller;
-            if ($arguments[1]) {
-                $params['module'] = $arguments[1];
-            }
-
-            return $this->_getURL($params);
-        }
-        return false;
-    }
-
-    protected function _getURL($params = array())
-    {
-        $params['action'] = inflector()->unclassify($params['action']);
-        $params['action'] = ($params['action'] == 'index') ? false : $params['action'];
-        $params['controller'] = $params['controller'] ? $params['controller'] : $this->getController();
-        $params['module'] = $params['module'] ? $params['module'] : Request::instance()->getModuleName();
-
-        $routeName = $params['module'].'.'.$params['controller'].'.'.$params['action'];
-        if ($this->Url()->getRouter()->hasRoute($routeName)) {
-            unset($params['module'], $params['controller'], $params['action']);
-        } else {
-            $routeName = $params['module'].'.default';
+        if ($this->_primaryKey === null) {
+            $this->initPrimaryKey();
         }
 
-        return $this->Url()->assemble($routeName, $params);
+        return $this->_primaryKey;
     }
 
-    public function getNewRecord($data = array())
+    protected function initPrimaryKey()
     {
-        $model = $this->getModel();
-        /** @var Record $record */
-        $record = new $model();
-        $record->setManager($this);
-        $record->writeData($data);
-        return $record;
+        $structure = $this->getTableStructure();
+        $this->_primaryKey = $structure['indexes']['PRIMARY']['fields'];
+        if (count($this->_primaryKey) == 1) {
+            $this->_primaryKey = reset($this->_primaryKey);
+        }
     }
 
-    public function getNewRecordFromDB($data = array())
+    protected function getTableStructure()
     {
-        $record = $this->getNewRecord($data);
-        $record->writeDBData($data);
-        return $record;
+        if ($this->_tableStructure == null) {
+            $this->initTableStructure();
+        }
+
+        return $this->_tableStructure;
+    }
+
+    protected function initTableStructure()
+    {
+        $this->_tableStructure = $this->getDB()->getMetadata()->describeTable($this->getTable());
     }
 
     /**
-     * Sets model and database table from the class name
+     * @return Connection
      */
-    protected function inflect()
+    public function getDB()
     {
-        $this->inflectController();
-    }
-
-    protected function inflectModel()
-    {
-        $class = get_class($this);
-        if ($this->_model == null) {
-            $this->_model = $this->generateModelClass($class);
+        if ($this->_db == null) {
+            $this->setUpDB();
         }
-    }
 
-    public function generateModelClass($class = null)
-    {
-        $class = $class ? $class : get_class($this);
-
-        if (strpos($class, '\\')) {
-            $nsParts = explode('\\', $class);
-            $class = array_pop($nsParts);
-
-            if ($class == 'Table') {
-                $class = 'Row';
-            } else {
-                $class = ucfirst(inflector()->singularize($class));
-            }
-            return implode($nsParts, '\\') . '\\'.$class;
-        }
-        return ucfirst(inflector()->singularize($class));
+        return $this->_db;
     }
 
     /**
-     * @param null $model
+     * @param Connection $db
+     * @return $this
      */
-    public function setModel($model)
+    public function setDB($db)
     {
-        $this->_model = $model;
+        $this->_db = $db;
+
+        return $this;
     }
 
-    public function getModel()
+    /**
+     * @return Connection
+     */
+    protected function setUpDB()
     {
-        if ($this->_model == null) {
-            $this->inflectModel();
+        $this->_db = db();
+    }
+
+    /**
+     * @return string
+     */
+    public function getTable()
+    {
+        if ($this->_table === null) {
+            $this->initTable();
         }
-        return $this->_model;
+
+        return $this->_table;
+    }
+
+    /**
+     * @param null $table
+     */
+    public function setTable($table)
+    {
+        $this->_table = $table;
+    }
+
+    public function initTable()
+    {
+        $this->_table = $this->getController();
     }
 
     public function getController()
@@ -249,52 +234,6 @@ abstract class Table
         if ($this->_controller == null) {
             $this->_controller = inflector()->unclassify($class);
         }
-    }
-
-    /**
-     * @return \Nip_Registry
-     */
-    public function getRegistry()
-    {
-        if (!$this->_registry) {
-            $this->_registry = new \Nip_Registry();
-        }
-        return $this->_registry;
-    }
-
-
-    public function __wakeup()
-    {
-        $this->setUpDB();
-    }
-
-    public function getHelper($name)
-    {
-        return HelperBroker::get($name);
-    }
-
-
-    public function exists(Record $item)
-    {
-        $params = array();
-        $params['where'] = array();
-
-        $fields = $this->getUniqueFields();
-
-        if (!$fields) {
-            return false;
-        }
-
-        foreach ($fields as $field) {
-            $params['where'][$field . '-UNQ'] = array("$field = ?", $item->$field);
-        }
-
-        $pk = $this->getPrimaryKey();
-        if ($item->$pk) {
-            $params['where'][] = array("$pk != ?", $item->$pk);
-        }
-
-        return $this->findOneByParams($params);
     }
 
     /**
@@ -338,51 +277,52 @@ abstract class Table
     /**
      * @return RecordCollection
      */
-    public function getAll()
+    public function newCollection()
     {
-        if (!$this->getRegistry()->exists("all")) {
-            $this->getRegistry()->set("all", $this->findAll());
+        $class = $this->getCollectionClass();
+        /** @var RecordCollection $collection */
+        $collection = new $class();
+        $collection->setManager($this);
+
+        return $collection;
+    }
+
+    /**
+     * @return string
+     */
+    public function getCollectionClass()
+    {
+        return $this->_collectionClass;
+    }
+
+    /**
+     * @return \Nip_Registry
+     */
+    public function getRegistry()
+    {
+        if (!$this->_registry) {
+            $this->_registry = new \Nip_Registry();
         }
-        return $this->getRegistry()->get("all");
+
+        return $this->_registry;
     }
 
     /**
-     * @return RecordCollection
+     * @param array $params
+     * @return SelectQuery
      */
-    public function findAll()
+    public function paramsToQuery($params = array())
     {
-        return $this->findByParams();
+        $this->injectParams($params);
+
+        $query = $this->newQuery('select');
+        $query->addParams($params);
+
+        return $query;
     }
 
-    public function findLast($count = 9)
+    protected function injectParams(&$params = array())
     {
-        return $this->findByParams(array(
-            'limit' => $count,
-        ));
-    }
-
-    /**
-     * @return InsertQuery
-     */
-    public function newInsertQuery()
-    {
-        return $this->newQuery('insert');
-    }
-
-    /**
-     * @return UpdateQuery
-     */
-    public function newUpdateQuery()
-    {
-        return $this->newQuery('update');
-    }
-
-    /**
-     * @return DeleteQuery
-     */
-    public function newDeleteQuery()
-    {
-        return $this->newQuery('delete');
     }
 
     /**
@@ -397,6 +337,44 @@ abstract class Table
         $query->from($this->getFullNameTable());
         $query->table($this->getTable());
         return $query;
+    }
+
+    /**
+     * @return string
+     */
+    public function getFullNameTable()
+    {
+        $database = $this->getDB()->getDatabase();
+
+        return $database ? $database.'.'.$this->getTable() : $this->getTable();
+    }
+
+    /**
+     * @param $query
+     * @param array $params
+     * @return RecordCollection
+     */
+    public function findByQuery($query, $params = array())
+    {
+        $return = $this->newCollection();
+
+        $results = $this->getDB()->execute($query);
+        if ($results->numRows() > 0) {
+            $pk = $this->getPrimaryKey();
+            while ($row = $results->fetchResult()) {
+                $item = $this->getNew($row);
+                if (is_string($pk)) {
+                    $this->getRegistry()->set($item->$pk, $item);
+                }
+                if ($params['indexKey']) {
+                    $return->add($item, $params['indexKey']);
+                } else {
+                    $return->add($item);
+                }
+            }
+        }
+
+        return $return;
     }
 
     /**
@@ -421,47 +399,231 @@ abstract class Table
         return $record;
     }
 
-    /**
-     * @return Connection
-     */
-    public function getDB()
+    public function getNewRecordFromDB($data = array())
     {
-        if ($this->_db == null) {
-            $this->setUpDB();
+        $record = $this->getNewRecord($data);
+        $record->writeDBData($data);
+
+        return $record;
+    }
+
+    public function getNewRecord($data = array())
+    {
+        $model = $this->getModel();
+        /** @var Record $record */
+        $record = new $model();
+        $record->setManager($this);
+        $record->writeData($data);
+
+        return $record;
+    }
+
+    public function getModel()
+    {
+        if ($this->_model == null) {
+            $this->inflectModel();
         }
-        return $this->_db;
+
+        return $this->_model;
     }
 
     /**
-     * @param Connection $db
-     * @return $this
+     * @param null $model
      */
-    public function setDB($db)
+    public function setModel($model)
     {
-        $this->_db = $db;
-        return $this;
+        $this->_model = $model;
     }
 
-    /**
-     * @return Connection
-     */
-    protected function setUpDB()
+    protected function inflectModel()
     {
-        $this->_db = db();
-    }
-
-
-    protected function getTableStructure()
-    {
-        if ($this->_tableStructure == null) {
-            $this->initTableStructure();
+        $class = get_class($this);
+        if ($this->_model == null) {
+            $this->_model = $this->generateModelClass($class);
         }
-        return $this->_tableStructure;
     }
 
-    protected function initTableStructure()
+    public function generateModelClass($class = null)
     {
-        $this->_tableStructure = $this->getDB()->getMetadata()->describeTable($this->getTable());
+        $class = $class ? $class : get_class($this);
+
+        if (strpos($class, '\\')) {
+            $nsParts = explode('\\', $class);
+            $class = array_pop($nsParts);
+
+            if ($class == 'Table') {
+                $class = 'Row';
+            } else {
+                $class = ucfirst(inflector()->singularize($class));
+            }
+
+            return implode($nsParts, '\\').'\\'.$class;
+        }
+
+        return ucfirst(inflector()->singularize($class));
+    }
+
+    protected function isCallUrl($name, $arguments)
+    {
+        if (substr($name, 0, 3) == "get" || substr($name, -3) == "URL") {
+            $action = substr($name, 3, -3);
+            $params = $arguments[0];
+
+            $controller = $this->getController();
+
+            if (substr($action, 0, 5) == 'Async') {
+                $controller = 'async-'.$controller;
+                $action = substr($action, 5);
+            }
+
+            if (substr($action, 0, 5) == 'Modal') {
+                $controller = 'modal-'.$controller;
+                $action = substr($action, 5);
+            }
+
+            $params['action'] = (!empty($action)) ? $action : 'index';
+            $params['controller'] = $controller;
+            if ($arguments[1]) {
+                $params['module'] = $arguments[1];
+            }
+
+            return $this->_getURL($params);
+        }
+
+        return false;
+    }
+
+    protected function _getURL($params = array())
+    {
+        $params['action'] = inflector()->unclassify($params['action']);
+        $params['action'] = ($params['action'] == 'index') ? false : $params['action'];
+        $params['controller'] = $params['controller'] ? $params['controller'] : $this->getController();
+        $params['module'] = $params['module'] ? $params['module'] : Request::instance()->getModuleName();
+
+        $routeName = $params['module'].'.'.$params['controller'].'.'.$params['action'];
+        if ($this->Url()->getRouter()->hasRoute($routeName)) {
+            unset($params['module'], $params['controller'], $params['action']);
+        } else {
+            $routeName = $params['module'].'.default';
+        }
+
+        return $this->Url()->assemble($routeName, $params);
+    }
+
+    public function getHelper($name)
+    {
+        return HelperBroker::get($name);
+    }
+
+    public function __wakeup()
+    {
+        $this->setUpDB();
+    }
+
+    public function exists(Record $item)
+    {
+        $params = array();
+        $params['where'] = array();
+
+        $fields = $this->getUniqueFields();
+
+        if (!$fields) {
+            return false;
+        }
+
+        foreach ($fields as $field) {
+            $params['where'][$field.'-UNQ'] = array("$field = ?", $item->$field);
+        }
+
+        $pk = $this->getPrimaryKey();
+        if ($item->$pk) {
+            $params['where'][] = array("$pk != ?", $item->$pk);
+        }
+
+        return $this->findOneByParams($params);
+    }
+
+    public function getUniqueFields()
+    {
+        if ($this->_uniqueFields === null) {
+            $this->initUniqueFields();
+        }
+
+        return $this->_uniqueFields;
+    }
+
+    public function initUniqueFields()
+    {
+        $this->_uniqueFields = array();
+        $structure = $this->getTableStructure();
+        foreach ($structure['indexes'] as $name => $index) {
+            if ($index['unique']) {
+                foreach ($index['fields'] as $field) {
+                    if ($field != $this->getPrimaryKey()) {
+                        $this->_uniqueFields[] = $field;
+                    }
+                }
+            }
+        }
+
+        return $this->_uniqueFields;
+    }
+
+    /**
+     * Finds one Record using params array
+     *
+     * @param array $params
+     * @return Record|false
+     */
+    public function findOneByParams(array $params = array())
+    {
+        $params['limit'] = 1;
+        $records = $this->findByParams($params);
+        if (count($records) > 0) {
+            return $records->rewind();
+        }
+
+        return false;
+    }
+
+    /**
+     * Finds Records using params array
+     *
+     * @param array $params
+     * @return mixed
+     */
+    public function findByParams($params = array())
+    {
+        $query = $this->paramsToQuery($params);
+
+        return $this->findByQuery($query, $params);
+    }
+
+    /**
+     * @return RecordCollection
+     */
+    public function getAll()
+    {
+        if (!$this->getRegistry()->exists("all")) {
+            $this->getRegistry()->set("all", $this->findAll());
+        }
+
+        return $this->getRegistry()->get("all");
+    }
+
+    /**
+     * @return RecordCollection
+     */
+    public function findAll()
+    {
+        return $this->findByParams();
+    }
+
+    public function findLast($count = 9)
+    {
+        return $this->findByParams(array(
+            'limit' => $count,
+        ));
     }
 
     /**
@@ -509,6 +671,29 @@ abstract class Table
         return $data;
     }
 
+    public function getFields()
+    {
+        if ($this->_fields === null) {
+            $this->initFields();
+        }
+
+        return $this->_fields;
+    }
+
+    public function initFields()
+    {
+        $structure = $this->getTableStructure();
+        $this->_fields = array_keys($structure['fields']);
+    }
+
+    /**
+     * @return InsertQuery
+     */
+    public function newInsertQuery()
+    {
+        return $this->newQuery('insert');
+    }
+
     /**
      * Updates a Record's database entry
      * @param Record $model
@@ -549,6 +734,14 @@ abstract class Table
         }
 
         return false;
+    }
+
+    /**
+     * @return UpdateQuery
+     */
+    public function newUpdateQuery()
+    {
+        return $this->newQuery('update');
     }
 
     /**
@@ -604,6 +797,14 @@ abstract class Table
         $query->limit(1);
 
         $this->getDB()->execute($query);
+    }
+
+    /**
+     * @return DeleteQuery
+     */
+    public function newDeleteQuery()
+    {
+        return $this->newQuery('delete');
     }
 
     /**
@@ -663,10 +864,6 @@ abstract class Table
         return $this->findByParams($params);
     }
 
-    protected function injectParams(&$params = array())
-    {
-    }
-
     /**
      * Checks the registry before fetching from the database
      * @param mixed $primary
@@ -693,48 +890,6 @@ abstract class Table
     }
 
     /**
-     * Finds one Record using params array
-     *
-     * @param array $params
-     * @return Record|false
-     */
-    public function findOneByParams(array $params = array())
-    {
-        $params['limit'] = 1;
-        $records = $this->findByParams($params);
-        if (count($records) > 0) {
-            return $records->rewind();
-        }
-        return false;
-    }
-
-    /**
-     * Finds Records using params array
-     *
-     * @param array $params
-     * @return mixed
-     */
-    public function findByParams($params = array())
-    {
-        $query = $this->paramsToQuery($params);
-        return $this->findByQuery($query, $params);
-    }
-
-    /**
-     * @param array $params
-     * @return SelectQuery
-     */
-    public function paramsToQuery($params = array())
-    {
-        $this->injectParams($params);
-
-        $query = $this->newQuery('select');
-        $query->addParams($params);
-
-        return $query;
-    }
-
-    /**
      * @param Query $query
      * @param array $params
      * @return bool
@@ -747,34 +902,6 @@ abstract class Table
             return $return->rewind();
         }
         return false;
-    }
-
-    /**
-     * @param $query
-     * @param array $params
-     * @return RecordCollection
-     */
-    public function findByQuery($query, $params = array())
-    {
-        $return = $this->newCollection();
-
-        $results = $this->getDB()->execute($query);
-        if ($results->numRows() > 0) {
-            $pk = $this->getPrimaryKey();
-            while ($row = $results->fetchResult()) {
-                $item = $this->getNew($row);
-                if (is_string($pk)) {
-                    $this->getRegistry()->set($item->$pk, $item);
-                }
-                if ($params['indexKey']) {
-                    $return->add($item, $params['indexKey']);
-                } else {
-                    $return->add($item);
-                }
-            }
-        }
-
-        return $return;
     }
 
     /**
@@ -828,59 +955,6 @@ abstract class Table
     }
 
     /**
-     * @return string
-     */
-    public function getTable()
-    {
-        if ($this->_table === null) {
-            $this->initTable();
-        }
-        return $this->_table;
-    }
-
-    public function initTable()
-    {
-        $this->_table = $this->getController();
-    }
-
-    /**
-     * @param null $table
-     */
-    public function setTable($table)
-    {
-        $this->_table = $table;
-    }
-
-    /**
-     * @return string
-     */
-    public function getFullNameTable()
-    {
-        $database = $this->getDB()->getDatabase();
-        return $database ? $database . '.' . $this->getTable() : $this->getTable();
-    }
-
-    /**
-     * @return RecordCollection
-     */
-    public function newCollection()
-    {
-        $class = $this->getCollectionClass();
-        /** @var RecordCollection $collection */
-        $collection = new $class();
-        $collection->setManager($this);
-        return $collection;
-    }
-
-    /**
-     * @return string
-     */
-    public function getCollectionClass()
-    {
-        return $this->_collectionClass;
-    }
-
-    /**
      * The name of the field used as a foreign key in other tables
      * @return string
      */
@@ -914,40 +988,6 @@ abstract class Table
         return $this->_urlPK;
     }
 
-    /**
-     * @return string
-     */
-    public function getPrimaryKey()
-    {
-        if ($this->_primaryKey === null) {
-            $this->initPrimaryKey();
-        }
-        return $this->_primaryKey;
-    }
-
-    protected function initPrimaryKey()
-    {
-        $structure = $this->getTableStructure();
-        $this->_primaryKey = $structure['indexes']['PRIMARY']['fields'];
-        if (count($this->_primaryKey) == 1) {
-            $this->_primaryKey = reset($this->_primaryKey);
-        }
-    }
-
-    public function getFields()
-    {
-        if ($this->_fields === null) {
-            $this->initFields();
-        }
-        return $this->_fields;
-    }
-
-    public function initFields()
-    {
-        $structure = $this->getTableStructure();
-        $this->_fields = array_keys($structure['fields']);
-    }
-
     public function hasField($name)
     {
         $fields = $this->getFields();
@@ -955,30 +995,6 @@ abstract class Table
             return true;
         }
         return false;
-    }
-
-    public function getUniqueFields()
-    {
-        if ($this->_uniqueFields === null) {
-            $this->initUniqueFields();
-        }
-        return $this->_uniqueFields;
-    }
-
-    public function initUniqueFields()
-    {
-        $this->_uniqueFields = array();
-        $structure = $this->getTableStructure();
-        foreach ($structure['indexes'] as $name => $index) {
-            if ($index['unique']) {
-                foreach ($index['fields'] as $field) {
-                    if ($field != $this->getPrimaryKey()) {
-                        $this->_uniqueFields[] = $field;
-                    }
-                }
-            }
-        }
-        return $this->_uniqueFields;
     }
 
     public function getFullTextFields()
@@ -991,6 +1007,18 @@ abstract class Table
             }
         }
         return $return;
+    }
+
+    /**
+     * Get a specified relationship.
+     * @param  string $relation
+     * @return null|Relation
+     */
+    public function getRelation($relation)
+    {
+        $this->checkInitRelations();
+
+        return $this->relations[$relation];
     }
 
     /**
@@ -1045,16 +1073,6 @@ abstract class Table
 
     /**
      * @param string $type
-     * @return string
-     */
-    public function getRelationClass($type)
-    {
-        $class = 'Nip\Records\Relations\\' . ucfirst($type);
-        return $class;
-    }
-
-    /**
-     * @param string $type
      * @return \Nip\Records\Relations\Relation
      */
     public function newRelation($type)
@@ -1068,14 +1086,14 @@ abstract class Table
     }
 
     /**
-     * Get a specified relationship.
-     * @param  string $relation
-     * @return null|Relation
+     * @param string $type
+     * @return string
      */
-    public function getRelation($relation)
+    public function getRelationClass($type)
     {
-        $this->checkInitRelations();
-        return $this->relations[$relation];
+        $class = 'Nip\Records\Relations\\'.ucfirst($type);
+
+        return $class;
     }
 
     /**
@@ -1100,19 +1118,6 @@ abstract class Table
     }
 
     /**
-     * Set the specific relationship in the model.
-     * @param  string $relation
-     * @param  mixed $value
-     * @return $this
-     */
-    public function setRelation($relation, $value)
-    {
-        $this->checkInitRelations();
-        $this->relations[$relation] = $value;
-        return $this;
-    }
-
-    /**
      * Set the entire relations array on the model.
      * @param  array $relations
      * @return $this
@@ -1124,11 +1129,17 @@ abstract class Table
     }
 
     /**
-     * @return string
+     * Set the specific relationship in the model.
+     * @param  string $relation
+     * @param  mixed $value
+     * @return $this
      */
-    public static function getRootNamespace()
+    public function setRelation($relation, $value)
     {
-        return 'App\Models\\';
+        $this->checkInitRelations();
+        $this->relations[$relation] = $value;
+
+        return $this;
     }
 
     /**
@@ -1155,5 +1166,13 @@ abstract class Table
             }
         }
         return $to;
+    }
+
+    /**
+     * Sets model and database table from the class name
+     */
+    protected function inflect()
+    {
+        $this->inflectController();
     }
 }

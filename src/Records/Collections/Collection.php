@@ -3,8 +3,8 @@
 namespace Nip\Records\Collections;
 
 use Nip\HelperBroker;
+use Nip\Records\AbstractModels\RecordManager as Records;
 use Nip\Records\Record as Record;
-use Nip\Records\_Abstract\Table as Records;
 
 class Collection extends \Nip_Collection
 {
@@ -40,6 +40,35 @@ class Collection extends \Nip_Collection
         return $this->getManager()->getRelation($name);
     }
 
+    /**
+     * @return Records
+     */
+    public function getManager()
+    {
+        if ($this->_manager == null) {
+            $this->initManager();
+        }
+
+        return $this->_manager;
+    }
+
+    /**
+     * @param Records $manager
+     * @return $this
+     */
+    public function setManager(Records $manager)
+    {
+        $this->_manager = $manager;
+
+        return $this;
+    }
+
+    public function initManager()
+    {
+        $manager = $this->rewind()->getManager();
+        $this->setManager($manager);
+    }
+
     public function toJSON()
     {
         $return = array();
@@ -69,13 +98,6 @@ class Collection extends \Nip_Collection
         return $this->offsetSet($index, $record);
     }
 
-
-    public function has(Record $record)
-    {
-        $index = $this->getRecordKey($record);
-        return $this->offsetExists($index) && $this->offsetGet($index) == $record;
-    }
-
     public function getRecordKey(Record $record, $index = null)
     {
         if ($index) {
@@ -98,6 +120,13 @@ class Collection extends \Nip_Collection
     public function setIndexKey($key)
     {
         return $this->_indexKey = $key;
+    }
+
+    public function has(Record $record)
+    {
+        $index = $this->getRecordKey($record);
+
+        return $this->offsetExists($index) && $this->offsetGet($index) == $record;
     }
 
     public function remove($record)
@@ -135,33 +164,6 @@ class Collection extends \Nip_Collection
             $this->clear();
         }
 
-        return $this;
-    }
-
-    /**
-     * @return Records
-     */
-    public function getManager()
-    {
-        if ($this->_manager == null) {
-            $this->initManager();
-        }
-        return $this->_manager;
-    }
-
-    public function initManager()
-    {
-        $manager = $this->rewind()->getManager();
-        $this->setManager($manager);
-    }
-
-    /**
-     * @param Records $manager
-     * @return $this
-     */
-    public function setManager(Records $manager)
-    {
-        $this->_manager = $manager;
         return $this;
     }
 }
