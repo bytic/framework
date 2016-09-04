@@ -7,7 +7,7 @@ use Nip\Database\Query\Select as Query;
 use Nip\HelperBroker;
 use Nip\Records\AbstractModels\Record as Record;
 use Nip\Records\Collections\Collection as RecordCollection;
-use Nip\Records\RecordManager as Records;
+use Nip\Records\RecordManager;
 
 abstract class Relation
 {
@@ -22,13 +22,13 @@ abstract class Relation
     protected $_item;
 
     /**
-     * @var Records
+     * @var RecordManager
      */
     protected $_manager = null;
 
 
     /**
-     * @var Records
+     * @var RecordManager
      */
     protected $_with = null;
 
@@ -87,7 +87,7 @@ abstract class Relation
     }
 
     /**
-     * @return Records
+     * @return RecordManager
      */
     public function getWith()
     {
@@ -99,10 +99,10 @@ abstract class Relation
     }
 
     /**
-     * @param Records $object
+     * @param RecordManager $object
      * @return $this
      */
-    public function setWith(Records $object)
+    public function setWith(RecordManager $object)
     {
         $this->_with = $object;
 
@@ -158,7 +158,7 @@ abstract class Relation
     }
 
     /**
-     * @return Records
+     * @return RecordManager
      */
     public function getManager()
     {
@@ -170,7 +170,7 @@ abstract class Relation
     }
 
     /**
-     * @param Table $manager
+     * @param RecordManager $manager
      */
     public function setManager($manager)
     {
