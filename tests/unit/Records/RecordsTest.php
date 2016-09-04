@@ -3,10 +3,9 @@
 namespace Nip\Tests\Records;
 
 use Mockery as m;
-use Nip\Records\RecordManager as Records;
-use Nip\Records\Record;
 use Nip\Database\Connection;
-use Nip\Records\Collections\Collection as RecordCollection;
+use Nip\Records\RecordManager as Records;
+use Nip\Request;
 
 class RecordsTest extends \Codeception\TestCase\Test
 {
@@ -68,8 +67,10 @@ class RecordsTest extends \Codeception\TestCase\Test
         $this->assertEquals('Nip\Records\Relations\HasMany', $this->_object->getRelationClass('HasMany'));
         $this->assertEquals('Nip\Records\Relations\HasMany', $this->_object->getRelationClass('hasMany'));
 
-        $this->assertEquals('Nip\Records\Relations\HasAndBelongsToMany', $this->_object->getRelationClass('HasAndBelongsToMany'));
-        $this->assertEquals('Nip\Records\Relations\HasAndBelongsToMany', $this->_object->getRelationClass('hasAndBelongsToMany'));
+        $this->assertEquals('Nip\Records\Relations\HasAndBelongsToMany',
+            $this->_object->getRelationClass('HasAndBelongsToMany'));
+        $this->assertEquals('Nip\Records\Relations\HasAndBelongsToMany',
+            $this->_object->getRelationClass('hasAndBelongsToMany'));
     }
 
     public function testNewRelation()
@@ -80,8 +81,10 @@ class RecordsTest extends \Codeception\TestCase\Test
         $this->assertInstanceOf('Nip\Records\Relations\HasMany', $this->_object->newRelation('HasMany'));
         $this->assertInstanceOf('Nip\Records\Relations\HasMany', $this->_object->newRelation('hasMany'));
 
-        $this->assertInstanceOf('Nip\Records\Relations\HasAndBelongsToMany', $this->_object->newRelation('HasAndBelongsToMany'));
-        $this->assertInstanceOf('Nip\Records\Relations\HasAndBelongsToMany', $this->_object->newRelation('hasAndBelongsToMany'));
+        $this->assertInstanceOf('Nip\Records\Relations\HasAndBelongsToMany',
+            $this->_object->newRelation('HasAndBelongsToMany'));
+        $this->assertInstanceOf('Nip\Records\Relations\HasAndBelongsToMany',
+            $this->_object->newRelation('hasAndBelongsToMany'));
     }
 
     public function testInitRelationsFromArrayBelongsToSimple()
@@ -112,7 +115,8 @@ class RecordsTest extends \Codeception\TestCase\Test
         $this->assertTrue($this->_object->hasRelation($name));
         $this->assertInstanceOf('Nip\Records\Relations\BelongsTo', $this->_object->getRelation($name));
         $this->assertInstanceOf('Nip\Records\RecordManager', $this->_object->getRelation($name)->getWith());
-        $this->assertEquals($this->_object->getRelation($name)->getWith()->getPrimaryFK(), $this->_object->getRelation($name)->getFK());
+        $this->assertEquals($this->_object->getRelation($name)->getWith()->getPrimaryFK(),
+            $this->_object->getRelation($name)->getFK());
     }
 
     public function testNewCollection()
@@ -120,6 +124,29 @@ class RecordsTest extends \Codeception\TestCase\Test
         $collection = $this->_object->newCollection();
         $this->assertInstanceOf('Nip\Records\Collections\Collection', $collection);
         $this->assertSame($this->_object, $collection->getManager());
+    }
+
+    public function testRequestFilters()
+    {
+        $request = new Request();
+        $params = array(
+            'title' => 'Test title',
+            'name' => 'Test name',
+        );
+        $request->query->add($params);
+
+        $this->_object->getFilterManager()->addFilter(
+            $this->_object->getFilterManager()->newFilter('Column\BasicFilter')
+                ->setField('title')
+        );
+
+        $this->_object->getFilterManager()->addFilter(
+            $this->_object->getFilterManager()->newFilter('Column\BasicFilter')
+                ->setField('name')
+        );
+
+        $filtersArray = $this->_object->requestFilters($request);
+        $this->assertSame($filtersArray, $params);
     }
 
 }

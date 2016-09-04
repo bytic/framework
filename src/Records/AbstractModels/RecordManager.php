@@ -12,6 +12,7 @@ use Nip\Database\Result;
 use Nip\HelperBroker;
 use Nip\Paginator;
 use Nip\Records\Collections\Collection as RecordCollection;
+use Nip\Records\Filters\FilterManager;
 use Nip\Records\Relations\Relation;
 use Nip\Request;
 
@@ -45,6 +46,8 @@ abstract class RecordManager
     protected $_controller = null;
 
     protected $_registry = null;
+
+    protected $_filterManager = null;
 
 
     /**
@@ -187,9 +190,6 @@ abstract class RecordManager
         return $this;
     }
 
-    /**
-     * @return Connection
-     */
     protected function setUpDB()
     {
         $this->_db = db();
@@ -515,6 +515,66 @@ abstract class RecordManager
         return HelperBroker::get($name);
     }
 
+    /**
+     * @param Request|array $request
+     * @return mixed
+     */
+    public function requestFilters($request = array())
+    {
+        $this->getFilterManager()->setRequest($request);
+
+        return $this->getFilterManager()->getFiltersArray();
+    }
+
+    /**
+     * @return FilterManager
+     */
+    public function getFilterManager()
+    {
+        if ($this->_filterManager === null) {
+            $this->initFilterManager();
+        }
+
+        return $this->_filterManager;
+    }
+
+    /**
+     * @param FilterManager $filterManager
+     */
+    public function setFilterManager($filterManager)
+    {
+        $this->_filterManager = $filterManager;
+    }
+
+    public function initFilterManager()
+    {
+        $class = $this->getFilterManagerClass();
+        /** @var FilterManager $manager */
+        $manager = new $class();
+        $manager->setRecordManager($this);
+        $this->setFilterManager($manager);
+        $this->initFilters();
+    }
+
+    public function getFilterManagerClass()
+    {
+        return '\Nip\Records\Filters\FilterManager';
+    }
+
+    public function initFilters()
+    {
+    }
+
+    /**
+     * @param SelectQuery $query
+     * @param array $filters
+     * @return mixed
+     */
+    public function filterQuery($query)
+    {
+        return $this->getFilterManager()->filterQuery($query);
+    }
+
     public function __wakeup()
     {
         $this->setUpDB();
@@ -655,7 +715,7 @@ abstract class RecordManager
     }
 
     /**
-     * @param Row $model
+     * @param Record $model
      * @return array
      */
     public function getQueryModelData($model)
@@ -1080,7 +1140,6 @@ abstract class RecordManager
         $class = $this->getRelationClass($type);
         /** @var \Nip\Records\Relations\Relation $relation */
         $relation = new $class();
-        $relation->setManager($this);
         $relation->setManager($this);
         return $relation;
     }
