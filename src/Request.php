@@ -12,7 +12,7 @@ use Nip\Request\HeaderBag;
 use Nip\Request\ParameterBag;
 use Nip\Request\ServerBag;
 
-class Request
+class Request implements \ArrayAccess
 {
     /**
      * Custom parameters.
@@ -169,8 +169,15 @@ class Request
      *
      * @return self
      */
-    public static function create($uri, $method = 'GET', $parameters = array(), $cookies = array(), $files = array(), $server = array(), $content = null)
-    {
+    public static function create(
+        $uri,
+        $method = 'GET',
+        $parameters = array(),
+        $cookies = array(),
+        $files = array(),
+        $server = array(),
+        $content = null
+    ) {
         $components = parse_url($uri);
         if (isset($components['host'])) {
             $server['SERVER_NAME'] = $components['host'];
@@ -187,7 +194,7 @@ class Request
         }
         if (isset($components['port'])) {
             $server['SERVER_PORT'] = $components['port'];
-            $server['HTTP_HOST'] = $server['HTTP_HOST'] . ':' . $components['port'];
+            $server['HTTP_HOST'] = $server['HTTP_HOST'].':'.$components['port'];
         }
         if (isset($components['user'])) {
             $server['PHP_AUTH_USER'] = $components['user'];
@@ -205,7 +212,7 @@ class Request
                 if (!isset($server['CONTENT_TYPE'])) {
                     $server['CONTENT_TYPE'] = 'application/x-www-form-urlencoded';
                 }
-            break;
+                break;
             // no break
             case 'PATCH':
                 $body = $parameters;
@@ -229,7 +236,7 @@ class Request
         } elseif ($query) {
             $queryString = http_build_query($query, '', '&');
         }
-        $server['REQUEST_URI'] = $components['path'] . ('' !== $queryString ? '?' . $queryString : '');
+        $server['REQUEST_URI'] = $components['path'].('' !== $queryString ? '?'.$queryString : '');
         $server['QUERY_STRING'] = $queryString;
 
         $request = new self();
@@ -290,6 +297,7 @@ class Request
         if ($this !== $result = $this->body->get($key, $this)) {
             return $result;
         }
+
         return $default;
     }
 
@@ -328,6 +336,7 @@ class Request
     public function setActionKey($key)
     {
         $this->_actionKey = (string)$key;
+
         return $this;
     }
 
@@ -368,6 +377,7 @@ class Request
     public function setModuleKey($key)
     {
         $this->_moduleKey = (string)$key;
+
         return $this;
     }
 
@@ -403,6 +413,7 @@ class Request
     public function setControllerKey($key)
     {
         $this->_controllerKey = (string)$key;
+
         return $this;
     }
 
@@ -430,6 +441,7 @@ class Request
         if ($value) {
             $this->_action = $value;
         }
+
         return $this;
     }
 
@@ -457,6 +469,7 @@ class Request
             $this->_http = new Request\Http();
             $this->_http->setRequest($this);
         }
+
         return $this->_http;
     }
 
@@ -486,16 +499,16 @@ class Request
         $request = parse_url($_SERVER['REQUEST_URI']);
 
         if ($components['path'] != $request['path']) {
-            $redirect = $url . ($request['query'] ? '?' . $request['query'] : '');
+            $redirect = $url.($request['query'] ? '?'.$request['query'] : '');
 
-            header("Location: " . $redirect, true, $code);
+            header("Location: ".$redirect, true, $code);
             exit();
         }
     }
 
     public function redirect($url)
     {
-        header("Location: " . $url);
+        header("Location: ".$url);
         exit();
     }
 
@@ -506,6 +519,7 @@ class Request
         $newRequest->setControllerName($controller);
         $newRequest->setModuleName($module);
         $newRequest->attributes->add($params);
+
         return $newRequest;
     }
 
@@ -542,4 +556,25 @@ class Request
 
         return $this;
     }
+
+    public function offsetExists($offset)
+    {
+        return !empty($this->get($offset));
+    }
+
+    public function offsetGet($offset)
+    {
+        return $this->get($offset);
+    }
+
+    public function offsetSet($offset, $value)
+    {
+        $this->attributes->set($offset, $value);
+    }
+
+    public function offsetUnset($offset)
+    {
+        $this->attributes->remove($offset);
+    }
+
 }
