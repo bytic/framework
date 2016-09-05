@@ -3,6 +3,7 @@
 namespace Nip\Records\AbstractModels;
 
 use Nip\HelperBroker;
+use Nip\Records\Relations\HasMany;
 use Nip\Records\Relations\Relation;
 
 /**
@@ -59,7 +60,7 @@ abstract class Record extends \Nip_Object
 
     /**
      * @param $relationName
-     * @return Relation|null
+     * @return Relation|HasMany|null
      */
     public function getRelation($relationName)
     {
@@ -270,7 +271,7 @@ abstract class Record extends \Nip_Object
     }
 
     /**
-     * @param Row $record
+     * @param self $record
      */
     public function updateDataFromRecord($record)
     {
@@ -291,8 +292,8 @@ abstract class Record extends \Nip_Object
     }
 
     /**
-     * @param Row $from
-     * @return Row
+     * @param self $from
+     * @return self
      */
     public function cloneRelations($from)
     {

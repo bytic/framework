@@ -6,8 +6,8 @@ use Nip\Database\Connection;
 use Nip\Database\Query\Select as Query;
 use Nip\HelperBroker;
 use Nip\Records\AbstractModels\Record as Record;
+use Nip\Records\AbstractModels\RecordManager;
 use Nip\Records\Collections\Collection as RecordCollection;
-use Nip\Records\RecordManager;
 
 abstract class Relation
 {

@@ -103,6 +103,7 @@ abstract class RecordManager
         }
 
         trigger_error("Call to undefined method $name", E_USER_ERROR);
+
         return $this;
     }
 
@@ -110,25 +111,27 @@ abstract class RecordManager
     {
         $operations = array("find", "delete", "count");
         foreach ($operations as $operation) {
-            if (strpos($name, $operation . "By") !== false || strpos($name, $operation . "OneBy") !== false) {
+            if (strpos($name, $operation."By") !== false || strpos($name, $operation."OneBy") !== false) {
                 $params = array();
                 if (count($arguments) > 1) {
                     $params = end($arguments);
                 }
 
-                $match = str_replace(array($operation . "By", $operation . "OneBy"), "", $name);
+                $match = str_replace(array($operation."By", $operation."OneBy"), "", $name);
                 $field = inflector()->underscore($match);
 
                 if ($field == $this->getPrimaryKey()) {
                     return $this->findByPrimary($arguments[0]);
                 }
 
-                $params['where'][] = array("$field " . (is_array($arguments[0]) ? "IN" : "=") . " ?", $arguments[0]);
+                $params['where'][] = array("$field ".(is_array($arguments[0]) ? "IN" : "=")." ?", $arguments[0]);
 
-                $operation = str_replace($match, "", $name) . "Params";
+                $operation = str_replace($match, "", $name)."Params";
+
                 return $this->$operation($params);
             }
         }
+
         return null;
     }
 
@@ -225,6 +228,7 @@ abstract class RecordManager
         if ($this->_controller == null) {
             $this->inflectController();
         }
+
         return $this->_controller;
     }
 
@@ -333,9 +337,10 @@ abstract class RecordManager
     public function newQuery($type = 'select')
     {
         $query = $this->getDB()->newQuery($type);
-        $query->cols("`" . $this->getTable() . "`.*");
+        $query->cols("`".$this->getTable()."`.*");
         $query->from($this->getFullNameTable());
         $query->table($this->getTable());
+
         return $query;
     }
 
@@ -391,6 +396,7 @@ abstract class RecordManager
             $return = $this->getRegistry()->get($data[$pk]);
             $return->writeData($data);
             $return->writeDBData($data);
+
             return $return;
         }
 
@@ -567,12 +573,11 @@ abstract class RecordManager
 
     /**
      * @param SelectQuery $query
-     * @param array $filters
-     * @return mixed
+     * @return void
      */
     public function filterQuery($query)
     {
-        return $this->getFilterManager()->filterQuery($query);
+        $this->getFilterManager()->filterQuery($query);
     }
 
     public function __wakeup()
@@ -728,6 +733,7 @@ abstract class RecordManager
                 $data[$field] = $model->$field;
             }
         }
+
         return $data;
     }
 
@@ -766,6 +772,7 @@ abstract class RecordManager
         if ($query) {
             return $query->execute();
         }
+
         return false;
     }
 
@@ -814,6 +821,7 @@ abstract class RecordManager
 
         if (isset($model->$pk)) {
             $model->update();
+
             return $model->$pk;
         } else {
             /** @var Record $previous */
@@ -834,6 +842,7 @@ abstract class RecordManager
         }
 
         $model->insert();
+
         return $model->$pk;
     }
 
@@ -898,6 +907,7 @@ abstract class RecordManager
         }
 
         $this->getDB()->execute($query);
+
         return $this;
     }
 
@@ -943,9 +953,11 @@ abstract class RecordManager
                 if ($item) {
                     $this->getRegistry()->set($primary, $item);
                 }
+
                 return $item;
             }
         }
+
         return $item;
     }
 
@@ -961,6 +973,7 @@ abstract class RecordManager
         if (count($return) > 0) {
             return $return->rewind();
         }
+
         return false;
     }
 
@@ -999,6 +1012,7 @@ abstract class RecordManager
 
         if ($result->numRows()) {
             $row = $result->fetchResult();
+
             return (int)$row['count'];
         }
 
@@ -1023,12 +1037,13 @@ abstract class RecordManager
         if (!$this->_foreignKey) {
             $this->initPrimaryFK();
         }
+
         return $this->_foreignKey;
     }
 
     public function initPrimaryFK()
     {
-        $this->_foreignKey = $this->getPrimaryKey() . "_" . inflector()->underscore($this->getModel());
+        $this->_foreignKey = $this->getPrimaryKey()."_".inflector()->underscore($this->getModel());
     }
 
     public function setPrimaryFK($fk)
@@ -1045,6 +1060,7 @@ abstract class RecordManager
         if ($this->_urlPK == null) {
             $this->_urlPK = $this->getPrimaryKey();
         }
+
         return $this->_urlPK;
     }
 
@@ -1054,6 +1070,7 @@ abstract class RecordManager
         if (is_array($fields) && in_array($name, $fields)) {
             return true;
         }
+
         return false;
     }
 
@@ -1066,6 +1083,7 @@ abstract class RecordManager
                 $return[$name] = $index['fields'];
             }
         }
+
         return $return;
     }
 
@@ -1105,7 +1123,7 @@ abstract class RecordManager
      */
     protected function initRelationsType($type)
     {
-        $array = $this->{'_' . $type};
+        $array = $this->{'_'.$type};
         $this->initRelationsFromArray($type, $array);
     }
 
@@ -1141,6 +1159,7 @@ abstract class RecordManager
         /** @var \Nip\Records\Relations\Relation $relation */
         $relation = new $class();
         $relation->setManager($this);
+
         return $relation;
     }
 
@@ -1163,28 +1182,8 @@ abstract class RecordManager
     public function hasRelation($key)
     {
         $this->checkInitRelations();
+
         return array_key_exists($key, $this->relations);
-    }
-
-    /**
-     * Get all the loaded relations for the instance.
-     * @return array
-     */
-    public function getRelations()
-    {
-        $this->checkInitRelations();
-        return $this->relations;
-    }
-
-    /**
-     * Set the entire relations array on the model.
-     * @param  array $relations
-     * @return $this
-     */
-    public function setRelations(array $relations)
-    {
-        $this->relations = $relations;
-        return $this;
     }
 
     /**
@@ -1202,18 +1201,18 @@ abstract class RecordManager
     }
 
     /**
-     * @param Row $from
-     * @param Row $to
-     * @return Row
+     * @param Record $from
+     * @param Record $to
+     * @return Record
      */
     public function cloneRelations($from, $to)
     {
         $relations = $from->getManager()->getRelations();
-        foreach ($relations as $name=>$relation) {
+        foreach ($relations as $name => $relation) {
             /** @var \Nip\Records\Relations\HasMany $relation */
             if ($relation->getType() != 'belongsTo') {
-                /** @var Row[] $associatedOld */
-                $associatedOld = $from->{'get'. $name}();
+                /** @var Record[] $associatedOld */
+                $associatedOld = $from->{'get'.$name}();
                 if (count($associatedOld)) {
                     $associatedNew = $to->getRelation($name)->newCollection();
                     foreach ($associatedOld as $associated) {
@@ -1224,7 +1223,31 @@ abstract class RecordManager
                 }
             }
         }
+
         return $to;
+    }
+
+    /**
+     * Get all the loaded relations for the instance.
+     * @return array
+     */
+    public function getRelations()
+    {
+        $this->checkInitRelations();
+
+        return $this->relations;
+    }
+
+    /**
+     * Set the entire relations array on the model.
+     * @param  array $relations
+     * @return $this
+     */
+    public function setRelations(array $relations)
+    {
+        $this->relations = $relations;
+
+        return $this;
     }
 
     /**
