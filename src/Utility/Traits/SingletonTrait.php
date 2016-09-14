@@ -12,7 +12,7 @@ trait SingletonTrait
      *
      * @return self
      */
-    final public static function instance()
+    public static function instance()
     {
         return isset(static::$instance) ? static::$instance : static::$instance = new static;
     }
