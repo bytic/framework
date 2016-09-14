@@ -9,6 +9,7 @@ use Nip\Database\Query\Select\Union;
  * @package Nip\Database\Query
  *
  * @method AbstractQuery setOrder() setOrder(array|string $cols = null)
+ * @method AbstractQuery setFrom() setFrom(string $table = null)
  */
 class Select extends AbstractQuery
 {
