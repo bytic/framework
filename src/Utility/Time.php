@@ -191,9 +191,9 @@ class Time
 
     public function getDefaultString()
     {
-        $hours = $this->getHoursPart();
-        $minutes = $this->getMinutesPart();
-        $seconds = $this->getSecondsPart();
+        $hours = str_pad($this->getHoursPart(), 2, 0, STR_PAD_LEFT);
+        $minutes = str_pad($this->getMinutesPart(), 2, 0, STR_PAD_LEFT);
+        $seconds = str_pad($this->getSecondsPart(), 2, 0, STR_PAD_LEFT);
 
         return $hours.':'.$minutes.':'.$seconds;
     }
