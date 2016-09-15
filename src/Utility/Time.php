@@ -62,7 +62,7 @@ class Time
 
         $this->setHoursPart($h);
         $this->setMinutesPart($m);
-        $this->setSeconds($s);
+        $this->setSecondsPart($s);
     }
 
     /**
@@ -88,6 +88,14 @@ class Time
     public function setMinutesPart($v)
     {
         $this->setPart('m', $v);
+    }
+
+    /**
+     * @param string $v
+     */
+    public function setSecondsPart($v)
+    {
+        $this->setPart('s', $v);
     }
 
     public function parsePartsFromSeconds()
@@ -125,14 +133,6 @@ class Time
     public function setSeconds($seconds)
     {
         $this->_seconds = $seconds;
-    }
-
-    /**
-     * @param string $v
-     */
-    public function setSecondsPart($v)
-    {
-        $this->setPart('s', $v);
     }
 
     public static function fromSeconds($seconds)
