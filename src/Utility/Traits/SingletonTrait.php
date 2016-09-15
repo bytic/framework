@@ -5,15 +5,17 @@ namespace Nip\Utility\Traits;
 trait SingletonTrait
 {
 
-    protected static $instance;
-
     /**
      * Singleton
      *
      * @return self
      */
-    final public static function instance()
+    static public function instance()
     {
-        return isset(static::$instance) ? static::$instance : static::$instance = new static;
+        static $instance;
+        if (!($instance instanceof self)) {
+            $instance = new self();
+        }
+        return $instance;
     }
 }
