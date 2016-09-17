@@ -69,15 +69,17 @@ class File extends AbstractBackend
     protected function loadFile($language, $path)
     {
         if (file_exists($path)) {
+            ob_start();
             /** @noinspection PhpIncludeInspection */
             $messages = include $path;
+            ob_clean();
             if (is_array($messages)) {
                 $this->loadMessages($language, $messages);
             } else {
                 trigger_error(
                     sprintf(
-                        'Expected an array, but received %s',
-                        gettype($messages)
+                        'Expected an array, but received %s [%s][%s]',
+                        gettype($messages), $language, $messages
                     ),
                     E_USER_ERROR
                 );
