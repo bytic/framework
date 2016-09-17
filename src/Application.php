@@ -532,12 +532,16 @@ class Application
     {
     }
 
+    /**
+     * @return I18n\Translator
+     */
     public function getTranslator()
     {
         if ($this->getContainer()->has('translator')) {
             $this->initTranslator();
         }
-        $this->getContainer()->get('translator');
+
+        return $this->getContainer()->get('translator');
     }
 
     public function initTranslator()
