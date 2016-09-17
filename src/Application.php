@@ -89,6 +89,9 @@ class Application
         return $this->_container;
     }
 
+    /**
+     * @param $container
+     */
     public function setContainer($container)
     {
         $this->_container = $container;
@@ -100,11 +103,17 @@ class Application
         Container::setInstance($this->_container);
     }
 
+    /**
+     * @return Container
+     */
     public function newContainer()
     {
         return new Container();
     }
 
+    /**
+     *
+     */
     public function setupRequest()
     {
         $request = $this->getRequest();
@@ -414,10 +423,18 @@ class Application
 
     public function initTranslation()
     {
-        $i18n = \Nip_I18n::instance();
+        $i18n = $this->newTranslator();
         $i18n->setRequest($this->getFrontController()->getRequest());
 
         return $i18n;
+    }
+
+    /**
+     * @return I18n
+     */
+    public function newTranslator()
+    {
+        return new I18n();
     }
 
     public function initLanguages($translation)

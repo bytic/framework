@@ -1,24 +1,47 @@
 <?php
 
+namespace Nip;
+
 /**
- * Class Nip_I18n
+ * Class I18n
+ * @package Nip
  */
-class Nip_I18n
+class I18n
 {
 
+    public $defaultLanguage = false;
+    public $selectedLanguage = false;
     protected $_languageCodes = array(
         'en' => 'en_US',
     );
-
     /**
      * @var Nip_I18n_Backend_Abstract
      */
     protected $_backend;
-
     protected $_request;
 
-    public $defaultLanguage = false;
-    public $selectedLanguage = false;
+    /**
+     * Singleton pattern
+     *
+     * @return self
+     */
+    static public function instance()
+    {
+        static $instance;
+        if (!($instance instanceof self)) {
+            $instance = new self();
+        }
+
+        return $instance;
+    }
+
+    /**
+     * @return Nip_I18n_Backend_Abstract
+     */
+    public function getBackend()
+    {
+        return $this->_backend;
+    }
 
     /**
      * Sets the translation backend
@@ -33,64 +56,17 @@ class Nip_I18n
         return $this;
     }
 
-    /**
-     * @return Nip_I18n_Backend_Abstract
-     */
-    public function getBackend()
-    {
-        return $this->_backend;
-    }
-
-    /**
-     * Selects a language to be used when translating
-     *
-     * @param string $language
-     * @return Nip_I18n
-     */
-    public function setLanguage($language)
-    {
-        $this->selectedLanguage = $language;
-        $_SESSION['language'] = $language;
-
-        $code = $this->_languageCodes[$language] ? $this->_languageCodes[$language] : $language."_".strtoupper($language);
-
-        putenv('LC_ALL='.$code);
-        setlocale(LC_ALL, $code);
-        setlocale(LC_NUMERIC, 'en_US');
-
-        return $this;
-    }
-
-    /**
-     * Sets the default language to be used when translating
-     *
-     * @param string $language
-     * @return Nip_I18n
-     */
-    public function setDefaultLanguage($language)
-    {
-        $this->defaultLanguage = $language;
-
-        return $this;
-    }
-
-    /**
-     * gets the default language to be used when translating
-     * @return string $language
-     */
-    public function getDefaultLanguage()
-    {
-        if (!$this->defaultLanguage) {
-            $this->setDefaultLanguage(substr(setlocale(LC_ALL, 0), 0, 2));
-        }
-
-        return $this->defaultLanguage;
-    }
-
-
     public function getLanguages()
     {
         return $this->_backend->getLanguages();
+    }
+
+    public function changeLangURL($lang)
+    {
+        $newURL = str_replace('language='.$this->getLanguage(), '', CURRENT_URL);
+        $newURL = $newURL.(strpos($newURL, '?') == false ? '?' : '&').'language='.$lang;
+
+        return $newURL;
     }
 
     /**
@@ -127,12 +103,66 @@ class Nip_I18n
         return $this->selectedLanguage;
     }
 
-    public function changeLangURL($lang)
+    /**
+     * @return mixed
+     */
+    public function getRequest()
     {
-        $newURL = str_replace('language='.$this->getLanguage(), '', CURRENT_URL);
-        $newURL = $newURL.(strpos($newURL, '?') == false ? '?' : '&').'language='.$lang;
+        return $this->_request;
+    }
 
-        return $newURL;
+    /**
+     * @param mixed $request
+     */
+    public function setRequest($request)
+    {
+        $this->_request = $request;
+    }
+
+    /**
+     * Selects a language to be used when translating
+     *
+     * @param string $language
+     * @return Nip_I18n
+     */
+    public function setLanguage($language)
+    {
+        $this->selectedLanguage = $language;
+        $_SESSION['language'] = $language;
+
+        $code = $this->_languageCodes[$language] ? $this->_languageCodes[$language] : $language."_".strtoupper($language);
+
+        putenv('LC_ALL='.$code);
+        setlocale(LC_ALL, $code);
+        setlocale(LC_NUMERIC, 'en_US');
+
+        return $this;
+    }
+
+    /**
+     * gets the default language to be used when translating
+     * @return string $language
+     */
+    public function getDefaultLanguage()
+    {
+        if (!$this->defaultLanguage) {
+            $this->setDefaultLanguage(substr(setlocale(LC_ALL, 0), 0, 2));
+        }
+
+        return $this->defaultLanguage;
+    }
+
+    /**
+     * Sets the default language to be used when translating
+     *
+     * @param string $language
+     * @return Nip_I18n
+     */
+    public function setDefaultLanguage($language)
+    {
+        $this->defaultLanguage = $language;
+
+        return $this;
     }
 
     /**
@@ -177,37 +207,6 @@ class Nip_I18n
         }
 
         return $this->_backend->hasTranslation($slug, $language);
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getRequest()
-    {
-        return $this->_request;
-    }
-
-    /**
-     * @param mixed $request
-     */
-    public function setRequest($request)
-    {
-        $this->_request = $request;
-    }
-
-    /**
-     * Singleton pattern
-     *
-     * @return self
-     */
-    static public function instance()
-    {
-        static $instance;
-        if (!($instance instanceof self)) {
-            $instance = new self();
-        }
-
-        return $instance;
     }
 
 }
