@@ -3,47 +3,52 @@
 namespace Nip;
 
 use Nip\Container\Container;
+use Nip\DebugBar\DataCollector\RouteCollector;
 use Nip\DebugBar\StandardDebugBar;
 use Nip\Logger\Manager as LoggerManager;
 use Nip\Staging\Stage;
 
+/**
+ * Class Application
+ * @package Nip
+ */
 class Application
 {
     /**
      * @var AutoLoader
      */
-    protected $_autoloader = null;
+    protected $autoloader = null;
 
-    protected $_frontController = null;
+    protected $frontController = null;
 
-    protected $_container = null;
+    protected $container = null;
 
     /**
      * @var null|Request
      */
-    protected $_request = null;
+    protected $request = null;
 
     /**
      * @var null|LoggerManager
      */
-    protected $_logger = null;
+    protected $logger = null;
 
     /**
      * @var null|Session
      */
-    protected $_sessionManager = null;
+    protected $sessionManager = null;
 
-    protected $_debugBar = null;
+    protected $debugBar = null;
 
     /**
      * @var Staging
      */
-    protected $_staging = null;
+    protected $staging = null;
 
     /**
      * @var Stage
      */
-    protected $_stage = null;
+    protected $stage = null;
 
     public function run()
     {
@@ -82,11 +87,11 @@ class Application
      */
     public function getContainer()
     {
-        if ($this->_container == null) {
+        if ($this->container == null) {
             $this->initContainer();
         }
 
-        return $this->_container;
+        return $this->container;
     }
 
     /**
@@ -94,13 +99,13 @@ class Application
      */
     public function setContainer($container)
     {
-        $this->_container = $container;
+        $this->container = $container;
     }
 
     public function initContainer()
     {
-        $this->_container = $this->newContainer();
-        Container::setInstance($this->_container);
+        $this->container = $this->newContainer();
+        Container::setInstance($this->container);
     }
 
     /**
@@ -120,39 +125,63 @@ class Application
         $this->getFrontController()->setRequest($request);
     }
 
+    /**
+     * @return Request|null
+     */
     public function getRequest()
     {
-        if ($this->_request == null) {
+        if ($this->request == null) {
             $this->initRequest();
         }
 
-        return $this->_request;
+        return $this->request;
     }
 
+    /**
+     * @return $this
+     */
     public function initRequest()
     {
         $request = Request::createFromGlobals();
         Request::instance($request);
-        $this->_request = $request;
+        $this->request = $request;
 
         return $this;
     }
 
+    /**
+     * @return FrontController|null
+     */
     protected function getFrontController()
     {
-        if ($this->_frontController === null) {
-            $this->_frontController = $this->initFrontController();
+        if ($this->frontController === null) {
+            $this->initFrontController();
         }
 
-        return $this->_frontController;
+        return $this->frontController;
+    }
+
+    /**
+     * @param null $frontController
+     */
+    public function setFrontController($frontController)
+    {
+        $this->frontController = $frontController;
     }
 
     protected function initFrontController()
     {
-        $fc = FrontController::instance();
+        $fc = $this->newFrontController();
         $fc->setBootstrap($this);
+        $this->setFrontController($fc);
+    }
 
-        return $fc;
+    /**
+     * @return FrontController
+     */
+    public function newFrontController()
+    {
+        return FrontController::instance();
     }
 
     public function setupStaging()
@@ -166,35 +195,41 @@ class Application
      */
     public function getStaging()
     {
-        if ($this->_staging == null) {
+        if ($this->staging == null) {
             $this->initStaging();
         }
 
-        return $this->_staging;
+        return $this->staging;
     }
 
     public function initStaging()
     {
-        $this->_staging = $this->newStaging();
+        $this->staging = $this->newStaging();
     }
 
+    /**
+     * @return Staging
+     */
     public function newStaging()
     {
         return Staging::instance();
     }
 
+    /**
+     * @return Stage
+     */
     public function getStage()
     {
-        if ($this->_stage == null) {
+        if ($this->stage == null) {
             $this->initStage();
         }
 
-        return $this->_stage;
+        return $this->stage;
     }
 
     public function initStage()
     {
-        $this->_stage = $this->getStaging()->getStage();
+        $this->stage = $this->getStaging()->getStage();
     }
 
     public function setupAutoloader()
@@ -215,18 +250,37 @@ class Application
     {
     }
 
+    /**
+     * @return AutoLoader
+     */
     public function getAutoloader()
     {
-        if ($this->_autoloader == null) {
+        if ($this->autoloader == null) {
             $this->initAutoloader();
         }
 
-        return $this->_autoloader;
+        return $this->autoloader;
+    }
+
+    /**
+     * @param AutoLoader $autoloader
+     */
+    public function setAutoloader(AutoLoader $autoloader)
+    {
+        $this->autoloader = $autoloader;
     }
 
     public function initAutoloader()
     {
-        $this->_autoloader = AutoLoader::instance();
+        $this->setAutoloader($this->newAutoloader());
+    }
+
+    /**
+     * @return AutoLoader
+     */
+    public function newAutoloader()
+    {
+        return AutoLoader::instance();
     }
 
     public function setupErrorHandling()
@@ -246,11 +300,11 @@ class Application
      */
     public function getLogger()
     {
-        if ($this->_logger == null) {
+        if ($this->logger == null) {
             $this->initLogger();
         }
 
-        return $this->_logger;
+        return $this->logger;
     }
 
     /**
@@ -259,14 +313,11 @@ class Application
      */
     public function setLogger($logger)
     {
-        $this->_logger = $logger;
+        $this->logger = $logger;
 
         return $this;
     }
 
-    /**
-     * @return null
-     */
     public function initLogger()
     {
         $logger = $this->newLogger();
@@ -289,11 +340,11 @@ class Application
      */
     public function getDebugBar()
     {
-        if ($this->_debugBar == null) {
+        if ($this->debugBar == null) {
             $this->initDebugBar();
         }
 
-        return $this->_debugBar;
+        return $this->debugBar;
     }
 
     /**
@@ -301,19 +352,16 @@ class Application
      */
     public function setDebugBar($debugBar)
     {
-        $this->_debugBar = $debugBar;
+        $this->debugBar = $debugBar;
     }
 
-    /**
-     * @return null
-     */
     public function initDebugBar()
     {
         $this->setDebugBar($this->newDebugBar());
     }
 
     /**
-     * @return null
+     * @return StandardDebugBar
      */
     public function newDebugBar()
     {
@@ -349,7 +397,6 @@ class Application
 
     public function setupConfig()
     {
-
     }
 
     public function setupDatabase()
@@ -386,10 +433,10 @@ class Application
 
             if ($domain != 'localhost') {
                 Cookie\Jar::instance()->setDefaults(
-                    array('domain' => '.'.$domain)
+                    ['domain' => '.'.$domain]
                 );
             }
-            $this->_sessionManager->init();
+            $this->sessionManager->init();
         }
     }
 
@@ -398,18 +445,21 @@ class Application
      */
     public function getSession()
     {
-        if ($this->_sessionManager === null) {
+        if ($this->sessionManager === null) {
             $this->initSession();
         }
 
-        return $this->_sessionManager;
+        return $this->sessionManager;
     }
 
     public function initSession()
     {
-        $this->_sessionManager = $this->newSession();
+        $this->sessionManager = $this->newSession();
     }
 
+    /**
+     * @return Session
+     */
     public function newSession()
     {
         return new Session();
@@ -421,6 +471,9 @@ class Application
         $this->initLanguages($translation);
     }
 
+    /**
+     * @return I18n\Translator
+     */
     public function initTranslation()
     {
         $translator = $this->newTranslator();
@@ -456,7 +509,9 @@ class Application
         $router->setRequest($this->getFrontController()->getRequest());
         $this->getFrontController()->setRouter($router);
         if ($this->getDebugBar()->isEnabled()) {
-            $this->getDebugBar()->getCollector('route')->setRouter($router);
+            /** @var RouteCollector $routeCollector */
+            $routeCollector = $this->getDebugBar()->getCollector('route');
+            $routeCollector->setRouter($router);
         }
     }
 
@@ -481,7 +536,7 @@ class Application
             $this->getFrontController()->dispatch();
             ob_end_flush();
         } catch (\Exception $e) {
-            $this->_logger->handleException($e);
+            $this->logger->handleException($e);
         }
         $this->postDispatch();
     }
@@ -500,7 +555,5 @@ class Application
 
     public function postDispatch()
     {
-
     }
-
 }
