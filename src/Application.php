@@ -537,7 +537,7 @@ class Application
      */
     public function getTranslator()
     {
-        if ($this->getContainer()->has('translator')) {
+        if (!$this->getContainer()->has('translator')) {
             $this->initTranslator();
         }
 
