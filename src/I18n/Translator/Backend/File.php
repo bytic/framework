@@ -56,7 +56,7 @@ class File extends AbstractBackend
         if (is_array($files)) {
             foreach ($files as $file) {
                 if (FileSystem::instance()->getExtension($file) == 'php') {
-                    $this->loadFile($file, $language);
+                    $this->loadFile($language, $file);
                 }
             }
         }
@@ -72,9 +72,7 @@ class File extends AbstractBackend
             /** @noinspection PhpIncludeInspection */
             $messages = include $path;
             if (is_array($messages)) {
-                foreach (${$this->variableName} as $slug => $translation) {
-                    $this->dictionary[$language][$slug] = $translation;
-                }
+                $this->loadMessages($language, $messages);
             } else {
                 trigger_error(
                     sprintf(
@@ -83,6 +81,19 @@ class File extends AbstractBackend
                     ),
                     E_USER_ERROR
                 );
+            }
+        }
+    }
+
+    /**
+     * @param $language
+     * @param $messages
+     */
+    protected function loadMessages($language, $messages)
+    {
+        foreach ($messages as $slug => $translation) {
+            if ($slug) {
+                $this->dictionary[$language][$slug] = $translation;
             }
         }
     }
