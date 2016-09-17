@@ -28,26 +28,26 @@ abstract class RecordManager
     /**
      * @var Connection
      */
-    protected $_db = null;
+    protected $db = null;
 
     protected $_collectionClass = '\Nip\Records\Collections\Collection';
-    protected $_helpers = array();
+    protected $_helpers = [];
 
-    protected $_table = null;
-    protected $_tableStructure = null;
-    protected $_primaryKey = null;
-    protected $_fields = null;
-    protected $_uniqueFields = null;
-    protected $_foreignKey = null;
+    protected $table = null;
+    protected $tableStructure = null;
+    protected $primaryKey = null;
+    protected $fields = null;
+    protected $uniqueFields = null;
+    protected $foreignKey = null;
 
-    protected $_urlPK = null;
+    protected $urlPK = null;
 
-    protected $_model = null;
-    protected $_controller = null;
+    protected $model = null;
+    protected $controller = null;
 
-    protected $_registry = null;
+    protected $registry = null;
 
-    protected $_filterManager = null;
+    protected $filterManager = null;
 
 
     /**
@@ -56,14 +56,10 @@ abstract class RecordManager
      */
     protected $relations = null;
 
-    protected $_belongsTo = array();
-    protected $_hasMany = array();
-    protected $_hasAndBelongsToMany = array();
+    protected $_belongsTo = [];
+    protected $_hasMany = [];
+    protected $_hasAndBelongsToMany = [];
     protected $_relationTypes = array('belongsTo', 'hasMany', 'hasAndBelongsToMany');
-
-    public function __construct()
-    {
-    }
 
     /**
      * @return string
@@ -107,24 +103,29 @@ abstract class RecordManager
         return $this;
     }
 
+    /**
+     * @param $name
+     * @param $arguments
+     * @return RecordCollection|null
+     */
     protected function isCallDatabaseOperation($name, $arguments)
     {
         $operations = array("find", "delete", "count");
         foreach ($operations as $operation) {
             if (strpos($name, $operation."By") !== false || strpos($name, $operation."OneBy") !== false) {
-                $params = array();
+                $params = [];
                 if (count($arguments) > 1) {
                     $params = end($arguments);
                 }
 
-                $match = str_replace(array($operation."By", $operation."OneBy"), "", $name);
+                $match = str_replace([$operation."By", $operation."OneBy"], "", $name);
                 $field = inflector()->underscore($match);
 
                 if ($field == $this->getPrimaryKey()) {
                     return $this->findByPrimary($arguments[0]);
                 }
 
-                $params['where'][] = array("$field ".(is_array($arguments[0]) ? "IN" : "=")." ?", $arguments[0]);
+                $params['where'][] = ["$field ".(is_array($arguments[0]) ? "IN" : "=")." ?", $arguments[0]];
 
                 $operation = str_replace($match, "", $name)."Params";
 
@@ -140,19 +141,19 @@ abstract class RecordManager
      */
     public function getPrimaryKey()
     {
-        if ($this->_primaryKey === null) {
+        if ($this->primaryKey === null) {
             $this->initPrimaryKey();
         }
 
-        return $this->_primaryKey;
+        return $this->primaryKey;
     }
 
     protected function initPrimaryKey()
     {
         $structure = $this->getTableStructure();
-        $this->_primaryKey = $structure['indexes']['PRIMARY']['fields'];
-        if (count($this->_primaryKey) == 1) {
-            $this->_primaryKey = reset($this->_primaryKey);
+        $this->primaryKey = $structure['indexes']['PRIMARY']['fields'];
+        if (count($this->primaryKey) == 1) {
+            $this->primaryKey = reset($this->primaryKey);
         }
     }
 
@@ -161,16 +162,16 @@ abstract class RecordManager
      */
     protected function getTableStructure()
     {
-        if ($this->_tableStructure == null) {
+        if ($this->tableStructure == null) {
             $this->initTableStructure();
         }
 
-        return $this->_tableStructure;
+        return $this->tableStructure;
     }
 
     protected function initTableStructure()
     {
-        $this->_tableStructure = $this->getDB()->getMetadata()->describeTable($this->getTable());
+        $this->tableStructure = $this->getDB()->getMetadata()->describeTable($this->getTable());
     }
 
     /**
@@ -178,11 +179,11 @@ abstract class RecordManager
      */
     public function getDB()
     {
-        if ($this->_db == null) {
+        if ($this->db == null) {
             $this->setUpDB();
         }
 
-        return $this->_db;
+        return $this->db;
     }
 
     /**
@@ -191,14 +192,14 @@ abstract class RecordManager
      */
     public function setDB($db)
     {
-        $this->_db = $db;
+        $this->db = $db;
 
         return $this;
     }
 
     protected function setUpDB()
     {
-        $this->_db = db();
+        $this->db = db();
     }
 
     /**
@@ -206,11 +207,11 @@ abstract class RecordManager
      */
     public function getTable()
     {
-        if ($this->_table === null) {
+        if ($this->table === null) {
             $this->initTable();
         }
 
-        return $this->_table;
+        return $this->table;
     }
 
     /**
@@ -218,28 +219,31 @@ abstract class RecordManager
      */
     public function setTable($table)
     {
-        $this->_table = $table;
+        $this->table = $table;
     }
 
     public function initTable()
     {
-        $this->_table = $this->getController();
+        $this->table = $this->getController();
     }
 
+    /**
+     * @return string
+     */
     public function getController()
     {
-        if ($this->_controller == null) {
+        if ($this->controller == null) {
             $this->inflectController();
         }
 
-        return $this->_controller;
+        return $this->controller;
     }
 
     protected function inflectController()
     {
         $class = get_class($this);
-        if ($this->_controller == null) {
-            $this->_controller = inflector()->unclassify($class);
+        if ($this->controller == null) {
+            $this->controller = inflector()->unclassify($class);
         }
     }
 
@@ -250,7 +254,7 @@ abstract class RecordManager
      * @param array $pk_list
      * @return RecordCollection
      */
-    public function findByPrimary($pk_list = array())
+    public function findByPrimary($pk_list = [])
     {
         $pk = $this->getPrimaryKey();
         $return = $this->newCollection();
@@ -307,18 +311,18 @@ abstract class RecordManager
      */
     public function getRegistry()
     {
-        if (!$this->_registry) {
-            $this->_registry = new \Nip_Registry();
+        if (!$this->registry) {
+            $this->registry = new \Nip_Registry();
         }
 
-        return $this->_registry;
+        return $this->registry;
     }
 
     /**
      * @param array $params
      * @return SelectQuery
      */
-    public function paramsToQuery($params = array())
+    public function paramsToQuery($params = [])
     {
         $this->injectParams($params);
 
@@ -328,7 +332,7 @@ abstract class RecordManager
         return $query;
     }
 
-    protected function injectParams(&$params = array())
+    protected function injectParams(&$params = [])
     {
     }
 
@@ -362,7 +366,7 @@ abstract class RecordManager
      * @param array $params
      * @return RecordCollection
      */
-    public function findByQuery($query, $params = array())
+    public function findByQuery($query, $params = [])
     {
         $return = $this->newCollection();
 
@@ -391,7 +395,7 @@ abstract class RecordManager
      * @return Record
      * @param array $data [optional]
      */
-    public function getNew($data = array())
+    public function getNew($data = [])
     {
 
         $pk = $this->getPrimaryKey();
@@ -408,7 +412,11 @@ abstract class RecordManager
         return $record;
     }
 
-    public function getNewRecordFromDB($data = array())
+    /**
+     * @param array $data
+     * @return Record
+     */
+    public function getNewRecordFromDB($data = [])
     {
         $record = $this->getNewRecord($data);
         $record->writeDBData($data);
@@ -416,7 +424,11 @@ abstract class RecordManager
         return $record;
     }
 
-    public function getNewRecord($data = array())
+    /**
+     * @param array $data
+     * @return Record
+     */
+    public function getNewRecord($data = [])
     {
         $model = $this->getModel();
         /** @var Record $record */
@@ -427,13 +439,16 @@ abstract class RecordManager
         return $record;
     }
 
+    /**
+     * @return string
+     */
     public function getModel()
     {
-        if ($this->_model == null) {
+        if ($this->model == null) {
             $this->inflectModel();
         }
 
-        return $this->_model;
+        return $this->model;
     }
 
     /**
@@ -441,17 +456,21 @@ abstract class RecordManager
      */
     public function setModel($model)
     {
-        $this->_model = $model;
+        $this->model = $model;
     }
 
     protected function inflectModel()
     {
         $class = get_class($this);
-        if ($this->_model == null) {
-            $this->_model = $this->generateModelClass($class);
+        if ($this->model == null) {
+            $this->model = $this->generateModelClass($class);
         }
     }
 
+    /**
+     * @param null $class
+     * @return string
+     */
     public function generateModelClass($class = null)
     {
         $class = $class ? $class : get_class($this);
@@ -472,6 +491,11 @@ abstract class RecordManager
         return ucfirst(inflector()->singularize($class));
     }
 
+    /**
+     * @param $name
+     * @param $arguments
+     * @return bool
+     */
     protected function isCallUrl($name, $arguments)
     {
         if (substr($name, 0, 3) == "get" || substr($name, -3) == "URL") {
@@ -502,7 +526,11 @@ abstract class RecordManager
         return false;
     }
 
-    protected function _getURL($params = array())
+    /**
+     * @param array $params
+     * @return mixed
+     */
+    protected function _getURL($params = [])
     {
         $params['action'] = inflector()->unclassify($params['action']);
         $params['action'] = ($params['action'] == 'index') ? false : $params['action'];
@@ -519,6 +547,10 @@ abstract class RecordManager
         return $this->Url()->assemble($routeName, $params);
     }
 
+    /**
+     * @param $name
+     * @return mixed
+     */
     public function getHelper($name)
     {
         return HelperBroker::get($name);
@@ -536,7 +568,7 @@ abstract class RecordManager
      * @param Request|array $request
      * @return mixed
      */
-    public function requestFilters($request = array())
+    public function requestFilters($request)
     {
         $this->getFilterManager()->setRequest($request);
 
@@ -548,11 +580,11 @@ abstract class RecordManager
      */
     public function getFilterManager()
     {
-        if ($this->_filterManager === null) {
+        if ($this->filterManager === null) {
             $this->initFilterManager();
         }
 
-        return $this->_filterManager;
+        return $this->filterManager;
     }
 
     /**
@@ -560,7 +592,7 @@ abstract class RecordManager
      */
     public function setFilterManager($filterManager)
     {
-        $this->_filterManager = $filterManager;
+        $this->filterManager = $filterManager;
     }
 
     public function initFilterManager()
@@ -591,10 +623,10 @@ abstract class RecordManager
 
     /**
      * @param $query
-     * @param array $filters
      * @return mixed
+     * @internal param array $filters
      */
-    public function filter($query, $filters = array())
+    public function filter($query)
     {
         $query = $this->filterQuery($query);
 
@@ -615,10 +647,14 @@ abstract class RecordManager
         $this->setUpDB();
     }
 
+    /**
+     * @param Record $item
+     * @return bool|false|Record
+     */
     public function exists(Record $item)
     {
-        $params = array();
-        $params['where'] = array();
+        $params = [];
+        $params['where'] = [];
 
         $fields = $this->getUniqueFields();
 
@@ -627,41 +663,47 @@ abstract class RecordManager
         }
 
         foreach ($fields as $field) {
-            $params['where'][$field.'-UNQ'] = array("$field = ?", $item->$field);
+            $params['where'][$field.'-UNQ'] = ["$field = ?", $item->$field];
         }
 
         $pk = $this->getPrimaryKey();
         if ($item->$pk) {
-            $params['where'][] = array("$pk != ?", $item->$pk);
+            $params['where'][] = ["$pk != ?", $item->$pk];
         }
 
         return $this->findOneByParams($params);
     }
 
+    /**
+     * @return null
+     */
     public function getUniqueFields()
     {
-        if ($this->_uniqueFields === null) {
+        if ($this->uniqueFields === null) {
             $this->initUniqueFields();
         }
 
-        return $this->_uniqueFields;
+        return $this->uniqueFields;
     }
 
+    /**
+     * @return array|null
+     */
     public function initUniqueFields()
     {
-        $this->_uniqueFields = array();
+        $this->uniqueFields = [];
         $structure = $this->getTableStructure();
         foreach ($structure['indexes'] as $name => $index) {
             if ($index['unique']) {
                 foreach ($index['fields'] as $field) {
                     if ($field != $this->getPrimaryKey()) {
-                        $this->_uniqueFields[] = $field;
+                        $this->uniqueFields[] = $field;
                     }
                 }
             }
         }
 
-        return $this->_uniqueFields;
+        return $this->uniqueFields;
     }
 
     /**
@@ -670,7 +712,7 @@ abstract class RecordManager
      * @param array $params
      * @return Record|false
      */
-    public function findOneByParams(array $params = array())
+    public function findOneByParams(array $params = [])
     {
         $params['limit'] = 1;
         $records = $this->findByParams($params);
@@ -687,7 +729,7 @@ abstract class RecordManager
      * @param array $params
      * @return mixed
      */
-    public function findByParams($params = array())
+    public function findByParams($params = [])
     {
         $query = $this->paramsToQuery($params);
 
@@ -714,11 +756,15 @@ abstract class RecordManager
         return $this->findByParams();
     }
 
+    /**
+     * @param int $count
+     * @return mixed
+     */
     public function findLast($count = 9)
     {
-        return $this->findByParams(array(
+        return $this->findByParams([
             'limit' => $count,
-        ));
+        ]);
     }
 
     /**
@@ -735,6 +781,11 @@ abstract class RecordManager
         return $this->getDB()->lastInsertID();
     }
 
+    /**
+     * @param $model
+     * @param $onDuplicate
+     * @return InsertQuery
+     */
     public function insertQuery($model, $onDuplicate)
     {
         $inserts = $this->getQueryModelData($model);
@@ -755,7 +806,7 @@ abstract class RecordManager
      */
     public function getQueryModelData($model)
     {
-        $data = array();
+        $data = [];
 
         $fields = $this->getFields();
         foreach ($fields as $field) {
@@ -767,19 +818,22 @@ abstract class RecordManager
         return $data;
     }
 
+    /**
+     * @return null
+     */
     public function getFields()
     {
-        if ($this->_fields === null) {
+        if ($this->fields === null) {
             $this->initFields();
         }
 
-        return $this->_fields;
+        return $this->fields;
     }
 
     public function initFields()
     {
         $structure = $this->getTableStructure();
-        $this->_fields = array_keys($structure['fields']);
+        $this->fields = array_keys($structure['fields']);
     }
 
     /**
@@ -814,7 +868,7 @@ abstract class RecordManager
     {
         $pk = $this->getPrimaryKey();
         if (!is_array($pk)) {
-            $pk = array($pk);
+            $pk = [$pk];
         }
 
         $data = $this->getQueryModelData($model);
@@ -885,7 +939,7 @@ abstract class RecordManager
     {
         $pk = $this->getPrimaryKey();
 
-        if ($input instanceof $this->_model) {
+        if ($input instanceof $this->model) {
             $primary = $input->$pk;
         } else {
             $primary = $input;
@@ -911,7 +965,7 @@ abstract class RecordManager
      * @param array $params
      * @return $this
      */
-    public function deleteByParams($params = array())
+    public function deleteByParams($params = [])
     {
         extract($params);
 
@@ -924,16 +978,16 @@ abstract class RecordManager
                     $query->where($condition[0], $condition[1]);
                 }
             } else {
-                call_user_func_array(array($query, 'where'), $where);
+                call_user_func_array([$query, 'where'], $where);
             }
         }
 
         if (isset($order)) {
-            call_user_func_array(array($query, 'order'), $order);
+            call_user_func_array([$query, 'order'], $order);
         }
 
         if (isset($limit)) {
-            call_user_func_array(array($query, 'limit'), $limit);
+            call_user_func_array([$query, 'limit'], $limit);
         }
 
         $this->getDB()->execute($query);
@@ -947,13 +1001,13 @@ abstract class RecordManager
      * @param array $params
      * @return mixed
      */
-    public function paginate(Paginator $paginator, $params = array())
+    public function paginate(Paginator $paginator, $params = [])
     {
         $query = $this->paramsToQuery($params);
 
-        $countQuery = $this->getDB()->newQuery('select');
-        $countQuery->count(array('*', 'count'));
-        $countQuery->from(array($query, 'tbl'));
+        $countQuery = $this->getDB()->newSelect();
+        $countQuery->count(['*', 'count']);
+        $countQuery->from([$query, 'tbl']);
         $results = $countQuery->execute()->fetchResults();
         $count = $results[0]['count'];
 
@@ -978,7 +1032,7 @@ abstract class RecordManager
                 $item = $all[$primary];
             }
             if (!$item) {
-                $params['where'][] = array("`{$this->getTable()}`.`{$this->getPrimaryKey()}` = ?", $primary);
+                $params['where'][] = ["`{$this->getTable()}`.`{$this->getPrimaryKey()}` = ?", $primary];
                 $item = $this->findOneByParams($params);
                 if ($item) {
                     $this->getRegistry()->set($primary, $item);
@@ -996,7 +1050,7 @@ abstract class RecordManager
      * @param array $params
      * @return bool
      */
-    public function findOneByQuery($query, $params = array())
+    public function findOneByQuery($query, $params = [])
     {
         $query->limit(1);
         $return = $this->findByQuery($query, $params);
@@ -1013,7 +1067,7 @@ abstract class RecordManager
      */
     public function count($where = false)
     {
-        return $this->countByParams(array("where" => $where));
+        return $this->countByParams(["where" => $where]);
     }
 
     /**
@@ -1021,7 +1075,7 @@ abstract class RecordManager
      * @param array $params
      * @return int
      */
-    public function countByParams($params = array())
+    public function countByParams($params = [])
     {
         $this->injectParams($params);
         $query = $this->newQuery('select');
@@ -1064,21 +1118,24 @@ abstract class RecordManager
      */
     public function getPrimaryFK()
     {
-        if (!$this->_foreignKey) {
+        if (!$this->foreignKey) {
             $this->initPrimaryFK();
         }
 
-        return $this->_foreignKey;
+        return $this->foreignKey;
     }
 
     public function initPrimaryFK()
     {
-        $this->_foreignKey = $this->getPrimaryKey()."_".inflector()->underscore($this->getModel());
+        $this->foreignKey = $this->getPrimaryKey()."_".inflector()->underscore($this->getModel());
     }
 
+    /**
+     * @param $fk
+     */
     public function setPrimaryFK($fk)
     {
-        $this->_foreignKey = $fk;
+        $this->foreignKey = $fk;
     }
 
     /**
@@ -1087,13 +1144,17 @@ abstract class RecordManager
      */
     public function getUrlPK()
     {
-        if ($this->_urlPK == null) {
-            $this->_urlPK = $this->getPrimaryKey();
+        if ($this->urlPK == null) {
+            $this->urlPK = $this->getPrimaryKey();
         }
 
-        return $this->_urlPK;
+        return $this->urlPK;
     }
 
+    /**
+     * @param $name
+     * @return bool
+     */
     public function hasField($name)
     {
         $fields = $this->getFields();
@@ -1104,9 +1165,12 @@ abstract class RecordManager
         return false;
     }
 
+    /**
+     * @return array
+     */
     public function getFullTextFields()
     {
-        $return = array();
+        $return = [];
         $structure = $this->getTableStructure();
         foreach ($structure['indexes'] as $name => $index) {
             if ($index['fulltext']) {
@@ -1157,11 +1221,15 @@ abstract class RecordManager
         $this->initRelationsFromArray($type, $array);
     }
 
+    /**
+     * @param $type
+     * @param $array
+     */
     public function initRelationsFromArray($type, $array)
     {
         foreach ($array as $key => $item) {
             $name = is_array($item) ? $key : $item;
-            $params = is_array($item) ? $item : array();
+            $params = is_array($item) ? $item : [];
             $this->initRelation($type, $name, $params);
         }
     }
