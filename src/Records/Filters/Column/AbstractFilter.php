@@ -2,6 +2,10 @@
 
 namespace Nip\Records\Filters\Column;
 
+/**
+ * Class AbstractFilter
+ * @package Nip\Records\Filters\Column
+ */
 class AbstractFilter extends \Nip\Records\Filters\AbstractFilter implements FilterInterface
 {
 
@@ -33,6 +37,14 @@ class AbstractFilter extends \Nip\Records\Filters\AbstractFilter implements Filt
         return $this;
     }
 
+    public function initRequestField()
+    {
+        $this->setRequestField($this->getField());
+    }
+
+    /**
+     * @return string
+     */
     public function getDbName()
     {
         $table = $this->getManager()->getRecordManager()->getTable();

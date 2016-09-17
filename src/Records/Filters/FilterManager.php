@@ -28,6 +28,13 @@ class FilterManager
     protected $recordManager = null;
 
     /**
+     * Init filter Manager, init default filters
+     */
+    public function init()
+    {
+    }
+
+    /**
      * @return null
      */
     public function getFiltersArray()
