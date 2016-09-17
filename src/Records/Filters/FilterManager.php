@@ -56,6 +56,15 @@ class FilterManager
 
     public function initFiltersArray()
     {
+        $filtersArray = $this->generateFiltersArray();
+        $this->setFiltersArray($filtersArray);
+    }
+
+    /**
+     * @return array
+     */
+    public function generateFiltersArray()
+    {
         $filtersArray = [];
         $filters = $this->getFilters();
         $request = $this->getRequest();
@@ -65,7 +74,8 @@ class FilterManager
                 $filtersArray[$filter->getName()] = $filter->getValue();
             }
         }
-        $this->setFiltersArray($filtersArray);
+
+        return $filtersArray;
     }
 
     /**
