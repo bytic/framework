@@ -24,14 +24,29 @@ class View
 {
     protected $_request = null;
 
-    protected $_helpers = array();
+    protected $_helpers = [];
 
-    protected $_data = array();
-    protected $_blocks = array();
+    protected $_data = [];
+    protected $_blocks = [];
     protected $_basePath = null;
 
     public function __construct()
     {
+    }
+
+    /**
+     * Singleton
+     *
+     * @return self
+     */
+    public static function instance()
+    {
+        static $instance;
+        if (!($instance instanceof self)) {
+            $instance = new self();
+        }
+
+        return $instance;
     }
 
     public function __call($name, $arguments)
@@ -44,9 +59,33 @@ class View
         return null;
     }
 
-    public function __set($name, $value)
+    public function getHelper($name)
     {
-        return $this->set($name, $value);
+        if (!isset($this->_helpers[$name])) {
+            $this->initHelper($name);
+        }
+
+        return $this->_helpers[$name];
+    }
+
+    public function initHelper($name)
+    {
+        $this->_helpers[$name] = $this->newHelper($name);
+    }
+
+    public function newHelper($name)
+    {
+        $class = $this->getHelperClass($name);
+        $helper = new $class();
+        /** @var \Nip\Helpers\View\AbstractHelper $helper */
+        $helper->setView($this);
+
+        return $helper;
+    }
+
+    public function getHelperClass($name)
+    {
+        return '\Nip\Helpers\View\\'.$name;
     }
 
     public function &__get($name)
@@ -54,15 +93,11 @@ class View
         return $this->get($name);
     }
 
-    public function __isset($name)
+    public function __set($name, $value)
     {
-        return isset($this->_data[$name]);
+        return $this->set($name, $value);
     }
 
-    public function __unset($name)
-    {
-        unset($this->_data[$name]);
-    }
     /**
      * @param string $name
      * @param mixed $value
@@ -94,6 +129,16 @@ class View
         return isset($this->_data[$name]);
     }
 
+    public function __isset($name)
+    {
+        return isset($this->_data[$name]);
+    }
+
+    public function __unset($name)
+    {
+        unset($this->_data[$name]);
+    }
+
     /**
      * @param string $name
      * @param string $appended
@@ -105,43 +150,9 @@ class View
         return $this->set($name, $value);
     }
 
-    public function getHelper($name)
-    {
-        if (!isset($this->_helpers[$name])) {
-            $this->initHelper($name);
-        }
-
-        return $this->_helpers[$name];
-    }
-
-    public function getHelperClass($name)
-    {
-        return '\Nip\Helpers\View\\' . $name;
-    }
-
-    public function initHelper($name)
-    {
-        $this->_helpers[$name] = $this->newHelper($name);
-    }
-
-    public function newHelper($name)
-    {
-        $class = $this->getHelperClass($name);
-        $helper = new $class();
-        /** @var \Nip\Helpers\View\AbstractHelper $helper */
-        $helper->setView($this);
-        return $helper;
-    }
-
     public function setBlock($name, $block)
     {
         $this->_blocks[$name] = $block;
-    }
-
-    public function setBasePath($path)
-    {
-        $this->_basePath = $path;
-        return $this;
     }
 
     /**
@@ -152,7 +163,15 @@ class View
         if ($this->_basePath === null) {
             $this->initBasePath();
         }
+
         return $this->_basePath;
+    }
+
+    public function setBasePath($path)
+    {
+        $this->_basePath = $path;
+
+        return $this;
     }
 
     public function initBasePath()
@@ -161,6 +180,39 @@ class View
             $this->_basePath = VIEWS_PATH;
         }
         $this->_basePath = false;
+    }
+
+    public function existPath($view)
+    {
+        return is_file($this->buildPath($view));
+    }
+
+    /**
+     * Builds path for including
+     * If $view starts with / the path will be relative to the root of the views folder. Otherwise to caller file location.
+     *
+     * @param string $view
+     * @return string
+     */
+    protected function buildPath($view)
+    {
+        if ($view[0] == '/') {
+            return $this->_basePath.ltrim($view, "/").'.php';
+        } else {
+            $backtrace = debug_backtrace();
+            $caller = $backtrace[3]['file'];
+
+            return dirname($caller)."/".$view.".php";
+        }
+    }
+
+    public function render($block = 'default')
+    {
+        if (!empty($this->_blocks[$block])) {
+            $this->load("/".$this->_blocks[$block]);
+        } else {
+            trigger_error("No $block block", E_USER_ERROR);
+        }
     }
 
     /** @noinspection PhpInconsistentReturnPointsInspection
@@ -195,20 +247,6 @@ class View
         return $html;
     }
 
-    public function existPath($view)
-    {
-        return is_file($this->buildPath($view));
-    }
-
-    public function render($block = 'default')
-    {
-        if (!empty($this->_blocks[$block])) {
-            $this->load("/" . $this->_blocks[$block]);
-        } else {
-            trigger_error("No $block block", E_USER_ERROR);
-        }
-    }
-
     public function isBlock($block = 'default')
     {
         return empty($this->_blocks[$block]) ? false : true;
@@ -231,25 +269,6 @@ class View
     }
 
     /**
-     * Builds path for including
-     * If $view starts with / the path will be relative to the root of the views folder. Otherwise to caller file location.
-     *
-     * @param string $view
-     * @return string
-     */
-    protected function buildPath($view)
-    {
-        if ($view[0] == '/') {
-            return $this->_basePath . ltrim($view, "/") . '.php';
-        } else {
-            $backtrace = debug_backtrace();
-            $caller = $backtrace[3]['file'];
-
-            return dirname($caller) . "/" . $view . ".php";
-        }
-    }
-
-    /**
      * @return mixed
      */
     public function getRequest()
@@ -263,19 +282,5 @@ class View
     public function setRequest($request)
     {
         $this->_request = $request;
-    }
-
-    /**
-     * Singleton
-     *
-     * @return self
-     */
-    public static function instance()
-    {
-        static $instance;
-        if (!($instance instanceof self)) {
-            $instance = new self();
-        }
-        return $instance;
     }
 }

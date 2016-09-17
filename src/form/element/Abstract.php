@@ -11,7 +11,7 @@ abstract class Nip_Form_Element_Abstract implements Nip_Form_Element_Interface
     protected $_uniqueID;
     protected $_isRequired;
     protected $_isRendered = false;
-    protected $_errors = array();
+    protected $_errors = [];
     protected $_decorators;
     protected $_policies;
 
@@ -300,7 +300,7 @@ abstract class Nip_Form_Element_Abstract implements Nip_Form_Element_Interface
      */
     public function clearAttribs()
     {
-        $this->_attribs = array();
+        $this->_attribs = [];
 
         return $this;
     }

@@ -5,7 +5,7 @@
 
 namespace Nip\Request;
 
-use \Nip\Request\Files\Uploaded as UploadedFile;
+use Nip\Request\Files\Uploaded as UploadedFile;
 
 class FileBag extends ParameterBag
 {
@@ -24,9 +24,20 @@ class FileBag extends ParameterBag
      */
     public function replace(array $files = array())
     {
-        $this->parameters = array();
+        $this->parameters = [];
         $this->add($files);
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function add(array $files = array())
+    {
+        foreach ($files as $key => $file) {
+            $this->set($key, $file);
+        }
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -37,15 +48,7 @@ class FileBag extends ParameterBag
         }
         parent::set($key, $this->convertFileInformation($value));
     }
-    /**
-     * {@inheritdoc}
-     */
-    public function add(array $files = array())
-    {
-        foreach ($files as $key => $file) {
-            $this->set($key, $file);
-        }
-    }
+
     /**
      * Converts uploaded files to UploadedFile instances.
      *

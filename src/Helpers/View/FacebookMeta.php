@@ -43,7 +43,7 @@ class FacebookMeta extends AbstractHelper
 
     public function generateMetas()
     {
-        $return = array();
+        $return = [];
         foreach ($this->_tags as $field => $options) {
             $return[] = $this->generateMeta($field);
         }

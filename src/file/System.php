@@ -122,7 +122,7 @@ class Nip_File_System
      */
     public function scanDirectory($dir, $recursive = false, $fullPaths = false)
     {
-        $result = array();
+        $result = [];
 
         if (is_dir($dir)) {
             if ($recursive) {

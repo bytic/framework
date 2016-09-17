@@ -26,22 +26,22 @@ abstract class Nip_Form_Abstract
         'select', 'radio', 'radioGroup', 'checkbox', 'checkboxGroup',
         'html',
     );
-    protected $_attribs = array();
-    protected $_options = array();
-    protected $_displayGroups = array();
+    protected $_attribs = [];
+    protected $_options = [];
+    protected $_displayGroups = [];
 
-    protected $_elements = array();
+    protected $_elements = [];
     protected $_elementsLabel;
-    protected $_elementsOrder = array();
+    protected $_elementsOrder = [];
 
     protected $_buttons;
 
-    protected $_decorators = array();
+    protected $_decorators = [];
     protected $_renderer;
     protected $_messages = array(
         'error' => array()
     );
-    protected $_messageTemplates = array();
+    protected $_messageTemplates = [];
     protected $_cache;
 
     protected $__controllerView = false;
@@ -292,7 +292,7 @@ abstract class Nip_Form_Abstract
     public function setElementOrder($element, $neighbour, $type = 'bellow')
     {
         if (in_array($element, $this->_elementsOrder) && in_array($neighbour, $this->_elementsOrder)) {
-            $newOrder = array();
+            $newOrder = [];
             foreach ($this->_elementsOrder as $current) {
                 if ($current == $element) {
 
@@ -320,7 +320,7 @@ abstract class Nip_Form_Abstract
 
     public function findElements($params = false)
     {
-        $elements = array();
+        $elements = [];
         foreach ($this->_elements as $element) {
             if (isset($params['type'])) {
                 if ($element->getType() != $params['type']) {
@@ -422,7 +422,7 @@ abstract class Nip_Form_Abstract
      */
     public function clearAttribs()
     {
-        $this->_attribs = array();
+        $this->_attribs = [];
         return $this;
     }
 
@@ -523,7 +523,7 @@ abstract class Nip_Form_Abstract
 
     public function getElements()
     {
-        $return = array();
+        $return = [];
         foreach ($this->_elementsOrder as $current) {
             $return[$current] = $this->_elements[$current];
         }
@@ -560,7 +560,7 @@ abstract class Nip_Form_Abstract
     public function getElementsErrors()
     {
         $elements = $this->getElements();
-        $errors = array();
+        $errors = [];
         if (is_array($elements)) {
             foreach ($elements as $name => $element) {
                 $errors = array_merge($errors, $element->getErrors());
@@ -679,7 +679,7 @@ abstract class Nip_Form_Abstract
 
     protected function getData()
     {
-        $data = array();
+        $data = [];
         $elements = $this->getElements();
         if (is_array($elements)) {
             foreach ($elements as $name => $element) {

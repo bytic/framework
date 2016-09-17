@@ -12,8 +12,8 @@ abstract class AbstractParser
 
     protected $_map;
     protected $_parts;
-    protected $_params = array();
-    protected $_matches = array();
+    protected $_params = [];
+    protected $_matches = [];
 
     public function __construct($map = false, $params = array())
     {
@@ -30,28 +30,13 @@ abstract class AbstractParser
         $this->init();
     }
 
-    public function init()
-    {
-    }
-
-    public function setMap($map)
-    {
-        $this->_map = $map;
-        $this->parseMap();
-    }
-
     protected function parseMap()
     {
         $this->_parts = explode("/", $this->_map);
     }
 
-    public function setParams($params = array())
+    public function init()
     {
-        if ($params) {
-            foreach ($params as $key => $value) {
-                $this->_params[$key] = $value;
-            }
-        }
     }
 
     public function match($uri)
@@ -117,6 +102,12 @@ abstract class AbstractParser
         return $this->_map;
     }
 
+    public function setMap($map)
+    {
+        $this->_map = $map;
+        $this->parseMap();
+    }
+
     public function getParts()
     {
         return $this->_parts;
@@ -125,6 +116,15 @@ abstract class AbstractParser
     public function getParams()
     {
         return $this->_params;
+    }
+
+    public function setParams($params = array())
+    {
+        if ($params) {
+            foreach ($params as $key => $value) {
+                $this->_params[$key] = $value;
+            }
+        }
     }
 
     public function getMatches()

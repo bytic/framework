@@ -7,8 +7,8 @@ class Terminal
     protected $_OS = null;
     protected $_RunUser = null;
 
-    protected $_requiredBinaries = array();
-    protected $_commands = array();
+    protected $_requiredBinaries = [];
+    protected $_commands = [];
 
     public function dispatch()
     {

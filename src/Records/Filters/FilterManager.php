@@ -56,7 +56,7 @@ class FilterManager
 
     public function initFiltersArray()
     {
-        $filtersArray = array();
+        $filtersArray = [];
         $filters = $this->getFilters();
         $request = $this->getRequest();
         foreach ($filters as $filter) {

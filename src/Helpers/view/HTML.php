@@ -177,7 +177,7 @@ class HTML extends AbstractHelper
      */
     public function attributes($attributes = array())
     {
-        $return = array();
+        $return = [];
 
         if ($attributes) {
             foreach ($attributes as $key => $value) {

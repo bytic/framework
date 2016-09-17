@@ -19,7 +19,7 @@ class Nip_Form_Element_File extends Nip_Form_Element_Input_Abstract {
 
             if (count($parts) > 1 ) {
                 if ($_FILES[$parts[0]]) {
-                    $fileData = array();
+                    $fileData = [];
                     foreach ($_FILES[$parts[0]] as $key=>$data) {
                         $fileData[$key] = $data[$parts[1]];
                     }

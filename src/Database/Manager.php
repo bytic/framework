@@ -11,24 +11,7 @@ class Manager
      * @var Bootstrap
      */
     protected $_bootstrap;
-
-    /**
-     * @return Bootstrap
-     */
-    public function getBootstrap()
-    {
-        return $this->_bootstrap;
-    }
-
-    /**
-     * @param Bootstrap $bootstrap
-     */
-    public function setBootstrap($bootstrap)
-    {
-        $this->_bootstrap = $bootstrap;
-    }
-
-    protected $_connections = array();
+    protected $_connections = [];
 
     public function newConnectionFromConfig($config)
     {
@@ -65,6 +48,11 @@ class Manager
         return $connection;
     }
 
+    public function newConnection()
+    {
+        return new \Nip\Database\Connection();
+    }
+
     public function initNewConnection($connection)
     {
         if ($this->getBootstrap()->getDebugBar()->isEnabled()) {
@@ -72,9 +60,20 @@ class Manager
         }
     }
 
-    public function newConnection()
+    /**
+     * @return Bootstrap
+     */
+    public function getBootstrap()
     {
-        return new \Nip\Database\Connection();
+        return $this->_bootstrap;
+    }
+
+    /**
+     * @param Bootstrap $bootstrap
+     */
+    public function setBootstrap($bootstrap)
+    {
+        $this->_bootstrap = $bootstrap;
     }
 
 }

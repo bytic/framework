@@ -14,7 +14,7 @@ class ClassMapGenerator
     public static function dump($dirs, $file)
     {
         $dirs = (array) $dirs;
-        $maps = array();
+        $maps = [];
         foreach ($dirs as $dir) {
             $maps = array_merge($maps, static::createMap($dir));
         }
@@ -33,7 +33,7 @@ class ClassMapGenerator
         if (is_string($dir)) {
             $dir = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($dir));
         }
-        $map = array();
+        $map = [];
         foreach ($dir as $file) {
             if (!$file->isFile()) {
                 continue;
@@ -63,7 +63,7 @@ class ClassMapGenerator
     {
         $contents = file_get_contents($path);
         $tokens = token_get_all($contents);
-        $classes = array();
+        $classes = [];
         $namespace = '';
         for ($i = 0; isset($tokens[$i]); ++$i) {
             $token = $tokens[$i];

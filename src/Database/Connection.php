@@ -3,8 +3,8 @@
 namespace Nip\Database;
 
 use Nip\Database\Adapters\AbstractAdapter;
-use Nip\Database\Query\Select as SelectQuery;
 use Nip\Database\Query\AbstractQuery as AbstractQuery;
+use Nip\Database\Query\Select as SelectQuery;
 
 class Connection
 {
@@ -15,7 +15,7 @@ class Connection
     protected $_database;
     protected $metadata;
     protected $_query;
-    protected $_queries = array();
+    protected $_queries = [];
 
 
     /**
@@ -57,14 +57,14 @@ class Connection
         $this->_adapter = $adapter;
     }
 
-    public function setAdapterName($name)
-    {
-        $this->setAdapter($this->newAdapter($name));
-    }
-
     public function initAdapter()
     {
         $this->setAdapterName('MySQLi');
+    }
+
+    public function setAdapterName($name)
+    {
+        $this->setAdapter($this->newAdapter($name));
     }
 
     /**
@@ -105,17 +105,6 @@ class Connection
             $this->metadata->setConnection($this);
         }
         return $this->metadata;
-    }
-
-    /**
-     * Adds backticks to input
-     *
-     * @param string $input
-     * @return string
-     */
-    public function protect($input)
-    {
-        return str_replace("`*`", "*", '`' . str_replace('.', '`.`', $input) . '`');
     }
 
     /**
@@ -204,6 +193,17 @@ class Connection
     public function describeTable($table)
     {
         return $this->getAdapter()->describeTable($this->protect($table));
+    }
+
+    /**
+     * Adds backticks to input
+     *
+     * @param string $input
+     * @return string
+     */
+    public function protect($input)
+    {
+        return str_replace("`*`", "*", '`'.str_replace('.', '`.`', $input).'`');
     }
 
     public function getQueries()

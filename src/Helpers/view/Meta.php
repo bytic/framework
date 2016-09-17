@@ -17,7 +17,7 @@ class Meta extends AbstractHelper
     public $charset = 'utf-8';
     public $language = 'en';
 
-    public $authors = array();
+    public $authors = [];
     public $publisher;
     public $copyright;
 
@@ -31,11 +31,11 @@ class Meta extends AbstractHelper
 
     );
 
-    public $keywords = array();
+    public $keywords = [];
     public $description = false;
-    public $descriptionComponents = array();
+    public $descriptionComponents = [];
     public $verify_v1 = false;
-    public $feeds = array();
+    public $feeds = [];
 
 
     public function setTitleBase($base)
@@ -43,6 +43,15 @@ class Meta extends AbstractHelper
         $this->titleComponents['base'] = $base;
         $this->generateTitle();
         return $this;
+    }
+
+    public function generateTitle()
+    {
+        $components = $this->titleComponents['elements'];
+        if ($this->titleComponents['base']) {
+            $components[] = $this->titleComponents['base'];
+        }
+        $this->title = implode($this->titleComponents['separator'], $components);
     }
 
     public function appendTitle($title)
@@ -57,15 +66,6 @@ class Meta extends AbstractHelper
         array_unshift($this->titleComponents['elements'], $title);
         $this->generateTitle();
         return $this;
-    }
-
-    public function generateTitle()
-    {
-        $components = $this->titleComponents['elements'];
-        if ($this->titleComponents['base']) {
-            $components[] = $this->titleComponents['base'];
-        }
-        $this->title = implode($this->titleComponents['separator'], $components);
     }
 
     public function getFirstTitle()
@@ -95,6 +95,11 @@ class Meta extends AbstractHelper
         $this->generateDescription();
     }
 
+    public function generateDescription()
+    {
+        $this->description = implode('. ', $this->descriptionComponents);
+    }
+
     public function setDescription($description)
     {
         if ($description) {
@@ -104,9 +109,13 @@ class Meta extends AbstractHelper
         return $this;
     }
 
-    public function generateDescription()
+    public function addFeeds(array $feeds)
     {
-        $this->description = implode('. ', $this->descriptionComponents);
+        foreach ($feeds as $feed) {
+            $this->addFeed($feed);
+        }
+
+        return $this;
     }
 
     public function addFeed($url, $title = 'Rss')
@@ -120,15 +129,6 @@ class Meta extends AbstractHelper
         }
 
         $this->feeds[$feed->url] = $feed;
-
-        return $this;
-    }
-
-    public function addFeeds(array $feeds)
-    {
-        foreach ($feeds as $feed) {
-            $this->addFeed($feed);
-        }
 
         return $this;
     }

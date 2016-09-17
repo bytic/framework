@@ -92,7 +92,7 @@ class Nip_Helper_Arrays extends Nip\Helpers\AbstractHelper
      */
     public function changeKey($array, $property)
     {
-        $return = array();
+        $return = [];
 
         if (count($array) > 0) {
             foreach ($array as $item) {
@@ -113,7 +113,7 @@ class Nip_Helper_Arrays extends Nip\Helpers\AbstractHelper
      */
     public function pluck($array, $property, &$return = false)
     {
-        $return = array();
+        $return = [];
 
         if (count($array) > 0) {
             foreach ($array as $item) {
@@ -182,7 +182,7 @@ class Nip_Helper_Arrays extends Nip\Helpers\AbstractHelper
      */
     public function findAll($array, $params, $returnKey = false)
     {
-        $return = array();
+        $return = [];
 
         if (count($array)) {
             foreach ($array as $item) {
@@ -213,7 +213,7 @@ class Nip_Helper_Arrays extends Nip\Helpers\AbstractHelper
      */
     public function transpose($array)
     {
-        $return = array();
+        $return = [];
 
         if (count($array)) {
             foreach ($array as $key => $values) {

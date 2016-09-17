@@ -2,8 +2,8 @@
 namespace Nip\Helpers\View;
 
 class GoogleWebFonts extends AbstractHelper {
-    
-    protected $_fontSelected = array();
+
+    protected $_fontSelected = [];
     protected $_fontStrings = array(
         'Open+Sans' => 'Open+Sans:400,300,600,700,800,300italic,400italic,700italic,800italic:latin,latin-ext',
         'Open+Sans+Condensed' => 'Open+Sans+Condensed:300,700,300italic:latin,latin-ext',
@@ -15,7 +15,7 @@ class GoogleWebFonts extends AbstractHelper {
         if (count($this->_fontSelected)) {
             $return .= '<script type="text/javascript">';
             $return .= 'WebFontConfig = { google: { families: [ "';
-            $families = array();
+            $families = [];
             foreach ($this->_fontSelected as $fontName => $fontOptions) {
                 $family = $this->renderFontVariable($fontName, $fontOptions);
                 if ($family) {
@@ -38,15 +38,15 @@ class GoogleWebFonts extends AbstractHelper {
         return $return;
     }
 
-
-    public function add($fontName) 
-    {
-        $this->_fontSelected[$fontName] = $fontName;
-        return $this;
-    }
-    
     public function renderFontVariable($fontName)
     {
         return $this->_fontStrings[$fontName];
+    }
+
+    public function add($fontName)
+    {
+        $this->_fontSelected[$fontName] = $fontName;
+
+        return $this;
     }
 }

@@ -24,7 +24,7 @@ class Controller
 
     protected $_request;
     protected $_config;
-    protected $_helpers = array();
+    protected $_helpers = [];
 
     public function __construct()
     {

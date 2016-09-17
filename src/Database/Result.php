@@ -7,7 +7,7 @@ class Result
 
 	protected $_data;
 	protected $_adapter;
-	protected $_results = array();
+    protected $_results = [];
 
 	public function __construct($data, $adapter)
 	{
@@ -23,19 +23,6 @@ class Result
 	}
 
 	/**
-	 * Fetches row from current result set
-	 * @return array
-	 */
-	public function fetchResult()
-	{
-		try {
-			return $this->_adapter->fetchAssoc($this->_data);
-		} catch (Exception $e) {
-			$e->log();
-		}
-	}
-
-	/**
 	 * Fetches all rows from current result set
 	 * @return array
 	 */
@@ -47,6 +34,19 @@ class Result
 			}
 		}
 		return $this->_results;
+    }
+
+    /**
+     * Fetches row from current result set
+     * @return array
+     */
+    public function fetchResult()
+    {
+        try {
+            return $this->_adapter->fetchAssoc($this->_data);
+        } catch (Exception $e) {
+            $e->log();
+        }
 	}
 
 	public function numRows()

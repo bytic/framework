@@ -5,18 +5,13 @@ namespace Nip\Helpers\View;
 class Scripts extends AbstractHelper
 {
 
-    protected $_files = array();
+    protected $_files = [];
     protected $_defaultPlaceholder = "head";
     protected $_pack = false;
 
     public function add($file, $placeholder = false)
     {
         return $this->addFile($file, 'add', $placeholder);
-    }
-
-    public function prepend($file, $placeholder = false)
-    {
-        return $this->addFile($file, 'prepend', $placeholder);
     }
 
     public function addFile($file, $direction = 'add', $placeholder = false)
@@ -26,7 +21,7 @@ class Scripts extends AbstractHelper
         }
 
         if (!is_array($this->_files[$placeholder])) {
-            $this->_files[$placeholder] = array();
+            $this->_files[$placeholder] = [];
         }
 
         if ($direction == 'prepend') {
@@ -36,6 +31,11 @@ class Scripts extends AbstractHelper
         }
 
         return $this;
+    }
+
+    public function prepend($file, $placeholder = false)
+    {
+        return $this->addFile($file, 'prepend', $placeholder);
     }
 
     public function __toString()
@@ -56,8 +56,8 @@ class Scripts extends AbstractHelper
     {
         $return = '';
         if (is_array($files)) {
-            $internal = array();
-            $external = array();
+            $internal = [];
+            $external = [];
 
             foreach ($files as $file) {
                 if (preg_match('/https?:\/\//', $file)) {
@@ -77,11 +77,6 @@ class Scripts extends AbstractHelper
             $return .= $this->pack($internal);
         }
         return $return;
-    }
-
-    public function buildURL($source)
-    {
-        return $this->getBaseUrl() . $source . (in_array(\Nip_File_System::instance()->getExtension($source), array("js", "php")) ? '' : '.js');
     }
 
     public function buildTag($path)
@@ -135,10 +130,10 @@ class Scripts extends AbstractHelper
         return false;
     }
 
-    public function setPack($pack = true)
+    public function buildURL($source)
     {
-        $this->_pack = $pack;
-        return $this;
+        return $this->getBaseUrl().$source.(in_array(\Nip_File_System::instance()->getExtension($source),
+            array("js", "php")) ? '' : '.js');
     }
 
     public function getBaseUrl()
@@ -149,6 +144,13 @@ class Scripts extends AbstractHelper
     public function getBasePath()
     {
         return SCRIPTS_PATH;
+    }
+
+    public function setPack($pack = true)
+    {
+        $this->_pack = $pack;
+
+        return $this;
     }
 
 }

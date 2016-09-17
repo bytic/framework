@@ -5,7 +5,22 @@ namespace Nip\FrontController;
 class Trace
 {
 
-    protected $_traces = array();
+    protected $_traces = [];
+
+    /**
+     * Singleton
+     *
+     * @return self
+     */
+    public static function instance()
+    {
+        static $instance;
+        if (!($instance instanceof self)) {
+            $instance = new self;
+        }
+
+        return $instance;
+    }
 
     public function add($params)
     {
@@ -20,11 +35,6 @@ class Trace
         return true;
     }
 
-    public function get()
-    {
-        return $this->_traces;
-    }
-
     public function toString()
     {
         $output = '';
@@ -35,17 +45,8 @@ class Trace
         return $output;
     }
 
-    /**
-     * Singleton
-     *
-     * @return self
-     */
-    public static function instance()
+    public function get()
     {
-        static $instance;
-        if (!($instance instanceof self)) {
-            $instance = new self;
-        }
-        return $instance;
+        return $this->_traces;
     }
 }

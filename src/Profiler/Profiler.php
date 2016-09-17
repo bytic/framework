@@ -12,15 +12,28 @@ class Nip_Profiler
 
     public $enabled = false;
 
-    public $profiles = array();
-    public $runningProfiles = array();
-
+    public $profiles = [];
+    public $runningProfiles = [];
+    public $filterElapsedSecs = null;
     /**
      * @var AbstractAdapter[]
      */
     protected $writers = [];
 
-    public $filterElapsedSecs = null;
+    /**
+     * Singleton
+     *
+     * @return Nip_Profiler
+     */
+    public static function instance()
+    {
+        static $instance;
+        if (!($instance instanceof self)) {
+            $instance = new self();
+        }
+
+        return $instance;
+    }
 
     /**
      * @param bool $enabled
@@ -32,16 +45,9 @@ class Nip_Profiler
         return $this;
     }
 
-
-    public function checkEnabled()
-    {
-        return $this->enabled;
-    }
-
-
     public function clear()
     {
-        $this->profiles = array();
+        $this->profiles = [];
 
         return $this;
     }
@@ -63,6 +69,11 @@ class Nip_Profiler
         return $profile;
     }
 
+    public function checkEnabled()
+    {
+        return $this->enabled;
+    }
+
     public function newProfileID($name)
     {
         if ($name) {
@@ -72,11 +83,38 @@ class Nip_Profiler
         return 'profile' . $profilesCount;
     }
 
+    public function getProfiles($type = null, $showUnfinished = false)
+    {
+
+        $profiles = [];
+        foreach ($this->profiles as $key => $profile) {
+            if ($type === null) {
+                $condition = true;
+            } else {
+                $condition = ($profile->type && $type);
+            }
+
+            if (($profile->hasEnded() || $showUnfinished) && $condition) {
+                $profiles[$key] = $profile;
+            }
+        }
+
+        if (empty($profiles)) {
+            $profiles = false;
+        }
+
+        return $profiles;
+    }
+
     public function newProfile($id)
     {
         return new Profile($id);
     }
 
+    public function addRunningProces($profileID)
+    {
+        $this->runningProfiles[] = $profileID;
+    }
 
     public function end($profileID = false)
     {
@@ -102,16 +140,9 @@ class Nip_Profiler
         return $profileID;
     }
 
-    protected function applyFilters($profile)
+    public function getLastRunningProces()
     {
-        return $this->secondsFilter($profile);
-    }
-
-    public function outputWriters($profile)
-    {
-        foreach ($this->writers as $writer) {
-            $writer->write($profile);
-        }
+        return array_pop($this->runningProfiles);
     }
 
     public function endProfile($profileID)
@@ -127,48 +158,6 @@ class Nip_Profiler
         return $profile;
     }
 
-
-    public function lastProcessID()
-    {
-        end($this->profiles);
-        return key($this->profiles);
-    }
-
-
-    public function addRunningProces($profileID)
-    {
-        $this->runningProfiles[] = $profileID;
-    }
-
-
-    public function getLastRunningProces()
-    {
-        return array_pop($this->runningProfiles);
-    }
-
-
-    public function secondsFilter($profile)
-    {
-        if ($profile && null !== $this->filterElapsedSecs && $profile->getElapsedSecs() < $this->filterElapsedSecs) {
-            $this->deleteProfile($profile);
-            return false;
-        }
-        return true;
-    }
-
-
-    public function setFilterElapsedSecs($minimumSeconds = null)
-    {
-        if (null === $minimumSeconds) {
-            $this->filterElapsedSecs = null;
-        } else {
-            $this->filterElapsedSecs = (integer)$minimumSeconds;
-        }
-
-        return $this;
-    }
-
-
     public function getProfile($profileID)
     {
         if (is_object($profileID)) {
@@ -180,9 +169,23 @@ class Nip_Profiler
         }
 
         $profile = $this->profiles[$profileID];
+
         return $profile;
     }
 
+    protected function applyFilters($profile)
+    {
+        return $this->secondsFilter($profile);
+    }
+
+    public function secondsFilter($profile)
+    {
+        if ($profile && null !== $this->filterElapsedSecs && $profile->getElapsedSecs() < $this->filterElapsedSecs) {
+            $this->deleteProfile($profile);
+            return false;
+        }
+        return true;
+    }
 
     public function deleteProfile($profile)
     {
@@ -193,28 +196,29 @@ class Nip_Profiler
         return;
     }
 
-
-    public function getProfiles($type = null, $showUnfinished = false)
+    public function outputWriters($profile)
     {
+        foreach ($this->writers as $writer) {
+            $writer->write($profile);
+        }
+    }
 
-        $profiles = array();
-        foreach ($this->profiles as $key => $profile) {
-            if ($type === null) {
-                $condition = true;
-            } else {
-                $condition = ($profile->type && $type);
-            }
+    public function lastProcessID()
+    {
+        end($this->profiles);
 
-            if (($profile->hasEnded() || $showUnfinished) && $condition) {
-                $profiles[$key] = $profile;
-            }
+        return key($this->profiles);
+    }
+
+    public function setFilterElapsedSecs($minimumSeconds = null)
+    {
+        if (null === $minimumSeconds) {
+            $this->filterElapsedSecs = null;
+        } else {
+            $this->filterElapsedSecs = (integer)$minimumSeconds;
         }
 
-        if (empty($profiles)) {
-            $profiles = false;
-        }
-
-        return $profiles;
+        return $this;
     }
 
     /**
@@ -239,20 +243,5 @@ class Nip_Profiler
     public function newWriterClass($name)
     {
         return 'Nip\Profiler\Adapters\\' . ucfirst($name);
-    }
-
-
-    /**
-     * Singleton
-     *
-     * @return Nip_Profiler
-     */
-    public static function instance()
-    {
-        static $instance;
-        if (!($instance instanceof self)) {
-            $instance = new self();
-        }
-        return $instance;
     }
 }

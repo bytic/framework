@@ -71,21 +71,6 @@ class MySQLi extends AbstractAdapter implements AdapterInterface
         return mysqli_info($this->_connection);
     }
 
-    public function numRows($result)
-    {
-        return mysqli_num_rows($result);
-    }
-
-    public function fetchArray($result)
-    {
-        return mysqli_fetch_array($result);
-    }
-
-    public function fetchAssoc($result)
-    {
-        return mysqli_fetch_assoc($result);
-    }
-
     public function fetchObject($result)
     {
         return mysqli_fetch_object($result);
@@ -109,7 +94,7 @@ class MySQLi extends AbstractAdapter implements AdapterInterface
         if (mysqli_num_rows($result)) {
             while ($row = $this->fetchAssoc($result)) {
                 if (!$return['indexes'][$row['Key_name']]) {
-                    $return['indexes'][$row['Key_name']] = array();
+                    $return['indexes'][$row['Key_name']] = [];
                 }
                 $return['indexes'][$row['Key_name']]['fields'][] = $row['Column_name'];
                 $return['indexes'][$row['Key_name']]['unique'] = $row['Non_unique'] == '0';
@@ -134,9 +119,14 @@ class MySQLi extends AbstractAdapter implements AdapterInterface
         return $return;
     }
 
+    public function fetchAssoc($result)
+    {
+        return mysqli_fetch_assoc($result);
+    }
+
     public function getTables()
     {
-        $return = array();
+        $return = [];
 
         $result = $this->execute("SHOW FULL TABLES");
         if ($this->numRows($result)) {
@@ -148,6 +138,16 @@ class MySQLi extends AbstractAdapter implements AdapterInterface
         }
 
         return $return;
+    }
+
+    public function numRows($result)
+    {
+        return mysqli_num_rows($result);
+    }
+
+    public function fetchArray($result)
+    {
+        return mysqli_fetch_array($result);
     }
 
     public function quote($value)

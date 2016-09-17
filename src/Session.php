@@ -147,7 +147,7 @@ class Session
      */
     public function write($id, $data)
     {
-        $replace = array();
+        $replace = [];
         $replace['id'] = $id;
         $replace['data'] = $this->encodeData($data);
         $replace['expires'] = time() + $this->_lifetime;

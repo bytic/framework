@@ -6,7 +6,7 @@ class Paginator extends AbstractHelper
 {
 
 	protected $_url;
-	protected $_interval = array();
+    protected $_interval = [];
 	protected $_paginator;
 	protected $_viewPath = "/pagination";
 
@@ -15,22 +15,37 @@ class Paginator extends AbstractHelper
 		return call_user_func_array(array($this->getPaginator(), $name), $arguments);
 	}
 
+    /**
+     * @return \Nip_Record_Paginator
+     */
+    public function getPaginator()
+    {
+        return $this->_paginator;
+    }
+
+    public function setPaginator($paginator)
+    {
+        $this->_paginator = $paginator;
+
+        return $this;
+    }
+
 	public function url($page)
 	{
 		$return = $this->_url;
         $return = str_replace('&amp;page=' . $this->getPaginator()->getPage(), '', $return);
         $return = str_replace('&page=' . $this->getPaginator()->getPage(), '', $return);
         $return = str_replace('page=' . $this->getPaginator()->getPage(), '', $return);
-        
+
 		if ($page > 1) {
 			$return = rtrim($return, "/");
-			
-			if (strpos($return, '?') === false) {
+
+            if (strpos($return, '?') === false) {
 				$return .= '?page=' . $page;
 			} else {
 				$return .= '&page=' . $page;
 			}
-		} 
+        }
 		return $return;
 	}
 
@@ -72,20 +87,6 @@ class Paginator extends AbstractHelper
 		}
 
 		return $this->interval;
-	}
-
-	/**
-	 * @return \Nip_Record_Paginator
-	 */
-	public function getPaginator()
-	{
-		return $this->_paginator;
-	}
-
-	public function setPaginator($paginator)
-	{
-		$this->_paginator = $paginator;
-		return $this;
 	}
 
 	public function setViewPath($view)

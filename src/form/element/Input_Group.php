@@ -2,8 +2,8 @@
 abstract class Nip_Form_Element_Input_Group extends Nip_Form_Element_Abstract {
 
     protected $_type = 'input_group';
-    protected $_elements = array();
-    protected $_values = array();
+    protected $_elements = [];
+    protected $_values = [];
 
     public function isGroup() {
         return true;
@@ -43,6 +43,14 @@ abstract class Nip_Form_Element_Input_Group extends Nip_Form_Element_Abstract {
         return $this->addElement($element);
     }
 
+    /**
+     * @return Nip_Form_Element_Abstract
+     */
+    public function getNewElement()
+    {
+        trigger_error('No new element funtion defined for this group', E_USER_ERROR);
+    }
+
     public function addElement(Nip_Form_Element_Input_Abstract $element) {
         $key = $element->getValue();
         $this->_elements[$key] = $element;
@@ -56,13 +64,6 @@ abstract class Nip_Form_Element_Input_Group extends Nip_Form_Element_Abstract {
 
     public function getElements() {
         return $this->_elements;
-    }
-
-    /**
-     * @return Nip_Form_Element_Abstract
-     */
-    public function getNewElement() {
-        trigger_error('No new element funtion defined for this group', E_USER_ERROR);
     }
 
     public function getValues()

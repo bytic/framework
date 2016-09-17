@@ -10,7 +10,7 @@ class Nip_Form_Renderer_Elements_Dateinput extends Nip_Form_Renderer_Elements_In
         $return .= '<script type="text/javascript">';
         $return .= '$(function() {';
 
-		$options = array();
+        $options = [];
 		$options[] = 'changeMonth: true';
 		$options[] = 'changeYear: true';
 		

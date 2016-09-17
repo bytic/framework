@@ -28,34 +28,6 @@ class Condition
         return $this->parseString($this->_string, $this->_values);
     }
 
-    public function and_($condition)
-    {
-        return new AndCondition($this, $condition);
-    }
-
-    public function or_($condition)
-    {
-        return new OrCondition($this, $condition);
-    }
-
-    /**
-     * @return Query
-     */
-    public function getQuery()
-    {
-        return $this->_query;
-    }
-
-    /**
-     * @param Query $query
-     * @return $this
-     */
-    public function setQuery($query)
-    {
-        $this->_query = $query;
-        return $this;
-    }
-
     /**
      * Parses $string and replaces all instances of "?" with corresponding $values
      *
@@ -65,7 +37,7 @@ class Condition
      */
     public function parseString($string, $values)
     {
-        $positions = array();
+        $positions = [];
         $pos = 0;
         $offset = 0;
 
@@ -103,14 +75,43 @@ class Condition
         return $string;
     }
 
-    public function protectCondition($condition)
-    {
-        return strpos($condition, ' AND ') || strpos($condition, ' OR ') ? '(' . $condition . ')' : $condition;
-    }
-
     protected function parseValueQuery($value)
     {
-        return "(" . $value->assemble() . ")";
+        return "(".$value->assemble().")";
+    }
+
+    /**
+     * @return Query
+     */
+    public function getQuery()
+    {
+        return $this->_query;
+    }
+
+    /**
+     * @param Query $query
+     * @return $this
+     */
+    public function setQuery($query)
+    {
+        $this->_query = $query;
+
+        return $this;
+    }
+
+    public function and_($condition)
+    {
+        return new AndCondition($this, $condition);
+    }
+
+    public function or_($condition)
+    {
+        return new OrCondition($this, $condition);
+    }
+
+    public function protectCondition($condition)
+    {
+        return strpos($condition, ' AND ') || strpos($condition, ' OR ') ? '('.$condition.')' : $condition;
     }
 
 }
