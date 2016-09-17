@@ -467,35 +467,10 @@ class Application
 
     public function setupTranslation()
     {
-        $translation = $this->initTranslation();
-        $this->initLanguages($translation);
+        $this->initLanguages();
     }
 
-    /**
-     * @return I18n\Translator
-     */
-    public function initTranslation()
-    {
-        $translator = $this->newTranslator();
-        $translator->setRequest($this->getFrontController()->getRequest());
-
-        Container::getInstance()->set('translator', $translator);
-
-        return $translator;
-    }
-
-    /**
-     * @return I18n\Translator
-     */
-    public function newTranslator()
-    {
-        return new I18n\Translator();
-    }
-
-    /**
-     * @param $translation
-     */
-    public function initLanguages($translation)
+    public function initLanguages()
     {
     }
 
@@ -555,5 +530,29 @@ class Application
 
     public function postDispatch()
     {
+    }
+
+    public function getTranslator()
+    {
+        if ($this->getContainer()->has('translator')) {
+            $this->initTranslator();
+        }
+        $this->getContainer()->get('translator');
+    }
+
+    public function initTranslator()
+    {
+        $translator = $this->newTranslator();
+        $translator->setRequest($this->getFrontController()->getRequest());
+
+        Container::getInstance()->set('translator', $translator);
+    }
+
+    /**
+     * @return I18n\Translator
+     */
+    public function newTranslator()
+    {
+        return new I18n\Translator();
     }
 }
