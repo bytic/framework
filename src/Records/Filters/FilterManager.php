@@ -78,6 +78,7 @@ class FilterManager
 
     /**
      * @param SelectQuery $query
+     * @return SelectQuery
      */
     public function filterQuery($query)
     {
@@ -87,6 +88,8 @@ class FilterManager
                 $filter->filterQuery($query);
             }
         }
+
+        return $query;
     }
 
     /**

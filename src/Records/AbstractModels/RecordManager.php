@@ -590,12 +590,24 @@ abstract class RecordManager
     }
 
     /**
+     * @param $query
+     * @param array $filters
+     * @return mixed
+     */
+    public function filter($query, $filters = array())
+    {
+        $query = $this->filterQuery($query);
+
+        return $query;
+    }
+
+    /**
      * @param SelectQuery $query
-     * @return void
+     * @return SelectQuery
      */
     public function filterQuery($query)
     {
-        $this->getFilterManager()->filterQuery($query);
+        return $this->getFilterManager()->filterQuery($query);
     }
 
     public function __wakeup()
