@@ -1,6 +1,6 @@
 <?php
 
-namespace Nip\I18n\Backend;
+namespace Nip\I18n\Translator\Backend;
 
 use Nip_File_System as FileSystem;
 

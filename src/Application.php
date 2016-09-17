@@ -423,28 +423,31 @@ class Application
 
     public function initTranslation()
     {
-        $i18n = $this->newTranslator();
-        $i18n->setRequest($this->getFrontController()->getRequest());
+        $translator = $this->newTranslator();
+        $translator->setRequest($this->getFrontController()->getRequest());
 
-        return $i18n;
+        Container::getInstance()->set('translator', $translator);
+
+        return $translator;
     }
 
     /**
-     * @return I18n
+     * @return I18n\Translator
      */
     public function newTranslator()
     {
-        return new I18n();
+        return new I18n\Translator();
     }
 
+    /**
+     * @param $translation
+     */
     public function initLanguages($translation)
     {
-        return $translation;
     }
 
     public function setupLocale()
     {
-
     }
 
     public function setupRouting()

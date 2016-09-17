@@ -1,31 +1,36 @@
 <?php
 
-namespace Nip;
+namespace Nip\I18n;
+
+use Nip\I18n\Translator\Backend\AbstractBackend;
 
 /**
- * Class I18n
- * @package Nip
+ * Class Translator
+ * @package Nip\I18n
  */
-class I18n
+class Translator
 {
 
     public $defaultLanguage = false;
     public $selectedLanguage = false;
-    protected $_languageCodes = array(
+
+    protected $languageCodes = [
         'en' => 'en_US',
-    );
+    ];
+
     /**
-     * @var Nip_I18n_Backend_Abstract
+     * @var AbstractBackend
      */
-    protected $_backend;
-    protected $_request;
+    protected $backend;
+
+    protected $request;
 
     /**
      * Singleton pattern
      *
      * @return self
      */
-    static public function instance()
+    public static function instance()
     {
         static $instance;
         if (!($instance instanceof self)) {
@@ -36,31 +41,35 @@ class I18n
     }
 
     /**
-     * @return Nip_I18n_Backend_Abstract
+     * @return AbstractBackend
      */
     public function getBackend()
     {
-        return $this->_backend;
+        return $this->backend;
     }
 
     /**
      * Sets the translation backend
-     * @param Nip_I18n_Backend_Abstract $backend
-     * @return Nip_I18n
+     * @param AbstractBackend $backend
+     * @return $this
      */
-    public function setBackend(Nip_I18n_Backend_Abstract $backend)
+    public function setBackend($backend)
     {
-        $this->_backend = $backend;
-        $this->_backend->setI18n($this);
+        $this->backend = $backend;
+        $this->backend->setTranslator($this);
 
         return $this;
     }
 
     public function getLanguages()
     {
-        return $this->_backend->getLanguages();
+        return $this->backend->getLanguages();
     }
 
+    /**
+     * @param $lang
+     * @return mixed|string
+     */
     public function changeLangURL($lang)
     {
         $newURL = str_replace('language='.$this->getLanguage(), '', CURRENT_URL);
@@ -108,7 +117,7 @@ class I18n
      */
     public function getRequest()
     {
-        return $this->_request;
+        return $this->request;
     }
 
     /**
@@ -116,21 +125,21 @@ class I18n
      */
     public function setRequest($request)
     {
-        $this->_request = $request;
+        $this->request = $request;
     }
 
     /**
      * Selects a language to be used when translating
      *
      * @param string $language
-     * @return Nip_I18n
+     * @return $this
      */
     public function setLanguage($language)
     {
         $this->selectedLanguage = $language;
         $_SESSION['language'] = $language;
 
-        $code = $this->_languageCodes[$language] ? $this->_languageCodes[$language] : $language."_".strtoupper($language);
+        $code = $this->languageCodes[$language] ? $this->languageCodes[$language] : $language."_".strtoupper($language);
 
         putenv('LC_ALL='.$code);
         setlocale(LC_ALL, $code);
@@ -156,7 +165,7 @@ class I18n
      * Sets the default language to be used when translating
      *
      * @param string $language
-     * @return Nip_I18n
+     * @return $this
      */
     public function setDefaultLanguage($language)
     {
@@ -173,14 +182,14 @@ class I18n
      * @param string|boolean $language
      * @return string
      */
-    public function translate($slug = false, $params = array(), $language = false)
+    public function translate($slug = false, $params = [], $language = false)
     {
 
         if (!$language) {
             $language = $this->getLanguage();
         }
 
-        $return = $this->_backend->translate($slug, $language);
+        $return = $this->backend->translate($slug, $language);
 
         if ($return) {
             if ($params) {
@@ -206,19 +215,6 @@ class I18n
             $language = $this->getLanguage();
         }
 
-        return $this->_backend->hasTranslation($slug, $language);
+        return $this->backend->hasTranslation($slug, $language);
     }
-
-}
-
-if (!function_exists("__")) {
-    function __($slug, $params = array(), $language = false)
-    {
-        return Nip_I18n::instance()->translate($slug, $params, $language);
-    }
-}
-
-function nip__($slug, $params = array(), $language = false)
-{
-    return Nip_I18n::instance()->translate($slug, $params, $language);
 }

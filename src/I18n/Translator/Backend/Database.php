@@ -1,9 +1,8 @@
 <?php
 
-namespace Nip\I18n\Backend;
+namespace Nip\I18n\Translator\Backend;
 
 use Nip\Database\Connection;
-use Nip\I18n;
 
 /**
  * Nip Framework

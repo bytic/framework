@@ -4,6 +4,10 @@ namespace Nip\Container\Definition;
 
 use ReflectionClass;
 
+/**
+ * Class ClassDefinition
+ * @package Nip\Container\Definition
+ */
 class ClassDefinition extends AbstractDefinition implements DefinitionInterface
 {
     /**

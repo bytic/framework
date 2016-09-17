@@ -1,46 +1,46 @@
 <?php
 
-namespace Nip\I18n\Backend;
+namespace Nip\I18n\Translator\Backend;
 
-use Nip\I18n;
+use Nip\I18n\Translator;
 
 /**
  * Class AbstractBackend
- * @package Nip\I18n\Backend
+ * @package Nip\I18n\Translator\Backend
  */
 abstract class AbstractBackend
 {
 
     /**
-     * @var I18n
+     * @var Translator
      */
-    protected $i18n = null;
+    protected $translator = null;
 
     protected $languages;
 
     /**
-     * @return I18n
+     * @return Translator
      */
-    public function getI18n()
+    public function getTranslator()
     {
-        if (!$this->i18n) {
-            $this->initI18n();
+        if (!$this->translator) {
+            $this->initTranslator();
         }
 
-        return $this->i18n;
+        return $this->translator;
     }
 
     /**
-     * @param I18n $i18n
+     * @param Translator $translator
      */
-    public function setI18n($i18n)
+    public function setTranslator($translator)
     {
-        $this->i18n = $i18n;
+        $this->translator = $translator;
     }
 
     public function initI18n()
     {
-        $this->setI18n(I18n::instance());
+        $this->setTranslator(Translator::instance());
     }
 
     public function getLanguages()

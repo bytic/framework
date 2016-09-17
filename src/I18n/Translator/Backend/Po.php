@@ -1,10 +1,10 @@
 <?php
 
-namespace Nip\I18n\Backend;
+namespace Nip\I18n\Translator\Backend;
 
 /**
  * Class Po
- * @package Nip\I18n\Backend
+ * @package Nip\I18n\Translator\Backend
  */
 class Po extends AbstractBackend
 {
