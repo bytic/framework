@@ -4,6 +4,10 @@ namespace Nip\Database\Adapters;
 
 use Nip\Database\Adapters\Profiler\Profiler;
 
+/**
+ * Class AbstractAdapter
+ * @package Nip\Database\Adapters
+ */
 abstract class AbstractAdapter
 {
 
@@ -20,25 +24,42 @@ abstract class AbstractAdapter
      */
     public function execute($sql)
     {
-        if ($this->_profiler) {
-            if ($profile = $this->_profiler->start()) {
+        if ($this->hasProfiler()) {
+            if ($profile = $this->getProfiler()->start()) {
                 $profile->setName($sql);
                 $profile->setAdapter($this);
             }
         }
 
-        $query = $this->query($sql);
+        $result = $this->query($sql);
 
-        if ($this->_profiler && $profile !== null) {
-            $this->_profiler->end($profile);
+        if ($this->hasProfiler() && $profile !== null) {
+            $this->getProfiler()->end($profile);
         }
 
-        if ($query !== false) {
-            return $query;
+        if ($result !== false) {
+            return $result;
         } else {
-            trigger_error($this->error() . " [$sql]", E_USER_WARNING);
+            trigger_error($this->error()." [$sql]", E_USER_WARNING);
         }
-        return;
+
+        return false;
+    }
+
+    /**
+     * @return bool
+     */
+    public function hasProfiler()
+    {
+        return is_object($this->_profiler);
+    }
+
+    /**
+     * @return Profiler|null
+     */
+    public function getProfiler()
+    {
+        return $this->_profiler;
     }
 
     public function setProfiler($profiler)
@@ -46,9 +67,14 @@ abstract class AbstractAdapter
         $this->_profiler = $profiler;
     }
 
+    abstract public function query($sql);
+
+    abstract public function error();
+
     public function newProfiler()
     {
         $profiler = new Profiler();
+
         return $profiler;
     }
 
@@ -56,9 +82,13 @@ abstract class AbstractAdapter
 
     abstract public function cleanData($data);
 
-    abstract public function query($sql);
-
-    abstract public function connect($host = false, $user = false, $password = false, $database = false, $newLink = false);
+    abstract public function connect(
+        $host = false,
+        $user = false,
+        $password = false,
+        $database = false,
+        $newLink = false
+    );
 
     abstract public function describeTable($table);
 
