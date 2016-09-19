@@ -46,10 +46,8 @@ class MySQLi extends AbstractAdapter implements AdapterInterface
     }
 
     /**
-     * Executes SQL query
-     *
-     * @param string $sql
-     * @return result ID
+     * @param $sql
+     * @return bool|\mysqli_result
      */
     public function query($sql)
     {

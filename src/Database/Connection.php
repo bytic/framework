@@ -38,6 +38,7 @@ class Connection
                 $e->log();
             }
         }
+
         return $this;
     }
 
@@ -49,6 +50,7 @@ class Connection
         if ($this->_adapter == null) {
             $this->initAdapter();
         }
+
         return $this->_adapter;
     }
 
@@ -74,12 +76,13 @@ class Connection
     public function newAdapter($name)
     {
         $class = static::getAdapterClass($name);
+
         return new $class();
     }
 
     public static function getAdapterClass($name)
     {
-        return '\Nip\Database\Adapters\\' . $name;
+        return '\Nip\Database\Adapters\\'.$name;
     }
 
     public function getDatabase()
@@ -104,6 +107,7 @@ class Connection
             $this->metadata = new Metadata\Manager();
             $this->metadata->setConnection($this);
         }
+
         return $this->metadata;
     }
 
@@ -133,7 +137,7 @@ class Connection
      */
     public function newQuery($type = "select")
     {
-        $className = '\Nip\Database\Query\\' . inflector()->camelize($type);
+        $className = '\Nip\Database\Query\\'.inflector()->camelize($type);
         $query = new $className();
         /** @var AbstractQuery $query */
         $query->setManager($this);
@@ -144,16 +148,18 @@ class Connection
     /**
      * Executes SQL query
      *
-     * @param mixed $query
+     * @param mixed|AbstractQuery $query
      * @return Result
      */
     public function execute($query)
     {
         $this->_queries[] = $query;
 
-        $query = (string)$query;
-        $query = $this->getAdapter()->execute($query);
-        $result = new Result($query, $this->getAdapter());
+        $sql = is_string($query) ? $query : $query->getString();
+
+        $resultSQL = $this->getAdapter()->execute($sql);
+        $result = new Result($resultSQL, $this->getAdapter());
+        $result->setQuery($query);
 
         return $result;
     }

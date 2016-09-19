@@ -34,9 +34,12 @@ abstract class AbstractQuery
         'where' => null,
     ];
 
+    protected $string = null;
+
     public function setManager(Connection $manager)
     {
         $this->db = $manager;
+
         return $this;
     }
 
@@ -200,6 +203,7 @@ abstract class AbstractQuery
         if ($offset) {
             $this->parts['limit'] .= ','.$offset;
         }
+
         return $this;
     }
 
@@ -263,7 +267,19 @@ abstract class AbstractQuery
      */
     public function __toString()
     {
-        return (string)$this->assemble();
+        return $this->getString();
+    }
+
+    /**
+     * @return string
+     */
+    public function getString()
+    {
+        if ($this->string === null) {
+            $this->string = (string)$this->assemble();
+        }
+
+        return $this->string;
     }
 
     public function assemble()
@@ -308,6 +324,7 @@ abstract class AbstractQuery
         if (isset($this->parts['having'])) {
             return (string)$this->parts['having'];
         }
+
         return '';
     }
 
@@ -334,7 +351,7 @@ abstract class AbstractQuery
                 $type = isset($itemOrder[1]) ? $itemOrder[1] : '';
                 $protected = isset($itemOrder[2]) ? $itemOrder[2] : true;
 
-                $column = ($protected ? $this->protect($column) : $column) . ' ' . strtoupper($type);
+                $column = ($protected ? $this->protect($column) : $column).' '.strtoupper($type);
 
                 $orderParts[] = trim($column);
             }
