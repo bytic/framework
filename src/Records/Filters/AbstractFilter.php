@@ -18,6 +18,11 @@ class AbstractFilter implements FilterInterface
     protected $name = null;
 
     /**
+     * @var null|string
+     */
+    protected $requestField = null;
+
+    /**
      * @var null|mixed
      */
     protected $value = null;
@@ -27,15 +32,24 @@ class AbstractFilter implements FilterInterface
      */
     protected $manager;
 
+    /**
+     * @param $query
+     */
     public function filterQuery($query)
     {
     }
 
+    /**
+     * @return bool
+     */
     public function isActive()
     {
         return $this->hasValue();
     }
 
+    /**
+     * @return bool
+     */
     public function hasValue()
     {
         return $this->getValue() !== false;
@@ -77,10 +91,13 @@ class AbstractFilter implements FilterInterface
         return false;
     }
 
+    /**
+     * @return bool|string
+     */
     public function getValueFromRequest()
     {
         $request = $this->getRequest();
-        $name = $this->getName();
+        $name = $this->getRequestField();
         if ($name) {
             $return = $request->get($name);
             if ($return) {
@@ -89,6 +106,31 @@ class AbstractFilter implements FilterInterface
         }
 
         return false;
+    }
+
+    /**
+     * @return null|string
+     */
+    public function getRequestField()
+    {
+        if ($this->requestField === null) {
+            $this->initRequestField();
+        }
+
+        return $this->requestField;
+    }
+
+    /**
+     * @param null|string $requestField
+     */
+    public function setRequestField($requestField)
+    {
+        $this->requestField = $requestField;
+    }
+
+    public function initRequestField()
+    {
+        $this->setRequestField($this->getName());
     }
 
     /**
@@ -124,6 +166,10 @@ class AbstractFilter implements FilterInterface
         return !empty($value);
     }
 
+    /**
+     * @param $value
+     * @return string
+     */
     public function cleanRequestValue($value)
     {
         return clean($value);

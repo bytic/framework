@@ -19,8 +19,8 @@ abstract class Record extends \Nip_Object
     protected $_manager = null;
     protected $_managerName = null;
 
-    protected $_dbData = array();
-    protected $_helpers = array();
+    protected $_dbData = [];
+    protected $_helpers = [];
 
 
     /**

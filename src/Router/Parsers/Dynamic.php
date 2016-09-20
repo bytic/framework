@@ -5,7 +5,7 @@ namespace Nip\Router\Parser;
 class Dynamic extends AbstractParser
 {
 
-    protected $_variables = array();
+    protected $_variables = [];
 
     public function parseMap()
     {
@@ -26,7 +26,7 @@ class Dynamic extends AbstractParser
     public function getVariableFromPart($part)
     {
         $len = strlen($part);
-        $variables = array();
+        $variables = [];
         $variable = false;
         $letters = array_merge(range('A', 'Z'), range('a', 'z'));
         for ($i=0; $i < $len; $i++) {
@@ -76,20 +76,6 @@ class Dynamic extends AbstractParser
         return false;
     }
 
-    protected function preMatch()
-    {
-        if (count($this->_parts) != (substr_count($this->_uri, '/') + 1)) {
-            return false;
-        }
-
-        return true;
-    }
-
-    protected function postMatch()
-    {
-        return true;
-    }
-
     public function getVariableParts($url)
     {
         $this->_uriParts = explode("/", $url);
@@ -102,6 +88,15 @@ class Dynamic extends AbstractParser
                 return false;
             }
             unset($this->_uriParts[$key]);
+        }
+
+        return true;
+    }
+
+    protected function preMatch()
+    {
+        if (count($this->_parts) != (substr_count($this->_uri, '/') + 1)) {
+            return false;
         }
 
         return true;
@@ -122,6 +117,11 @@ class Dynamic extends AbstractParser
                 $this->_params[$var] = $uriParts[$key];
             }
         }
+    }
+
+    protected function postMatch()
+    {
+        return true;
     }
 
     public function getVariables()

@@ -20,6 +20,39 @@ abstract class Nip_Form_Button_Abstract
         $this->addClass('btn', 'btn-primary');
     }
 
+    public function addClass()
+    {
+        $classes = func_get_args();
+        if (is_array($classes)) {
+            $oldClasses = explode(' ', $this->getAttrib('class'));
+            $classes = array_merge($classes, $oldClasses);
+            $this->setAttrib('class', implode(' ', $classes));
+        }
+
+        return $this;
+    }
+
+    public function getAttrib($key)
+    {
+        $key = (string)$key;
+        if (!isset($this->_attribs[$key])) {
+            return null;
+        }
+
+        return $this->_attribs[$key];
+    }
+
+    /**
+     * @return Nip_Form_Element_Abstract
+     */
+    public function setAttrib($key, $value)
+    {
+        $key = (string)$key;
+        $this->_attribs[$key] = $value;
+
+        return $this;
+    }
+
     public function setId($id)
     {
         $this->setAttrib('id', $id);
@@ -64,38 +97,36 @@ abstract class Nip_Form_Button_Abstract
         return $this->getAttrib('value');
     }
 
-    public function addClass()
+    public function delAttrib($key)
     {
-        $classes = func_get_args();
-        if (is_array($classes)) {
-            $oldClasses = explode(' ', $this->getAttrib('class'));
-            $classes = array_merge($classes, $oldClasses);
-            $this->setAttrib('class', implode(' ', $classes));
-        }
-        return $this;
+        $key = (string)$key;
+        unset($this->_attribs[$key]);
+
+        return true;
     }
 
-    public function setForm(Nip_Form_Abstract $form)
+    public function getAttribs()
     {
-        $this->_form = $form;
-        return $this;
+        return $this->_attribs;
     }
 
     /**
-     * @return Nip_Form_Abstract
+     * @param  array $attribs
+     * @return Nip_Form_Element_Abstract
      */
-    public function getForm()
+    public function setAttribs(array $attribs)
     {
-        return $this->_form;
+        $this->clearAttribs();
+
+        return $this->addAttribs($attribs);
     }
 
     /**
      * @return Nip_Form_Element_Abstract
      */
-    public function setAttrib($key, $value)
+    public function clearAttribs()
     {
-        $key = (string)$key;
-        $this->_attribs[$key] = $value;
+        $this->_attribs = [];
         return $this;
     }
 
@@ -112,39 +143,6 @@ abstract class Nip_Form_Button_Abstract
     }
 
     /**
-     * @param  array $attribs
-     * @return Nip_Form_Element_Abstract
-     */
-    public function setAttribs(array $attribs)
-    {
-        $this->clearAttribs();
-        return $this->addAttribs($attribs);
-    }
-
-    public function getAttrib($key)
-    {
-        $key = (string)$key;
-        if (!isset($this->_attribs[$key])) {
-            return null;
-        }
-
-        return $this->_attribs[$key];
-    }
-
-    public function delAttrib($key)
-    {
-        $key = (string)$key;
-        unset($this->_attribs[$key]);
-
-        return true;
-    }
-
-    public function getAttribs()
-    {
-        return $this->_attribs;
-    }
-
-    /**
      * @return bool
      */
     public function removeAttrib($key)
@@ -157,13 +155,9 @@ abstract class Nip_Form_Button_Abstract
         return false;
     }
 
-    /**
-     * @return Nip_Form_Element_Abstract
-     */
-    public function clearAttribs()
+    public function render()
     {
-        $this->_attribs = array();
-        return $this;
+        return $this->getRenderer()->render($this);
     }
 
     public function getRenderer()
@@ -171,9 +165,19 @@ abstract class Nip_Form_Button_Abstract
         return $this->getForm()->getRenderer()->getButtonRenderer($this);
     }
 
-    public function render()
+    /**
+     * @return Nip_Form_Abstract
+     */
+    public function getForm()
     {
-        return $this->getRenderer()->render($this);
+        return $this->_form;
+    }
+
+    public function setForm(Nip_Form_Abstract $form)
+    {
+        $this->_form = $form;
+
+        return $this;
     }
 
     public function getType()

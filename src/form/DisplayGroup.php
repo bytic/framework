@@ -6,13 +6,20 @@ class Nip_Form_DisplayGroup extends Nip_Collection
      * Group attributes
      * @var array
      */
-    protected $_attribs = array();
+    protected $_attribs = [];
     
     /**
      * @var Nip_Form
      */
     protected $_form;
 
+    /**
+     * @return Nip_Form|null
+     */
+    public function getForm()
+    {
+        return $this->_form;
+    }
 
     /**
      * @param  Nip_Form $form
@@ -22,14 +29,6 @@ class Nip_Form_DisplayGroup extends Nip_Collection
     {
         $this->_form = $form;
         return $this;
-    }
-
-    /**
-     * @return Nip_Form|null
-     */
-    public function getForm()
-    {
-        return $this->_form;
     }
 
     public function addElement(Nip_Form_Element_Abstract $element)
@@ -43,11 +42,6 @@ class Nip_Form_DisplayGroup extends Nip_Collection
         return $this->setAttrib('legend', (string) $legend);
     }
 
-    public function getLegend()
-    {
-        return $this->getAttrib('legend');
-    }
-
     public function setAttrib($key, $value)
     {
         $key = (string) $key;
@@ -55,18 +49,9 @@ class Nip_Form_DisplayGroup extends Nip_Collection
         return $this;
     }
 
-    public function addAttribs(array $attribs)
+    public function getLegend()
     {
-        foreach ($attribs as $key => $value) {
-            $this->setAttrib($key, $value);
-        }
-        return $this;
-    }
-
-    public function setAttribs(array $attribs)
-    {
-        $this->clearAttribs();
-        return $this->addAttribs($attribs);
+        return $this->getAttrib('legend');
     }
 
     public function getAttrib($key)
@@ -84,6 +69,29 @@ class Nip_Form_DisplayGroup extends Nip_Collection
         return $this->_attribs;
     }
 
+    public function setAttribs(array $attribs)
+    {
+        $this->clearAttribs();
+
+        return $this->addAttribs($attribs);
+    }
+
+    public function clearAttribs()
+    {
+        $this->_attribs = [];
+
+        return $this;
+    }
+
+    public function addAttribs(array $attribs)
+    {
+        foreach ($attribs as $key => $value) {
+            $this->setAttrib($key, $value);
+        }
+
+        return $this;
+    }
+
     public function removeAttrib($key)
     {
         if (array_key_exists($key, $this->_attribs)) {
@@ -92,12 +100,6 @@ class Nip_Form_DisplayGroup extends Nip_Collection
         }
 
         return false;
-    }
-
-    public function clearAttribs()
-    {
-        $this->_attribs = array();
-        return $this;
     }
 
     public function render() {

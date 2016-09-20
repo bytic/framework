@@ -3,8 +3,8 @@
 namespace Nip\Database;
 
 use Nip\Database\Adapters\AbstractAdapter;
-use Nip\Database\Query\Select as SelectQuery;
 use Nip\Database\Query\AbstractQuery as AbstractQuery;
+use Nip\Database\Query\Select as SelectQuery;
 
 class Connection
 {
@@ -15,7 +15,7 @@ class Connection
     protected $_database;
     protected $metadata;
     protected $_query;
-    protected $_queries = array();
+    protected $_queries = [];
 
 
     /**
@@ -38,6 +38,7 @@ class Connection
                 $e->log();
             }
         }
+
         return $this;
     }
 
@@ -49,6 +50,7 @@ class Connection
         if ($this->_adapter == null) {
             $this->initAdapter();
         }
+
         return $this->_adapter;
     }
 
@@ -57,14 +59,14 @@ class Connection
         $this->_adapter = $adapter;
     }
 
-    public function setAdapterName($name)
-    {
-        $this->setAdapter($this->newAdapter($name));
-    }
-
     public function initAdapter()
     {
         $this->setAdapterName('MySQLi');
+    }
+
+    public function setAdapterName($name)
+    {
+        $this->setAdapter($this->newAdapter($name));
     }
 
     /**
@@ -74,12 +76,13 @@ class Connection
     public function newAdapter($name)
     {
         $class = static::getAdapterClass($name);
+
         return new $class();
     }
 
     public static function getAdapterClass($name)
     {
-        return '\Nip\Database\Adapters\\' . $name;
+        return '\Nip\Database\Adapters\\'.$name;
     }
 
     public function getDatabase()
@@ -104,18 +107,8 @@ class Connection
             $this->metadata = new Metadata\Manager();
             $this->metadata->setConnection($this);
         }
-        return $this->metadata;
-    }
 
-    /**
-     * Adds backticks to input
-     *
-     * @param string $input
-     * @return string
-     */
-    public function protect($input)
-    {
-        return str_replace("`*`", "*", '`' . str_replace('.', '`.`', $input) . '`');
+        return $this->metadata;
     }
 
     /**
@@ -144,7 +137,7 @@ class Connection
      */
     public function newQuery($type = "select")
     {
-        $className = '\Nip\Database\Query\\' . inflector()->camelize($type);
+        $className = '\Nip\Database\Query\\'.inflector()->camelize($type);
         $query = new $className();
         /** @var AbstractQuery $query */
         $query->setManager($this);
@@ -155,16 +148,18 @@ class Connection
     /**
      * Executes SQL query
      *
-     * @param mixed $query
+     * @param mixed|AbstractQuery $query
      * @return Result
      */
     public function execute($query)
     {
         $this->_queries[] = $query;
 
-        $query = (string)$query;
-        $query = $this->getAdapter()->execute($query);
-        $result = new Result($query, $this->getAdapter());
+        $sql = is_string($query) ? $query : $query->getString();
+
+        $resultSQL = $this->getAdapter()->execute($sql);
+        $result = new Result($resultSQL, $this->getAdapter());
+        $result->setQuery($query);
 
         return $result;
     }
@@ -204,6 +199,17 @@ class Connection
     public function describeTable($table)
     {
         return $this->getAdapter()->describeTable($this->protect($table));
+    }
+
+    /**
+     * Adds backticks to input
+     *
+     * @param string $input
+     * @return string
+     */
+    public function protect($input)
+    {
+        return str_replace("`*`", "*", '`'.str_replace('.', '`.`', $input).'`');
     }
 
     public function getQueries()

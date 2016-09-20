@@ -7,54 +7,12 @@ use Nip_Config;
 class GoogleAnalytics extends AbstractHelper
 {
 
+    public $transactions = null;
     protected $_UA = null;
     protected $_domain = null;
-
     protected $page;
-    protected $_operations = array();
-
-    public $transactions = null;
-
+    protected $_operations = [];
     protected $flashMemory = null;
-
-    public function getUA()
-    {
-        if ($this->_UA == null) {
-            $this->setUA(Nip_Config::instance()->ANALYTICS->UA);
-        }
-
-        return $this->_UA;
-    }
-
-    public function setUA($code)
-    {
-        $this->_UA = $code;
-    }
-
-    public function getDomain()
-    {
-        if ($this->_domain == null) {
-            $this->setDomain(Nip_Config::instance()->ANALYTICS->domain);
-        }
-
-        return $this->_domain;
-    }
-
-    public function setDomain($domain)
-    {
-        $this->_domain = $domain;
-    }
-
-    public function addOperation($method, $params = array(), $position = 'below')
-    {
-        if ($position == 'prepend') {
-            array_unshift($this->_operations, array($method, $params));
-        } else {
-            $this->_operations[] = array($method, $params);
-        }
-
-        return $this;
-    }
 
     /**
      * @param array $data
@@ -71,6 +29,31 @@ class GoogleAnalytics extends AbstractHelper
         $this->transactions[$order->orderId] = $order;
 
         $this->getFlashMemory()->add("analytics.transactions", $this->transactions);
+    }
+
+    /**
+     * @return \Nip_Flash
+     */
+    public function getFlashMemory()
+    {
+        if ($this->flashMemory == null) {
+            $this->initFlashMemory();
+        }
+
+        return $this->flashMemory;
+    }
+
+    /**
+     * @param \Nip_Flash $flashMemory
+     */
+    public function setFlashMemory($flashMemory)
+    {
+        $this->flashMemory = $flashMemory;
+    }
+
+    public function initFlashMemory()
+    {
+        $this->flashMemory = \Nip_Flash::instance();
     }
 
     /**
@@ -91,17 +74,95 @@ class GoogleAnalytics extends AbstractHelper
         $this->getFlashMemory()->add("analytics.transactions", json_encode($this->transactions));
     }
 
-    public function getTransactions()
+    public function render()
     {
-        if ($this->transactions === null) {
-            $this->initTransactions();
+
+        $this->addOperation('_set', array('currencyCode', 'RON'), 'prepend');
+        $this->addOperation('_trackPageview', $this->getPage() ? $this->getPage() : null, 'prepend');
+        $this->addOperation('_setDomainName', $this->getDomain(), 'prepend');
+        $this->addOperation('_setAccount', $this->getUA(), 'prepend');
+
+        $this->parseTransactions('');
+
+        $return = '<script type="text/javascript">';
+        $return .= 'var _gaq = _gaq || [];';
+
+        foreach ($this->_operations as $operation) {
+            $return .= "_gaq.push([";
+            $return .= "'{$operation[0]}'";
+            if (isset($operation[1]) && $operation[1] !== null) {
+                $return .= ",";
+                $params = [];
+                if (is_array($operation[1])) {
+                    foreach ($operation[1] as $param) {
+                        $params[] = $this->renderOperationParam($param);
+                    }
+                } else {
+                    $params[] = $this->renderOperationParam($operation[1]);
+                }
+
+                $return .= implode(',', $params);
+            }
+            $return .= "]);";
         }
-        return $this->transactions;
+
+        $return .= "(function() {
+            var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+            ga.src = ('https:' == document.location.protocol ? 'https://' : 'http://') + 'stats.g.doubleclick.net/dc.js';
+            var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+        })();";
+        $return .= '</script>';
+
+        return $return;
     }
 
-    public function initTransactions()
+    public function addOperation($method, $params = array(), $position = 'below')
     {
-        $this->transactions = json_decode($this->getFlashMemory()->get("analytics.transactions"));
+        if ($position == 'prepend') {
+            array_unshift($this->_operations, array($method, $params));
+        } else {
+            $this->_operations[] = array($method, $params);
+        }
+
+        return $this;
+    }
+
+    public function getPage()
+    {
+        return $this->page ? "'$this->page'" : '';
+    }
+
+    public function setPage($page)
+    {
+        $this->page = $page;
+    }
+
+    public function getDomain()
+    {
+        if ($this->_domain == null) {
+            $this->setDomain(Nip_Config::instance()->ANALYTICS->domain);
+        }
+
+        return $this->_domain;
+    }
+
+    public function setDomain($domain)
+    {
+        $this->_domain = $domain;
+    }
+
+    public function getUA()
+    {
+        if ($this->_UA == null) {
+            $this->setUA(Nip_Config::instance()->ANALYTICS->UA);
+        }
+
+        return $this->_UA;
+    }
+
+    public function setUA($code)
+    {
+        $this->_UA = $code;
     }
 
     public function parseTransactions($prefix = '')
@@ -140,56 +201,18 @@ class GoogleAnalytics extends AbstractHelper
         }
     }
 
-    public function setPage($page)
+    public function getTransactions()
     {
-        $this->page = $page;
-    }
-
-    public function getPage()
-    {
-        return $this->page ? "'$this->page'" : '';
-    }
-
-    public function render()
-    {
-
-        $this->addOperation('_set', array('currencyCode', 'RON'), 'prepend');
-        $this->addOperation('_trackPageview', $this->getPage() ? $this->getPage() : null, 'prepend');
-        $this->addOperation('_setDomainName', $this->getDomain(), 'prepend');
-        $this->addOperation('_setAccount', $this->getUA(), 'prepend');
-
-        $this->parseTransactions('');
-
-        $return = '<script type="text/javascript">';
-        $return .= 'var _gaq = _gaq || [];';
-
-        foreach ($this->_operations as $operation) {
-            $return .= "_gaq.push([";
-            $return .= "'{$operation[0]}'";
-            if (isset($operation[1]) && $operation[1] !== null) {
-                $return .= ",";
-                $params = array();
-                if (is_array($operation[1])) {
-                    foreach ($operation[1] as $param) {
-                        $params[] = $this->renderOperationParam($param);
-                    }
-                } else {
-                    $params[] = $this->renderOperationParam($operation[1]);
-                }
-
-                $return .= implode(',', $params);
-            }
-            $return .= "]);";
+        if ($this->transactions === null) {
+            $this->initTransactions();
         }
 
-        $return .= "(function() {
-            var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-            ga.src = ('https:' == document.location.protocol ? 'https://' : 'http://') + 'stats.g.doubleclick.net/dc.js';
-            var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-        })();";
-        $return .= '</script>';
+        return $this->transactions;
+    }
 
-        return $return;
+    public function initTransactions()
+    {
+        $this->transactions = json_decode($this->getFlashMemory()->get("analytics.transactions"));
     }
 
     public function renderOperationParam($param)
@@ -198,30 +221,6 @@ class GoogleAnalytics extends AbstractHelper
             return $param === true ? 'true' : 'false';
         }
         return "'{$param}'";
-    }
-
-    /**
-     * @return \Nip_Flash
-     */
-    public function getFlashMemory()
-    {
-        if ($this->flashMemory == null) {
-            $this->initFlashMemory();
-        }
-        return $this->flashMemory;
-    }
-
-    public function initFlashMemory()
-    {
-        $this->flashMemory = \Nip_Flash::instance();
-    }
-
-    /**
-     * @param \Nip_Flash $flashMemory
-     */
-    public function setFlashMemory($flashMemory)
-    {
-        $this->flashMemory = $flashMemory;
     }
 
 

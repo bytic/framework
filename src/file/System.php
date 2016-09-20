@@ -50,11 +50,11 @@ class Nip_File_System
         if (is_int($errorCode)) {
             $translateSlug = 'general.errors.upload.code-'.$errorCode;
 
-            return Nip_I18n::instance()->hasTranslation($translateSlug) ? __($translateSlug) : $this->_uploadErrors[$errorCode];
+            return app('translator')->hasTranslation($translateSlug) ? __($translateSlug) : $this->_uploadErrors[$errorCode];
         } elseif (is_string($errorCode)) {
             $translateSlug = 'general.errors.upload.'.$errorCode;
 
-            return Nip_I18n::instance()->hasTranslation($translateSlug) ? __($translateSlug) : $messages[$errorCode];
+            return app('translator')->hasTranslation($translateSlug) ? __($translateSlug) : $messages[$errorCode];
         }
 
         return false;
@@ -122,7 +122,7 @@ class Nip_File_System
      */
     public function scanDirectory($dir, $recursive = false, $fullPaths = false)
     {
-        $result = array();
+        $result = [];
 
         if (is_dir($dir)) {
             if ($recursive) {

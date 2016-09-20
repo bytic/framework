@@ -6,8 +6,22 @@
 class Nip_Helper_Url extends Nip\Helpers\AbstractHelper
 {
 
-    protected $_pieces = array();
+    protected $_pieces = [];
     protected $_router;
+
+    /**
+     * Singleton
+     * @return Nip_Helper_URL
+     */
+    static public function instance()
+    {
+        static $instance;
+        if (!($instance instanceof self)) {
+            $instance = new self();
+        }
+
+        return $instance;
+    }
 
     public function __call($name, $arguments)
     {
@@ -19,18 +33,38 @@ class Nip_Helper_Url extends Nip\Helpers\AbstractHelper
         }
 
         $name = $this->_pieces ? implode(".", $this->_pieces) : '';
-        $this->_pieces = array();
+        $this->_pieces = [];
         return $this->assemble($name, $arguments[0]);
-    }
-
-    public function get($name, $params = false)
-    {
-        return $this->assemble($name, $params);
     }
 
     public function assemble($name, $params = false)
     {
         return $this->getRouter()->assembleFull($name, $params);
+    }
+
+    /**
+     * @return \Nip\Router\Router;
+     */
+    public function getRouter()
+    {
+        if (!$this->_router) {
+            $this->_router = $this->initRouter();
+        }
+
+        return $this->_router;
+    }
+
+    /**
+     * @return Nip\Router\Router;
+     */
+    public function initRouter()
+    {
+        return \Nip\FrontController::instance()->getRouter();
+    }
+
+    public function get($name, $params = false)
+    {
+        return $this->assemble($name, $params);
     }
 
     public function route($name, $params = false)
@@ -96,7 +130,7 @@ class Nip_Helper_Url extends Nip\Helpers\AbstractHelper
             '&#355;' => 't'
         );
 
-        $change = $with = array();
+        $change = $with = [];
         foreach ($chars as $i => $v) {
             $change[] = html_entity_decode($i, ENT_QUOTES, 'UTF-8');
             $with[] = $v;
@@ -105,38 +139,5 @@ class Nip_Helper_Url extends Nip\Helpers\AbstractHelper
 
         preg_match_all("/[a-z0-9]+/i", $input, $sections);
         return strtolower(implode("-", $sections[0]));
-    }
-
-    /**
-     * @return \Nip\Router\Router;
-     */
-    public function getRouter()
-    {
-        if (!$this->_router) {
-            $this->_router = $this->initRouter();
-        }
-
-        return $this->_router;
-    }
-
-    /**
-     * @return Nip\Router\Router;
-     */
-    public function initRouter()
-    {
-        return \Nip\FrontController::instance()->getRouter();
-    }
-
-    /**
-     * Singleton
-     * @return Nip_Helper_URL
-     */
-    static public function instance()
-    {
-        static $instance;
-        if (!($instance instanceof self)) {
-            $instance = new self();
-        }
-        return $instance;
     }
 }

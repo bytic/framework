@@ -25,7 +25,7 @@ class Nip_Form_Renderer_Elements_Dateselect extends Nip_Form_Renderer_Elements_M
         $return .= '<script type="text/javascript">';
         $return .= 'jQuery(document).ready(function() {';
 
-		$options = array();
+        $options = [];
 		$options[] = 'changeMonth: true';
 		$options[] = 'changeYear: true';
 		

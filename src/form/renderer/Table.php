@@ -1,11 +1,11 @@
 <?php
 class Nip_Form_Renderer_Table extends Nip_Form_Renderer_Abstract {
 
-    protected $_table = array();
-    protected $_tbody = array();
-    protected $_data = array();
-    protected $_rows = array();
-    protected $_cols = array();
+    protected $_table = [];
+    protected $_tbody = [];
+    protected $_data = [];
+    protected $_rows = [];
+    protected $_cols = [];
 
     public function  __construct() {
         parent::__construct();

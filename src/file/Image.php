@@ -15,7 +15,7 @@ class Nip_File_Image extends Nip_File_Handler
 	public $quality = 90;
 	public $type = 'jpg';
 	public $max_width = false;
-	public $errors = array();
+    public $errors = [];
 	protected $_resource;
 	protected $_file;
 	protected $_upload;
@@ -66,10 +66,23 @@ class Nip_File_Image extends Nip_File_Handler
 		return false;
 	}
 
-	public function setResource($gdImage)
+    public function getWidth()
 	{
-		$this->_resource = $gdImage;
+        if (!$this->_width && $this->_resource) {
+            $this->_width = imagesx($this->_resource);
+        }
+
+        return $this->_width;
 	}
+
+    public function getHeight()
+    {
+        if (!$this->_height && $this->_resource) {
+            $this->_height = imagesy($this->_resource);
+        }
+
+        return $this->_height;
+    }
 
 	public function setBaseName($name)
 	{
@@ -136,7 +149,7 @@ class Nip_File_Image extends Nip_File_Handler
 		imagefilter($this->_resource, IMG_FILTER_GRAYSCALE);
 	}
 
-	public function resize($max_width = false, $max_height = false)
+    public function resize($max_width = false, $max_height = false)
 	{
 		if (!$max_width) {
 			if ($this->max_width) {
@@ -144,27 +157,27 @@ class Nip_File_Image extends Nip_File_Handler
 			} else {
 				$max_width = $this->getWidth();
 			}
-		}        
-        
+        }
+
 		if (!$max_height) {
 			if ($this->max_height) {
 				$max_height = $this->max_height;
 			} else {
 				$max_height = $this->getHeight();
 			}
-		}                  
-                
+        }
+
         $ratio = $this->getRatio();
         $target_ratio = $max_width/$max_height;
-        
+
         if ($ratio>$target_ratio){
 			$new_width = $max_width;
             $new_height=round($max_width/$ratio);
         } else {
 			$new_height = $max_height;
-            $new_width = round($max_height * $ratio);            
+            $new_width = round($max_height * $ratio);
         }
-        
+
 		$image = imagecreatetruecolor($new_width, $new_height);
 		imagealphablending($image, false);
 		imagesavealpha($image, true);
@@ -177,29 +190,48 @@ class Nip_File_Image extends Nip_File_Handler
 
 		return $this;
 	}
-    
+
+    public function getRatio()
+    {
+        return $this->getWidth() / $this->getHeight();
+    }
+
+    public function cropToCenter($cWidth, $cHeight)
+    {
+
+        $this->resizeToLarge($cWidth, $cHeight);
+
+        $width = $this->getWidth();
+        $height = $this->getHeight();
+
+        $x0 = round(abs(($width - $cWidth) / 2), 0);
+        $y0 = round(abs(($height - $cHeight) / 2), 0);
+
+        $this->crop($x0, $y0, $cWidth, $cHeight, $cWidth, $cHeight);
+    }
+
 	public function resizeToLarge($max_width = false, $max_height = false)
 	{
 		if (!$max_width) {
             $max_width = $this->getWidth();
-		}        
-        
+        }
+
 		if (!$max_height) {
             $max_height = $this->getHeight();
-		}                  
-                
+        }
+
         $sourceRatio = $this->getRatio();
         $target_ratio = $max_width/$max_height;
-        
+
         if ($sourceRatio>$target_ratio){
 			$new_height = $max_height;
             $new_width = ( int ) ($max_height * $sourceRatio);
         } else {
             $new_width = $max_width;
-            $new_height = ( int ) ($max_width / $sourceRatio);      
+            $new_height = ( int )($max_width / $sourceRatio);
         }
-        
-		$image = imagecreatetruecolor($new_width, $new_height);
+
+        $image = imagecreatetruecolor($new_width, $new_height);
 		imagealphablending($image, false);
 		imagesavealpha($image, true);
 
@@ -210,32 +242,18 @@ class Nip_File_Image extends Nip_File_Handler
 		$this->_resource = $image;
 
 		return $this;
-	}    
-
-	public function cropToCenter($cWidth, $cHeight)
-	{       
-        
-        $this->resizeToLarge($cWidth, $cHeight);
-        
-        $width  = $this->getWidth();
-        $height = $this->getHeight();
-        
-        $x0 = round(abs(($width - $cWidth) / 2),0);
-        $y0 = round(abs(($height - $cHeight) / 2),0);
-
-		$this->crop($x0, $y0, $cWidth, $cHeight, $cWidth, $cHeight);
 	}
 
 	public function crop($x, $y, $dwidth, $dheight, $swidth, $sheight)
-	{        
+    {
 		$image = imagecreatetruecolor($dwidth, $dheight);
 		imagealphablending($image, false);
 		imagesavealpha($image, true);
 
-		imagecopyresampled($image, $this->_resource, 
-                0, 0, 
-                $x, $y, 
-                $dwidth, $dheight, 
+        imagecopyresampled($image, $this->_resource,
+            0, 0,
+            $x, $y,
+            $dwidth, $dheight,
                 $swidth, $sheight);
 
 		$this->_width = $dwidth;
@@ -363,31 +381,15 @@ class Nip_File_Image extends Nip_File_Handler
 
 		return $this;
 	}
-
-	public function getWidth()
-	{
-		if (!$this->_width && $this->_resource) {
-			$this->_width = imagesx($this->_resource);
-		}
-		return $this->_width;
-	}
-
-	public function getHeight()
-	{
-		if (!$this->_height && $this->_resource) {
-			$this->_height = imagesy($this->_resource);
-		}
-		return $this->_height;
-	}
     
-    public function getRatio()
-    {
-        return $this->getWidth()/$this->getHeight();
-    }
-
     public function getResource()
 	{
 		return $this->_resource;
+    }
+
+    public function setResource($gdImage)
+    {
+        $this->_resource = $gdImage;
 	}
 
 	public function getFile()

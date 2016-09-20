@@ -46,10 +46,10 @@ class Select extends AbstractQuery
     public function match($fields, $against, $alias, $boolean_mode = true)
     {
         if (!is_array($fields)) {
-            $fields = array();
+            $fields = [];
         }
 
-        $match = array();
+        $match = [];
         foreach ($fields as $itemField) {
             if (!is_array($itemField)) {
                 $itemField = array($itemField);
@@ -76,7 +76,7 @@ class Select extends AbstractQuery
      */
     public function join($table, $on = false, $type = '')
     {
-        $lastTable = end($this->_parts['from']);
+        $lastTable = end($this->parts['from']);
 
         if (!$lastTable) {
             trigger_error('No previous table to JOIN', E_USER_ERROR);
@@ -86,7 +86,7 @@ class Select extends AbstractQuery
             $lastTable = $lastTable[1];
         }
 
-        $this->_parts['join'][$lastTable][] = array($table, $on, $type);
+        $this->parts['join'][$lastTable][] = array($table, $on, $type);
 
         return $this;
     }
@@ -100,8 +100,8 @@ class Select extends AbstractQuery
      */
     public function group($fields, $rollup = false)
     {
-        $this->_parts['group']['fields'] = $fields;
-        $this->_parts['group']['rollup'] = $rollup;
+        $this->parts['group']['fields'] = $fields;
+        $this->parts['group']['rollup'] = $rollup;
 
         return $this;
     }
@@ -148,8 +148,8 @@ class Select extends AbstractQuery
             $query .= " ORDER BY $order";
         }
 
-        if (!empty($this->_parts['limit'])) {
-            $query .= " LIMIT {$this->_parts['limit']}";
+        if (!empty($this->parts['limit'])) {
+            $query .= " LIMIT {$this->parts['limit']}";
         }
 
         return $query;
@@ -162,12 +162,12 @@ class Select extends AbstractQuery
      */
     protected function parseCols()
     {
-        if (!isset($this->_parts['cols']) OR !is_array($this->_parts['cols']) OR count($this->_parts['cols']) < 1) {
+        if (!isset($this->parts['cols']) OR !is_array($this->parts['cols']) OR count($this->parts['cols']) < 1) {
             return '*';
         } else {
-            $selectParts = array();
+            $selectParts = [];
 
-            foreach ($this->_parts['cols'] as $itemSelect) {
+            foreach ($this->parts['cols'] as $itemSelect) {
                 if (is_array($itemSelect)) {
                     $field = isset($itemSelect[0]) ? $itemSelect[0] : false;
                     $alias = isset($itemSelect[1]) ? $itemSelect[1] : false;
@@ -185,8 +185,8 @@ class Select extends AbstractQuery
 
     public function parseOptions()
     {
-        if (!empty($this->_parts['options'])) {
-            return implode(" ", array_map("strtoupper", $this->_parts['options']));
+        if (!empty($this->parts['options'])) {
+            return implode(" ", array_map("strtoupper", $this->parts['options']));
         }
 
         return null;
@@ -198,10 +198,10 @@ class Select extends AbstractQuery
      */
     private function parseFrom()
     {
-        if (!empty($this->_parts['from'])) {
-            $parts = array();
+        if (!empty($this->parts['from'])) {
+            $parts = [];
 
-            foreach ($this->_parts['from'] as $key => $item) {
+            foreach ($this->parts['from'] as $key => $item) {
                 if (is_array($item)) {
                     $table = isset($item[0]) ? $item[0] : false;
                     $alias = isset($item[1]) ? $item[1] : false;
@@ -238,8 +238,8 @@ class Select extends AbstractQuery
     {
         $result = '';
 
-        if (isset($this->_parts['join'][$table])) {
-            foreach ($this->_parts['join'][$table] as $join) {
+        if (isset($this->parts['join'][$table])) {
+            foreach ($this->parts['join'][$table] as $join) {
                 if (!is_array($join[0])) {
                     $join[0] = array($join[0]);
                 }
@@ -283,10 +283,10 @@ class Select extends AbstractQuery
     private function parseGroup()
     {
         $group = '';
-        if (isset ($this->_parts['group']['fields'])) {
-            if (is_array($this->_parts['group']['fields'])) {
-                $groupFields = array();
-                foreach ($this->_parts['group']['fields'] as $field) {
+        if (isset ($this->parts['group']['fields'])) {
+            if (is_array($this->parts['group']['fields'])) {
+                $groupFields = [];
+                foreach ($this->parts['group']['fields'] as $field) {
                     $field = is_array($field) ? $field : array($field);
                     $column = isset($field[0]) ? $field[0] : false;
                     $type = isset($field[1]) ? $field[1] : '';
@@ -296,11 +296,11 @@ class Select extends AbstractQuery
 
                 $group .= implode(', ', $groupFields);
             } else {
-                $group .= $this->_parts['group']['fields'];
+                $group .= $this->parts['group']['fields'];
             }
         }
 
-        if (isset($this->_parts['group']['rollup']) && $this->_parts['group']['rollup'] !== false) {
+        if (isset($this->parts['group']['rollup']) && $this->parts['group']['rollup'] !== false) {
             $group .= ' WITH ROLLUP';
         }
 

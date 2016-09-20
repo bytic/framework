@@ -4,23 +4,26 @@ namespace Nip;
 
 class HelperBroker
 {
-    protected $_helpers = array();
-
-    public function hasHelper($name)
-    {
-        $name = self::getNameKey($name);
-        return isset($this->_helpers[$name]);
-    }
-
-    public static function getNameKey($name)
-    {
-        return strtolower($name);
-    }
+    protected $_helpers = [];
 
     public static function get($name)
     {
         $broker = self::instance();
         return $broker->getByName($name);
+    }
+
+    /**
+     * Singleton
+     * @return self
+     */
+    static public function instance()
+    {
+        static $instance;
+        if (!($instance instanceof self)) {
+            $instance = new self();
+        }
+
+        return $instance;
     }
 
     public function getByName($name)
@@ -31,6 +34,18 @@ class HelperBroker
         }
 
         return $this->_helpers[$name];
+    }
+
+    public function hasHelper($name)
+    {
+        $name = self::getNameKey($name);
+
+        return isset($this->_helpers[$name]);
+    }
+
+    public static function getNameKey($name)
+    {
+        return strtolower($name);
     }
 
     public function initHelper($name)
@@ -48,19 +63,6 @@ class HelperBroker
     public function getHelperClass($name)
     {
         return 'Nip_Helper_' . ucfirst($name);
-    }
-
-    /**
-     * Singleton
-     * @return self
-     */
-    static public function instance()
-    {
-        static $instance;
-        if (!($instance instanceof self)) {
-            $instance = new self();
-        }
-        return $instance;
     }
 
 }

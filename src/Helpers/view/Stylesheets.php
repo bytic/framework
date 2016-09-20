@@ -13,7 +13,7 @@ namespace Nip\Helpers\View;
 class StyleSheets extends AbstractHelper
 {
 
-    protected $_files = array();
+    protected $_files = [];
     protected $_pack = false;
 
     public function add($file, $condition = false)
@@ -25,7 +25,7 @@ class StyleSheets extends AbstractHelper
     public function prepend($file, $condition = false)
     {
         if (!is_array($this->_files[$condition])) {
-            $this->_files[$condition] = array();
+            $this->_files[$condition] = [];
         }
         array_unshift($this->_files[$condition], $file);
         return $this;
@@ -54,6 +54,26 @@ class StyleSheets extends AbstractHelper
         }
 
         return $return;
+    }
+
+    public function buildTag($path, $condition)
+    {
+        $return = '<link rel="stylesheet" type="text/css" media="screen" href="'.$this->buildURL($path).'" />';
+        if ($condition) {
+            $return = '<!--[if '.$condition.']>'.$return.'<![endif]-->';
+        }
+        $return .= "\r\n";
+
+        return $return;
+    }
+
+    public function buildURL($source)
+    {
+        if (preg_match('/https?:\/\//', $source)) {
+            return $source;
+        } else {
+            return STYLESHEETS_URL.$source.'.css';
+        }
     }
 
     public function pack($files)
@@ -99,26 +119,6 @@ class StyleSheets extends AbstractHelper
         }
 
         return false;
-    }
-
-    public function buildURL($source)
-    {
-        if (preg_match('/https?:\/\//', $source)) {
-            return $source;
-        } else {
-            return STYLESHEETS_URL.$source.'.css';
-        }
-    }
-
-    public function buildTag($path, $condition)
-    {
-        $return = '<link rel="stylesheet" type="text/css" media="screen" href="'.$this->buildURL($path).'" />';
-        if ($condition) {
-            $return = '<!--[if '.$condition.']>'.$return.'<![endif]-->';
-        }
-        $return .= "\r\n";
-
-        return $return;
     }
 
     public function setPack($pack = true)

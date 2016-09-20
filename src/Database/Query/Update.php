@@ -8,18 +8,18 @@ class Update extends AbstractQuery
     public function assemble()
     {
         $query = "UPDATE " . $this->protect($this->getTable()) . " SET " . $this->parseUpdate() .
-            ($this->_parts['where'] ? ' WHERE ' . $this->parseWhere() : '') .
-            ($this->_parts['limit'] ? ' LIMIT ' . $this->limit : '');
+            ($this->parts['where'] ? ' WHERE '.$this->parseWhere() : '').
+            ($this->parts['limit'] ? ' LIMIT '.$this->limit : '');
         return $query;
     }
 
     public function parseUpdate()
     {
-        if (!$this->_parts['data']) {
+        if (!$this->parts['data']) {
             return false;
         }
 
-        foreach ($this->_parts['data'] as $data) {
+        foreach ($this->parts['data'] as $data) {
             foreach ($data as $key => $value) {
                 if (!is_array($value)) {
                     $value = array($value);

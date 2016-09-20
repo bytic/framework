@@ -2,7 +2,7 @@
 
 class Nip_Collection implements Countable, IteratorAggregate, ArrayAccess
 {
-    protected $_items = array();
+    protected $_items = [];
     protected $_index = 0;
 
     public function __construct($items = array())
@@ -12,6 +12,14 @@ class Nip_Collection implements Countable, IteratorAggregate, ArrayAccess
         } elseif ($items instanceof Nip_Collection) {
             $this->_items = $items->toArray();
         }
+    }
+
+    public function toArray()
+    {
+        $return = $this->_items;
+        reset($return);
+
+        return $return;
     }
 
     public function count()
@@ -24,14 +32,14 @@ class Nip_Collection implements Countable, IteratorAggregate, ArrayAccess
         return new ArrayIterator($this->_items);
     }
 
-    public function offsetExists($index)
-    {
-        return in_array($index, array_keys($this->_items));
-    }
-
     public function exists($index)
     {
         return $this->offsetExists($index);
+    }
+
+    public function offsetExists($index)
+    {
+        return in_array($index, array_keys($this->_items));
     }
 
     public function offsetGet($index)
@@ -52,12 +60,6 @@ class Nip_Collection implements Countable, IteratorAggregate, ArrayAccess
         if ($this->offsetExists($index)) {
             unset($this->_items[$index]);
         }
-    }
-
-    public function rewind()
-    {
-        $this->_index = 0;
-        return reset($this->_items);
     }
 
     public function end()
@@ -90,19 +92,19 @@ class Nip_Collection implements Countable, IteratorAggregate, ArrayAccess
         return $this;
     }
 
-    public function toArray()
-    {
-        $return = $this->_items;
-        reset($return);
-        return $return;
-    }
-
     public function clear()
     {
         $this->rewind();
-        $this->_items = array();
+        $this->_items = [];
 
         return $this;
+    }
+
+    public function rewind()
+    {
+        $this->_index = 0;
+
+        return reset($this->_items);
     }
 
     public function keys()

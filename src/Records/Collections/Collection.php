@@ -71,7 +71,7 @@ class Collection extends \Nip_Collection
 
     public function toJSON()
     {
-        $return = array();
+        $return = [];
         foreach ($this as $item) {
             $return = $item->toArray();
         }

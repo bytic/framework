@@ -8,7 +8,7 @@ class Client
     const METOD_GET = "get";
 
     protected $_url;
-    protected $_params = array();
+    protected $_params = [];
     protected $_result;
     protected $_method;
 
@@ -20,14 +20,23 @@ class Client
         $this->setMethod($method);
     }
 
+    public function setURL($_url)
+    {
+        $this->_url = $_url;
+    }
+
     public function __call($name, $arguments = array())
     {
         $this->_params[$name] = $arguments[0];
     }
 
-    public function setURL($_url)
+    public function getResult()
     {
-        $this->_url = $_url;
+        if (!$this->_result) {
+            $this->dispatch();
+        }
+
+        return $this->_result;
     }
 
     public function dispatch()
@@ -45,14 +54,6 @@ class Client
         $this->_result = curl_exec($ch);
 
         curl_close($ch);
-    }
-
-    public function getResult()
-    {
-        if (!$this->_result) {
-            $this->dispatch();
-        }
-        return $this->_result;
     }
 
     public function getMethod()

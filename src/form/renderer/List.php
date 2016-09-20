@@ -1,7 +1,7 @@
 <?php
 class Nip_Form_Renderer_List extends Nip_Form_Renderer_Abstract {
 
-    protected $_list = array();
+    protected $_list = [];
 
     public function setListAttrib($type, $value) {
         $this->_list[$type] = $value;

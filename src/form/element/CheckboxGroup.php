@@ -5,7 +5,7 @@ class Nip_Form_Element_CheckboxGroup extends Nip_Form_Element_Input_Group {
 
     public function getValue($requester = 'abstract') {
         $elements = $this->getElements();
-        $data = array();
+        $data = [];
         if ($elements) {
             foreach ($elements as $element) {
                 if ($element->isChecked()) {

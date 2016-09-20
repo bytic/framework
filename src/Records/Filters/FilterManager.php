@@ -28,6 +28,13 @@ class FilterManager
     protected $recordManager = null;
 
     /**
+     * Init filter Manager, init default filters
+     */
+    public function init()
+    {
+    }
+
+    /**
      * @return null
      */
     public function getFiltersArray()
@@ -49,7 +56,16 @@ class FilterManager
 
     public function initFiltersArray()
     {
-        $filtersArray = array();
+        $filtersArray = $this->generateFiltersArray();
+        $this->setFiltersArray($filtersArray);
+    }
+
+    /**
+     * @return array
+     */
+    public function generateFiltersArray()
+    {
+        $filtersArray = [];
         $filters = $this->getFilters();
         $request = $this->getRequest();
         foreach ($filters as $filter) {
@@ -58,7 +74,8 @@ class FilterManager
                 $filtersArray[$filter->getName()] = $filter->getValue();
             }
         }
-        $this->setFiltersArray($filtersArray);
+
+        return $filtersArray;
     }
 
     /**
@@ -71,6 +88,7 @@ class FilterManager
 
     /**
      * @param SelectQuery $query
+     * @return SelectQuery
      */
     public function filterQuery($query)
     {
@@ -80,6 +98,8 @@ class FilterManager
                 $filter->filterQuery($query);
             }
         }
+
+        return $query;
     }
 
     /**

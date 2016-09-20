@@ -47,6 +47,172 @@ class Http
     }
 
     /**
+     * Generates the normalized query string for the Request.
+     *
+     * It builds a normalized query string, where keys/value pairs are alphabetized
+     * and have consistent escaping.
+     *
+     * @return string|null A normalized query string for the Request
+     */
+    public function getQueryString()
+    {
+        $qs = static::normalizeQueryString($this->getRequest()->server->get('QUERY_STRING'));
+
+        return '' === $qs ? null : $qs;
+    }
+
+    /**
+     * Normalizes a query string.
+     *
+     * It builds a normalized query string, where keys/value pairs are alphabetized,
+     * have consistent escaping and unneeded delimiters are removed.
+     *
+     * @param string $qs Query string
+     *
+     * @return string A normalized query string for the Request
+     */
+    public static function normalizeQueryString($qs)
+    {
+        if ('' == $qs) {
+            return '';
+        }
+        $parts = [];
+        $order = [];
+        foreach (explode('&', $qs) as $param) {
+            if ('' === $param || '=' === $param[0]) {
+                // Ignore useless delimiters, e.g. "x=y&".
+                // Also ignore pairs with empty key, even if there was a value, e.g. "=value", as such nameless values cannot be retrieved anyway.
+                // PHP also does not include them when building _GET.
+                continue;
+            }
+            $keyValuePair = explode('=', $param, 2);
+            // GET parameters, that are submitted from a HTML form, encode spaces as "+" by default (as defined in enctype application/x-www-form-urlencoded).
+            // PHP also converts "+" to spaces when filling the global _GET or when using the function parse_str. This is why we use urldecode and then normalize to
+            // RFC 3986 with rawurlencode.
+            $parts[] = isset($keyValuePair[1]) ?
+                rawurlencode(urldecode($keyValuePair[0])).'='.rawurlencode(urldecode($keyValuePair[1])) :
+                rawurlencode(urldecode($keyValuePair[0]));
+            $order[] = urldecode($keyValuePair[0]);
+        }
+        array_multisort($order, SORT_ASC, $parts);
+
+        return implode('&', $parts);
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getRequest()
+    {
+        return $this->_request;
+    }
+
+    /*
+     * The following methods are derived from code of the Zend Framework (1.10dev - 2010-01-24)
+     *
+     * Code subject to the new BSD license (http://framework.zend.com/license/new-bsd).
+     *
+     * Copyright (c) 2005-2010 Zend Technologies USA Inc. (http://www.zend.com)
+     */
+
+    /**
+     * @param mixed $request
+     */
+    public function setRequest($request)
+    {
+        $this->_request = $request;
+    }
+
+    /**
+     * Gets the scheme and HTTP host.
+     *
+     * If the URL was called with basic authentication, the user
+     * and the password are not added to the generated string.
+     *
+     * @return string The scheme and HTTP host
+     */
+    public function getSchemeAndHttpHost()
+    {
+        return $this->getScheme().'://'.$this->getHttpHost();
+    }
+
+    /**
+     * Gets the request's scheme.
+     *
+     * @return string
+     */
+    public function getScheme()
+    {
+        return $this->isSecure() ? 'https' : 'http';
+    }
+
+    public function isSecure()
+    {
+        $https = $this->getRequest()->server->get('HTTPS');
+
+        return !empty($https) && 'off' !== strtolower($https);
+    }
+
+    /**
+     * Returns the HTTP host being requested.
+     *
+     * The port name will be appended to the host if it's non-standard.
+     *
+     * @return string
+     */
+    public function getHttpHost()
+    {
+        $scheme = $this->getScheme();
+        $port = $this->getPort();
+        if (('http' == $scheme && $port == 80) || ('https' == $scheme && $port == 443)) {
+            return $this->getHost();
+        }
+
+        return $this->getHost().':'.$port;
+    }
+
+    public function getPort()
+    {
+        return $this->getRequest()->server->get('SERVER_PORT');
+    }
+
+    /**
+     * Returns the host name.
+     *
+     * This method can read the client host name from the "X-Forwarded-Host" header
+     * when trusted proxies were set via "setTrustedProxies()".
+     *
+     * The "X-Forwarded-Host" header must contain the client host name.
+     *
+     * If your reverse proxy uses a different header name than "X-Forwarded-Host",
+     * configure it via "setTrustedHeaderName()" with the "client-host" key.
+     *
+     * @return string
+     *
+     * @throws \UnexpectedValueException when the host name is invalid
+     */
+    public function getHost()
+    {
+        if (!$host = $this->getRequest()->headers->get('HOST')) {
+            if (!$host = $this->getRequest()->server->get('SERVER_NAME')) {
+                $host = $this->getRequest()->server->get('SERVER_ADDR', '');
+            }
+        }
+        // trim and remove port number from host
+        // host is lowercase as per RFC 952/2181
+        $host = strtolower(preg_replace('/:\d+$/', '', trim($host)));
+
+        // as the host can come from the user (HTTP_HOST and depending on the configuration, SERVER_NAME too can come from the user)
+        // check that it does not contain forbidden characters (see RFC 952 and RFC 2181)
+        // use preg_replace() instead of preg_match() to prevent DoS attacks with long host names
+        if ($host && '' !== preg_replace('/(?:^\[)?[a-zA-Z0-9-:\]_]+\.?/', '', $host)) {
+            throw new \UnexpectedValueException(sprintf('Invalid Host "%s"', $host));
+        }
+
+        return $host;
+    }
+
+    /**
      * Returns the root URL from which this request is executed.
      *
      * The base URL never ends with a /.
@@ -122,7 +288,6 @@ class Http
         return rtrim($baseUrl, '/' . DIRECTORY_SEPARATOR);
     }
 
-
     /**
      * Returns the requested URI (path and query string).
      *
@@ -136,13 +301,6 @@ class Http
         return $this->requestUri;
     }
 
-    /*
-     * The following methods are derived from code of the Zend Framework (1.10dev - 2010-01-24)
-     *
-     * Code subject to the new BSD license (http://framework.zend.com/license/new-bsd).
-     *
-     * Copyright (c) 2005-2010 Zend Technologies USA Inc. (http://www.zend.com)
-     */
     protected function prepareRequestUri()
     {
         $requestUri = '';
@@ -180,6 +338,19 @@ class Http
         // normalize the request URI to ease creating sub-requests from this request
         $this->getRequest()->server->set('REQUEST_URI', $requestUri);
         return $requestUri;
+    }
+
+    private function getUrlencodedPrefix($string, $prefix)
+    {
+        if (0 !== strpos(rawurldecode($string), $prefix)) {
+            return false;
+        }
+        $len = strlen($prefix);
+        if (preg_match(sprintf('#^(%%[[:xdigit:]]{2}|.){%d}#', $len), $string, $match)) {
+            return $match[0];
+        }
+
+        return false;
     }
 
     /**
@@ -229,96 +400,15 @@ class Http
         return (string)$pathInfo;
     }
 
-    /**
-     * Gets the scheme and HTTP host.
+    /*
+     * Returns the prefix as encoded in the string when the string starts with
+     * the given prefix, false otherwise.
      *
-     * If the URL was called with basic authentication, the user
-     * and the password are not added to the generated string.
+     * @param string $string The urlencoded string
+     * @param string $prefix The prefix not encoded
      *
-     * @return string The scheme and HTTP host
+     * @return string|false The prefix as it is encoded in $string, or false
      */
-    public function getSchemeAndHttpHost()
-    {
-        return $this->getScheme() . '://' . $this->getHttpHost();
-    }
-
-    /**
-     * Returns the HTTP host being requested.
-     *
-     * The port name will be appended to the host if it's non-standard.
-     *
-     * @return string
-     */
-    public function getHttpHost()
-    {
-        $scheme = $this->getScheme();
-        $port = $this->getPort();
-        if (('http' == $scheme && $port == 80) || ('https' == $scheme && $port == 443)) {
-            return $this->getHost();
-        }
-        return $this->getHost() . ':' . $port;
-    }
-
-    /**
-     * Returns the host name.
-     *
-     * This method can read the client host name from the "X-Forwarded-Host" header
-     * when trusted proxies were set via "setTrustedProxies()".
-     *
-     * The "X-Forwarded-Host" header must contain the client host name.
-     *
-     * If your reverse proxy uses a different header name than "X-Forwarded-Host",
-     * configure it via "setTrustedHeaderName()" with the "client-host" key.
-     *
-     * @return string
-     *
-     * @throws \UnexpectedValueException when the host name is invalid
-     */
-    public function getHost()
-    {
-        if (!$host = $this->getRequest()->headers->get('HOST')) {
-            if (!$host = $this->getRequest()->server->get('SERVER_NAME')) {
-                $host = $this->getRequest()->server->get('SERVER_ADDR', '');
-            }
-        }
-        // trim and remove port number from host
-        // host is lowercase as per RFC 952/2181
-        $host = strtolower(preg_replace('/:\d+$/', '', trim($host)));
-
-        // as the host can come from the user (HTTP_HOST and depending on the configuration, SERVER_NAME too can come from the user)
-        // check that it does not contain forbidden characters (see RFC 952 and RFC 2181)
-        // use preg_replace() instead of preg_match() to prevent DoS attacks with long host names
-        if ($host && '' !== preg_replace('/(?:^\[)?[a-zA-Z0-9-:\]_]+\.?/', '', $host)) {
-            throw new \UnexpectedValueException(sprintf('Invalid Host "%s"', $host));
-        }
-
-        return $host;
-    }
-
-    public function getPort()
-    {
-        return $this->getRequest()->server->get('SERVER_PORT');
-    }
-
-    /**
-     * Generates the normalized query string for the Request.
-     *
-     * It builds a normalized query string, where keys/value pairs are alphabetized
-     * and have consistent escaping.
-     *
-     * @return string|null A normalized query string for the Request
-     */
-    public function getQueryString()
-    {
-        $qs = static::normalizeQueryString($this->getRequest()->server->get('QUERY_STRING'));
-        return '' === $qs ? null : $qs;
-    }
-
-
-    public function getServerName()
-    {
-        return $this->getRequest()->server->get('SERVER_NAME');
-    }
 
     public function getSubdomain()
     {
@@ -331,6 +421,11 @@ class Http
         }
 
         return false;
+    }
+
+    public function getServerName()
+    {
+        return $this->getRequest()->server->get('SERVER_NAME');
     }
 
     public function getRootDomain()
@@ -348,80 +443,6 @@ class Http
         return false;
     }
 
-    /**
-     * Normalizes a query string.
-     *
-     * It builds a normalized query string, where keys/value pairs are alphabetized,
-     * have consistent escaping and unneeded delimiters are removed.
-     *
-     * @param string $qs Query string
-     *
-     * @return string A normalized query string for the Request
-     */
-    public static function normalizeQueryString($qs)
-    {
-        if ('' == $qs) {
-            return '';
-        }
-        $parts = array();
-        $order = array();
-        foreach (explode('&', $qs) as $param) {
-            if ('' === $param || '=' === $param[0]) {
-                // Ignore useless delimiters, e.g. "x=y&".
-                // Also ignore pairs with empty key, even if there was a value, e.g. "=value", as such nameless values cannot be retrieved anyway.
-                // PHP also does not include them when building _GET.
-                continue;
-            }
-            $keyValuePair = explode('=', $param, 2);
-            // GET parameters, that are submitted from a HTML form, encode spaces as "+" by default (as defined in enctype application/x-www-form-urlencoded).
-            // PHP also converts "+" to spaces when filling the global _GET or when using the function parse_str. This is why we use urldecode and then normalize to
-            // RFC 3986 with rawurlencode.
-            $parts[] = isset($keyValuePair[1]) ?
-                rawurlencode(urldecode($keyValuePair[0])) . '=' . rawurlencode(urldecode($keyValuePair[1])) :
-                rawurlencode(urldecode($keyValuePair[0]));
-            $order[] = urldecode($keyValuePair[0]);
-        }
-        array_multisort($order, SORT_ASC, $parts);
-        return implode('&', $parts);
-    }
-
-    /**
-     * Gets the request's scheme.
-     *
-     * @return string
-     */
-    public function getScheme()
-    {
-        return $this->isSecure() ? 'https' : 'http';
-    }
-
-    public function isSecure()
-    {
-        $https = $this->getRequest()->server->get('HTTPS');
-        return !empty($https) && 'off' !== strtolower($https);
-    }
-
-    /*
-     * Returns the prefix as encoded in the string when the string starts with
-     * the given prefix, false otherwise.
-     *
-     * @param string $string The urlencoded string
-     * @param string $prefix The prefix not encoded
-     *
-     * @return string|false The prefix as it is encoded in $string, or false
-     */
-    private function getUrlencodedPrefix($string, $prefix)
-    {
-        if (0 !== strpos(rawurldecode($string), $prefix)) {
-            return false;
-        }
-        $len = strlen($prefix);
-        if (preg_match(sprintf('#^(%%[[:xdigit:]]{2}|.){%d}#', $len), $string, $match)) {
-            return $match[0];
-        }
-        return false;
-    }
-
     public function isConsole()
     {
         if (php_sapi_name() === 'cli') {
@@ -432,21 +453,5 @@ class Http
         }
 
         return false;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getRequest()
-    {
-        return $this->_request;
-    }
-
-    /**
-     * @param mixed $request
-     */
-    public function setRequest($request)
-    {
-        $this->_request = $request;
     }
 }

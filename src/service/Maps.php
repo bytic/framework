@@ -14,8 +14,8 @@ class Nip_Service_Maps {
     protected $_provider;
     protected $_providerObj;
 
-    protected $_params = array();
-    protected $_objects = array();
+    protected $_params = [];
+    protected $_objects = [];
 
     public function  __construct() {        
     }
@@ -26,13 +26,16 @@ class Nip_Service_Maps {
         }
     }
 
-    public function setApiKey($key) {
-        $this->_api_key = $key;
-        return $this;
-    }
+    /**
+     * @return Nip_Service_Maps_Provider_Abstract
+     */
+    public function getProvider()
+    {
+        if (!$this->_providerObj) {
+            $this->initProvider();
+        }
 
-    public function getApiKey() {
-        return $this->_api_key;
+        return $this->_providerObj;
     }
 
     public function setProvider($name) {
@@ -50,14 +53,16 @@ class Nip_Service_Maps {
         trigger_error('No provider set for ' . get_class($this));
     }
 
-    /**
-     * @return Nip_Service_Maps_Provider_Abstract
-     */
-    public function getProvider() {
-        if (!$this->_providerObj) {
-            $this->initProvider();
-        }
-        return $this->_providerObj;
+    public function getApiKey()
+    {
+        return $this->_api_key;
+    }
+
+    public function setApiKey($key)
+    {
+        $this->_api_key = $key;
+
+        return $this;
     }
 
     public function addObject(Nip_Service_Maps_Objects_Abstract $object) {

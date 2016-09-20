@@ -5,7 +5,7 @@ namespace Nip\Router\Parser;
 class Regex extends AbstractParser
 {
     protected $_regex;
-    protected $_variables = array();
+    protected $_variables = [];
 
     public function parseMap()
     {

@@ -14,6 +14,20 @@ class Staging
     protected $_testingStages = array('local');
 
     /**
+     * Singleton
+     * @return self
+     */
+    static public function instance()
+    {
+        static $instance;
+        if (!($instance instanceof self)) {
+            $instance = new self();
+        }
+
+        return $instance;
+    }
+
+    /**
      * @return Stage
      */
     public function getStage()
@@ -46,6 +60,39 @@ class Staging
         return false;
     }
 
+    public function getConfig()
+    {
+        if (!$this->_config) {
+            $this->_config = $this->initConfig();
+        }
+
+        return $this->_config;
+    }
+
+    public function initConfig()
+    {
+        $config = new \Nip_Config();
+        if ($this->hasConfigFile('staging.ini')) {
+            $config->parse($this->getConfigFolder().'staging.ini');
+        }
+
+        if ($this->hasConfigFile('stage.ini')) {
+            $config->parse($this->getConfigFolder().'stage.ini');
+        }
+
+        return $config;
+    }
+
+    protected function hasConfigFile($file)
+    {
+        return is_file($this->getConfigFolder().$file);
+    }
+
+    protected function getConfigFolder()
+    {
+        return defined('CONFIG_PATH') ? CONFIG_PATH : null;
+    }
+
     public function determineStageFromHOST()
     {
         $_stage = false;
@@ -60,31 +107,6 @@ class Staging
             }
         }
         return $_stage;
-    }
-
-    public function matchHost($key, $host)
-    {
-        return preg_match('/^' . strtr($key, array('*' => '.*', '?' => '.?')) . '$/i',
-            $host);
-    }
-
-    public function updateStage($name)
-    {
-        $this->_stage = $this->newStage($name);
-        return $this;
-    }
-
-    public function newStage($name)
-    {
-        $stage = new Stage();
-        $stage->setManager($this);
-        $stage->setName($name);
-
-        $stages = $this->getStages();
-        if (isset($stages[$name])) {
-            $stage->setHosts($stages[$name]);
-        }
-        return $stage;
     }
 
     public function getStages()
@@ -104,41 +126,37 @@ class Staging
                     }
                 }
             } else {
-                $this->_stages = array();
+                $this->_stages = [];
             }
         }
         return $this->_stages;
     }
 
-    public function getConfig()
+    public function matchHost($key, $host)
     {
-        if (!$this->_config) {
-            $this->_config = $this->initConfig();
-        }
-        return $this->_config;
+        return preg_match('/^'.strtr($key, array('*' => '.*', '?' => '.?')).'$/i',
+            $host);
     }
 
-    public function initConfig()
+    public function updateStage($name)
     {
-        $config = new \Nip_Config();
-        if ($this->hasConfigFile('staging.ini')) {
-            $config->parse($this->getConfigFolder() . 'staging.ini');
-        }
+        $this->_stage = $this->newStage($name);
 
-        if ($this->hasConfigFile('stage.ini')) {
-            $config->parse($this->getConfigFolder() . 'stage.ini');
-        }
-        return $config;
+        return $this;
     }
 
-    protected function hasConfigFile($file)
+    public function newStage($name)
     {
-        return is_file($this->getConfigFolder() . $file);
-    }
+        $stage = new Stage();
+        $stage->setManager($this);
+        $stage->setName($name);
 
-    protected function getConfigFolder()
-    {
-        return defined('CONFIG_PATH') ? CONFIG_PATH : null;
+        $stages = $this->getStages();
+        if (isset($stages[$name])) {
+            $stage->setHosts($stages[$name]);
+        }
+
+        return $stage;
     }
 
     public function isInPublicStages($name)
@@ -149,18 +167,5 @@ class Staging
     public function isInTestingStages($name)
     {
         return in_array($name, $this->_testingStages);
-    }
-
-    /**
-     * Singleton
-     * @return self
-     */
-    static public function instance()
-    {
-        static $instance;
-        if (!($instance instanceof self)) {
-            $instance = new self();
-        }
-        return $instance;
     }
 }

@@ -4,7 +4,7 @@ namespace Nip\Helpers\View;
 class GoogleDFP extends AbstractHelper
 {
 
-    protected $_slots = array();
+    protected $_slots = [];
 
 
     public function addSlot($unitName, $width, $height, $divId)
@@ -31,21 +31,6 @@ class GoogleDFP extends AbstractHelper
 
 
             return $return;
-        }
-        return;
-    }
-
-    public function renderAdUnit($id)
-    {
-        $add = $this->_slots[$id];
-        if ($add) {
-            return "
-                <!-- " . $add['unitName'] . " -->
-                <div id='" . $add['divId'] . "' style='width:" . $add['width'] . "px; height:" . $add['height'] . "px;'>
-                <script type='text/javascript'>
-                googletag.cmd.push(function() { googletag.display('" . $add['divId'] . "'); });
-                </script>
-                </div>";
         }
         return;
     }
@@ -79,6 +64,7 @@ class GoogleDFP extends AbstractHelper
         $return .= "});";
         $return .= " </script> ";
     }
+
     protected function renderHeadSlots()
     {
         $return = '';
@@ -86,5 +72,21 @@ class GoogleDFP extends AbstractHelper
             $return .= "googletag.defineSlot('" . $slot['unitName'] . "', [" . $slot['width'] . ", " . $slot['height'] . "], '" . $slot['divId'] . "').addService(googletag.pubads());";
         }
         return $return;
+    }
+
+    public function renderAdUnit($id)
+    {
+        $add = $this->_slots[$id];
+        if ($add) {
+            return "
+                <!-- ".$add['unitName']." -->
+                <div id='".$add['divId']."' style='width:".$add['width']."px; height:".$add['height']."px;'>
+                <script type='text/javascript'>
+                googletag.cmd.push(function() { googletag.display('".$add['divId']."'); });
+                </script>
+                </div>";
+        }
+
+        return;
     }
 }

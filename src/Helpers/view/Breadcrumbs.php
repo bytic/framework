@@ -27,7 +27,7 @@ class Breadcrumbs extends AbstractHelper
 
     public function reset()
     {
-        $this->_items = array();
+        $this->_items = [];
         return $this;
     }
 

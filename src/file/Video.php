@@ -9,7 +9,7 @@ class Nip_File_Video extends Nip_File_Handler {
             return;
         }
 
-        $command = array();
+        $command = [];
         $command[] = '/usr/bin/ffmpeg';
         $command[] = "-i ".escapeshellarg($this->path);
         foreach ($params as $key => $value) {
@@ -25,28 +25,12 @@ class Nip_File_Video extends Nip_File_Handler {
         $process->start();
     }
 
-    public function getFrameCount() {
-        return $this->getFFmpegVideo()->getFrameCount();
-    }
-
-    public function getRandomFrame() {
-        return $this->getFFmpegVideo()->getFrame(rand(1, $this->getFrameCount()));
-    }
-
-    protected function getFFmpegVideo() {
-        if (!$this->_ffmpeg_video) {
-            $this->_ffmpeg_video = new ffmpeg_movie($this->path);
-        }
-
-        return $this->_ffmpeg_video;
-    }
-
     public function saveRandomFrame($dir, $width = false, $height = false) {
         /* @var $frame ffmpeg_frame */
         $frame = $this->getRandomFrame();
         $image = new Image_VideoFrame();
         $image->setFFmpegFrame($frame);
-        
+
         if (!$width) {
             $width = $frame->getWidth();
         }
@@ -63,4 +47,23 @@ class Nip_File_Video extends Nip_File_Handler {
         $image->path = $dir . '/' . $filename;
         $image->save();
    }
+
+    public function getRandomFrame()
+    {
+        return $this->getFFmpegVideo()->getFrame(rand(1, $this->getFrameCount()));
+    }
+
+    protected function getFFmpegVideo()
+    {
+        if (!$this->_ffmpeg_video) {
+            $this->_ffmpeg_video = new ffmpeg_movie($this->path);
+        }
+
+        return $this->_ffmpeg_video;
+    }
+
+    public function getFrameCount()
+    {
+        return $this->getFFmpegVideo()->getFrameCount();
+    }
 }

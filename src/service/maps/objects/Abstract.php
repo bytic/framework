@@ -11,8 +11,8 @@
 abstract class Nip_Service_Maps_Objects_Abstract {
 
     protected $_service;
-    protected $_listeners = array();
-    protected $_params = array();
+    protected $_listeners = [];
+    protected $_params = [];
 
     public function  __construct() {
 
@@ -27,11 +27,6 @@ abstract class Nip_Service_Maps_Objects_Abstract {
         return $this->_params[$key];
     }
     
-    public function setService($service) {
-        $this->_service = $service;
-        return $this;
-    }
-
     public function addListener($event, $function) {
         $this->_listeners[$event][] = $function;
     }
@@ -51,6 +46,13 @@ abstract class Nip_Service_Maps_Objects_Abstract {
      */
     public function getService() {
         return $this->_service;
+    }
+
+    public function setService($service)
+    {
+        $this->_service = $service;
+
+        return $this;
     }
 
 }

@@ -13,19 +13,7 @@ abstract class Nip_Service_Maps_Provider_Abstract {
     protected $_service;
     protected $_container;
 
-    protected $_scripts = array();
-
-    public function setService($service) {
-        $this->_service = $service;
-        return $this;
-    }
-
-    /**
-     * @return Nip_Service_Maps
-     */
-    public function getService() {
-        return $this->_service;
-    }
+    protected $_scripts = [];
 
     public function render() {
         $return = '';
@@ -33,17 +21,6 @@ abstract class Nip_Service_Maps_Provider_Abstract {
         $return .= $this->generateScript();
         $return .= $this->loadScript();
         return $return;
-    }
-
-    public function renderSearch() {
-        $return = '
-            <form action="javascript:" method="post" id="map_search_form" >
-                <p>
-                    <input type="text" class="text tr tl br bl nomargin" value="Search map" name="location" id="location" onfocus="if(this.value==\'Search map\'){this.value=\'\'}" onblur="if(this.value==\'\'){this.value=\'Search map\'}"/>
-                    <input type="submit" class="button" value="Go" />
-                </p>
-            </form>';
-       return $return;
     }
 
     public function initContainer() {
@@ -58,6 +35,21 @@ abstract class Nip_Service_Maps_Provider_Abstract {
         return $html;
     }
 
+    /**
+     * @return Nip_Service_Maps
+     */
+    public function getService()
+    {
+        return $this->_service;
+    }
+
+    public function setService($service)
+    {
+        $this->_service = $service;
+
+        return $this;
+    }
+
     public function generateScript() {
         $return .= '<script type="text/javascript">';
         $return .= $this->initMapScript();
@@ -65,14 +57,6 @@ abstract class Nip_Service_Maps_Provider_Abstract {
         $return .= $this->renderScripts();
         $return .= $this->postMapScript();
         $return .= '</script>';
-        return $return;
-    }
-
-    public function renderScripts() {
-        $return = '';
-        foreach ($this->_scripts as $script) {
-            $return .= $script;
-        }
         return $return;
     }
 
@@ -84,6 +68,29 @@ abstract class Nip_Service_Maps_Provider_Abstract {
             $method = 'render' . inflector()->camelize($type);
             $return .= $this->$method($object);
         }
+        return $return;
+    }
+
+    public function renderScripts()
+    {
+        $return = '';
+        foreach ($this->_scripts as $script) {
+            $return .= $script;
+        }
+
+        return $return;
+    }
+
+    public function renderSearch()
+    {
+        $return = '
+            <form action="javascript:" method="post" id="map_search_form" >
+                <p>
+                    <input type="text" class="text tr tl br bl nomargin" value="Search map" name="location" id="location" onfocus="if(this.value==\'Search map\'){this.value=\'\'}" onblur="if(this.value==\'\'){this.value=\'Search map\'}"/>
+                    <input type="submit" class="button" value="Go" />
+                </p>
+            </form>';
+
         return $return;
     }
 

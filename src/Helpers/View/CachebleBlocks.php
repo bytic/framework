@@ -6,7 +6,7 @@ use Nip\Helpers\View\CachebleBlocks\Block;
 class CachebleBlocks extends AbstractHelper
 {
 
-    private $_blocks = array();
+    private $_blocks = [];
 
 
     public function add($name)
@@ -16,16 +16,16 @@ class CachebleBlocks extends AbstractHelper
         return $block;
     }
 
-    public function get($name)
-    {
-        return $this->_blocks[$name];
-    }
-
     public function newBlock($name)
     {
         $block = new Block();
         $block->setManager($this);
         $block->setName($name);
         return $block;
+    }
+
+    public function get($name)
+    {
+        return $this->_blocks[$name];
     }
 }

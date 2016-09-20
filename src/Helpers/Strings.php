@@ -16,7 +16,7 @@ class Nip_Helper_Strings extends Nip\Helpers\AbstractHelper {
             return $string;
         }
 
-        $return = array();
+        $return = [];
         for ($i = 0; $i < $limit; $i++) {
             $return[] = $words[$i];
         }

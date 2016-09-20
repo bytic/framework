@@ -15,7 +15,7 @@ use Nip\Helpers\View\Tooltips\Item;
 class Tooltips extends AbstractHelper
 {
 
-    private $tooltips = array();
+    private $tooltips = [];
 
     /**
      * Adds a tooltip item to the queue

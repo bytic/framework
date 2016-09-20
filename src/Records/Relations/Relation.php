@@ -43,7 +43,7 @@ abstract class Relation
 
     protected $_populated = false;
 
-    protected $_params = array();
+    protected $_params = [];
 
     protected $_results = null;
 

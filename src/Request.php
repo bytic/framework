@@ -216,10 +216,10 @@ class Request implements \ArrayAccess
             // no break
             case 'PATCH':
                 $body = $parameters;
-                $query = array();
+                $query = [];
                 break;
             default:
-                $body = array();
+                $body = [];
                 $query = $parameters;
                 break;
         }
