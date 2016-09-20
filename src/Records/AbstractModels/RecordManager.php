@@ -31,6 +31,7 @@ abstract class RecordManager
     protected $db = null;
 
     protected $_collectionClass = '\Nip\Records\Collections\Collection';
+
     protected $_helpers = [];
 
     protected $table = null;
@@ -110,7 +111,7 @@ abstract class RecordManager
      */
     protected function isCallDatabaseOperation($name, $arguments)
     {
-        $operations = array("find", "delete", "count");
+        $operations = ["find", "delete", "count"];
         foreach ($operations as $operation) {
             if (strpos($name, $operation."By") !== false || strpos($name, $operation."OneBy") !== false) {
                 $params = [];
@@ -180,7 +181,7 @@ abstract class RecordManager
     public function getDB()
     {
         if ($this->db == null) {
-            $this->setUpDB();
+            $this->initDB();
         }
 
         $this->checkDB();
@@ -199,15 +200,23 @@ abstract class RecordManager
         return $this;
     }
 
-    protected function setUpDB()
+    protected function initDB()
     {
-        $this->db = db();
+        $this->setDB($this->newDbConnection());
+    }
+
+    /**
+     * @return Connection
+     */
+    protected function newDbConnection()
+    {
+        return db();
     }
 
     public function checkDB()
     {
         if (!$this->hasDB()) {
-            trigger_error("Database connection missing for [" . get_class($this) . "]", E_USER_ERROR);
+            trigger_error("Database connection missing for [".get_class($this)."]", E_USER_ERROR);
         }
     }
 
@@ -349,6 +358,9 @@ abstract class RecordManager
         return $query;
     }
 
+    /**
+     * @param array $params
+     */
     protected function injectParams(&$params = [])
     {
     }
@@ -661,7 +673,7 @@ abstract class RecordManager
 
     public function __wakeup()
     {
-        $this->setUpDB();
+        $this->initDB();
     }
 
     /**
