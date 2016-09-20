@@ -178,7 +178,7 @@ abstract class RecordManager
         if ($this->_db == null) {
             $this->setUpDB();
         }
-
+        $this->checkDB();
         return $this->_db;
     }
 
@@ -196,6 +196,13 @@ abstract class RecordManager
     protected function setUpDB()
     {
         $this->_db = db();
+    }
+
+    protected function checkDB()
+    {
+        if (!($this->_db instanceof Connection)) {
+            trigger_error("Database not setup for [" . get_class($this) . "]", E_USER_ERROR);
+        }
     }
 
     /**
