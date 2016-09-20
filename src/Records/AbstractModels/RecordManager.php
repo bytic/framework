@@ -183,6 +183,8 @@ abstract class RecordManager
             $this->setUpDB();
         }
 
+        $this->checkDB();
+
         return $this->db;
     }
 
@@ -200,6 +202,21 @@ abstract class RecordManager
     protected function setUpDB()
     {
         $this->db = db();
+    }
+
+    public function checkDB()
+    {
+        if (!$this->hasDB()) {
+            trigger_error("Database connection missing for [" . get_class($this) . "]", E_USER_ERROR);
+        }
+    }
+
+    /**
+     * @return bool
+     */
+    public function hasDB()
+    {
+        return $this->db instanceof Connection;
     }
 
     /**
