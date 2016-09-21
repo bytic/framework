@@ -60,7 +60,8 @@ abstract class RecordManager
     protected $_belongsTo = [];
     protected $_hasMany = [];
     protected $_hasAndBelongsToMany = [];
-    protected $_relationTypes = array('belongsTo', 'hasMany', 'hasAndBelongsToMany');
+
+    protected $relationTypes = ['belongsTo', 'hasMany', 'hasAndBelongsToMany'];
 
     /**
      * @return string
@@ -1236,7 +1237,7 @@ abstract class RecordManager
     protected function initRelations()
     {
         $this->relations = [];
-        foreach ($this->_relationTypes as $type) {
+        foreach ($this->relationTypes as $type) {
             $this->initRelationsType($type);
         }
     }
@@ -1299,6 +1300,33 @@ abstract class RecordManager
         $class = 'Nip\Records\Relations\\'.ucfirst($type);
 
         return $class;
+    }
+
+    /**
+     * @param $name
+     * @param array $params
+     */
+    public function belongsTo($name, $params = [])
+    {
+        $this->initRelation('belongsTo', $name, $params);
+    }
+
+    /**
+     * @param $name
+     * @param array $params
+     */
+    public function hasMany($name, $params = [])
+    {
+        $this->initRelation('hasMany', $name, $params);
+    }
+
+    /**
+     * @param $name
+     * @param array $params
+     */
+    public function HABTM($name, $params = [])
+    {
+        $this->initRelation('hasAndBelongsToMany', $name, $params);
     }
 
     /**
