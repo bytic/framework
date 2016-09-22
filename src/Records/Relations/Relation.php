@@ -41,7 +41,7 @@ abstract class Relation
     protected $_query;
 
 
-    protected $_populated = false;
+    protected $populated = false;
 
     protected $_params = [];
 
@@ -142,9 +142,15 @@ abstract class Relation
     public function setWithClass($name)
     {
         $object = call_user_func(array($name, "instance"));
+        if ($object) {
+            trigger_error("Cannot instance records [".$name."] in relation", E_USER_WARNING);
+        }
         $this->setWith($object);
     }
 
+    /**
+     * @param Query $query
+     */
     public function populateQuerySpecific(Query $query)
     {
     }
@@ -219,6 +225,9 @@ abstract class Relation
         }
     }
 
+    /**
+     * @param $params
+     */
     public function checkParamWith($params)
     {
         if (isset($params['with'])) {
@@ -227,6 +236,9 @@ abstract class Relation
         }
     }
 
+    /**
+     * @param $params
+     */
     public function checkParamTable($params)
     {
         if (isset($params['table'])) {
@@ -235,6 +247,9 @@ abstract class Relation
         }
     }
 
+    /**
+     * @param $params
+     */
     public function checkParamFk($params)
     {
         if (isset($params['fk'])) {
@@ -243,6 +258,9 @@ abstract class Relation
         }
     }
 
+    /**
+     * @param $params
+     */
     public function setParams($params)
     {
         $this->_params = $params;
@@ -256,9 +274,13 @@ abstract class Relation
         if ($this->_table == null) {
             $this->initTable();
         }
+
         return $this->_table;
     }
 
+    /**
+     * @param $name
+     */
     public function setTable($name)
     {
         $this->_table = $name;
@@ -279,19 +301,28 @@ abstract class Relation
         if (!$this->isPopulated()) {
             $this->initResults();
         }
+
         return $this->_results;
     }
 
+    /**
+     * @param $results
+     * @return null
+     */
     public function setResults($results)
     {
         $this->_results = $results;
-        $this->_populated = true;
+        $this->populated = true;
+
         return $this->_results;
     }
 
+    /**
+     * @return bool
+     */
     public function isPopulated()
     {
-        return $this->_populated == true;
+        return $this->populated == true;
     }
 
     abstract public function initResults();
@@ -306,6 +337,7 @@ abstract class Relation
             return $this->getWith()->newCollection();
         }
         $query = $this->getEagerQuery($collection);
+
         return $this->getWith()->findByQuery($query);
     }
 
@@ -317,7 +349,8 @@ abstract class Relation
     {
         $fkList = $this->getEagerFkList($collection);
         $query = $this->newQuery();
-        $query->where($this->getWithPK() . ' IN ?', $fkList);
+        $query->where($this->getWithPK().' IN ?', $fkList);
+
         return $query;
     }
 
@@ -328,6 +361,7 @@ abstract class Relation
     public function getEagerFkList(RecordCollection $collection)
     {
         $return = HelperBroker::get('Arrays')->pluck($collection, $this->getFK());
+
         return array_unique($return);
     }
 
@@ -377,6 +411,7 @@ abstract class Relation
             $results = $this->getResultsFromCollectionDictionary($dictionary, $collection, $record);
             $record->getRelation($this->getName())->setResults($results);
         }
+
         return $records;
     }
 
@@ -388,7 +423,13 @@ abstract class Relation
      */
     abstract protected function buildDictionary(RecordCollection $collection);
 
-    abstract function getResultsFromCollectionDictionary($dictionary, $collection, $record);
+    /**
+     * @param $dictionary
+     * @param $collection
+     * @param $record
+     * @return mixed
+     */
+    abstract public function getResultsFromCollectionDictionary($dictionary, $collection, $record);
 
     public function save()
     {
@@ -401,5 +442,4 @@ abstract class Relation
     {
         return $this->_type;
     }
-
 }
