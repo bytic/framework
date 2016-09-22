@@ -73,9 +73,23 @@ abstract class AbstractQuery
      */
     protected function initPart($name)
     {
+        $this->isGenerated(false);
         $this->parts[$name] = [];
 
         return $this;
+    }
+
+    /**
+     * @param null $generated
+     * @return bool
+     */
+    public function isGenerated($generated = null)
+    {
+        if ($generated === false) {
+            $this->string = null;
+        }
+
+        return $this->string !== null;
     }
 
     /**
@@ -88,6 +102,8 @@ abstract class AbstractQuery
         if (!isset($this->parts[$name])) {
             $this->initPart($name);
         }
+
+        $this->isGenerated(false);
         $this->parts[$name][] = $value;
 
         return $this;
