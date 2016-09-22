@@ -325,6 +325,32 @@ abstract class AbstractQuery
     }
 
     /**
+     * @return array
+     */
+    public function getParts()
+    {
+        return $this->parts;
+    }
+
+    /**
+     * @param $name
+     * @return mixed|null
+     */
+    public function getPart($name)
+    {
+        return $this->hasPart($name) ? $this->parts[$name] : null;
+    }
+
+    /**
+     * @param $name
+     * @return bool
+     */
+    public function hasPart($name)
+    {
+        return isset($this->parts[$name]) && count($this->parts[$name]);
+    }
+
+    /**
      * @param $name
      * @param $value
      * @return $this
@@ -335,24 +361,6 @@ abstract class AbstractQuery
         $this->addPart($name, $value);
 
         return $this;
-    }
-
-    /**
-     * @param $name
-     * @return mixed|null
-     */
-    protected function getPart($name)
-    {
-        return $this->hasPart($name) ? $this->parts[$name] : null;
-    }
-
-    /**
-     * @param $name
-     * @return bool
-     */
-    protected function hasPart($name)
-    {
-        return isset($this->parts[$name]) && count($this->parts[$name]);
     }
 
     /**
