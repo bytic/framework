@@ -9,6 +9,7 @@ namespace Nip;
 
 use Nip\Request\FileBag;
 use Nip\Request\HeaderBag;
+use Nip\Request\Http;
 use Nip\Request\ParameterBag;
 use Nip\Request\ServerBag;
 
@@ -19,67 +20,82 @@ class Request implements \ArrayAccess
      * @var \Nip\Request\ParameterBag
      */
     public $attributes;
+
     /**
      * Request body parameters ($_POST).
      * @var \Nip\Request\ParameterBag
      */
     public $body;
+
     /**
      * Query string parameters ($_GET).
      * @var \Nip\Request\ParameterBag
      */
     public $query;
+
     /**
      * Server and execution environment parameters ($_SERVER).
      * @var \Nip\Request\ParameterBag
      */
     public $server;
+
     /**
      * Uploaded files ($_FILES).
      * @var \Nip\Request\FileBag
      */
     public $files;
+
     /**
      * Cookies ($_COOKIE).
      * @var \Nip\Request\ParameterBag
      */
     public $cookies;
+
+    /**
+     * @var \Nip\Request\HeaderBag
+     */
+    public $headers;
+
     /**
      * Has the action been dispatched?
      * @var boolean
      */
-    protected $_dispatched = false;
+    protected $dispatched = false;
     /**
      * Module
      * @var string
      */
-    protected $_module;
+    protected $module;
     /**
      * Module key for retrieving module from params
      * @var string
      */
-    protected $_moduleKey = 'module';
+    protected $moduleKey = 'module';
     /**
      * Controller
      * @var string
      */
-    protected $_controller;
+    protected $controller;
     /**
      * Controller key for retrieving controller from params
      * @var string
      */
-    protected $_controllerKey = 'controller';
+    protected $controllerKey = 'controller';
     /**
      * Action
      * @var string
      */
-    protected $_action;
+    protected $action;
     /**
      * Action key for retrieving action from params
      * @var string
      */
-    protected $_actionKey = 'action';
-    protected $_http;
+    protected $actionKey = 'action';
+
+    /**
+     * @var Http
+     */
+    protected $http;
 
     public function __construct()
     {
@@ -109,7 +125,7 @@ class Request implements \ArrayAccess
         }
 
         $request = new self();
-        $request->initialize($_GET, $_POST, array(), $_COOKIE, $_FILES, $server);
+        $request->initialize($_GET, $_POST, [], $_COOKIE, $_FILES, $server);
 
         if (0 === strpos($request->headers->get('CONTENT_TYPE'), 'application/x-www-form-urlencoded')
             && in_array(strtoupper($request->server->get('REQUEST_METHOD', 'GET')), array('PUT', 'DELETE', 'PATCH'))
@@ -135,12 +151,12 @@ class Request implements \ArrayAccess
      * @param string|resource $content The raw body data
      */
     public function initialize(
-        array $query = array(),
-        array $body = array(),
-        array $attributes = array(),
-        array $cookies = array(),
-        array $files = array(),
-        array $server = array(),
+        array $query = [],
+        array $body = [],
+        array $attributes = [],
+        array $cookies = [],
+        array $files = [],
+        array $server = [],
         $content = null
     ) {
         $this->body->replace($body);
@@ -172,10 +188,10 @@ class Request implements \ArrayAccess
     public static function create(
         $uri,
         $method = 'GET',
-        $parameters = array(),
-        $cookies = array(),
-        $files = array(),
-        $server = array(),
+        $parameters = [],
+        $cookies = [],
+        $files = [],
+        $server = [],
         $content = null
     ) {
         $components = parse_url($uri);
@@ -240,10 +256,9 @@ class Request implements \ArrayAccess
         $server['QUERY_STRING'] = $queryString;
 
         $request = new self();
-        $request->initialize($query, $body, array(), $cookies, $files, $server, $content);
+        $request->initialize($query, $body, [], $cookies, $files, $server, $content);
 
         return $request;
-
     }
 
     /**
@@ -252,7 +267,7 @@ class Request implements \ArrayAccess
      * @param null $newInstance
      * @return static
      */
-    static public function instance($newInstance = null)
+    public static function instance($newInstance = null)
     {
         static $instance;
 
@@ -267,6 +282,10 @@ class Request implements \ArrayAccess
         return $instance;
     }
 
+    /**
+     * @param $name
+     * @return mixed
+     */
     public function __get($name)
     {
         return $this->get($name);
@@ -324,7 +343,7 @@ class Request implements \ArrayAccess
      */
     public function getActionKey()
     {
-        return $this->_actionKey;
+        return $this->actionKey;
     }
 
     /**
@@ -335,11 +354,14 @@ class Request implements \ArrayAccess
      */
     public function setActionKey($key)
     {
-        $this->_actionKey = (string)$key;
+        $this->actionKey = (string)$key;
 
         return $this;
     }
 
+    /**
+     * @return string
+     */
     public function getMCA()
     {
         return $this->getModuleName().'.'.$this->getControllerName().'.'.$this->getActionName();
@@ -351,11 +373,11 @@ class Request implements \ArrayAccess
      */
     public function getModuleName()
     {
-        if (null === $this->_module) {
-            $this->_module = $this->attributes->get($this->getModuleKey());
+        if (null === $this->module) {
+            $this->module = $this->attributes->get($this->getModuleKey());
         }
 
-        return $this->_module;
+        return $this->module;
     }
 
     /**
@@ -365,7 +387,7 @@ class Request implements \ArrayAccess
      */
     public function getModuleKey()
     {
-        return $this->_moduleKey;
+        return $this->moduleKey;
     }
 
     /**
@@ -376,7 +398,7 @@ class Request implements \ArrayAccess
      */
     public function setModuleKey($key)
     {
-        $this->_moduleKey = (string)$key;
+        $this->moduleKey = (string)$key;
 
         return $this;
     }
@@ -387,11 +409,11 @@ class Request implements \ArrayAccess
      */
     public function getControllerName()
     {
-        if (null === $this->_controller) {
-            $this->_controller = $this->attributes->get($this->getControllerKey());
+        if (null === $this->controller) {
+            $this->controller = $this->attributes->get($this->getControllerKey());
         }
 
-        return $this->_controller;
+        return $this->controller;
     }
 
     /**
@@ -401,7 +423,7 @@ class Request implements \ArrayAccess
      */
     public function getControllerKey()
     {
-        return $this->_controllerKey;
+        return $this->controllerKey;
     }
 
     /**
@@ -412,7 +434,7 @@ class Request implements \ArrayAccess
      */
     public function setControllerKey($key)
     {
-        $this->_controllerKey = (string)$key;
+        $this->controllerKey = (string)$key;
 
         return $this;
     }
@@ -424,11 +446,11 @@ class Request implements \ArrayAccess
      */
     public function getActionName()
     {
-        if (null === $this->_action) {
+        if (null === $this->action) {
             $this->setActionName($this->getActionDefault());
         }
 
-        return $this->_action;
+        return $this->action;
     }
 
     /**
@@ -439,17 +461,24 @@ class Request implements \ArrayAccess
     public function setActionName($value)
     {
         if ($value) {
-            $this->_action = $value;
+            $this->action = $value;
         }
 
         return $this;
     }
 
+    /**
+     * @return string
+     */
     public function getActionDefault()
     {
         return 'index';
     }
 
+    /**
+     * @param array $params
+     * @return $this
+     */
     public function setParams(array $params)
     {
         foreach ($params as $param => $value) {
@@ -465,21 +494,36 @@ class Request implements \ArrayAccess
      */
     public function getHttp()
     {
-        if (!$this->_http) {
-            $this->_http = new Request\Http();
-            $this->_http->setRequest($this);
+        if (!$this->http) {
+            $this->http = new Request\Http();
+            $this->http->setRequest($this);
         }
 
-        return $this->_http;
+        return $this->http;
     }
 
+    /**
+     * @return bool
+     */
     public function isCLI()
     {
-        if (defined('STDIN') || php_sapi_name() == 'cli') {
+        if (defined('STDIN')) {
+            return true;
+        }
+
+        if (php_sapi_name() === 'cli') {
+            return true;
+        }
+
+        if (array_key_exists('SHELL', $_ENV)) {
             return true;
         }
 
         if (empty($_SERVER['REMOTE_ADDR']) and !isset($_SERVER['HTTP_USER_AGENT']) and count($_SERVER['argv']) > 0) {
+            return true;
+        }
+
+        if (!array_key_exists('REQUEST_METHOD', $_SERVER)) {
             return true;
         }
 
@@ -506,13 +550,23 @@ class Request implements \ArrayAccess
         }
     }
 
+    /**
+     * @param $url
+     */
     public function redirect($url)
     {
         header("Location: ".$url);
         exit();
     }
 
-    public function duplicateWithParams($action = false, $controller = false, $module = false, $params = array())
+    /**
+     * @param bool $action
+     * @param bool $controller
+     * @param bool $module
+     * @param array $params
+     * @return self
+     */
+    public function duplicateWithParams($action = false, $controller = false, $module = false, $params = [])
     {
         $newRequest = $this->duplicate();
         $newRequest->setActionName($action);
@@ -523,6 +577,9 @@ class Request implements \ArrayAccess
         return $newRequest;
     }
 
+    /**
+     * @return self
+     */
     public function duplicate()
     {
         return clone $this;
@@ -537,7 +594,7 @@ class Request implements \ArrayAccess
     public function setControllerName($value)
     {
         if ($value) {
-            $this->_controller = $value;
+            $this->controller = $value;
         }
 
         return $this;
@@ -551,30 +608,44 @@ class Request implements \ArrayAccess
     public function setModuleName($value)
     {
         if ($value) {
-            $this->_module = $value;
+            $this->module = $value;
         }
 
         return $this;
     }
 
+    /**
+     * @param mixed $offset
+     * @return bool
+     */
     public function offsetExists($offset)
     {
         return !empty($this->get($offset));
     }
 
+    /**
+     * @param mixed $offset
+     * @return mixed
+     */
     public function offsetGet($offset)
     {
         return $this->get($offset);
     }
 
+    /**
+     * @param mixed $offset
+     * @param mixed $value
+     */
     public function offsetSet($offset, $value)
     {
         $this->attributes->set($offset, $value);
     }
 
+    /**
+     * @param mixed $offset
+     */
     public function offsetUnset($offset)
     {
         $this->attributes->remove($offset);
     }
-
 }
