@@ -36,6 +36,10 @@ abstract class AbstractQuery
 
     protected $string = null;
 
+    /**
+     * @param Connection $manager
+     * @return $this
+     */
     public function setManager(Connection $manager)
     {
         $this->db = $manager;
@@ -109,7 +113,7 @@ abstract class AbstractQuery
     protected function checkParamSelect($params)
     {
         if (isset($params['select']) && is_array($params['select'])) {
-            call_user_func_array(array($this, 'cols'), $params['select']);
+            call_user_func_array([$this, 'cols'], $params['select']);
         }
     }
 
@@ -123,6 +127,9 @@ abstract class AbstractQuery
         }
     }
 
+    /**
+     * @param $params
+     */
     protected function checkParamWhere($params)
     {
         if (isset($params['where']) && is_array($params['where'])) {
@@ -138,11 +145,11 @@ abstract class AbstractQuery
      * @param array $values
      * @return $this
      */
-    public function where($string, $values = array())
+    public function where($string, $values = [])
     {
         /** @var Condition $this ->_parts[] */
         if ($string) {
-            if (isset($this->parts['where']) && $this->parts['where'] instanceOf Condition) {
+            if (isset($this->parts['where']) && $this->parts['where'] instanceof Condition) {
                 $this->parts['where'] = $this->parts['where']->and_($this->getCondition($string, $values));
             } else {
                 $this->parts['where'] = $this->getCondition($string, $values);
@@ -157,7 +164,7 @@ abstract class AbstractQuery
      * @param array $values
      * @return Condition
      */
-    public function getCondition($string, $values = array())
+    public function getCondition($string, $values = [])
     {
         if (!is_object($string)) {
             $condition = new Condition($string, $values);
@@ -169,34 +176,51 @@ abstract class AbstractQuery
         return $condition;
     }
 
+    /**
+     * @param $params
+     */
     protected function checkParamOrder($params)
     {
         if (isset($params['order']) && !empty($params['order'])) {
-            call_user_func_array(array($this, 'order'), $params['order']);
+            call_user_func_array([$this, 'order'], $params['order']);
         }
     }
 
+    /**
+     * @param $params
+     */
     protected function checkParamGroup($params)
     {
         if (isset($params['group']) && !empty($params['group'])) {
-            call_user_func_array(array($this, 'group'), array($params['group']));
+            call_user_func_array([$this, 'group'], [$params['group']]);
         }
     }
 
+    /**
+     * @param $params
+     */
     protected function checkParamHaving($params)
     {
         if (isset($params['having']) && !empty($params['having'])) {
-            call_user_func_array(array($this, 'having'), array($params['having']));
+            call_user_func_array([$this, 'having'], [$params['having']]);
         }
     }
 
+    /**
+     * @param $params
+     */
     protected function checkParamLimit($params)
     {
         if (isset($params['limit']) && !empty($params['limit'])) {
-            call_user_func_array(array($this, 'limit'), array($params['limit']));
+            call_user_func_array([$this, 'limit'], [$params['limit']]);
         }
     }
 
+    /**
+     * @param $start
+     * @param bool $offset
+     * @return $this
+     */
     public function limit($start, $offset = false)
     {
         $this->parts['limit'] = $start;
@@ -207,10 +231,15 @@ abstract class AbstractQuery
         return $this;
     }
 
-    public function orWhere($string, $values = array())
+    /**
+     * @param $string
+     * @param array $values
+     * @return $this
+     */
+    public function orWhere($string, $values = [])
     {
         if ($string) {
-            if ($this->parts['where'] instanceOf Condition) {
+            if ($this->parts['where'] instanceof Condition) {
                 $this->parts['where'] = $this->parts['where']->or_($this->getCondition($string, $values));
             } else {
                 $this->parts['where'] = $this->getCondition($string, $values);
@@ -220,10 +249,15 @@ abstract class AbstractQuery
         return $this;
     }
 
-    public function having($string, $values = array())
+    /**
+     * @param $string
+     * @param array $values
+     * @return $this
+     */
+    public function having($string, $values = [])
     {
         if ($string) {
-            if ($this->parts['having'] instanceOf Condition) {
+            if ($this->parts['having'] instanceof Condition) {
                 $this->parts['having'] = $this->parts['having']->and_($this->getCondition($string, $values));
             } else {
                 $this->parts['having'] = $this->getCondition($string, $values);
@@ -282,11 +316,19 @@ abstract class AbstractQuery
         return $this->string;
     }
 
+    /**
+     * @return null
+     */
     public function assemble()
     {
         return null;
     }
 
+    /**
+     * @param $name
+     * @param $value
+     * @return $this
+     */
     protected function setPart($name, $value)
     {
         $this->initPart($name);
@@ -295,16 +337,27 @@ abstract class AbstractQuery
         return $this;
     }
 
+    /**
+     * @param $name
+     * @return mixed|null
+     */
     protected function getPart($name)
     {
         return $this->hasPart($name) ? $this->parts[$name] : null;
     }
 
+    /**
+     * @param $name
+     * @return bool
+     */
     protected function hasPart($name)
     {
         return isset($this->parts[$name]) && count($this->parts[$name]);
     }
 
+    /**
+     * @return mixed
+     */
     protected function getTable()
     {
         if (!is_array($this->parts['table']) && count($this->parts['table']) < 1) {
@@ -314,11 +367,17 @@ abstract class AbstractQuery
         return reset($this->parts['table']);
     }
 
+    /**
+     * @return string
+     */
     protected function parseWhere()
     {
         return is_object($this->parts['where']) ? (string)$this->parts['where'] : '';
     }
 
+    /**
+     * @return string
+     */
     protected function parseHaving()
     {
         if (isset($this->parts['having'])) {
@@ -344,7 +403,7 @@ abstract class AbstractQuery
         foreach ($this->parts['order'] as $itemOrder) {
             if ($itemOrder) {
                 if (!is_array($itemOrder)) {
-                    $itemOrder = array($itemOrder);
+                    $itemOrder = [$itemOrder];
                 }
 
                 $column = isset($itemOrder[0]) ? $itemOrder[0] : false;
