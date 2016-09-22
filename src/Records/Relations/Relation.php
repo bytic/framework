@@ -141,11 +141,12 @@ abstract class Relation
      */
     public function setWithClass($name)
     {
-        $object = call_user_func(array($name, "instance"));
-        if ($object) {
+        $object = call_user_func([$name, "instance"]);
+        if (is_object($object) && $object instanceof RecordManager) {
+            $this->setWith($object);
+        } else {
             trigger_error("Cannot instance records [".$name."] in relation", E_USER_WARNING);
         }
-        $this->setWith($object);
     }
 
     /**
