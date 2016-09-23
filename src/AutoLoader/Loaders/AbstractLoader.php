@@ -41,15 +41,17 @@ abstract class AbstractLoader
     {
         $file = $this->getClassLocation($name);
         if ($file !== null) {
+            if (!is_file($file)) {
+                throw new AutoloadException("Invalid filepath [$file] for name [$name");
+            }
             /** @noinspection PhpIncludeInspection */
-            if (include($file)) {
-                if ($this->isLoaded($name)) {
-                    return true;
-                } else {
-                    throw new AutoloadException("Cannot find the $name class in $file");
-                }
+            if (!include($file)) {
+                throw new AutoloadException("Cannot include [$name] file [$file]");
+            }
+            if ($this->isLoaded($name)) {
+                return true;
             } else {
-                throw new AutoloadException("Cannot include $name file $file");
+                throw new AutoloadException("Cannot find the [$name] class in [$file]");
             }
         }
 

@@ -37,9 +37,10 @@ class ClassMap extends AbstractLoader
         return $this;
     }
 
+
     /**
      * @param $class
-     * @return bool|mixed|null|string
+     * @return null|string
      */
     public function getClassLocation($class)
     {
@@ -49,7 +50,7 @@ class ClassMap extends AbstractLoader
     /**
      * @param $class
      * @param bool $retry
-     * @return bool|mixed|null|string
+     * @return null|string
      */
     protected function getClassMapLocation($class, $retry = true)
     {
@@ -69,7 +70,7 @@ class ClassMap extends AbstractLoader
             return $this->getClassMapLocation($class, false);
         }
 
-        return false;
+        return null;
     }
 
     protected function checkMapInit()
