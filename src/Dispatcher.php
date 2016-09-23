@@ -201,21 +201,11 @@ class Dispatcher
      */
     protected function generateFullControllerNameNamespace($module, $controller)
     {
-        $name = $this->generateFullControllerNameString($module, $controller);
-        $name = str_replace('_', '\\', $name);
-        $name = $this->getFrontController()->getApplication()->getRootNamespace().$name;
+        $name = $this->getFrontController()->getApplication()->getRootNamespace();
+        $name .= $module.'\Controllers\\';
+        $name .= str_replace('_', '\\', $controller)."Controller";
 
         return $name;
-    }
-
-    /**
-     * @param $module
-     * @param $controller
-     * @return string
-     */
-    protected function generateFullControllerNameString($module, $controller)
-    {
-        return $module."_".$controller."Controller";
     }
 
     /**
@@ -253,6 +243,16 @@ class Dispatcher
     public function newFrontController()
     {
         return FrontController::instance();
+    }
+
+    /**
+     * @param $module
+     * @param $controller
+     * @return string
+     */
+    protected function generateFullControllerNameString($module, $controller)
+    {
+        return $module."_".$controller."Controller";
     }
 
     public function newController($class)
