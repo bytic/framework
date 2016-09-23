@@ -409,11 +409,16 @@ class Request implements \ArrayAccess
      */
     public function getControllerName()
     {
-        if (null === $this->controller) {
-            $this->controller = $this->attributes->get($this->getControllerKey());
+        if ($this->controller === null) {
+            $this->initControllerName();
         }
 
         return $this->controller;
+    }
+
+    public function initControllerName()
+    {
+        $this->controller = $this->attributes->get($this->getControllerKey());
     }
 
     /**

@@ -172,7 +172,7 @@ class Application
     protected function initFrontController()
     {
         $fc = $this->newFrontController();
-        $fc->setBootstrap($this);
+        $fc->setApplication($this);
         $this->setFrontController($fc);
     }
 
@@ -560,5 +560,13 @@ class Application
     public function newTranslator()
     {
         return new I18n\Translator();
+    }
+
+    /**
+     * @return string
+     */
+    public function getRootNamespace()
+    {
+        return 'App\\';
     }
 }

@@ -15,7 +15,11 @@ use Nip_Flash_Messages as FlashMessages;
 class Controller
 {
 
-    protected $_dispatcher;
+    /**
+     * @var null|Dispatcher
+     */
+    protected $dispatcher = null;
+
     protected $_frontController;
 
     protected $_fullName = null;
@@ -46,6 +50,10 @@ class Controller
         return HelperBroker::get($name);
     }
 
+    /**
+     * @param null|Request $request
+     * @return bool
+     */
     public function dispatch($request = null)
     {
         $request = $request ? $request : $this->getRequest();
@@ -78,6 +86,9 @@ class Controller
         return $this;
     }
 
+    /**
+     * @param Request $request
+     */
     public function populateFromRequest(Request $request)
     {
         $this->_name = $request->getControllerName();
@@ -143,7 +154,7 @@ class Controller
      */
     public function getDispatcher()
     {
-        return $this->_dispatcher;
+        return $this->dispatcher;
     }
 
     /**
@@ -152,7 +163,7 @@ class Controller
      */
     public function setDispatcher(Dispatcher $dispatcher)
     {
-        $this->_dispatcher = $dispatcher;
+        $this->dispatcher = $dispatcher;
         $this->_frontController = $dispatcher->getFrontController();
 
         return $this;

@@ -5,7 +5,10 @@ namespace Nip;
 class FrontController
 {
 
-    protected $_bootstrap;
+    /**
+     * @var Application
+     */
+    protected $application;
 
     protected $_staging;
     protected $_stage;
@@ -15,9 +18,35 @@ class FrontController
     protected $_request;
     protected $_requestURI = null;
 
-    public function setBootstrap($bootstrap)
+    /**
+     * Singleton
+     *
+     * @return self
+     */
+    static public function instance()
     {
-        $this->_bootstrap = $bootstrap;
+        static $instance;
+        if (!($instance instanceof self)) {
+            $instance = new self;
+        }
+
+        return $instance;
+    }
+
+    /**
+     * @return Application
+     */
+    public function getApplication()
+    {
+        return $this->application;
+    }
+
+    /**
+     * @param Application $bootstrap
+     */
+    public function setApplication($bootstrap)
+    {
+        $this->application = $bootstrap;
     }
 
     /**
@@ -57,28 +86,6 @@ class FrontController
         $this->getDispatcher()->dispatch($request);
     }
 
-    public function route($request = false)
-    {
-        $request = $request ? $request : $this->getRequest();
-        $params = $this->getRouter()->route($request);
-        return $params;
-    }
-
-    public function getRouter()
-    {
-        if (!$this->_router) {
-            $this->_router = new \Nip\Router\Router();
-        }
-
-        return $this->_router;
-    }
-
-    public function setRouter(\Nip\Router\Router $router = NULL)
-    {
-        $this->_router = $router;
-        return $this;
-    }
-
     /**
      * @return Dispatcher
      */
@@ -89,6 +96,17 @@ class FrontController
         }
 
         return $this->_dispatcher;
+    }
+
+    /**
+     * @param bool|Dispatcher $dispatcher
+     * @return $this
+     */
+    public function setDispatcher($dispatcher = false)
+    {
+        $this->_dispatcher = $dispatcher;
+
+        return $this;
     }
 
     public function initDispatcher()
@@ -106,14 +124,12 @@ class FrontController
         return $dispatcher;
     }
 
-    /**
-     * @param bool|Dispatcher $dispatcher
-     * @return $this
-     */
-    public function setDispatcher($dispatcher = false)
+    public function route($request = false)
     {
-        $this->_dispatcher = $dispatcher;
-        return $this;
+        $request = $request ? $request : $this->getRequest();
+        $params = $this->getRouter()->route($request);
+
+        return $params;
     }
 
     /**
@@ -138,25 +154,27 @@ class FrontController
         return $this;
     }
 
+    public function getRouter()
+    {
+        if (!$this->_router) {
+            $this->_router = new \Nip\Router\Router();
+        }
+
+        return $this->_router;
+    }
+
+    public function setRouter(\Nip\Router\Router $router = null)
+    {
+        $this->_router = $router;
+
+        return $this;
+    }
+
     /**
      * @return FrontController\Trace
      */
     public function getTrace()
     {
         return FrontController\Trace::instance();
-    }
-
-    /**
-     * Singleton
-     *
-     * @return self
-     */
-    static public function instance()
-    {
-        static $instance;
-        if (!($instance instanceof self)) {
-            $instance = new self;
-        }
-        return $instance;
     }
 }
