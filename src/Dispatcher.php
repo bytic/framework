@@ -187,7 +187,9 @@ class Dispatcher
     public function getFullControllerName($module, $controller)
     {
         $namespaceClass = $this->generateFullControllerNameNamespace($module, $controller);
-        if (class_exists($namespaceClass)) {
+        $loader = $this->getFrontController()->getApplication()->getAutoloader()->getPsr4ClassLoader();
+        $loader->load($namespaceClass);
+        if ($loader->isLoaded($namespaceClass)) {
             return $namespaceClass;
         }
 
@@ -201,7 +203,7 @@ class Dispatcher
      */
     protected function generateFullControllerNameNamespace($module, $controller)
     {
-        $name = $this->getFrontController()->getApplication()->getRootNamespace();
+        $name = $this->getFrontController()->getApplication()->getRootNamespace().'Modules\\';
         $name .= $module.'\Controllers\\';
         $name .= str_replace('_', '\\', $controller)."Controller";
 
