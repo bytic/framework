@@ -15,6 +15,7 @@ use Nip\Records\Collections\Collection as RecordCollection;
 use Nip\Records\Filters\FilterManager;
 use Nip\Records\Relations\Relation;
 use Nip\Request;
+use Nip\Utility\Traits\NameWorksTrait;
 
 /**
  * Class Table
@@ -24,6 +25,8 @@ use Nip\Request;
  */
 abstract class RecordManager
 {
+
+    use NameWorksTrait;
 
     /**
      * @var Connection
@@ -44,7 +47,16 @@ abstract class RecordManager
     protected $urlPK = null;
 
     protected $model = null;
+
+    /**
+     * @var null|string
+     */
     protected $controller = null;
+
+    /**
+     * @var null|string
+     */
+    protected $modelNamespacePath = null;
 
     protected $registry = null;
 
@@ -68,7 +80,7 @@ abstract class RecordManager
      */
     public function getModelNamespace()
     {
-        return $this->getRootNamespace() . $this->getModelNamespacePath();
+        return static::getRootNamespace().$this->getModelNamespacePath();
     }
 
     /**
@@ -79,29 +91,52 @@ abstract class RecordManager
         return 'App\Models\\';
     }
 
+    /**
+     * @return string
+     */
     public function getModelNamespacePath()
     {
-        return inflector()->classify($this->getController()) . '\\';
+        if ($this->modelNamespacePath == null) {
+            $this->initModelNamespacePath();
+        }
+
+        return $this->modelNamespacePath;
+    }
+
+    public function initModelNamespacePath()
+    {
+        if ($this->isNamespaced()) {
+            $path = $this->generateModelNamespacePathFromClassName().'\\';
+        } else {
+            $controller = $this->generateControllerGeneric();
+            $path = inflector()->classify($controller).'\\';
+        }
+        $this->modelNamespacePath = $path;
     }
 
     /**
      * @return string
      */
-    public function getController()
+    protected function generateModelNamespacePathFromClassName()
     {
-        if ($this->controller == null) {
-            $this->inflectController();
-        }
+        $className = $this->getClassName();
+        $rootNamespace = self::getRootNamespace();
+        $path = str_replace($rootNamespace, '', $className);
 
-        return $this->controller;
+        $nsParts = explode('\\', $path);
+        array_pop($nsParts);
+
+        return implode($nsParts, '\\');
     }
 
-    protected function inflectController()
+    /**
+     * @return string
+     */
+    protected function generateControllerGeneric()
     {
-        $class = get_class($this);
-        if ($this->controller == null) {
-            $this->controller = inflector()->unclassify($class);
-        }
+        $class = $this->getClassName();
+
+        return inflector()->unclassify($class);
     }
 
     /**
@@ -147,22 +182,22 @@ abstract class RecordManager
     {
         $operations = ["find", "delete", "count"];
         foreach ($operations as $operation) {
-            if (strpos($name, $operation . "By") !== false || strpos($name, $operation . "OneBy") !== false) {
+            if (strpos($name, $operation."By") !== false || strpos($name, $operation."OneBy") !== false) {
                 $params = [];
                 if (count($arguments) > 1) {
                     $params = end($arguments);
                 }
 
-                $match = str_replace([$operation . "By", $operation . "OneBy"], "", $name);
+                $match = str_replace([$operation."By", $operation."OneBy"], "", $name);
                 $field = inflector()->underscore($match);
 
                 if ($field == $this->getPrimaryKey()) {
                     return $this->findByPrimary($arguments[0]);
                 }
 
-                $params['where'][] = ["$field " . (is_array($arguments[0]) ? "IN" : "=") . " ?", $arguments[0]];
+                $params['where'][] = ["$field ".(is_array($arguments[0]) ? "IN" : "=")." ?", $arguments[0]];
 
-                $operation = str_replace($match, "", $name) . "Params";
+                $operation = str_replace($match, "", $name)."Params";
 
                 return $this->$operation($params);
             }
@@ -288,6 +323,47 @@ abstract class RecordManager
     }
 
     /**
+     * @return string
+     */
+    public function getController()
+    {
+        if ($this->controller === null) {
+            $this->initController();
+        }
+
+        return $this->controller;
+    }
+
+    /**
+     * @param null|string $controller
+     */
+    public function setController($controller)
+    {
+        $this->controller = $controller;
+    }
+
+    protected function initController()
+    {
+        if ($this->isNamespaced()) {
+            $controller = $this->generateControllerNamespaced();
+        } else {
+            $controller = $this->generateControllerGeneric();
+        }
+        $this->controller = $controller;
+    }
+
+    /**
+     * @return string
+     */
+    protected function generateControllerNamespaced()
+    {
+        $class = $this->getModelNamespacePath();
+        $class = trim($class, '\\');
+
+        return inflector()->unclassify($class);
+    }
+
+    /**
      * When searching by primary key, look for items in current registry before
      * fetching them from the database
      *
@@ -387,7 +463,7 @@ abstract class RecordManager
     public function newQuery($type = 'select')
     {
         $query = $this->getDB()->newQuery($type);
-        $query->cols("`" . $this->getTable() . "`.*");
+        $query->cols("`".$this->getTable()."`.*");
         $query->from($this->getFullNameTable());
         $query->table($this->getTable());
 
@@ -401,7 +477,7 @@ abstract class RecordManager
     {
         $database = $this->getDB()->getDatabase();
 
-        return $database ? $database . '.' . $this->getTable() : $this->getTable();
+        return $database ? $database.'.'.$this->getTable() : $this->getTable();
     }
 
     /**
@@ -504,7 +580,7 @@ abstract class RecordManager
 
     protected function inflectModel()
     {
-        $class = get_class($this);
+        $class = $this->getClassName();
         if ($this->model == null) {
             $this->model = $this->generateModelClass($class);
         }
@@ -528,7 +604,7 @@ abstract class RecordManager
                 $class = ucfirst(inflector()->singularize($class));
             }
 
-            return implode($nsParts, '\\') . '\\' . $class;
+            return implode($nsParts, '\\').'\\'.$class;
         }
 
         return ucfirst(inflector()->singularize($class));
@@ -548,12 +624,12 @@ abstract class RecordManager
             $controller = $this->getController();
 
             if (substr($action, 0, 5) == 'Async') {
-                $controller = 'async-' . $controller;
+                $controller = 'async-'.$controller;
                 $action = substr($action, 5);
             }
 
             if (substr($action, 0, 5) == 'Modal') {
-                $controller = 'modal-' . $controller;
+                $controller = 'modal-'.$controller;
                 $action = substr($action, 5);
             }
 
@@ -580,11 +656,11 @@ abstract class RecordManager
         $params['controller'] = $params['controller'] ? $params['controller'] : $this->getController();
         $params['module'] = $params['module'] ? $params['module'] : Request::instance()->getModuleName();
 
-        $routeName = $params['module'] . '.' . $params['controller'] . '.' . $params['action'];
+        $routeName = $params['module'].'.'.$params['controller'].'.'.$params['action'];
         if ($this->Url()->getRouter()->hasRoute($routeName)) {
             unset($params['module'], $params['controller'], $params['action']);
         } else {
-            $routeName = $params['module'] . '.default';
+            $routeName = $params['module'].'.default';
         }
 
         return $this->Url()->assemble($routeName, $params);
@@ -706,7 +782,7 @@ abstract class RecordManager
         }
 
         foreach ($fields as $field) {
-            $params['where'][$field . '-UNQ'] = ["$field = ?", $item->$field];
+            $params['where'][$field.'-UNQ'] = ["$field = ?", $item->$field];
         }
 
         $pk = $this->getPrimaryKey();
@@ -1170,7 +1246,7 @@ abstract class RecordManager
 
     public function initPrimaryFK()
     {
-        $this->foreignKey = $this->getPrimaryKey() . "_" . inflector()->underscore($this->getModel());
+        $this->foreignKey = $this->getPrimaryKey()."_".inflector()->underscore($this->getModel());
     }
 
     /**
@@ -1260,7 +1336,7 @@ abstract class RecordManager
      */
     protected function initRelationsType($type)
     {
-        $array = $this->{'_' . $type};
+        $array = $this->{'_'.$type};
         $this->initRelationsFromArray($type, $array);
     }
 
@@ -1310,7 +1386,7 @@ abstract class RecordManager
      */
     public function getRelationClass($type)
     {
-        $class = 'Nip\Records\Relations\\' . ucfirst($type);
+        $class = 'Nip\Records\Relations\\'.ucfirst($type);
 
         return $class;
     }
@@ -1380,7 +1456,7 @@ abstract class RecordManager
             /** @var \Nip\Records\Relations\HasMany $relation */
             if ($relation->getType() != 'belongsTo') {
                 /** @var Record[] $associatedOld */
-                $associatedOld = $from->{'get' . $name}();
+                $associatedOld = $from->{'get'.$name}();
                 if (count($associatedOld)) {
                     $associatedNew = $to->getRelation($name)->newCollection();
                     foreach ($associatedOld as $associated) {
@@ -1423,6 +1499,7 @@ abstract class RecordManager
      */
     protected function inflect()
     {
-        $this->inflectController();
+        $this->initController();
     }
 }
+

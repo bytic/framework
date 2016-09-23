@@ -22,7 +22,7 @@ class Inflector
         '/(octop|vir)us$/i' => '\1i',
         '/(ax|test)is$/i' => '\1es',
         '/s$/i' => 's',
-        '/$/' => 's'
+        '/$/' => 's',
     );
     protected $singular = array(
         '/(quiz)zes$/i' => '\1',
@@ -48,7 +48,7 @@ class Inflector
         '/((a)naly|(b)a|(d)iagno|(p)arenthe|(p)rogno|(s)ynop|(t)he)ses$/i' => '\1\2sis',
         '/([ti])a$/i' => '\1um',
         '/(n)ews$/i' => '\1ews',
-        '/s$/i' => ''
+        '/s$/i' => '',
     );
     protected $uncountable = array('equipment', 'information', 'rice', 'money', 'species', 'series', 'fish', 'sheep');
     protected $irregular = array(
@@ -56,7 +56,7 @@ class Inflector
         'man' => 'men',
         'child' => 'children',
         'sex' => 'sexes',
-        'move' => 'moves'
+        'move' => 'moves',
     );
     protected $dictionary;
     protected $cacheFile = null;
@@ -65,63 +65,9 @@ class Inflector
     public function __construct()
     {
         if (defined('CACHE_PATH')) {
-            $this->cacheFile = CACHE_PATH . 'inflector.php';
+            $this->cacheFile = CACHE_PATH.'inflector.php';
         }
         $this->readCache();
-    }
-
-    public function __destruct()
-    {
-        if ($this->toCache) {
-            $this->writeCache();
-        }
-    }
-
-    public function unclassify($word)
-    {
-        return $this->doInflection('unclassify', $word);
-    }
-
-    public function underscore($word)
-    {
-        return $this->doInflection('underscore', $word);
-    }
-
-    public function singularize($word)
-    {
-        return $this->doInflection('singularize', $word);
-    }
-
-    public function camelize($word)
-    {
-        return $this->doInflection('camelize', $word);
-    }
-
-    public function classify($word)
-    {
-        return $this->doInflection('classify', $word);
-    }
-
-    public function pluralize($word)
-    {
-        return $this->doInflection('pluralize', $word);
-    }
-
-    public function __call($name, $arguments)
-    {
-        $word = $arguments[0];
-        return $this->doInflection($name, $word);
-    }
-
-    public function doInflection($name, $word)
-    {
-        if (!isset($this->dictionary[$name][$word])) {
-            $this->toCache = true;
-            $method = "_" . $name;
-            $this->dictionary[$name][$word] = $this->$method($word);
-        }
-
-        return $this->dictionary[$name][$word];
     }
 
     public function readCache()
@@ -141,15 +87,6 @@ class Inflector
         }
     }
 
-    public function writeCache()
-    {
-        if ($this->dictionary && $this->cacheFile) {
-            $file = new \Nip_File_Handler(array("path" => $this->cacheFile));
-            $data = '<?php $inflector = ' . var_export($this->dictionary, true) . ";";
-            $file->rewrite($data);
-        }
-    }
-
     public function isCached()
     {
         if ($this->hasCacheFile()) {
@@ -161,17 +98,85 @@ class Inflector
         return false;
     }
 
+    public function hasCacheFile()
+    {
+        return ($this->cacheFile && file_exists($this->cacheFile));
+    }
+
     public function getCacheTTL()
     {
         if (isset(\Nip_Config::instance()->MISC) && isset(\Nip_Config::instance()->MISC->inflector_cache)) {
             return \Nip_Config::instance()->MISC->inflector_cache;
         }
+
         return 86400;
     }
 
-    public function hasCacheFile()
+    /**
+     * @return self
+     */
+    public static function instance()
     {
-        return ($this->cacheFile && file_exists($this->cacheFile));
+        static $instance;
+        if (!($instance instanceof self)) {
+            $instance = new self();
+        }
+
+        return $instance;
+    }
+
+    public function __destruct()
+    {
+        if ($this->toCache) {
+            $this->writeCache();
+        }
+    }
+
+    public function writeCache()
+    {
+        if ($this->dictionary && $this->cacheFile) {
+            $file = new \Nip_File_Handler(array("path" => $this->cacheFile));
+            $data = '<?php $inflector = '.var_export($this->dictionary, true).";";
+            $file->rewrite($data);
+        }
+    }
+
+    public function unclassify($word)
+    {
+        return $this->doInflection('unclassify', $word);
+    }
+
+    public function doInflection($name, $word)
+    {
+        if (!isset($this->dictionary[$name][$word])) {
+            $this->toCache = true;
+            $method = "_".$name;
+            $this->dictionary[$name][$word] = $this->$method($word);
+        }
+
+        return $this->dictionary[$name][$word];
+    }
+
+    public function singularize($word)
+    {
+        return $this->doInflection('singularize', $word);
+    }
+
+    public function camelize($word)
+    {
+        return $this->doInflection('camelize', $word);
+    }
+
+    public function classify($word)
+    {
+        return $this->doInflection('classify', $word);
+    }
+
+    public function __call($name, $arguments)
+    {
+        $word = $arguments[0];
+
+        return $this->doInflection($name, $word);
     }
 
     protected function _pluralize($word)
@@ -185,8 +190,8 @@ class Inflector
         }
 
         foreach ($this->irregular as $_plural => $_singular) {
-            if (preg_match('/(' . $_plural . ')$/i', $word, $arr)) {
-                return preg_replace('/(' . $_plural . ')$/i', substr($arr[0], 0, 1) . substr($_singular, 1), $word);
+            if (preg_match('/('.$_plural.')$/i', $word, $arr)) {
+                return preg_replace('/('.$_plural.')$/i', substr($arr[0], 0, 1).substr($_singular, 1), $word);
             }
         }
 
@@ -195,6 +200,7 @@ class Inflector
                 return preg_replace($rule, $replacement, $word);
             }
         }
+
         return false;
     }
 
@@ -208,8 +214,8 @@ class Inflector
         }
 
         foreach ($this->irregular as $_plural => $_singular) {
-            if (preg_match('/(' . $_singular . ')$/i', $word, $arr)) {
-                return preg_replace('/(' . $_singular . ')$/i', substr($arr[0], 0, 1) . substr($_plural, 1), $word);
+            if (preg_match('/('.$_singular.')$/i', $word, $arr)) {
+                return preg_replace('/('.$_singular.')$/i', substr($arr[0], 0, 1).substr($_plural, 1), $word);
             }
         }
 
@@ -227,16 +233,17 @@ class Inflector
         return str_replace(' ', '', ucwords(preg_replace('/[^A-Z^a-z^0-9]+/', ' ', $word)));
     }
 
+    protected function _hyphenize($word)
+    {
+        $word = $this->_underscore($word);
+
+        return str_replace('_', '-', $word);
+    }
+
     protected function _underscore($word)
     {
         return strtolower(preg_replace('/[^A-Z^a-z^0-9]+/', '_',
             preg_replace('/([a-zd])([A-Z])/', '\1_\2', preg_replace('/([A-Z]+)([A-Z][a-z])/', '\1_\2', $word))));
-    }
-
-    protected function _hyphenize($word)
-    {
-        $word = $this->_underscore($word);
-        return str_replace('_', '-', $word);
     }
 
     /**
@@ -253,6 +260,16 @@ class Inflector
         return $this->pluralize($this->underscore($class_name));
     }
 
+    public function pluralize($word)
+    {
+        return $this->doInflection('pluralize', $word);
+    }
+
+    public function underscore($word)
+    {
+        return $this->doInflection('underscore', $word);
+    }
+
     /**
      * Converts lowercase string to underscored camelize class format
      *
@@ -263,6 +280,7 @@ class Inflector
     {
         $parts = explode("-", $string);
         $parts = array_map(array($this, "camelize"), $parts);
+
         return implode("_", $parts);
     }
 
@@ -274,42 +292,32 @@ class Inflector
      */
     protected function _unclassify($string)
     {
+        $string = str_replace('\\', '_', $string);
         $parts = explode("_", $string);
-        $parts = array_map(array($this, "underscore"), $parts);
+        $parts = array_map([$this, "underscore"], $parts);
+
         return implode("-", $parts);
     }
 
     protected function _ordinalize($number)
     {
         if (in_array(($number % 100), range(11, 13))) {
-            return $number . 'th';
+            return $number.'th';
         } else {
             switch (($number % 10)) {
                 case 1:
-                    return $number . 'st';
+                    return $number.'st';
                     break;
                 case 2:
-                    return $number . 'nd';
+                    return $number.'nd';
                     break;
                 case 3:
-                    return $number . 'rd';
+                    return $number.'rd';
                 default:
-                    return $number . 'th';
+                    return $number.'th';
                     break;
             }
         }
-    }
-
-    /**
-     * @return self
-     */
-    public static function instance()
-    {
-        static $instance;
-        if (!($instance instanceof self)) {
-            $instance = new self();
-        }
-        return $instance;
     }
 
 }

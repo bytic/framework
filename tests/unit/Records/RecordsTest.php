@@ -19,71 +19,84 @@ class RecordsTest extends \Codeception\TestCase\Test
      */
     protected $_object;
 
-    protected function _before()
-    {
-        $wrapper = new Connection();
-
-        $this->_object = new Records();
-        $this->_object->setDB($wrapper);
-        $this->_object->setTable('pages');
-    }
-
-    protected function _after()
-    {
-    }
-
-    // tests
-
     public function testSetModel()
     {
         $this->_object->setModel('Row');
-        $this->assertEquals($this->_object->getModel(), 'Row');
+        self::assertEquals($this->_object->getModel(), 'Row');
 
         $this->_object->setModel('Row2');
-        $this->assertEquals($this->_object->getModel(), 'Row2');
+        self::assertEquals($this->_object->getModel(), 'Row2');
     }
 
     public function testGetFullNameTable()
     {
-        $this->assertEquals('pages', $this->_object->getFullNameTable());
+        self::assertEquals('pages', $this->_object->getFullNameTable());
 
         $this->_object->getDB()->setDatabase('database_name');
-        $this->assertEquals('database_name.pages', $this->_object->getFullNameTable());
+        self::assertEquals('database_name.pages', $this->_object->getFullNameTable());
     }
+
+    // tests
 
     public function testGenerateModelClass()
     {
-        $this->assertEquals($this->_object->generateModelClass('Notifications\Table'), 'Notifications\Row');
-        $this->assertEquals($this->_object->generateModelClass('Notifications_Tables'), 'Notifications_Table');
-        $this->assertEquals($this->_object->generateModelClass('Notifications'), 'Notification');
-        $this->assertEquals($this->_object->generateModelClass('Persons'), 'Person');
+        self::assertEquals($this->_object->generateModelClass('Notifications\Table'), 'Notifications\Row');
+        self::assertEquals($this->_object->generateModelClass('Notifications_Tables'), 'Notifications_Table');
+        self::assertEquals($this->_object->generateModelClass('Notifications'), 'Notification');
+        self::assertEquals($this->_object->generateModelClass('Persons'), 'Person');
+    }
+
+    /**
+     * @return array
+     */
+    public function providerGetController()
+    {
+        return [
+            ["notifications-tables", "Notifications_Tables"],
+            ["notifications-tables", "Notifications\\Tables\\Tables"],
+            ["notifications-tables", "App\\Models\\Notifications\\Tables\\Tables"],
+        ];
+    }
+
+    /**
+     * @dataProvider providerGetController
+     * @param $controller
+     * @param $class
+     */
+    public function testGetController($controller, $class)
+    {
+        /** @var Records $records */
+        $records = new Records();
+        $records->setClassName($class);
+
+        self::assertEquals($controller, $records->getController());
     }
 
     public function testGetRelationClass()
     {
-        $this->assertEquals('Nip\Records\Relations\BelongsTo', $this->_object->getRelationClass('BelongsTo'));
-        $this->assertEquals('Nip\Records\Relations\BelongsTo', $this->_object->getRelationClass('belongsTo'));
+        self::assertEquals('Nip\Records\Relations\BelongsTo', $this->_object->getRelationClass('BelongsTo'));
+        self::assertEquals('Nip\Records\Relations\BelongsTo', $this->_object->getRelationClass('belongsTo'));
 
-        $this->assertEquals('Nip\Records\Relations\HasMany', $this->_object->getRelationClass('HasMany'));
-        $this->assertEquals('Nip\Records\Relations\HasMany', $this->_object->getRelationClass('hasMany'));
+        self::assertEquals('Nip\Records\Relations\HasMany', $this->_object->getRelationClass('HasMany'));
+        self::assertEquals('Nip\Records\Relations\HasMany', $this->_object->getRelationClass('hasMany'));
 
-        $this->assertEquals('Nip\Records\Relations\HasAndBelongsToMany',
+        self::assertEquals('Nip\Records\Relations\HasAndBelongsToMany',
             $this->_object->getRelationClass('HasAndBelongsToMany'));
-        $this->assertEquals('Nip\Records\Relations\HasAndBelongsToMany',
+        self::assertEquals('Nip\Records\Relations\HasAndBelongsToMany',
             $this->_object->getRelationClass('hasAndBelongsToMany'));
     }
 
     public function testNewRelation()
     {
-        $this->assertInstanceOf('Nip\Records\Relations\BelongsTo', $this->_object->newRelation('BelongsTo'));
-        $this->assertInstanceOf('Nip\Records\Relations\BelongsTo', $this->_object->newRelation('belongsTo'));
+        self::assertInstanceOf('Nip\Records\Relations\BelongsTo', $this->_object->newRelation('BelongsTo'));
+        self::assertInstanceOf('Nip\Records\Relations\BelongsTo', $this->_object->newRelation('belongsTo'));
 
-        $this->assertInstanceOf('Nip\Records\Relations\HasMany', $this->_object->newRelation('HasMany'));
-        $this->assertInstanceOf('Nip\Records\Relations\HasMany', $this->_object->newRelation('hasMany'));
+        self::assertInstanceOf('Nip\Records\Relations\HasMany', $this->_object->newRelation('HasMany'));
+        self::assertInstanceOf('Nip\Records\Relations\HasMany', $this->_object->newRelation('hasMany'));
 
-        $this->assertInstanceOf('Nip\Records\Relations\HasAndBelongsToMany',
+        self::assertInstanceOf('Nip\Records\Relations\HasAndBelongsToMany',
             $this->_object->newRelation('HasAndBelongsToMany'));
-        $this->assertInstanceOf('Nip\Records\Relations\HasAndBelongsToMany',
+        self::assertInstanceOf('Nip\Records\Relations\HasAndBelongsToMany',
             $this->_object->newRelation('hasAndBelongsToMany'));
     }
 
@@ -93,46 +106,46 @@ class RecordsTest extends \Codeception\TestCase\Test
             ->shouldReceive('instance')->andReturnSelf()
             ->getMock();
         $users->setPrimaryFK('id_user');
+
         m::namedMock('User', 'Record');
         m::namedMock('Articles', 'Records');
 
         $this->_object->setPrimaryFK('id_object');
 
-        $this->_object->initRelationsFromArray('belongsTo', array('User'));
+        $this->_object->initRelationsFromArray('belongsTo', ['User']);
         $this->_testInitRelationsFromArrayBelongsToUser('User');
 
-
-        $this->_object->initRelationsFromArray('belongsTo', array(
-            'UserName' => array('with' => $users),
-        ));
+        $this->_object->initRelationsFromArray('belongsTo', [
+            'UserName' => ['with' => $users],
+        ]);
         $this->_testInitRelationsFromArrayBelongsToUser('UserName');
-        $this->assertSame($users, $this->_object->getRelation('User')->getWith());
-    }
 
+        self::assertSame($users, $this->_object->getRelation('User')->getWith());
+    }
 
     protected function _testInitRelationsFromArrayBelongsToUser($name)
     {
-        $this->assertTrue($this->_object->hasRelation($name));
-        $this->assertInstanceOf('Nip\Records\Relations\BelongsTo', $this->_object->getRelation($name));
-        $this->assertInstanceOf('Nip\Records\RecordManager', $this->_object->getRelation($name)->getWith());
-        $this->assertEquals($this->_object->getRelation($name)->getWith()->getPrimaryFK(),
+        self::assertTrue($this->_object->hasRelation($name));
+        self::assertInstanceOf('Nip\Records\Relations\BelongsTo', $this->_object->getRelation($name));
+        self::assertInstanceOf('Nip\Records\RecordManager', $this->_object->getRelation($name)->getWith());
+        self::assertEquals($this->_object->getRelation($name)->getWith()->getPrimaryFK(),
             $this->_object->getRelation($name)->getFK());
     }
 
     public function testNewCollection()
     {
         $collection = $this->_object->newCollection();
-        $this->assertInstanceOf('Nip\Records\Collections\Collection', $collection);
-        $this->assertSame($this->_object, $collection->getManager());
+        self::assertInstanceOf('Nip\Records\Collections\Collection', $collection);
+        self::assertSame($this->_object, $collection->getManager());
     }
 
     public function testRequestFilters()
     {
         $request = new Request();
-        $params = array(
+        $params = [
             'title' => 'Test title',
             'name' => 'Test name',
-        );
+        ];
         $request->query->add($params);
 
         $this->_object->getFilterManager()->addFilter(
@@ -146,7 +159,19 @@ class RecordsTest extends \Codeception\TestCase\Test
         );
 
         $filtersArray = $this->_object->requestFilters($request);
-        $this->assertSame($filtersArray, $params);
+        self::assertSame($filtersArray, $params);
     }
 
+    protected function _before()
+    {
+        $wrapper = new Connection();
+
+        $this->_object = new Records();
+        $this->_object->setDB($wrapper);
+        $this->_object->setTable('pages');
+    }
+
+    protected function _after()
+    {
+    }
 }
