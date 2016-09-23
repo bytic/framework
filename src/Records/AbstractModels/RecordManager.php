@@ -120,7 +120,7 @@ abstract class RecordManager
     protected function generateModelNamespacePathFromClassName()
     {
         $className = $this->getClassName();
-        $rootNamespace = self::getRootNamespace();
+        $rootNamespace = static::getRootNamespace();
         $path = str_replace($rootNamespace, '', $className);
 
         $nsParts = explode('\\', $path);
