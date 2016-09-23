@@ -335,10 +335,7 @@ abstract class AbstractQuery
     /**
      * @return null
      */
-    public function assemble()
-    {
-        return null;
-    }
+    abstract public function assemble();
 
     /**
      * @return array
@@ -346,6 +343,41 @@ abstract class AbstractQuery
     public function getParts()
     {
         return $this->parts;
+    }
+
+    /**
+     * @return null|string
+     */
+    protected function assembleWhere()
+    {
+        $where = $this->parseWhere();
+
+        if (!empty($where)) {
+            return " WHERE $where";
+        }
+
+        return null;
+    }
+
+    /**
+     * @return string
+     */
+    protected function parseWhere()
+    {
+        return is_object($this->parts['where']) ? (string)$this->parts['where'] : '';
+    }
+
+    /**
+     * @return null|string
+     */
+    protected function assembleLimit()
+    {
+        $limit = $this->getPart('limit');
+        if (!empty($limit)) {
+            return " LIMIT {$this->parts['limit']}";
+        }
+
+        return null;
     }
 
     /**
@@ -389,14 +421,6 @@ abstract class AbstractQuery
         }
 
         return reset($this->parts['table']);
-    }
-
-    /**
-     * @return string
-     */
-    protected function parseWhere()
-    {
-        return is_object($this->parts['where']) ? (string)$this->parts['where'] : '';
     }
 
     /**

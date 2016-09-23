@@ -17,13 +17,13 @@ class Select extends AbstractQuery
 
     public function __call($name, $arguments)
     {
-        if (in_array($name, array('min', 'max', 'count', 'avg', 'sum'))) {
+        if (in_array($name, ['min', 'max', 'count', 'avg', 'sum'])) {
             $input = reset($arguments);
 
             if (is_array($input)) {
                 $input[] = false;
             } else {
-                $input = array($input, $arguments[1], $arguments[2]);
+                $input = [$input, $arguments[1], $arguments[2]];
             }
 
             $input[0] = strtoupper($name) . '(' . $this->protect($input[0]) . ')';
@@ -106,13 +106,15 @@ class Select extends AbstractQuery
         return $this;
     }
 
+    /**
+     * @return string
+     */
     public function assemble()
     {
         $select = $this->parseCols();
         $options = $this->parseOptions();
         $from = $this->parseFrom();
 
-        $where = $this->parseWhere();
         $group = $this->parseGroup();
         $having = $this->parseHaving();
 
@@ -132,9 +134,7 @@ class Select extends AbstractQuery
             $query .= " FROM $from";
         }
 
-        if (!empty($where)) {
-            $query .= " WHERE $where";
-        }
+        $query .= $this->assembleWhere();
 
         if (!empty($group)) {
             $query .= " GROUP BY $group";
@@ -148,9 +148,7 @@ class Select extends AbstractQuery
             $query .= " ORDER BY $order";
         }
 
-        if (!empty($this->parts['limit'])) {
-            $query .= " LIMIT {$this->parts['limit']}";
-        }
+        $query .= $this->assembleLimit();
 
         return $query;
     }

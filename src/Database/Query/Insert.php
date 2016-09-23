@@ -3,10 +3,15 @@
 
 namespace Nip\Database\Query;
 
+/**
+ * Class Insert
+ * @package Nip\Database\Query
+ */
 class Insert extends AbstractQuery
 {
 
     protected $_cols;
+
     protected $_values;
 
     public function assemble()
