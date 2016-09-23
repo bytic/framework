@@ -2,16 +2,10 @@
 
 namespace Nip\Database;
 
-class Exception extends \Exception
+/**
+ * Class Exception
+ * @package Nip\Database
+ */
+class Exception extends \Nip\Logger\Exception
 {
-
-    public function __construct($message, $code = E_USER_ERROR)
-    {
-        parent::__construct($message, $code);
-    }
-
-    public function log()
-    {
-    }
-
 }

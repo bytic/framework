@@ -2,35 +2,55 @@
 
 namespace Nip;
 
-use Nip\AutoLoader\ClassMapGenerator;
+use Nip\AutoLoader\Exception;
 use Nip\AutoLoader\Exception as AutoloadException;
+use Nip\AutoLoader\Loaders\AbstractLoader;
+use Nip\AutoLoader\Loaders\ClassMap;
 
-function _autoload($class)
-{
-    $autoloader = AutoLoader::instance();
-    $autoloader->autoload($class);
-}
-
-spl_autoload_register('Nip\_autoload');
-
+/**
+ * Class AutoLoader
+ * @package Nip
+ */
 class AutoLoader
 {
-    protected $_directories = [];
-    protected $_map = [];
-    protected $_mapGenerator;
-    protected $_cachePath;
-    protected $_rootPath = null;
 
-    protected $_ignoreTokens = [];
     /**
-     * If true, if a class location is not mapped, it tries again by rewriting the cache file
+     * @var bool
      */
-    protected $_retry = false;
-    protected $_isFatal = false;
+    public static $splHandler = false;
 
-    public function __construct()
+    /**
+     * @var AbstractLoader[]
+     */
+    protected $loaders = [];
+
+    /**
+     * @var string
+     */
+    protected $cachePath;
+
+    /**
+     * @var array
+     */
+    protected $ignoreTokens = [];
+
+    /**
+     * @param AutoLoader $autoloader
+     * @return bool
+     * @throws Exception
+     */
+    public static function registerHandler(AutoLoader $autoloader)
     {
-        $this->_mapGenerator = new ClassMapGenerator();
+        // Only register once per instance
+        if (static::$splHandler) {
+            return false;
+        }
+
+        if ($autoloader instanceof AutoLoader) {
+            return spl_autoload_register([$autoloader, 'autoload']);
+        }
+
+        throw new AutoloadException('Invalid Autoloader specified in register handler');
     }
 
     /**
@@ -38,7 +58,7 @@ class AutoLoader
      *
      * @return self
      */
-    static public function instance()
+    public static function instance()
     {
         static $instance;
         if (!($instance instanceof self)) {
@@ -48,183 +68,193 @@ class AutoLoader
         return $instance;
     }
 
+    /**
+     * @param $dir
+     * @return $this
+     */
     public function addDirectory($dir)
     {
-        $this->_directories[] = $dir;
+        $this->getClassMapLoader()->addDirectory($dir);
+
         return $this;
     }
 
+    /**
+     * @return ClassMap
+     */
+    public function getClassMapLoader()
+    {
+        return $this->getLoader('ClassMap');
+    }
+
+    /**
+     * @param $name
+     * @return AbstractLoader
+     */
+    public function getLoader($name)
+    {
+        if (!$this->hasLoader($name)) {
+            $this->initLoader($name);
+        }
+
+        return $this->loaders[$name];
+    }
+
+    /**
+     * @param $name
+     * @return bool
+     */
+    public function hasLoader($name)
+    {
+        return isset($this->loaders[$name]);
+    }
+
+    /**
+     * @param $name
+     */
+    public function initLoader($name)
+    {
+        $loader = $this->newLoader($name);
+        $this->addLoader($name, $loader);
+    }
+
+    /**
+     * @param $name
+     * @return AbstractLoader
+     */
+    public function newLoader($name)
+    {
+        $class = $this->getLoaderClass($name);
+        $loader = new $class;
+
+        return $loader;
+    }
+
+    /**
+     * @param $name
+     * @return string
+     */
+    public function getLoaderClass($name)
+    {
+        return 'Nip\AutoLoader\Loaders\\'.$name;
+    }
+
+    /**
+     * @param $name
+     * @param AbstractLoader $loader
+     */
+    public function addLoader($name, $loader)
+    {
+        $loader->setAutoloader($this);
+        $this->loaders[$name] = $loader;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getCachePath()
+    {
+        return $this->cachePath;
+    }
+
+    /**
+     * @param $path
+     * @return $this
+     */
     public function setCachePath($path)
     {
-        $this->_cachePath = $path;
+        $this->cachePath = $path;
+
         return $this;
     }
 
+    /**
+     * @param $class
+     * @return bool
+     */
     public function isClass($class)
     {
         return is_file($this->getClassLocation($class));
     }
 
-    protected function getClassLocation($class, $retry = false)
+    /**
+     * @param $class
+     * @return null|string
+     */
+    public function getClassLocation($class)
     {
-        if (in_array($class, array_keys($this->getMap()))) {
-            return $this->_map[$class];
-        }
-
-        if (!$this->_retry) {
-            return false;
-        }
-
-        if (!$retry) {
-            \Nip_Profiler::instance()->start('autoloader [buildCache]');
-            $this->generateMap();
-            \Nip_Profiler::instance()->end('autoloader [buildCache]');
-
-            return $this->getClassLocation($class, true);
-        }
-        return false;
-    }
-
-    protected function getMap()
-    {
-        if (!$this->_map) {
-            foreach ($this->_directories as $dir) {
-                $fileName = $this->getCacheName($dir);
-                $filePath = $this->_cachePath . $fileName;
-
-                if (!$this->readCacheFile($filePath)) {
-                    \Nip_Profiler::instance()->start('autoloader [readCache]');
-                    $this->generateMapDir($dir);
-                    $this->readCacheFile($filePath);
-                    \Nip_Profiler::instance()->start('autoloader [readCache]');
-                }
+        $loaders = $this->getLoaders();
+        foreach ($loaders as $loader) {
+            $path = $loader->getClassLocation($class);
+            if ($path) {
+                return $path;
             }
         }
-        return $this->_map;
+
+        return null;
     }
 
-    public function getCacheName($dir)
+    /**
+     * @return AutoLoader\Loaders\AbstractLoader[]
+     */
+    public function getLoaders()
     {
-        $root = $this->getRootPath();
-        if ($root) {
-            $dir = str_replace($root, '', $dir);
-        }
-
-        return Utility\Text::toAscii($dir).'.php';
+        return $this->loaders;
     }
 
-    public function getRootPath()
-    {
-        if ($this->_rootPath === null) {
-            $this->initRootPath();
-        }
-
-        return $this->_rootPath;
-    }
-
-    public function setRootPath($path)
-    {
-        $this->_rootPath = $path;
-    }
-
-    public function initRootPath()
-    {
-        if (defined('ROOT_PATH')) {
-            $this->_rootPath = ROOT_PATH;
-        }
-        $this->_rootPath = false;
-    }
-
-    protected function readCacheFile($filePath)
-    {
-        if (file_exists($filePath)) {
-            $map = require $filePath;
-            if (is_array($map)) {
-                $this->_map = array_merge($this->_map, $map);
-            }
-            return true;
-        }
-        return false;
-    }
-
-    public function generateMapDir($dir)
-    {
-        $fileName = $this->getCacheName($dir);
-        $filePath = $this->_cachePath.$fileName;
-        $this->_mapGenerator->dump($dir, $filePath);
-    }
-
-    public function generateMap()
-    {
-        foreach ($this->_directories as $dir) {
-            $this->generateMapDir($dir);
-        }
-    }
-
+    /**
+     * @param $class
+     * @return bool
+     */
     public function autoload($class)
     {
         try {
             return $this->load($class);
         } catch (AutoloadException $ex) {
-            if ($this->isFatal()) {
-                trigger_error($ex, E_USER_ERROR);
-            }
         }
 
         return false;
     }
 
+    /**
+     * @param $class
+     * @return bool
+     */
     public function load($class)
     {
         if ($this->hasIgnoreTokens($class)) {
             return true;
         }
+
         if (class_exists($class, false)) {
             return true;
         }
 
-        $file = $this->getClassLocation($class);
-        if ($file) {
-            if (include($file)) {
-                if (class_exists($class, false) || interface_exists($class,
-                        false) || trait_exists($class, false)
-                ) {
-                    return true;
-                } else {
-                    throw new AutoloadException("Cannot find the $class class in $file");
-                }
-            } else {
-                throw new AutoloadException("Cannot include $class file $file");
+        $loaders = $this->getLoaders();
+        foreach ($loaders as $loader) {
+            if ($loader->load($class)) {
+                return true;
             }
-        } else {
-            throw new AutoloadException("Cannot find class $class");
         }
 
         return false;
     }
 
+    /**
+     * @param $token
+     * @return bool
+     */
     public function hasIgnoreTokens($token)
     {
-        return in_array($token, $this->_ignoreTokens);
+        return in_array($token, $this->ignoreTokens);
     }
 
-    public function isFatal($value = null)
-    {
-        if (is_bool($value)) {
-            $this->_isFatal = $value;
-        }
-
-        return $this->_isFatal == true;
-    }
-
-    public function setRetry($retry)
-    {
-        $this->_retry = $retry;
-    }
-
+    /**
+     * @param $token
+     */
     public function addIgnoreTokens($token)
     {
-        $this->_ignoreTokens[] = $token;
+        $this->ignoreTokens[] = $token;
     }
 
     /**
@@ -232,7 +262,7 @@ class AutoLoader
      */
     public function getIgnoreTokens()
     {
-        return $this->_ignoreTokens;
+        return $this->ignoreTokens;
     }
 
     /**
@@ -240,6 +270,6 @@ class AutoLoader
      */
     public function setIgnoreTokens($ignoreTokens)
     {
-        $this->_ignoreTokens = $ignoreTokens;
+        $this->ignoreTokens = $ignoreTokens;
     }
 }

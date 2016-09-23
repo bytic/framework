@@ -234,20 +234,14 @@ class Application
 
     public function setupAutoloader()
     {
+        AutoLoader::registerHandler($this->getAutoloader());
+
         $this->setupAutoloaderCache();
         $this->setupAutoloaderPaths();
 
         if ($this->getStage()->inTesting()) {
-            $this->getAutoloader()->setRetry(true);
+            $this->getAutoloader()->getClassMapLoader()->setRetry(true);
         }
-    }
-
-    public function setupAutoloaderCache()
-    {
-    }
-
-    public function setupAutoloaderPaths()
-    {
     }
 
     /**
@@ -281,6 +275,14 @@ class Application
     public function newAutoloader()
     {
         return AutoLoader::instance();
+    }
+
+    public function setupAutoloaderCache()
+    {
+    }
+
+    public function setupAutoloaderPaths()
+    {
     }
 
     public function setupErrorHandling()

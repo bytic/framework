@@ -1,23 +1,28 @@
 <?php
 
-namespace Nip\AutoLoader;
+namespace Nip\AutoLoader\Generators;
 
-class ClassMapGenerator
+/**
+ * Class ClassMap
+ * @package Nip\AutoLoader\Generators
+ */
+class ClassMap
 {
 
     /**
      * Generate a class map file.
      *
      * @param array|string $dirs Directories or a single path to search in
-     * @param string       $file The name of the class map file
+     * @param string $file The name of the class map file
      */
     public static function dump($dirs, $file)
     {
-        $dirs = (array) $dirs;
+        $dirs = (array)$dirs;
         $maps = [];
         foreach ($dirs as $dir) {
             $maps = array_merge($maps, static::createMap($dir));
         }
+
         return file_put_contents($file, sprintf('<?php return %s;', var_export($maps, true)));
     }
 
@@ -51,6 +56,7 @@ class ClassMapGenerator
                 $map[$class] = $path;
             }
         }
+
         return $map;
     }
 
@@ -110,12 +116,13 @@ class ClassMapGenerator
                             break;
                         }
                     }
-                    $classes[] = ltrim($namespace . $class, '\\');
+                $classes[] = ltrim($namespace.$class, '\\');
                     break;
                 default:
                     break;
             }
         }
+
         return $classes;
     }
 }
