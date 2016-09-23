@@ -6,6 +6,7 @@ use Nip\AutoLoader\Exception;
 use Nip\AutoLoader\Exception as AutoloadException;
 use Nip\AutoLoader\Loaders\AbstractLoader;
 use Nip\AutoLoader\Loaders\ClassMap;
+use Nip\AutoLoader\Loaders\Psr4Class;
 
 /**
  * Class AutoLoader
@@ -147,6 +148,42 @@ class AutoLoader
     {
         $loader->setAutoloader($this);
         $this->loaders[$name] = $loader;
+    }
+
+    /**
+     * @param $prefix
+     * @param $baseDir
+     * @return $this
+     */
+    public function addNamespace($prefix, $baseDir)
+    {
+        $this->getPsr4ClassLoader()->addPrefix($prefix, $baseDir);
+
+        return $this;
+    }
+
+    /**
+     * @return Psr4Class
+     */
+    public function getPsr4ClassLoader()
+    {
+        return $this->getLoader('Psr4Class');
+    }
+
+    public function initLoaders()
+    {
+        $loaderNames = $this->getLoaderOrder();
+        foreach ($loaderNames as $name) {
+            $this->initLoader($name);
+        }
+    }
+
+    /**
+     * @return array
+     */
+    public function getLoaderOrder()
+    {
+        return ['Psr4', 'ClassMap'];
     }
 
     /**

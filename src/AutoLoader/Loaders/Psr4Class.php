@@ -26,19 +26,11 @@ class Psr4Class extends AbstractLoader
 
     /**
      * @param string $class
-     *
      * @return bool
      */
-    public function loadClass($class)
+    public function getClassLocation($class)
     {
-        $file = $this->findFile($class);
-        if (null !== $file) {
-            require $file;
-
-            return true;
-        }
-
-        return false;
+        return $this->findFile($class);
     }
 
     /**
