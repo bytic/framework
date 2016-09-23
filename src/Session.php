@@ -2,6 +2,9 @@
 
 namespace Nip;
 
+use Nip\Database\Connection;
+use Nip\Database\Result;
+
 class Session
 {
 
@@ -41,22 +44,20 @@ class Session
 
     /**
      * Starts the session, with optional session id
-     * @param string $id
+     * @param string|boolean $id
      */
     protected function start($id = false)
     {
         if ($id) {
             session_id($id);
         }
-        \Nip\AutoLoader::instance()->isFatal(false);
         session_start();
-        \Nip\AutoLoader::instance()->isFatal(true);
     }
 
     /**
      * Restarts the session, with new optional session id
      *
-     * @param string $id
+     * @param string|boolean $id
      */
     public function reinitialize($id = false)
     {
@@ -71,12 +72,12 @@ class Session
     protected function setHandlers()
     {
         session_set_save_handler(
-            array($this, 'open'),
-            array($this, 'close'),
-            array($this, 'read'),
-            array($this, 'write'),
-            array($this, 'destroy'),
-            array($this, 'gc')
+            [$this, 'open'],
+            [$this, 'close'],
+            [$this, 'read'],
+            [$this, 'write'],
+            [$this, 'destroy'],
+            [$this, 'gc']
         );
 
         return $this;
@@ -110,7 +111,7 @@ class Session
      */
     public function read($id)
     {
-        /* @var $result Nip_DBResult */
+        /* @var $result Result */
         $query = $this->db->newQuery('select');
         $query->from($this->table)
             ->where('id = ?', $id)
@@ -203,7 +204,7 @@ class Session
     }
 
     /**
-     * @param Nip_DB_Wrapper $db
+     * @param Connection $db
      * @return $this
      */
     public function setDB($db)
@@ -241,5 +242,4 @@ class Session
     {
         return ini_get('session.auto_start') && (strtolower(ini_get('session.auto_start')) == 'on');
     }
-
 }
