@@ -23,20 +23,22 @@ class Controller
     protected $dispatcher = null;
 
     /**
-     * @var
+     * @var FrontController
      */
-    protected $_frontController;
+    protected $frontController;
 
-    protected $_fullName = null;
-    protected $_name = null;
-    protected $_action = null;
+    protected $fullName = null;
+
+    protected $name = null;
+
+    protected $action = null;
 
     /**
      * @var Request
      */
     protected $request;
-    
-    protected $_config;
+
+    protected $config;
 
     /**
      * @var Helpers\AbstractHelper[]
@@ -49,7 +51,7 @@ class Controller
     public function __construct()
     {
         $name = str_replace("Controller", "", get_class($this));
-        $this->_name = inflector()->unclassify($name);
+        $this->name = inflector()->unclassify($name);
     }
 
     /**
@@ -116,10 +118,14 @@ class Controller
      */
     public function populateFromRequest(Request $request)
     {
-        $this->_name = $request->getControllerName();
-        $this->_action = $request->getActionName();
+        $this->name = $request->getControllerName();
+        $this->action = $request->getActionName();
     }
 
+    /**
+     * @param bool $action
+     * @return bool
+     */
     public function dispatchAction($action = false)
     {
         $action = Dispatcher::formatActionName($action);
@@ -130,7 +136,7 @@ class Controller
 
                 $this->parseRequest();
                 $this->beforeAction();
-                $this->{$this->_action}();
+                $this->{$this->action}();
                 $this->afterAction();
 
                 return true;
@@ -144,6 +150,10 @@ class Controller
         return false;
     }
 
+    /**
+     * @param $action
+     * @return bool
+     */
     protected function validAction($action)
     {
         return in_array($action, get_class_methods(get_class($this)));
@@ -189,7 +199,7 @@ class Controller
     public function setDispatcher(Dispatcher $dispatcher)
     {
         $this->dispatcher = $dispatcher;
-        $this->_frontController = $dispatcher->getFrontController();
+        $this->frontController = $dispatcher->getFrontController();
 
         return $this;
     }
@@ -219,11 +229,11 @@ class Controller
      */
     public function getConfig()
     {
-        if (!$this->_config instanceof \Nip_Config) {
-            $this->_config = \Nip_Config::instance();
+        if (!$this->config instanceof \Nip_Config) {
+            $this->config = \Nip_Config::instance();
         }
 
-        return $this->_config;
+        return $this->config;
     }
 
     /**
@@ -232,7 +242,7 @@ class Controller
      */
     public function getFrontController()
     {
-        return $this->_frontController;
+        return $this->frontController;
     }
 
     /**
@@ -240,7 +250,7 @@ class Controller
      */
     public function getAction()
     {
-        return $this->_action;
+        return $this->action;
     }
 
     /**
@@ -249,7 +259,7 @@ class Controller
      */
     public function setAction($action)
     {
-        $this->_action = $action;
+        $this->action = $action;
 
         return $this;
     }
@@ -299,11 +309,11 @@ class Controller
      */
     public function getName()
     {
-        if ($this->_name === null) {
-            $this->_name = $this->getFullName();
+        if ($this->name === null) {
+            $this->name = $this->getFullName();
         }
 
-        return $this->_name;
+        return $this->name;
     }
 
     /**
@@ -311,12 +321,11 @@ class Controller
      */
     public function getFullName()
     {
-        if ($this->_fullName === null) {
-            $this->_fullName = inflector()->unclassify($this->getClassName());
-
+        if ($this->fullName === null) {
+            $this->fullName = inflector()->unclassify($this->getClassName());
         }
 
-        return $this->_fullName;
+        return $this->fullName;
     }
 
     /**
