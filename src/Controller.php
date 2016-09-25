@@ -65,7 +65,7 @@ class Controller
             return $this->getHelper($name);
         }
 
-        return trigger_error("Call to undefined method $name", E_USER_ERROR);
+        return trigger_error("Call to undefined method [$name] in controller [{$this->getClassName()}]", E_USER_ERROR);
     }
 
     /**
@@ -75,6 +75,14 @@ class Controller
     public function getHelper($name)
     {
         return HelperBroker::get($name);
+    }
+
+    /**
+     * @return string
+     */
+    public function getClassName()
+    {
+        return str_replace("Controller", "", get_class($this));
     }
 
     /**
@@ -136,7 +144,7 @@ class Controller
 
                 $this->parseRequest();
                 $this->beforeAction();
-                $this->{$this->action}();
+                $this->{$action}();
                 $this->afterAction();
 
                 return true;
@@ -326,14 +334,6 @@ class Controller
         }
 
         return $this->fullName;
-    }
-
-    /**
-     * @return string
-     */
-    public function getClassName()
-    {
-        return str_replace("Controller", "", get_class($this));
     }
 
     /**
