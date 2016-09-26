@@ -63,7 +63,7 @@ abstract class AbstractTag
      */
     public function isValidAttribute($name)
     {
-        return in_array($name, $this->validAttributes);
+        return in_array($name, $this->getValidAttributes());
     }
 
     /**
@@ -127,7 +127,7 @@ abstract class AbstractTag
     {
         $return = '';
         foreach ($this->attributes as $name => $value) {
-            $return .= ' "'.$name.'"="'.$value.'"';
+            $return .= ' '.$name.'="'.$value.'"';
         }
 
         return $return;
