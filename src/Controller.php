@@ -224,11 +224,22 @@ class Controller
         $newRequest = $this->getRequest()->duplicateWithParams($action, $controller, $module, $params);
 
         $controller = $this->getDispatcher()->generateController($newRequest);
-        $controller->setView($this->getView());
+        $controller = $this->prepareCallController($controller, $newRequest);
+
+        return call_user_func_array([$controller, $action], $params);
+    }
+
+    /**
+     * @param self $controller
+     * @param Request $newRequest
+     * @return Controller
+     */
+    protected function prepareCallController($controller, $newRequest)
+    {
         $controller->setRequest($newRequest);
         $controller->populateFromRequest($newRequest);
 
-        return call_user_func_array([$controller, $action], $params);
+        return $controller;
     }
 
     /**
@@ -318,10 +329,23 @@ class Controller
     public function getName()
     {
         if ($this->name === null) {
-            $this->name = $this->getFullName();
+            $this->initName();
         }
 
         return $this->name;
+    }
+
+    /**
+     * @param string $name
+     */
+    public function setName($name)
+    {
+        $this->name = $name;
+    }
+
+    public function initName()
+    {
+        $this->setName($this->getFullName());
     }
 
     /**
