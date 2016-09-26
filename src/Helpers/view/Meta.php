@@ -2,6 +2,8 @@
 
 namespace Nip\Helpers\View;
 
+use stdClass;
+
 /**
  * Nip Framework
  *
@@ -24,12 +26,12 @@ class Meta extends AbstractHelper
     public $robots = 'index,follow';
 
     public $title = false;
-    public $titleComponents = array(
+    public $titleComponents = [
         'base' => false,
-        'elements' => array(),
+        'elements' => [],
         'separator' => ' - ',
 
-    );
+    ];
 
     public $keywords = [];
     public $description = false;
@@ -38,6 +40,10 @@ class Meta extends AbstractHelper
     public $feeds = [];
 
 
+    /**
+     * @param $base
+     * @return $this
+     */
     public function setTitleBase($base)
     {
         $this->titleComponents['base'] = $base;
@@ -54,6 +60,10 @@ class Meta extends AbstractHelper
         $this->title = implode($this->titleComponents['separator'], $components);
     }
 
+    /**
+     * @param $title
+     * @return $this
+     */
     public function appendTitle($title)
     {
         $this->titleComponents['elements'][] = $title;
@@ -61,6 +71,10 @@ class Meta extends AbstractHelper
         return $this;
     }
 
+    /**
+     * @param $title
+     * @return $this
+     */
     public function prependTitle($title)
     {
         array_unshift($this->titleComponents['elements'], $title);
@@ -68,6 +82,9 @@ class Meta extends AbstractHelper
         return $this;
     }
 
+    /**
+     * @return mixed
+     */
     public function getFirstTitle()
     {
         $components = $this->titleComponents['elements'];
@@ -75,6 +92,10 @@ class Meta extends AbstractHelper
     }
 
 
+    /**
+     * @param $keywords
+     * @return $this
+     */
     public function addKeywords($keywords)
     {
         if (!is_array($keywords)) {
@@ -89,6 +110,9 @@ class Meta extends AbstractHelper
         return $this;
     }
 
+    /**
+     * @param $description
+     */
     public function addDescription($description)
     {
         array_unshift($this->descriptionComponents, $description);
@@ -100,6 +124,10 @@ class Meta extends AbstractHelper
         $this->description = implode('. ', $this->descriptionComponents);
     }
 
+    /**
+     * @param $description
+     * @return $this
+     */
     public function setDescription($description)
     {
         if ($description) {
@@ -109,6 +137,10 @@ class Meta extends AbstractHelper
         return $this;
     }
 
+    /**
+     * @param array $feeds
+     * @return $this
+     */
     public function addFeeds(array $feeds)
     {
         foreach ($feeds as $feed) {
@@ -118,6 +150,11 @@ class Meta extends AbstractHelper
         return $this;
     }
 
+    /**
+     * @param $url
+     * @param string $title
+     * @return $this
+     */
     public function addFeed($url, $title = 'Rss')
     {
         if (is_object($url)) {
@@ -133,6 +170,9 @@ class Meta extends AbstractHelper
         return $this;
     }
 
+    /**
+     * @return string
+     */
     public function __toString()
     {
         if ($this->title) {
@@ -177,5 +217,4 @@ class Meta extends AbstractHelper
 
         return implode("\n", $return);
     }
-
 }
