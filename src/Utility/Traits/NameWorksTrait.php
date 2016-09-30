@@ -20,6 +20,11 @@ trait NameWorksTrait
     protected $classNameParts = null;
 
     /**
+     * @var null|string
+     */
+    protected $namespacePath = null;
+
+    /**
      * @var null|boolean
      */
     protected $isNamespaced = null;
@@ -97,5 +102,26 @@ trait NameWorksTrait
         $class = $this->getClassName();
         $parts = explode('\\', $class);
         $this->setClassNameParts($parts);
+    }
+
+    /**
+     * @return null|string
+     */
+    public function getNamespacePath()
+    {
+        if ($this->namespacePath === null) {
+            $this->initNamespacePath();
+        }
+        return $this->namespacePath;
+    }
+
+    protected function initNamespacePath()
+    {
+        $this->namespacePath = '';
+        if ($this->isNamespaced()) {
+            $parts = $this->getClassNameParts();
+            array_pop($parts);
+            $this->namespacePath = implode('\\', $parts);
+        }
     }
 }
