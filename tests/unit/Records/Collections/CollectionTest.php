@@ -1,6 +1,6 @@
 <?php
 
-namespace Nip\Tests\Records\Collections;
+namespace Nip\Tests\Unit\Records\Collections;
 
 use Nip\Records\Collections\Collection as RecordCollection;
 use Nip_Records;

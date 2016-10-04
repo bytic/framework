@@ -1,6 +1,6 @@
 <?php
 
-namespace Nip\Tests\Database\Query;
+namespace Nip\Tests\Unit\Database\Query;
 
 use Mockery as m;
 use Nip\Database\Connection;
@@ -22,20 +22,6 @@ class SelectTest extends \Codeception\TestCase\Test
 	 * @var Select
 	 */
 	protected $_object;
-
-	protected function setUp()
-	{
-		parent::setUp();
-		$this->_object = new Select();
-
-        $adapterMock = m::mock('Nip\Database\Adapters\MySQLi')->shouldDeferMissing();
-        $adapterMock->shouldReceive('cleanData')->andReturnUsing(function ($data) {
-            return $data;
-        });
-        $this->_db = new Connection();
-        $this->_db->setAdapter($adapterMock);
-		$this->_object->setManager($this->_db);
-	}
 
 	public function testSelectSimple()
 	{
@@ -103,6 +89,20 @@ class SelectTest extends \Codeception\TestCase\Test
 //		$union = $this->_object->union($query);
 //
 //		$this->assertEquals("SELECT * FROM `table1` UNION SELECT * FROM `table2`", $union->assemble());
+    }
+
+    protected function setUp()
+    {
+        parent::setUp();
+        $this->_object = new Select();
+
+        $adapterMock = m::mock('Nip\Database\Adapters\MySQLi')->shouldDeferMissing();
+        $adapterMock->shouldReceive('cleanData')->andReturnUsing(function ($data) {
+            return $data;
+        });
+        $this->_db = new Connection();
+        $this->_db->setAdapter($adapterMock);
+        $this->_object->setManager($this->_db);
 	}
 
 }

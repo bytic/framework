@@ -1,6 +1,6 @@
 <?php
 
-namespace Nip\Tests;
+namespace Nip\Tests\Unit;
 
 use Nip\Request;
 
@@ -15,17 +15,6 @@ class RequestTest extends \Codeception\TestCase\Test
      * @var \Nip\Request
      */
     protected $_object;
-
-    protected function _before()
-    {
-        $this->_object = new Request();
-    }
-
-    protected function _after()
-    {
-    }
-
-    // tests
 
     public function testAttributeSet()
     {
@@ -43,12 +32,21 @@ class RequestTest extends \Codeception\TestCase\Test
         $this->assertEquals('foo', $this->_object->get('bar'));
     }
 
+    // tests
+
     public function testBodySet()
     {
         $this->_object->body->set('bar','foo');
 
         $this->assertEquals('foo', $this->_object->body->get('bar'));
         $this->assertEquals('foo', $this->_object->get('bar'));
+    }
+
+    public function testGetOrder()
+    {
+        $this->testInitialize();
+
+        $this->assertEquals('value44', $this->_object->get('var4'));
     }
 
     public function testInitialize()
@@ -66,13 +64,6 @@ class RequestTest extends \Codeception\TestCase\Test
         $this->assertEquals($attributes, $this->_object->attributes->all());
     }
 
-    public function testGetOrder()
-    {
-        $this->testInitialize();
-
-        $this->assertEquals('value44', $this->_object->get('var4'));
-    }
-
     public function testCreateFromGlobals()
     {
         $_GET['foo1'] = 'bar1';
@@ -80,9 +71,9 @@ class RequestTest extends \Codeception\TestCase\Test
         $_COOKIE['foo3'] = 'bar3';
         $_FILES['foo4'] = array('bar4');
         $_SERVER['foo5'] = 'bar5';
-        
+
         $request = Request::createFromGlobals();
-        
+
         $this->assertEquals('bar1', $request->query->get('foo1'), '::fromGlobals() uses values from $_GET');
         $this->assertEquals('bar2', $request->body->get('foo2'), '::fromGlobals() uses values from $_POST');
         $this->assertEquals('bar3', $request->cookies->get('foo3'), '::fromGlobals() uses values from $_COOKIE');
@@ -98,7 +89,7 @@ class RequestTest extends \Codeception\TestCase\Test
         $request->setModuleName('module1');
         $atributes = array('attrb1' => 'val1', 'attrb2' =>'val2');
         $request->attributes->add($atributes);
-        
+
         $duplicateAction = $request->duplicateWithParams('action2');
         $this->assertEquals('action2', $duplicateAction->getActionName());
         $this->assertEquals('controller1', $duplicateAction->getControllerName());
@@ -137,6 +128,15 @@ class RequestTest extends \Codeception\TestCase\Test
         $request = Request::createFromGlobals();
 
         $this->isInstanceOf('Nip\Request\Files\Uploaded', $request->files->get('file2'), '::fromGlobals() uses values from $_FILES');
+    }
+
+    protected function _before()
+    {
+        $this->_object = new Request();
+    }
+
+    protected function _after()
+    {
     }
     
     

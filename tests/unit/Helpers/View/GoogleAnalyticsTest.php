@@ -1,6 +1,6 @@
 <?php
 
-namespace Nip\Tests\Helpers\View;
+namespace Nip\Tests\Unit\Helpers\View;
 
 use Mockery as m;
 use Nip\Helpers\View\GoogleAnalytics;
@@ -20,22 +20,6 @@ class GoogleAnalyticsTest extends \Codeception\TestCase\Test
     protected $_ua = '';
     protected $_domain = 'galantom.loc';
 
-    protected function _before()
-    {
-        $flashMock = m::mock('Nip_Flash')->shouldDeferMissing();
-
-        $this->_object = new GoogleAnalytics();
-        $this->_object->setFlashMemory($flashMock);
-        $this->_object->setUA($this->_ua);
-        $this->_object->setDomain($this->_domain);
-    }
-
-    protected function _after()
-    {
-    }
-
-    // tests
-
     public function testAddOperation()
     {
         $data = array(
@@ -49,5 +33,21 @@ class GoogleAnalyticsTest extends \Codeception\TestCase\Test
         );
 
         $this->assertEquals($this->_object->getTransactions(), $response);
+    }
+
+    protected function _before()
+    {
+        $flashMock = m::mock('Nip_Flash')->shouldDeferMissing();
+
+        $this->_object = new GoogleAnalytics();
+        $this->_object->setFlashMemory($flashMock);
+        $this->_object->setUA($this->_ua);
+        $this->_object->setDomain($this->_domain);
+    }
+
+    // tests
+
+    protected function _after()
+    {
     }
 }

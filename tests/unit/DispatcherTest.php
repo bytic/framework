@@ -1,6 +1,6 @@
 <?php
 
-namespace Nip\Tests;
+namespace Nip\Tests\Unit;
 
 class DispatcherTest extends \Codeception\TestCase\Test
 {
@@ -14,17 +14,18 @@ class DispatcherTest extends \Codeception\TestCase\Test
      */
     protected $_object;
 
+    public function testDispatch()
+    {
+    }
+
     protected function _before()
     {
         $this->_object = new \Nip\Dispatcher();
     }
 
-    protected function _after()
-    {
-    }
-
     // tests
-    public function testDispatch()
+
+    protected function _after()
     {
     }
 

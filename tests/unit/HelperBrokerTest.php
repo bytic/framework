@@ -1,6 +1,6 @@
 <?php
 
-namespace Nip\Tests;
+namespace Nip\Tests\Unit;
 
 use Nip\HelperBroker;
 
@@ -11,15 +11,6 @@ class HelperBrokerTest extends \Codeception\TestCase\Test
      */
     protected $tester;
 
-    protected function _before()
-    {
-    }
-
-    protected function _after()
-    {
-    }
-
-    // tests
     public function testGetHelperClass()
     {
         $broker = new HelperBroker();
@@ -38,11 +29,21 @@ class HelperBrokerTest extends \Codeception\TestCase\Test
         $this->assertInstanceOf('Nip_Helper_Passwords', $broker->generateHelper('passwords'));
     }
 
+    // tests
+
     public function testGet()
     {
         $this->assertInstanceOf('Nip_Helper_Url', HelperBroker::get('Url'));
         $this->assertInstanceOf('Nip_Helper_XML', HelperBroker::get('XML'));
         $this->assertInstanceOf('Nip_Helper_Passwords', HelperBroker::get('passwords'));
+    }
+
+    protected function _before()
+    {
+    }
+
+    protected function _after()
+    {
     }
 
 }

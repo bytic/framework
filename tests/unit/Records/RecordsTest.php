@@ -1,6 +1,6 @@
 <?php
 
-namespace Nip\Tests\Records;
+namespace Nip\Tests\Unit\Records;
 
 use Mockery as m;
 use Nip\Database\Connection;
@@ -162,6 +162,40 @@ class RecordsTest extends \Codeception\TestCase\Test
         self::assertSame($filtersArray, $params);
     }
 
+
+    /**
+     * @return array
+     */
+    public function providerGetPrimaryFK()
+    {
+        return [
+            ["id_user", "Users"],
+            ["id_race_entry", "RaceEntries"],
+            ["id_notifications_table", "Notifications_Tables"],
+            ["id_notifications_table", "Notifications\\Tables\\Tables"],
+            ["id_notifications_table", "App\\Models\\Notifications\\Tables\\Tables"],
+        ];
+    }
+
+    /**
+     * @dataProvider providerGetPrimaryFK
+     * @param $primaryFK
+     * @param $class
+     */
+    public function testGetPrimaryFK($primaryFK, $class)
+    {
+        /** @var Records $records */
+//        $records = m::namedMock($class, 'Records')->shouldDeferMissing()
+//            ->shouldReceive('instance')->andReturnSelf()
+//            ->shouldReceive('getPrimaryKey')->andReturn('id')
+//            ->getMock();
+        $records = new Records();
+        $records->setClassName($class);
+        $records->setPrimaryKey('id');
+
+        self::assertEquals($primaryFK, $records->getPrimaryFK());
+    }
+
     protected function _before()
     {
         $wrapper = new Connection();
@@ -169,9 +203,5 @@ class RecordsTest extends \Codeception\TestCase\Test
         $this->_object = new Records();
         $this->_object->setDB($wrapper);
         $this->_object->setTable('pages');
-    }
-
-    protected function _after()
-    {
     }
 }

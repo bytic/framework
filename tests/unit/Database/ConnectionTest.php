@@ -1,6 +1,6 @@
 <?php
 
-namespace Nip\Tests\Database;
+namespace Nip\Tests\Unit\Database;
 
 use Nip\Database\Connection;
 
@@ -15,11 +15,6 @@ class ConnectionTest extends \Codeception\TestCase\Test
      * @var Connection
      */
     protected $_object;
-
-    protected function _before()
-    {
-        $this->_object = new Connection();
-    }
 
     public function testNewAdapter()
     {
@@ -51,5 +46,10 @@ class ConnectionTest extends \Codeception\TestCase\Test
     {
         $query = $this->_object->newQuery($type);
         $this->assertInstanceOf($class, $query);
+    }
+
+    protected function _before()
+    {
+        $this->_object = new Connection();
     }
 }

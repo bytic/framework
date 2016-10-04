@@ -1,6 +1,6 @@
 <?php
 
-namespace Nip\Tests\Database\Query;
+namespace Nip\Tests\Unit\Database\Query;
 
 use Mockery as m;
 use Nip\Database\Connection;
@@ -17,21 +17,6 @@ class InsertTest extends \Codeception\TestCase\Test
 	 * @var Nip_DB_object_Insert
 	 */
 	protected $_object;
-
-	protected function setUp()
-	{
-		parent::setUp();
-		$this->_object = new Insert();
-
-
-        $adapterMock = m::mock('Nip\Database\Adapters\MySQLi')->shouldDeferMissing();
-        $adapterMock->shouldReceive('cleanData')->andReturnUsing(function ($data) {
-            return $data;
-        });
-        $manager = new Connection();
-        $manager->setAdapter($adapterMock);
-		$this->_object->setManager($manager);
-	}
 
 	public function testOnDuplicate()
 	{
@@ -56,5 +41,20 @@ class InsertTest extends \Codeception\TestCase\Test
 		}
 
 		$this->assertEquals("INSERT INTO `table` (`name`,`telephone`) VALUES ('Lorem Ipsum', 1234), ('Dolor sit amet', 5678)", $this->_object->assemble());
+    }
+
+    protected function setUp()
+    {
+        parent::setUp();
+        $this->_object = new Insert();
+
+
+        $adapterMock = m::mock('Nip\Database\Adapters\MySQLi')->shouldDeferMissing();
+        $adapterMock->shouldReceive('cleanData')->andReturnUsing(function ($data) {
+            return $data;
+        });
+        $manager = new Connection();
+        $manager->setAdapter($adapterMock);
+        $this->_object->setManager($manager);
 	}
 }

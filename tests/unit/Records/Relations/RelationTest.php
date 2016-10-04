@@ -1,6 +1,6 @@
 <?php
 
-namespace Nip\Tests\Records\Relations;
+namespace Nip\Tests\Unit\Records\Relations;
 
 class RelationTest extends \Codeception\TestCase\Test
 {

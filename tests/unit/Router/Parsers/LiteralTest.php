@@ -1,6 +1,6 @@
 <?php
 
-namespace Nip\Tests\Router\Parsers;
+namespace Nip\Tests\Unit\Router\Parsers;
 
 use Nip\Router\Parser\Literal;
 

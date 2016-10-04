@@ -1,3 +1,4 @@
+namespace: Nip\Tests
 actor: Tester
 paths:
     tests: tests

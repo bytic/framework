@@ -233,13 +233,31 @@ abstract class RecordManager
         return $this->primaryKey;
     }
 
+    /**
+     * @param null|string $primaryKey
+     */
+    public function setPrimaryKey($primaryKey)
+    {
+        $this->primaryKey = $primaryKey;
+    }
+
     protected function initPrimaryKey()
     {
+        $this->setPrimaryKey($this->generatePrimaryKey());
+    }
+
+    /**
+     * @return string
+     */
+    public function generatePrimaryKey()
+    {
         $structure = $this->getTableStructure();
-        $this->primaryKey = $structure['indexes']['PRIMARY']['fields'];
-        if (count($this->primaryKey) == 1) {
-            $this->primaryKey = reset($this->primaryKey);
+        $primaryKey = $structure['indexes']['PRIMARY']['fields'];
+        if (count($primaryKey) == 1) {
+            $primaryKey = reset($this->primaryKey);
         }
+
+        return $primaryKey;
     }
 
     /**
@@ -364,7 +382,7 @@ abstract class RecordManager
         } else {
             $controller = $this->generateControllerGeneric();
         }
-        $this->controller = $controller;
+        $this->setController($controller);
     }
 
     /**
@@ -1277,7 +1295,9 @@ abstract class RecordManager
      */
     public function generatePrimaryFK()
     {
-        return $this->getPrimaryKey()."_".inflector()->underscore($this->getController());
+        $singularize = inflector()->singularize($this->getController());
+
+        return $this->getPrimaryKey()."_".inflector()->underscore($singularize);
     }
 
     /**

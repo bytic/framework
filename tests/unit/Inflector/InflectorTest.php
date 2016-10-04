@@ -1,6 +1,6 @@
 <?php
 
-namespace Nip\Tests\Inflector;
+namespace Nip\Tests\Unit\Inflector;
 
 use Nip\Inflector\Inflector;
 

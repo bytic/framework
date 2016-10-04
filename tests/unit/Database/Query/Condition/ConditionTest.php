@@ -1,6 +1,6 @@
 <?php
 
-namespace Nip\Tests\Database\Query\Condition;
+namespace Nip\Tests\Unit\Database\Query\Condition;
 
 use Mockery as m;
 use Nip\Database\Connection;

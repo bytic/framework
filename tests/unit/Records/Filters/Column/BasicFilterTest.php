@@ -1,6 +1,6 @@
 <?php
 
-namespace Nip\Tests\Records\Filters\Column;
+namespace Nip\Tests\Unit\Records\Filters\Column;
 
 use Nip\Records\Filters\Column\BasicFilter;
 use Nip\Request;

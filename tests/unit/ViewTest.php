@@ -1,6 +1,6 @@
 <?php
 
-namespace Nip\Tests;
+namespace Nip\Tests\Unit;
 
 use Nip\View;
 
@@ -10,16 +10,6 @@ class ViewTest extends \Codeception\TestCase\Test
      * @var \UnitTester
      */
     protected $tester;
-
-    protected function _before()
-    {
-    }
-
-    protected function _after()
-    {
-    }
-
-    // tests
 
     public function testGetHelperClass()
     {
@@ -41,6 +31,8 @@ class ViewTest extends \Codeception\TestCase\Test
         $this->assertInstanceOf('Nip\Helpers\View\TinyMCE', $view->TinyMCE());
     }
 
+    // tests
+
     public function testHelperInjectView()
     {
         $view = new View();
@@ -48,5 +40,13 @@ class ViewTest extends \Codeception\TestCase\Test
         $this->assertInstanceOf('Nip\View', $view->Messages()->getView());
         $this->assertInstanceOf('Nip\View', $view->Paginator()->getView());
         $this->assertInstanceOf('Nip\View', $view->Scripts()->getView());
+    }
+
+    protected function _before()
+    {
+    }
+
+    protected function _after()
+    {
     }
 }

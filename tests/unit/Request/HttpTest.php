@@ -4,10 +4,9 @@
  * From Symfony Symfony\Component\HttpFoundation\Tests\HttpTest class
  */
 
-namespace Nip\Tests\Request;
+namespace Nip\Tests\Unit\Request;
 
 use Nip\Request;
-use Nip\Request\Http;
 
 class HttpTest extends \Codeception\TestCase\Test
 {
@@ -16,11 +15,6 @@ class HttpTest extends \Codeception\TestCase\Test
      */
     protected $tester;
 
-    protected function _after()
-    {
-    }
-
-    // tests
     /**
      * @dataProvider getBaseUrlData
      */
@@ -30,6 +24,8 @@ class HttpTest extends \Codeception\TestCase\Test
         $this->assertSame($expectedBaseUrl, $request->getHttp()->getBaseUrl(), 'baseUrl');
         $this->assertSame($expectedPathInfo, $request->getHttp()->getPathInfo(), 'pathInfo');
     }
+
+    // tests
 
     public function getBaseUrlData()
     {
@@ -111,6 +107,10 @@ class HttpTest extends \Codeception\TestCase\Test
     {
         $request = Request::create('http://test.com/foo?bar=baz');
         $this->assertEquals('http://test.com/foo?bar=baz', $request->getHttp()->getUri());
+    }
+
+    protected function _after()
+    {
     }
 
 }

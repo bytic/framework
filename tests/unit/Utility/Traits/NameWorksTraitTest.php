@@ -1,6 +1,6 @@
 <?php
 
-namespace Nip\Tests\Utility\Traits;
+namespace Nip\Tests\Unit\Utility\Traits;
 
 use Nip\Utility\Traits\NameWorksTrait;
 
@@ -11,7 +11,7 @@ class NameWorksTraitTest extends \Codeception\TestCase\Test
 
     public function testGetClassName()
     {
-        self::assertSame('Nip\Tests\Utility\Traits\NameWorksTraitTest', $this->getClassName());
+        self::assertSame('Nip\Tests\Unit\Utility\Traits\NameWorksTraitTest', $this->getClassName());
 
         $name = 'Userrs';
         $this->setClassName($name);
@@ -26,6 +26,7 @@ class NameWorksTraitTest extends \Codeception\TestCase\Test
     public function testGetNamespaceParentFolder()
     {
         self::assertSame('Traits', $this->getNamespaceParentFolder());
-        self::assertSame(['Nip', 'Tests', 'Utility', 'Traits', 'NameWorksTraitTest'], $this->getClassNameParts());
+        self::assertSame(['Nip', 'Tests', 'Unit', 'Utility', 'Traits', 'NameWorksTraitTest'],
+            $this->getClassNameParts());
     }
 }

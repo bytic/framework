@@ -1,6 +1,6 @@
 <?php
 
-namespace Nip\Tests;
+namespace Nip\Tests\Unit;
 
 class StagingTest extends \Codeception\TestCase\Test
 {
@@ -14,16 +14,6 @@ class StagingTest extends \Codeception\TestCase\Test
      */
     protected $_object;
 
-    protected function _before()
-    {
-        $this->_object = new \Nip\Staging();
-    }
-
-    protected function _after()
-    {
-    }
-
-    // tests
     public function testIsInPublicStages()
     {
         foreach (array('production', 'staging', 'demo') as $stage) {
@@ -50,6 +40,8 @@ class StagingTest extends \Codeception\TestCase\Test
         $this->assertTrue($newStage->isPublic());
     }
 
+    // tests
+
     public function testNewStageLocal()
     {
         $stageName = 'local';
@@ -59,6 +51,15 @@ class StagingTest extends \Codeception\TestCase\Test
         $this->assertEquals($stageName, $newStage->getName());
         $this->assertFalse($newStage->inProduction());
         $this->assertFalse($newStage->isPublic());
+    }
+
+    protected function _before()
+    {
+        $this->_object = new \Nip\Staging();
+    }
+
+    protected function _after()
+    {
     }
     
 }

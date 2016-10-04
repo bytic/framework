@@ -1,11 +1,11 @@
 <?php
 
-namespace Nip\Tests\Records;
+namespace Nip\Tests\Unit\Records;
 
 use Mockery as m;
 use Nip\Database\Connection;
-use Nip\Records\RecordManager as Records;
 use Nip\Records\Record;
+use Nip\Records\RecordManager as Records;
 
 class RecordTest extends \Codeception\TestCase\Test
 {
@@ -19,6 +19,19 @@ class RecordTest extends \Codeception\TestCase\Test
      */
     protected $_object;
 
+    public function testNewRelation()
+    {
+        $users = m::namedMock('Users', 'Nip\Records\RecordManager')->shouldDeferMissing()
+            ->shouldReceive('instance')->andReturnSelf()->getMock();
+        m::namedMock('User', 'Record');
+
+        $this->_object->getManager()->initRelationsFromArray('belongsTo', array('User'));
+
+        $relation = $this->_object->newRelation('User');
+        $this->assertSame($users, $relation->getWith());
+        $this->assertSame($this->_object, $relation->getItem());
+    }
+
     protected function _before()
     {
         $wrapper = new Connection();
@@ -31,23 +44,10 @@ class RecordTest extends \Codeception\TestCase\Test
         $this->_object->setManager($manager);
     }
 
-    protected function _after()
-    {
-    }
-
     // tests
 
-    public function testNewRelation()
+    protected function _after()
     {
-        $users = m::namedMock('Users', 'Nip\Records\RecordManager')->shouldDeferMissing()
-            ->shouldReceive('instance')->andReturnSelf()->getMock();
-        m::namedMock('User', 'Record');
-
-        $this->_object->getManager()->initRelationsFromArray('belongsTo', array('User'));
-
-        $relation = $this->_object->newRelation('User');
-        $this->assertSame($users, $relation->getWith());
-        $this->assertSame($this->_object, $relation->getItem());
     }
 
 }

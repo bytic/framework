@@ -1,6 +1,6 @@
 <?php
 
-namespace Nip\Tests;
+namespace Nip\Tests\Unit;
 
 use Nip\Controller;
 
@@ -10,16 +10,6 @@ class ControllerTest extends \Codeception\TestCase\Test
      * @var \UnitTester
      */
     protected $tester;
-
-    protected function _before()
-    {
-    }
-
-    protected function _after()
-    {
-    }
-
-    // tests
 
     public function testDynamicCallHelper()
     {
@@ -37,5 +27,15 @@ class ControllerTest extends \Codeception\TestCase\Test
         $this->assertInstanceOf('Nip_Helper_Url', $controller->getHelper('Url'));
         $this->assertInstanceOf('Nip_Helper_Xml', $controller->getHelper('Xml'));
         $this->assertInstanceOf('Nip_Helper_Passwords', $controller->getHelper('passwords'));
+    }
+
+    // tests
+
+    protected function _before()
+    {
+    }
+
+    protected function _after()
+    {
     }
 }
