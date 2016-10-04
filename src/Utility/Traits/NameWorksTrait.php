@@ -15,9 +15,54 @@ trait NameWorksTrait
     protected $className = null;
 
     /**
+     * @var null|array
+     */
+    protected $classNameParts = null;
+
+    /**
+     * @var null|string
+     */
+    protected $namespacePath = null;
+
+    /**
      * @var null|boolean
      */
     protected $isNamespaced = null;
+
+    /**
+     * @return string
+     */
+    public function getClassName()
+    {
+        if ($this->className === null) {
+            $this->setClassName($this->generateClassName());
+        }
+
+        return $this->className;
+    }
+
+    /**
+     * @param bool|null $className
+     */
+    public function setClassName($className)
+    {
+        $this->className = $className;
+    }
+
+    protected function generateClassName()
+    {
+        return get_class($this);
+    }
+
+    public function getNamespaceParentFolder()
+    {
+        if (!$this->isNamespaced()) {
+            return null;
+        }
+        $parts = $this->getClassNameParts();
+        array_pop($parts);
+        return end($parts);
+    }
 
     /**
      * @return bool
@@ -34,22 +79,49 @@ trait NameWorksTrait
     }
 
     /**
-     * @return string
+     * @return array|null
      */
-    public function getClassName()
+    public function getClassNameParts()
     {
-        if ($this->className === null) {
-            $this->setClassName(get_class($this));
+        if ($this->classNameParts === null) {
+            $this->initClassNameParts();
         }
-
-        return $this->className;
+        return $this->classNameParts;
     }
 
     /**
-     * @param bool|null $className
+     * @param array|null $classNameParts
      */
-    public function setClassName($className)
+    public function setClassNameParts($classNameParts)
     {
-        $this->className = $className;
+        $this->classNameParts = $classNameParts;
+    }
+
+    protected function initClassNameParts()
+    {
+        $class = $this->getClassName();
+        $parts = explode('\\', $class);
+        $this->setClassNameParts($parts);
+    }
+
+    /**
+     * @return null|string
+     */
+    public function getNamespacePath()
+    {
+        if ($this->namespacePath === null) {
+            $this->initNamespacePath();
+        }
+        return $this->namespacePath;
+    }
+
+    protected function initNamespacePath()
+    {
+        $this->namespacePath = '';
+        if ($this->isNamespaced()) {
+            $parts = $this->getClassNameParts();
+            array_pop($parts);
+            $this->namespacePath = implode('\\', $parts);
+        }
     }
 }
