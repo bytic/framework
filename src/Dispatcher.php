@@ -4,12 +4,16 @@ namespace Nip;
 
 use Nip\Dispatcher\ForwardException;
 
+/**
+ * Class Dispatcher
+ * @package Nip
+ */
 class Dispatcher
 {
     /**
      * @var bool|FrontController
      */
-    protected $_frontController = false;
+    protected $frontController = false;
 
 
     /**
@@ -17,11 +21,16 @@ class Dispatcher
      */
     protected $request = null;
 
-    protected $_currentController = false;
+    protected $currentController = false;
 
-    protected $_hops = 0;
-    protected $_maxHops = 30;
+    protected $hops = 0;
 
+    protected $maxHops = 30;
+
+    /**
+     * @param $controller
+     * @return mixed
+     */
     public static function reverseControllerName($controller)
     {
         return inflector()->unclassify($controller);
@@ -61,9 +70,9 @@ class Dispatcher
     public function dispatch(Request $request = null)
     {
         $request = $request ? $request : $this->getRequest();
-        $this->_hops++;
+        $this->hops++;
 
-        if ($this->_hops <= $this->_maxHops) {
+        if ($this->hops <= $this->maxHops) {
             if ($request->getControllerName() == null) {
                 $this->setErrorControler();
 
@@ -77,7 +86,7 @@ class Dispatcher
             \Nip_Profiler::instance()->start($profilerName);
             if ($controller instanceof Controller) {
                 try {
-                    $this->_currentController = $controller;
+                    $this->currentController = $controller;
                     $controller->setRequest($request);
                     $controller->dispatch();
                 } catch (ForwardException $e) {
@@ -94,7 +103,7 @@ class Dispatcher
                 return $return;
             }
         } else {
-            trigger_error("Maximum number of hops ($this->_maxHops) has been reached for {$request->getMCA()}",
+            trigger_error("Maximum number of hops ($this->maxHops) has been reached for {$request->getMCA()}",
                 E_USER_ERROR);
         }
 
@@ -174,7 +183,11 @@ class Dispatcher
         return $this->getControllerName($name);
     }
 
-    public static function getControllerName($controller)
+    /**
+     * @param $controller
+     * @return mixed
+     */
+    public function getControllerName($controller)
     {
         return inflector()->classify($controller);
     }
@@ -204,6 +217,7 @@ class Dispatcher
     protected function generateFullControllerNameNamespace($module, $controller)
     {
         $name = $this->getFrontController()->getApplication()->getRootNamespace().'Modules\\';
+        $module = $module == 'Default' ? 'Frontend' : $module;
         $name .= $module.'\Controllers\\';
         $name .= str_replace('_', '\\', $controller)."Controller";
 
@@ -215,11 +229,11 @@ class Dispatcher
      */
     public function getFrontController()
     {
-        if (!$this->_frontController) {
+        if (!$this->frontController) {
             $this->initFrontController();
         }
 
-        return $this->_frontController;
+        return $this->frontController;
     }
 
     /**
@@ -228,7 +242,7 @@ class Dispatcher
      */
     public function setFrontController(FrontController $controller)
     {
-        $this->_frontController = $controller;
+        $this->frontController = $controller;
         $this->request = $controller->getRequest();
 
         return $this;
@@ -236,7 +250,7 @@ class Dispatcher
 
     public function initFrontController()
     {
-        $this->_frontController = $this->newFrontController();
+        $this->frontController = $this->newFrontController();
     }
 
     /**
@@ -257,6 +271,10 @@ class Dispatcher
         return $module."_".$controller."Controller";
     }
 
+    /**
+     * @param $class
+     * @return Controller
+     */
     public function newController($class)
     {
         $controller = new $class();
@@ -266,6 +284,9 @@ class Dispatcher
         return $controller;
     }
 
+    /**
+     * @param bool $params
+     */
     public function throwError($params = false)
     {
         $this->getFrontController()->getTrace()->add($params);
@@ -275,7 +296,14 @@ class Dispatcher
         return;
     }
 
-    public function forward($action = false, $controller = false, $module = false, $params = array())
+    /**
+     * @param bool $action
+     * @param bool $controller
+     * @param bool $module
+     * @param array $params
+     * @throws ForwardException
+     */
+    public function forward($action = false, $controller = false, $module = false, $params = [])
     {
         $this->getRequest()->setActionName($action);
 
@@ -298,6 +326,6 @@ class Dispatcher
      */
     public function getCurrentController()
     {
-        return $this->_currentController;
+        return $this->currentController;
     }
 }
