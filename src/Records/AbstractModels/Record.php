@@ -171,7 +171,8 @@ abstract class Record extends \Nip_Object
     public function getPrimaryKey()
     {
         $pk = $this->getManager()->getPrimaryKey();
-        return $this->$pk;
+
+        return $this->{$pk};
     }
 
     public function insert()

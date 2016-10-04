@@ -35,17 +35,36 @@ abstract class RecordManager
 
     protected $_collectionClass = '\Nip\Records\Collections\Collection';
 
-    protected $_helpers = [];
+    protected $helpers = [];
 
+    /**
+     * @var null|string
+     */
     protected $table = null;
+
     protected $tableStructure = null;
+
+    /**
+     * @var null|string
+     */
     protected $primaryKey = null;
     protected $fields = null;
     protected $uniqueFields = null;
+
+    /**
+     * @var null|string
+     */
     protected $foreignKey = null;
 
+    /**
+     * @var null|string
+     */
     protected $urlPK = null;
 
+    /**
+     * Model class name
+     * @var null|string
+     */
     protected $model = null;
 
     /**
@@ -68,10 +87,6 @@ abstract class RecordManager
      * @var array
      */
     protected $relations = null;
-
-    protected $_belongsTo = [];
-    protected $_hasMany = [];
-    protected $_hasAndBelongsToMany = [];
 
     protected $relationTypes = ['belongsTo', 'hasMany', 'hasAndBelongsToMany'];
 
@@ -381,7 +396,7 @@ abstract class RecordManager
                 $item = $this->getRegistry()->get($value);
                 if ($item) {
                     unset($pk_list[$key]);
-                    $return[$item->$pk] = $item;
+                    $return[$item->{$pk}] = $item;
                 }
             }
             if ($pk_list) {
@@ -391,8 +406,8 @@ abstract class RecordManager
 
                 if (count($items)) {
                     foreach ($items as $item) {
-                        $this->getRegistry()->set($item->$pk, $item);
-                        $return[$item->$pk] = $item;
+                        $this->getRegistry()->set($item->{$pk}, $item);
+                        $return[$item->{$pk}] = $item;
                     }
                 }
             }
@@ -495,7 +510,7 @@ abstract class RecordManager
             while ($row = $results->fetchResult()) {
                 $item = $this->getNew($row);
                 if (is_string($pk)) {
-                    $this->getRegistry()->set($item->$pk, $item);
+                    $this->getRegistry()->set($item->getPrimaryKey(), $item);
                 }
                 if ($params['indexKey']) {
                     $return->add($item, $params['indexKey']);
@@ -782,12 +797,12 @@ abstract class RecordManager
         }
 
         foreach ($fields as $field) {
-            $params['where'][$field.'-UNQ'] = ["$field = ?", $item->$field];
+            $params['where'][$field.'-UNQ'] = ["$field = ?", $item->{$field}];
         }
 
         $pk = $this->getPrimaryKey();
-        if ($item->$pk) {
-            $params['where'][] = ["$pk != ?", $item->$pk];
+        if ($item->getPrimaryKey()) {
+            $params['where'][] = ["$pk != ?", $item->getPrimaryKey()];
         }
 
         return $this->findOneByParams($params);
@@ -929,8 +944,8 @@ abstract class RecordManager
 
         $fields = $this->getFields();
         foreach ($fields as $field) {
-            if (isset($model->$field)) {
-                $data[$field] = $model->$field;
+            if (isset($model->{$field})) {
+                $data[$field] = $model->{$field};
             }
         }
 
@@ -997,7 +1012,7 @@ abstract class RecordManager
             $query->data($data);
 
             foreach ($pk as $key) {
-                $query->where("$key = ?", $model->$key);
+                $query->where("$key = ?", $model->{$key});
             }
 
             return $query;
@@ -1022,10 +1037,10 @@ abstract class RecordManager
     {
         $pk = $this->getPrimaryKey();
 
-        if (isset($model->$pk)) {
+        if (isset($model->{$pk})) {
             $model->update();
 
-            return $model->$pk;
+            return $model->{$pk};
         } else {
             /** @var Record $previous */
             $previous = $model->exists();
@@ -1040,26 +1055,26 @@ abstract class RecordManager
 
                 $model->writeData($previous->toArray());
 
-                return $model->$pk;
+                return $model->getPrimaryKey();
             }
         }
 
         $model->insert();
 
-        return $model->$pk;
+        return $model->getPrimaryKey();
     }
 
     /**
      * Delete a Record's database entry
      *
-     * @param mixed $input
+     * @param mixed|Record $input
      */
     public function delete($input)
     {
         $pk = $this->getPrimaryKey();
 
         if ($input instanceof $this->model) {
-            $primary = $input->$pk;
+            $primary = $input->getPrimaryKey();
         } else {
             $primary = $input;
         }
@@ -1237,7 +1252,7 @@ abstract class RecordManager
      */
     public function getPrimaryFK()
     {
-        if (!$this->foreignKey) {
+        if ($this->foreignKey == null) {
             $this->initPrimaryFK();
         }
 
@@ -1246,7 +1261,23 @@ abstract class RecordManager
 
     public function initPrimaryFK()
     {
-        $this->foreignKey = $this->getPrimaryKey()."_".inflector()->underscore($this->getModel());
+        $this->setForeignKey($this->generatePrimaryFK());
+    }
+
+    /**
+     * @param null $foreignKey
+     */
+    public function setForeignKey($foreignKey)
+    {
+        $this->foreignKey = $foreignKey;
+    }
+
+    /**
+     * @return string
+     */
+    public function generatePrimaryFK()
+    {
+        return $this->getPrimaryKey()."_".inflector()->underscore($this->getController());
     }
 
     /**
@@ -1336,8 +1367,10 @@ abstract class RecordManager
      */
     protected function initRelationsType($type)
     {
-        $array = $this->{'_'.$type};
-        $this->initRelationsFromArray($type, $array);
+        if (property_exists($this, '_'.$type)) {
+            $array = $this->{'_'.$type};
+            $this->initRelationsFromArray($type, $array);
+        }
     }
 
     /**
@@ -1502,4 +1535,3 @@ abstract class RecordManager
         $this->initController();
     }
 }
-
