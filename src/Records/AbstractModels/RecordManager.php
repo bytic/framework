@@ -254,7 +254,7 @@ abstract class RecordManager
         $structure = $this->getTableStructure();
         $primaryKey = $structure['indexes']['PRIMARY']['fields'];
         if (count($primaryKey) == 1) {
-            $primaryKey = reset($this->primaryKey);
+            $primaryKey = reset($primaryKey);
         }
 
         return $primaryKey;
