@@ -196,6 +196,16 @@ class RecordsTest extends \Codeception\TestCase\Test
         self::assertEquals($primaryFK, $records->getPrimaryFK());
     }
 
+    public function testGetPrimaryKey()
+    {
+        $records = new Records();
+        $tableStructure = unserialize(file_get_contents(codecept_data_dir() . '\database_structure\users.serialize'));
+        $records->setTableStructure($tableStructure);
+        $records->setPrimaryKey('id');
+
+        self::assertEquals('id', $records->getPrimaryKey());
+    }
+
     protected function _before()
     {
         $wrapper = new Connection();

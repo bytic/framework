@@ -272,9 +272,18 @@ abstract class RecordManager
         return $this->tableStructure;
     }
 
+    /**
+     * @param null $tableStructure
+     */
+    public function setTableStructure($tableStructure)
+    {
+        $this->tableStructure = $tableStructure;
+    }
+
+
     protected function initTableStructure()
     {
-        $this->tableStructure = $this->getDB()->getMetadata()->describeTable($this->getTable());
+        $this->setTableStructure($this->getDB()->getMetadata()->describeTable($this->getTable()));
     }
 
     /**
