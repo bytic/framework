@@ -22,7 +22,10 @@
     "container-interop/container-interop": "1.1.*",
     "nesbot/carbon": "^1.21",
     "maximebf/debugbar": "1.*",
-    "monolog/monolog": "1.20.*"
+    "monolog/monolog": "1.20.*",
+    "html2text/html2text": "4.0.1",
+    "sendgrid/sendgrid": "~5.0.7",
+    "swiftmailer/swiftmailer": "5.4.*"
   },
   "require-dev": {
     "codeception/codeception": "2.2.*",
