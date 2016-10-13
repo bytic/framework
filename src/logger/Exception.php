@@ -10,6 +10,5 @@ class Exception extends \Exception
 {
     public function log()
     {
-
     }
 }
