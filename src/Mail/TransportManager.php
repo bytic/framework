@@ -2,11 +2,36 @@
 
 namespace Nip\Mail;
 
+use Nip\Mail\Transport\AbstractTransport;
 use Nip\Mail\Transport\SendgridTransport;
 use Swift_SmtpTransport as SmtpTransport;
 
+/**
+ * Class TransportManager
+ * @package Nip\Mail
+ */
 class TransportManager
 {
+
+    /**
+     * @return AbstractTransport
+     */
+    public function create()
+    {
+        return $this->createSendgridTransport();
+    }
+
+    /**
+     * Create an instance of the Mailgun Swift Transport driver.
+     *
+     * @return SendgridTransport
+     */
+    protected function createSendgridTransport()
+    {
+//        $config = $this->app['config']->get('services.sendgrid', []);
+        return new SendgridTransport();
+    }
+
     /**
      * Create an instance of the SMTP Swift Transport driver.
      *
@@ -35,16 +60,5 @@ class TransportManager
             $transport->setStreamOptions($config['stream']);
         }
         return $transport;
-    }
-
-    /**
-     * Create an instance of the Mailgun Swift Transport driver.
-     *
-     * @return SendgridTransport
-     */
-    protected function createSendgridTransport()
-    {
-        $config = $this->app['config']->get('services.sendgrid', []);
-        return new SendgridTransport();
     }
 }

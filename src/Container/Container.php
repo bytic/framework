@@ -134,6 +134,11 @@ class Container implements ArrayAccess, ContainerInterface
     {
         $instance = $this->getFromThisContainer($id, $args);
 
+        if ($instance === false && $this->getProviders()->provides($id)) {
+            $this->getProviders()->register($id);
+            $instance = $this->getFromThisContainer($id, $args);
+        }
+
         if ($instance !== false) {
             return $instance;
         }
@@ -191,6 +196,31 @@ class Container implements ArrayAccess, ContainerInterface
     public function getDefinition($id)
     {
         return $this->definitions[$id];
+    }
+
+    /**
+     * @return ServiceProvider\ProviderRepository
+     */
+    public function getProviders()
+    {
+        if ($this->providers === null) {
+            $this->initProviders();
+        }
+        return $this->providers;
+    }
+
+    /**
+     * @param ServiceProvider\ProviderRepository $providers
+     */
+    public function setProviders($providers)
+    {
+        $this->providers = $providers;
+    }
+
+    public function initProviders()
+    {
+        $providers = (new ProviderRepository)->setContainer($this);
+        $this->setProviders($providers);
     }
 
     /**
@@ -283,30 +313,5 @@ class Container implements ArrayAccess, ContainerInterface
     {
         $this->getProviders()->add($provider);
         return $this;
-    }
-
-    /**
-     * @return ServiceProvider\ProviderRepository
-     */
-    public function getProviders()
-    {
-        if ($this->providers === null) {
-            $this->initProviders();
-        }
-        return $this->providers;
-    }
-
-    /**
-     * @param ServiceProvider\ProviderRepository $providers
-     */
-    public function setProviders($providers)
-    {
-        $this->providers = $providers;
-    }
-
-    public function initProviders()
-    {
-        $providers = (new ProviderRepository)->setContainer($this);
-        $this->setProviders($providers);
     }
 }

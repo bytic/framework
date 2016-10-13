@@ -18,6 +18,11 @@ class ProviderRepository implements ProviderRepositoryInterface
     protected $providers = [];
 
     /**
+     * @var array
+     */
+    protected $registered = [];
+
+    /**
      * {@inheritdoc}
      */
     public function add($provider)
@@ -25,6 +30,7 @@ class ProviderRepository implements ProviderRepositoryInterface
         if (is_string($provider) && class_exists($provider)) {
             $provider = new $provider;
         }
+
         if ($provider instanceof ContainerAwareInterface) {
             $provider->setContainer($this->getContainer());
         }

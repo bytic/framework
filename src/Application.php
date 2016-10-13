@@ -7,6 +7,7 @@ use Nip\Container\ContainerAwareTrait;
 use Nip\DebugBar\DataCollector\RouteCollector;
 use Nip\DebugBar\StandardDebugBar;
 use Nip\Logger\Manager as LoggerManager;
+use Nip\Mail\MailServiceProvider;
 use Nip\Staging\Stage;
 
 /**
@@ -16,6 +17,13 @@ use Nip\Staging\Stage;
 class Application
 {
     use ContainerAwareTrait;
+
+    /**
+     * Indicates if the application has "booted".
+     *
+     * @var bool
+     */
+    protected $booted = false;
 
     /**
      * @var AutoLoader
@@ -86,7 +94,7 @@ class Application
 
     public function registerServices()
     {
-        $this->getContainer()->addServiceProvider();
+        $this->getContainer()->addServiceProvider(MailServiceProvider::class);
     }
 
     /**
@@ -368,6 +376,7 @@ class Application
         $this->setupTranslation();
         $this->setupLocale();
         $this->setupRouting();
+        $this->boot();
     }
 
     public function setupConfig()
@@ -471,6 +480,25 @@ class Application
     public function newRouter()
     {
         return new Router\Router();
+    }
+
+    public function boot()
+    {
+        if ($this->isBooted()) {
+            return;
+        }
+
+        $this->getContainer()->getProviders()->boot();
+    }
+
+    /**
+     * Determine if the application has booted.
+     *
+     * @return bool
+     */
+    public function isBooted()
+    {
+        return $this->booted;
     }
 
     public function dispatch()
