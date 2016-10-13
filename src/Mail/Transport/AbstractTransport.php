@@ -2,7 +2,9 @@
 
 namespace Nip\Mail\Transport;
 
-abstract class AbstractTransport
+use Swift_Transport as SwiftTransport;
+
+abstract class AbstractTransport implements SwiftTransport
 {
 
 }

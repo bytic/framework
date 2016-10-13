@@ -2,6 +2,10 @@
 
 namespace Nip\Container\Definition;
 
+/**
+ * Class AbstractDefinition
+ * @package Nip\Container\Definition
+ */
 abstract class AbstractDefinition implements DefinitionInterface
 {
 
@@ -32,6 +36,15 @@ abstract class AbstractDefinition implements DefinitionInterface
     }
 
     /**
+     * Whether this service is shared.
+     * @return bool
+     */
+    public function isShared()
+    {
+        return $this->shared;
+    }
+
+    /**
      * Sets if the service must be shared or not.
      *
      * @param bool $shared Whether the service must be shared or not
@@ -41,14 +54,5 @@ abstract class AbstractDefinition implements DefinitionInterface
     {
         $this->shared = (bool) $shared;
         return $this;
-    }
-
-    /**
-     * Whether this service is shared.
-     * @return bool
-     */
-    public function isShared()
-    {
-        return $this->shared;
     }
 }

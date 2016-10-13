@@ -3,10 +3,10 @@
 namespace Nip\Container;
 
 use ArrayAccess;
-use Interop\Container\ContainerInterface;
 use Nip\Container\Definition\ClassDefinition;
 use Nip\Container\Definition\DefinitionInterface;
 use Nip\Container\Exception\NotFoundException;
+use Nip\Container\ServiceProvider\ProviderRepository;
 
 /**
  * Class Container
@@ -18,17 +18,19 @@ class Container implements ArrayAccess, ContainerInterface
 {
 
     /**
-     * @var Definition\DefinitionInterface[]
-     */
-    protected $definitions = [];
-
-    /**
      * The current globally available container (if any).
      *
      * @var static
      */
     protected static $instance;
-
+    /**
+     * @var Definition\DefinitionInterface[]
+     */
+    protected $definitions = [];
+    /**
+     * @var \Nip\Container\ServiceProvider\ProviderRepository
+     */
+    protected $providers = null;
     /**
      * The container's shared instances.
      *
@@ -36,7 +38,45 @@ class Container implements ArrayAccess, ContainerInterface
      */
     protected $instances = [];
 
+    /**
+     * Set the globally available instance of the container.
+     *
+     * @return static
+     */
+    public static function getInstance()
+    {
+        return static::$instance;
+    }
 
+    /**
+     * Set the shared instance of the container.
+     *
+     * @param  Container $container
+     * @return void
+     */
+    public static function setInstance(Container $container)
+    {
+        static::$instance = $container;
+    }
+
+    /**
+     * Register a shared binding in the container.
+     *
+     * @param  string|array $abstract
+     * @param  \Closure|string|null $concrete
+     * @return void
+     */
+    public function singleton($abstract, $concrete = null)
+    {
+        $this->add($abstract, $concrete, true);
+    }
+
+    /**
+     * @param $id
+     * @param null $concrete
+     * @param bool $share
+     * @return ClassDefinition|null
+     */
     public function add($id, $concrete = null, $share = false)
     {
         if (is_null($concrete)) {
@@ -57,51 +97,10 @@ class Container implements ArrayAccess, ContainerInterface
         return $concrete;
     }
 
-
-    /**
-     * Register a shared binding in the container.
-     *
-     * @param  string|array $abstract
-     * @param  \Closure|string|null $concrete
-     * @return void
-     */
-    public function singleton($abstract, $concrete = null)
-    {
-        $this->add($abstract, $concrete, true);
-    }
-
-    public function get($id, array $args = [])
-    {
-        $instance = $this->getFromThisContainer($id, $args);
-
-        if ($instance !== false) {
-            return $instance;
-        }
-
-        throw new NotFoundException(
-            sprintf('Alias (%s) is not being managed by the container', $id)
-        );
-    }
-
-    public function has($id)
-    {
-        return $this->hasInstance($id) || $this->hasDefinition($id);
-    }
-
-    public function set($id, $concrete = null)
-    {
-        $this->instances[$id] = $concrete;
-    }
-
-    protected function hasInstance($id)
-    {
-        return array_key_exists($id, $this->instances);
-    }
-
     /**
      * Drop all of the stale instances and aliases.
      *
-     * @param  string  $id
+     * @param  string $id
      * @return void
      */
     protected function dropStaleInstances($id)
@@ -127,20 +126,28 @@ class Container implements ArrayAccess, ContainerInterface
     }
 
     /**
-     * @param $id
-     * @return ClassDefinition
+     * @param string $id
+     * @param array $args
+     * @return bool|mixed|object
      */
-    public function getDefinition($id)
+    public function get($id, array $args = [])
     {
-        return $this->definitions[$id];
+        $instance = $this->getFromThisContainer($id, $args);
+
+        if ($instance !== false) {
+            return $instance;
+        }
+
+        throw new NotFoundException(
+            sprintf('Alias (%s) is not being managed by the container', $id)
+        );
     }
 
-    protected function hasDefinition($id)
-    {
-        return array_key_exists($id, $this->definitions);
-    }
-
-
+    /**
+     * @param $id
+     * @param array $args
+     * @return bool|mixed
+     */
     protected function getFromThisContainer($id, array $args = [])
     {
         if ($this->hasInstance($id)) {
@@ -160,24 +167,48 @@ class Container implements ArrayAccess, ContainerInterface
     }
 
     /**
-     * Set the globally available instance of the container.
-     *
-     * @return static
+     * @param $id
+     * @return bool
      */
-    public static function getInstance()
+    protected function hasInstance($id)
     {
-        return static::$instance;
+        return array_key_exists($id, $this->instances);
     }
 
     /**
-     * Set the shared instance of the container.
-     *
-     * @param  Container $container
-     * @return void
+     * @param $id
+     * @return bool
      */
-    public static function setInstance(Container $container)
+    protected function hasDefinition($id)
     {
-        static::$instance = $container;
+        return array_key_exists($id, $this->definitions);
+    }
+
+    /**
+     * @param $id
+     * @return DefinitionInterface
+     */
+    public function getDefinition($id)
+    {
+        return $this->definitions[$id];
+    }
+
+    /**
+     * @param string $id
+     * @return bool
+     */
+    public function has($id)
+    {
+        return $this->hasInstance($id) || $this->hasDefinition($id);
+    }
+
+    /**
+     * @param $id
+     * @param null $concrete
+     */
+    public function set($id, $concrete = null)
+    {
+        $this->instances[$id] = $concrete;
     }
 
     /**
@@ -242,5 +273,40 @@ class Container implements ArrayAccess, ContainerInterface
     public function __set($key, $value)
     {
         $this[$key] = $value;
+    }
+
+    /**
+     * @param $provider
+     * @return $this
+     */
+    public function addServiceProvider($provider)
+    {
+        $this->getProviders()->add($provider);
+        return $this;
+    }
+
+    /**
+     * @return ServiceProvider\ProviderRepository
+     */
+    public function getProviders()
+    {
+        if ($this->providers === null) {
+            $this->initProviders();
+        }
+        return $this->providers;
+    }
+
+    /**
+     * @param ServiceProvider\ProviderRepository $providers
+     */
+    public function setProviders($providers)
+    {
+        $this->providers = $providers;
+    }
+
+    public function initProviders()
+    {
+        $providers = (new ProviderRepository)->setContainer($this);
+        $this->setProviders($providers);
     }
 }

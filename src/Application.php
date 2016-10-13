@@ -3,6 +3,7 @@
 namespace Nip;
 
 use Nip\Container\Container;
+use Nip\Container\ContainerAwareTrait;
 use Nip\DebugBar\DataCollector\RouteCollector;
 use Nip\DebugBar\StandardDebugBar;
 use Nip\Logger\Manager as LoggerManager;
@@ -14,14 +15,14 @@ use Nip\Staging\Stage;
  */
 class Application
 {
+    use ContainerAwareTrait;
+
     /**
      * @var AutoLoader
      */
     protected $autoloader = null;
 
     protected $frontController = null;
-
-    protected $container = null;
 
     /**
      * @var null|Request
@@ -65,7 +66,8 @@ class Application
     public function prepare()
     {
         $this->includeVendorAutoload();
-        $this->setupContainer();
+        $this->registerContainer();
+        $this->registerServices();
         $this->setupRequest();
         $this->setupStaging();
         $this->setupAutoloader();
@@ -77,43 +79,14 @@ class Application
     {
     }
 
-    public function setupContainer()
+    public function registerContainer()
     {
         $this->getContainer()->add('mvc.modules', 'Nip\Mvc\Modules', true);
     }
 
-    /**
-     * @return Container
-     */
-    public function getContainer()
+    public function registerServices()
     {
-        if ($this->container == null) {
-            $this->initContainer();
-        }
-
-        return $this->container;
-    }
-
-    /**
-     * @param $container
-     */
-    public function setContainer($container)
-    {
-        $this->container = $container;
-    }
-
-    public function initContainer()
-    {
-        $this->container = $this->newContainer();
-        Container::setInstance($this->container);
-    }
-
-    /**
-     * @return Container
-     */
-    public function newContainer()
-    {
-        return new Container();
+        $this->getContainer()->addServiceProvider();
     }
 
     /**
@@ -383,7 +356,7 @@ class Application
         $stage = $this->getStage();
         $pathInfo = $this->getFrontController()->getRequest()->getHttp()->getBaseUrl();
 
-        $baseURL = $stage->getHTTP().$stage->getHost().$pathInfo;
+        $baseURL = $stage->getHTTP() . $stage->getHost() . $pathInfo;
         define('BASE_URL', $baseURL);
     }
 
@@ -435,7 +408,7 @@ class Application
 
             if ($domain != 'localhost') {
                 Cookie\Jar::instance()->setDefaults(
-                    ['domain' => '.'.$domain]
+                    ['domain' => '.' . $domain]
                 );
             }
             $this->sessionManager->init();
