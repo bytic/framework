@@ -4,41 +4,23 @@ namespace Nip\Mail\Traits;
 
 use Nip\Mail\Message;
 
+/**
+ * Class MailableTrait
+ * @package Nip\Mail\Traits
+ */
 trait MailableTrait
 {
+    use MailerAwareTrait;
 
-    protected $mailer = null;
-
+    /**
+     * @return int
+     */
     public function send()
     {
         $mailer = $this->getMailer();
         $message = $this->buildMailMessage();
+
         return $mailer->send($message);
-    }
-
-    public function getMailer()
-    {
-        if ($this->mailer === null) {
-            $this->initMailer();
-        }
-    }
-
-    /**
-     * @param null $mailer
-     */
-    public function setMailer($mailer)
-    {
-        $this->mailer = $mailer;
-    }
-
-    protected function initMailer()
-    {
-        $this->setMailer($this->newMailer());
-    }
-
-    protected function newMailer()
-    {
-
     }
 
     /**
@@ -50,7 +32,9 @@ trait MailableTrait
         $this->buildMailMessageFrom($message);
         $this->buildMailMessageRecipients($message);
         $this->buildMailMessageSubject($message);
+        $this->buildMailMessageBody($message);
         $this->buildMailMessageAttachments($message);
+
         return $message;
     }
 
@@ -60,34 +44,32 @@ trait MailableTrait
     public function newMailMessage()
     {
         $message = new Message();
+
         return $message;
     }
 
     /**
      * @param Message $message
      */
-    public function buildMailMessageFrom($message)
-    {
-    }
+    abstract public function buildMailMessageFrom($message);
 
     /**
      * @param Message $message
      */
-    public function buildMailMessageRecipients($message)
-    {
-    }
+    abstract public function buildMailMessageRecipients($message);
 
     /**
      * @param Message $message
      */
-    public function buildMailMessageSubject($message)
-    {
-    }
+    abstract public function buildMailMessageSubject($message);
 
     /**
      * @param Message $message
      */
-    public function buildMailMessageAttachments($message)
-    {
-    }
+    abstract public function buildMailMessageBody($message);
+
+    /**
+     * @param Message $message
+     */
+    abstract public function buildMailMessageAttachments($message);
 }
