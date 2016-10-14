@@ -10,6 +10,7 @@ use Nip\DebugBar\DataCollector\RouteCollector;
 use Nip\DebugBar\StandardDebugBar;
 use Nip\Logger\Manager as LoggerManager;
 use Nip\Mail\MailServiceProvider;
+use Nip\Mvc\MvcServiceProvider;
 use Nip\Staging\Stage;
 
 /**
@@ -92,12 +93,12 @@ class Application
 
     public function registerContainer()
     {
-        $this->getContainer()->add('mvc.modules', 'Nip\Mvc\Modules', true);
     }
 
     public function registerServices()
     {
         $this->getContainer()->addServiceProvider(MailServiceProvider::class);
+        $this->getContainer()->addServiceProvider(MvcServiceProvider::class);
     }
 
     /**
