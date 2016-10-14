@@ -19,18 +19,13 @@ trait RecordTrait
      */
     public function buildMailMessageFrom(&$message)
     {
-        $message->setFrom($this->getFrom(), $this->getFromName());
+        $message->setFrom($this->getFrom());
     }
 
     /**
      * @return string
      */
     abstract public function getFrom();
-
-    /**
-     * @return string
-     */
-    abstract public function getFromName();
 
     /**
      * @param Message $message
