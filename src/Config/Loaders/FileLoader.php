@@ -106,26 +106,27 @@ class FileLoader extends AbstractLoader
      */
     protected function resolvePath()
     {
-        $resolvedPath = false;
         $filename = $this->getPath();
-        if (!file_exists($filename)) {
-            if (!$this->useIncludePath()) {
-                throw new RuntimeException(sprintf(
-                    'Filename "%s" cannot be found relative to the working directory',
-                    $filename
-                ));
-            }
-            $fromIncludePath = stream_resolve_include_path($filename);
-            if (!$fromIncludePath) {
-                throw new RuntimeException(sprintf(
-                    'Filename "%s" cannot be found relative to the working directory or the include_path ("%s")',
-                    $filename,
-                    get_include_path()
-                ));
-            }
-            $resolvedPath = $fromIncludePath;
+        if (file_exists($filename)) {
+            return $filename;
         }
 
-        return $resolvedPath;
+        if (!$this->useIncludePath()) {
+            throw new RuntimeException(sprintf(
+                'Filename "%s" cannot be found relative to the working directory',
+                $filename
+            ));
+        }
+
+        $fromIncludePath = stream_resolve_include_path($filename);
+        if (!$fromIncludePath) {
+            throw new RuntimeException(sprintf(
+                'Filename "%s" cannot be found relative to the working directory or the include_path ("%s")',
+                $filename,
+                get_include_path()
+            ));
+        }
+
+        return $fromIncludePath;
     }
 }
