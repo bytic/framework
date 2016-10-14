@@ -2,28 +2,35 @@
 
 namespace Nip\Helpers\View;
 
-use Nip_Config;
-
+/**
+ * Class GoogleAnalytics
+ * @package Nip\Helpers\View
+ */
 class GoogleAnalytics extends AbstractHelper
 {
 
     public $transactions = null;
-    protected $_UA = null;
-    protected $_domain = null;
+
+    protected $UA = null;
+
+    protected $domain = null;
+    
     protected $page;
-    protected $_operations = [];
+
+    protected $operations = [];
+    
     protected $flashMemory = null;
 
     /**
      * @param array $data
      * @see http://code.google.com/apis/analytics/docs/gaJS/gaJSApiEcommerce.html
      */
-    public function addTransaction($data = array())
+    public function addTransaction($data = [])
     {
         $order = new \stdClass();
 
         foreach ($data as $key => $value) {
-            $order->$key = $value;
+            $order->{$key} = $value;
         }
 
         $this->transactions[$order->orderId] = $order;
@@ -61,12 +68,12 @@ class GoogleAnalytics extends AbstractHelper
      * @param array $data
      * @see http://code.google.com/apis/analytics/docs/gaJS/gaJSApiEcommerce.html
      */
-    public function addTransactionItem($data = array())
+    public function addTransactionItem($data = [])
     {
         $item = new \stdClass();
 
         foreach ($data as $key => $value) {
-            $item->$key = $value;
+            $item->{$key} = $value;
         }
 
         $this->transactions[$item->orderId]->items[] = $item;
@@ -74,10 +81,12 @@ class GoogleAnalytics extends AbstractHelper
         $this->getFlashMemory()->add("analytics.transactions", json_encode($this->transactions));
     }
 
+    /**
+     * @return string
+     */
     public function render()
     {
-
-        $this->addOperation('_set', array('currencyCode', 'RON'), 'prepend');
+        $this->addOperation('_set', ['currencyCode', 'RON'], 'prepend');
         $this->addOperation('_trackPageview', $this->getPage() ? $this->getPage() : null, 'prepend');
         $this->addOperation('_setDomainName', $this->getDomain(), 'prepend');
         $this->addOperation('_setAccount', $this->getUA(), 'prepend');
@@ -87,7 +96,7 @@ class GoogleAnalytics extends AbstractHelper
         $return = '<script type="text/javascript">';
         $return .= 'var _gaq = _gaq || [];';
 
-        foreach ($this->_operations as $operation) {
+        foreach ($this->operations as $operation) {
             $return .= "_gaq.push([";
             $return .= "'{$operation[0]}'";
             if (isset($operation[1]) && $operation[1] !== null) {
@@ -108,7 +117,7 @@ class GoogleAnalytics extends AbstractHelper
 
         $return .= "(function() {
             var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-            ga.src = ('https:' == document.location.protocol ? 'https://' : 'http://') + 'stats.g.doubleclick.net/dc.js';
+            ga.src = ('https:'== document.location.protocol ? 'https://' : 'http://') + 'stats.g.doubleclick.net/dc.js';
             var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
         })();";
         $return .= '</script>';
@@ -116,55 +125,106 @@ class GoogleAnalytics extends AbstractHelper
         return $return;
     }
 
-    public function addOperation($method, $params = array(), $position = 'below')
+    /**
+     * @param $method
+     * @param array $params
+     * @param string $position
+     * @return $this
+     */
+    public function addOperation($method, $params = [], $position = 'below')
     {
         if ($position == 'prepend') {
-            array_unshift($this->_operations, array($method, $params));
+            array_unshift($this->operations, [$method, $params]);
         } else {
-            $this->_operations[] = array($method, $params);
+            $this->operations[] = [$method, $params];
         }
 
         return $this;
     }
 
+    /**
+     * @return string
+     */
     public function getPage()
     {
         return $this->page ? "'$this->page'" : '';
     }
 
+    /**
+     * @param $page
+     */
     public function setPage($page)
     {
         $this->page = $page;
     }
 
+    /**
+     * @return string
+     */
     public function getDomain()
     {
-        if ($this->_domain == null) {
-            $this->setDomain(Nip_Config::instance()->ANALYTICS->domain);
+        if ($this->domain == null) {
+            $this->initDomain();
         }
 
-        return $this->_domain;
+        return $this->domain;
     }
 
+    /**
+     * @param $domain
+     */
     public function setDomain($domain)
     {
-        $this->_domain = $domain;
+        $this->domain = $domain;
     }
 
+    protected function initDomain()
+    {
+        $domain = '';
+        if (app()->has('config')) {
+            $config = app()->get('config');
+            if ($config->has('ANALYTICS.domain')) {
+                $domain = $config->get('ANALYTICS.domain');
+            }
+        }
+        $this->setDomain($domain);
+    }
+
+    /**
+     * @return null|string
+     */
     public function getUA()
     {
-        if ($this->_UA == null) {
-            $this->setUA(Nip_Config::instance()->ANALYTICS->UA);
+        if ($this->UA == null) {
+            $this->initUA();
         }
 
-        return $this->_UA;
+        return $this->UA;
     }
 
+    /**
+     * @param $code
+     */
     public function setUA($code)
     {
-        $this->_UA = $code;
+        $this->UA = $code;
     }
 
+    protected function initUA()
+    {
+        $ua = '';
+        if (app()->has('config')) {
+            $config = app()->get('config');
+            if ($config->has('ANALYTICS.UA')) {
+                $ua = $config->get('ANALYTICS.UA');
+            }
+        }
+        $this->setUA($ua);
+    }
+
+    /**
+     * @param string $prefix
+     */
     public function parseTransactions($prefix = '')
     {
         $transactions = $this->getTransactions();
@@ -173,7 +233,7 @@ class GoogleAnalytics extends AbstractHelper
 
         if ($transactions) {
             foreach ($transactions as $transaction) {
-                $this->addOperation($prefix . '_addTrans', array(
+                $this->addOperation($prefix.'_addTrans', [
                     $transaction->orderId,
                     $transaction->affiliation,
                     $transaction->total,
@@ -182,18 +242,18 @@ class GoogleAnalytics extends AbstractHelper
                     $transaction->city,
                     $transaction->state,
                     $transaction->country
-                ));
+                ]);
 
                 if ($transaction->items) {
                     foreach ($transaction->items as $item) {
-                        $this->addOperation($prefix . '_addItem', array(
+                        $this->addOperation($prefix.'_addItem', [
                             $item->orderId,
                             $item->sku,
                             $item->name,
                             $item->category,
                             $item->price,
                             $item->quantity
-                        ));
+                        ]);
                     }
                 }
             }
@@ -201,6 +261,9 @@ class GoogleAnalytics extends AbstractHelper
         }
     }
 
+    /**
+     * @return null
+     */
     public function getTransactions()
     {
         if ($this->transactions === null) {
@@ -215,6 +278,10 @@ class GoogleAnalytics extends AbstractHelper
         $this->transactions = json_decode($this->getFlashMemory()->get("analytics.transactions"));
     }
 
+    /**
+     * @param $param
+     * @return string
+     */
     public function renderOperationParam($param)
     {
         if (is_bool($param)) {
@@ -222,6 +289,4 @@ class GoogleAnalytics extends AbstractHelper
         }
         return "'{$param}'";
     }
-
-
 }
