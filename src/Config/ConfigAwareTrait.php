@@ -13,6 +13,11 @@ trait ConfigAwareTrait
      */
     protected $config = null;
 
+    public function registerContainerConfig()
+    {
+        app()->add('config', $this->getConfig(), true);
+    }
+
     /**
      * Get the container.
      *

@@ -2,17 +2,26 @@
 
 namespace Nip\Database;
 
-use Nip\Bootstrap as Bootstrap;
+use Nip\Application as Bootstrap;
 
+/**
+ * Class Manager
+ * @package Nip\Database
+ */
 class Manager
 {
 
     /**
      * @var Bootstrap
      */
-    protected $_bootstrap;
-    protected $_connections = [];
+    protected $bootstrap;
 
+    protected $connections = [];
+
+    /**
+     * @param $config
+     * @return Connection
+     */
     public function newConnectionFromConfig($config)
     {
         $connection = $this->createNewConnection(
@@ -24,6 +33,14 @@ class Manager
         return $connection;
     }
 
+    /**
+     * @param $adapter
+     * @param $host
+     * @param $user
+     * @param $password
+     * @param $database
+     * @return Connection
+     */
     public function createNewConnection($adapter, $host, $user, $password, $database)
     {
 
@@ -48,11 +65,17 @@ class Manager
         return $connection;
     }
 
+    /**
+     * @return Connection
+     */
     public function newConnection()
     {
         return new \Nip\Database\Connection();
     }
 
+    /**
+     * @param $connection
+     */
     public function initNewConnection($connection)
     {
         if ($this->getBootstrap()->getDebugBar()->isEnabled()) {
@@ -65,7 +88,7 @@ class Manager
      */
     public function getBootstrap()
     {
-        return $this->_bootstrap;
+        return $this->bootstrap;
     }
 
     /**
@@ -73,7 +96,6 @@ class Manager
      */
     public function setBootstrap($bootstrap)
     {
-        $this->_bootstrap = $bootstrap;
+        $this->bootstrap = $bootstrap;
     }
-
 }

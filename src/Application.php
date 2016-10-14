@@ -2,9 +2,10 @@
 
 namespace Nip;
 
-use Nip\Config\Config;
+use Nip\Config\ConfigAwareTrait;
 use Nip\Container\Container;
 use Nip\Container\ContainerAwareTrait;
+use Nip\Database\Manager as DatabaseManager;
 use Nip\DebugBar\DataCollector\RouteCollector;
 use Nip\DebugBar\StandardDebugBar;
 use Nip\Logger\Manager as LoggerManager;
@@ -18,6 +19,7 @@ use Nip\Staging\Stage;
 class Application
 {
     use ContainerAwareTrait;
+    use ConfigAwareTrait;
 
     /**
      * Indicates if the application has "booted".
@@ -382,33 +384,22 @@ class Application
 
     public function setupConfig()
     {
-        $this->registerConfig();
-    }
-
-    protected function registerConfig()
-    {
-        $config = new Config();
-        $this->getContainer()->add('config', $config, true);
+        $this->registerContainerConfig();
     }
 
     public function setupDatabase()
     {
         $stageConfig = $this->getStage()->getConfig();
+        $dbManager = new DatabaseManager();
+        $dbManager->setBootstrap($this);
 
-        $connection = new Database\Connection();
-
-        $adapter = $connection->newAdapter($stageConfig->DB->adapter);
-        $connection->setAdapter($adapter);
+        $connection = $dbManager->newConnectionFromConfig($stageConfig->get('DB'));
+        $this->getContainer()->set('database', $connection);
 
         if ($this->getDebugBar()->isEnabled()) {
+            $adapter = $connection->getAdapter();
             $this->getDebugBar()->initDatabaseAdapter($adapter);
         }
-        $connection->connect(
-            $stageConfig->DB->host,
-            $stageConfig->DB->user,
-            $stageConfig->DB->password,
-            $stageConfig->DB->name);
-        Container::getInstance()->set('database', $connection);
     }
 
     public function setupSession()
