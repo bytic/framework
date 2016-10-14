@@ -17,9 +17,9 @@ class Ini extends AbstractFileParser
      *
      * @throws ParseException If there is an error parsing the INI file
      */
-    public function parse($path)
+    public function parse()
     {
-        $data = parse_ini_file($path, true);
+        $data = parse_ini_file($this->getPath(), true);
         if ($data === false) {
             $error = error_get_last();
             throw new ParseException($error);

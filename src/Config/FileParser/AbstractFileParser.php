@@ -22,10 +22,27 @@ abstract class AbstractFileParser implements FileParserInterface
      *
      * @codeCoverageIgnore
      */
-    public function __construct($path)
+    public function __construct($path = null)
     {
-        $this->path = $path;
+        $this->setPath($path);
     }
 
+    /**
+     * @return string
+     */
+    public function getPath()
+    {
+        return $this->path;
+    }
 
+    /**
+     * @param string $path
+     * @return $this
+     */
+    public function setPath($path)
+    {
+        $this->path = $path;
+
+        return $this;
+    }
 }

@@ -19,8 +19,9 @@ class Php extends AbstractFileParser
      * @throws ParseException             If the PHP file throws an exception
      * @throws UnsupportedFormatException If the PHP file does not return an array
      */
-    public function parse($path)
+    public function parse()
     {
+        $path = $this->getPath();
         // Require the file, if it throws an exception, rethrow it
         try {
             /** @noinspection PhpIncludeInspection */

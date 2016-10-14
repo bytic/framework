@@ -37,18 +37,18 @@ class Nip_Route_RegexTest extends  \Codeception\TestCase\Test
 //    public function testSetMap()
 //    {
 //        $this->object->setMap('shop/cart');
-//		$this->assertEquals('shop/cart', $this->object->getRegex());
+//		static::assertEquals('shop/cart', $this->object->getRegex());
 //
 //        $this->object->setMap('shop/:cart');
-//		$this->assertEquals('shop/:cart', $this->object->getRegex());
+//		static::assertEquals('shop/:cart', $this->object->getRegex());
 //
 //        $this->object->setMap('shop/:cart');
 //        $this->object->setParams(array('cart' => 'test'));
-//		$this->assertEquals('shop/(test)', $this->object->getRegex());
+//		static::assertEquals('shop/(test)', $this->object->getRegex());
 //
 //        $this->object->setMap('shop/:cart/:url');
 //        $this->object->setParams(array('cart' => 'test', 'url' => '[a-z0-9-]+'));
-//		$this->assertEquals('shop/(test)/([a-z0-9-]+)', $this->object->getRegex());
+//		static::assertEquals('shop/(test)/([a-z0-9-]+)', $this->object->getRegex());
 //
 //    }
 //
@@ -59,20 +59,20 @@ class Nip_Route_RegexTest extends  \Codeception\TestCase\Test
 //            'name' => 'ipsum',
 //            'company' => 'dolo&rem',
 //        );
-//		$this->assertEquals('?url=lorem&name=ipsum&company=dolo%26rem', $this->object->assemble($params));
+//		static::assertEquals('?url=lorem&name=ipsum&company=dolo%26rem', $this->object->assemble($params));
 //
 //        $this->object->setMap('shop/:url');
-//		$this->assertEquals('shop/lorem?name=ipsum&company=dolo%26rem', $this->object->assemble($params));
+//		static::assertEquals('shop/lorem?name=ipsum&company=dolo%26rem', $this->object->assemble($params));
 //    }
 //
 //    public function testMatch()
 //    {
 //        $this->object->setMap('shop/cart/:url');
 //        $this->object->setParams(array('url' => '[a-z0-9-]+'));
-//		$this->assertTrue($this->object->match('shop/cart/test'));
-//		$this->assertTrue($this->object->match('shop/cart/test-teas'));
-//		$this->assertTrue($this->object->match('shop/cart/test123-teas123'));
-//		$this->assertFalse($this->object->match('shop/cart/test123_teas123'));
+//		static::assertTrue($this->object->match('shop/cart/test'));
+//		static::assertTrue($this->object->match('shop/cart/test-teas'));
+//		static::assertTrue($this->object->match('shop/cart/test123-teas123'));
+//		static::assertFalse($this->object->match('shop/cart/test123_teas123'));
 //    }
 
 }

@@ -1,29 +1,77 @@
 <?php
 
+/**
+ * Class Nip_Helper_Passwords
+ */
 class Nip_Helper_Passwords extends Nip\Helpers\AbstractHelper
 {
 
-    protected $salt;
+    /**
+     * @var string
+     */
+    protected $salt = null;
 
 
-    public function __construct()
-    {
-        $this->salt = isset(Nip_Config::instance()->PASSWORD) ? Nip_Config::instance()->PASSWORD->salt : '';
-    }
-
-
+    /**
+     * @param $password
+     * @return string
+     */
     public function hash($password)
     {
-        return md5($this->salt . $password);
+        return md5($this->getSalt().$password);
     }
 
+    /**
+     * @return string
+     */
+    public function getSalt()
+    {
+        if ($this->salt === null) {
+            $this->initSalt();
+        }
 
+        return $this->salt;
+    }
+
+    /**
+     * @param $salt
+     * @return $this
+     */
+    public function setSalt($salt)
+    {
+        $this->salt = $salt;
+
+        return $this;
+    }
+
+    protected function initSalt()
+    {
+        $salt = '';
+        if (app()->has('config')) {
+            $config = app()->get('config');
+            if ($config->has('PASSWORD.salt')) {
+                $salt = $config->get('PASSWORD.salt');
+            }
+        }
+        $this->setSalt($salt);
+    }
+
+    /**
+     * @param int $length
+     * @param bool $use_upper
+     * @param bool $use_lower
+     * @param bool $use_number
+     * @param string $use_custom
+     * @return string
+     */
     public function generate($length = 8, $use_upper = true, $use_lower = true, $use_number = true, $use_custom = "")
     {
         $lower = implode('', range('a', 'z'));
         $upper = strtoupper($lower);
         $numbers = implode('', range(0, 9));
 
+        $seed_length = 0;
+        $seed = '';
         if ($use_upper) {
             $seed_length += 26;
             $seed .= $upper;
@@ -44,33 +92,11 @@ class Nip_Helper_Passwords extends Nip\Helpers\AbstractHelper
             $seed .= $use_custom;
         }
 
+        $password = '';
         for ($x = 1; $x <= $length; $x++) {
             $password .= $seed{rand(0, $seed_length - 1)};
         }
 
         return $password;
     }
-
-
-    public function setSalt($salt)
-    {
-        $this->salt = $salt;
-        return $this;
-    }
-
-
-    /**
-     * Singleton
-     *
-     * @return Nip_Helper_Passwords
-     */
-    static public function instance()
-    {
-        static $instance;
-        if (!($instance instanceof self)) {
-            $instance = new self();
-        }
-        return $instance;
-    }
-
 }

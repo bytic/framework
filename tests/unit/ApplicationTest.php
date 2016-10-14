@@ -1,10 +1,14 @@
 <?php
+
+namespace Nip\Tests\Unit;
+
 use Nip\Application;
+use Nip\Mail\Mailer;
 
 /**
  * Class ApplicationTest
  */
-class ApplicationTest extends \Codeception\TestCase\Test
+class ApplicationTest extends AbstractTest
 {
 
     /**
@@ -12,17 +16,18 @@ class ApplicationTest extends \Codeception\TestCase\Test
      */
     protected $application;
 
-    /**
-     */
-    public function _before()
-    {
-        $this->application = new Application();
-    }
-
     public function testRegisterServices()
     {
         $this->application->registerServices();
 
-        static::assertInstanceOf(\Nip\Mail\Mailer::class, $this->application->getContainer()->get('mailer'));
+        static::assertInstanceOf(Mailer::class, $this->application->getContainer()->get('mailer'));
+    }
+
+    /**
+     */
+    protected function setUp()
+    {
+        parent::setUp();
+        $this->application = new Application();
     }
 }

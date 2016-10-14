@@ -3,12 +3,14 @@
 namespace Nip\Config;
 
 use ArrayAccess;
+use Countable;
+use Iterator;
 
 /**
  * Class Repository
  * @package Nip\Config
  */
-class Config implements ArrayAccess
+class Config implements Countable, Iterator, ArrayAccess
 {
     /**
      * Whether modifications to configuration data are allowed.
@@ -25,6 +27,14 @@ class Config implements ArrayAccess
     protected $data = [];
 
     /**
+     * Used when unsetting values during iteration to ensure we do not skip
+     * the next element.
+     *
+     * @var bool
+     */
+    protected $skipNextIteration;
+
+    /**
      * Create a new configuration repository.
      *
      * @param array $array
@@ -32,42 +42,30 @@ class Config implements ArrayAccess
      */
     public function __construct(array $array = [], $allowModifications = false)
     {
-        foreach ($array as $key => $value) {
-            $this->set($key, $value);
-        }
-
         $this->allowModifications = (bool)$allowModifications;
+
+        foreach ($array as $key => $value) {
+            $this->setDataItem($key, $value);
+        }
     }
 
     /**
      * @param $name
      * @param $value
-     * @throws Exception\RuntimeException
+     * @return $this
      */
-    public function set($name, $value)
+    protected function setDataItem($name, $value)
     {
-        if ($this->isReadOnly()) {
-            throw new Exception\RuntimeException('Config is read only');
-        } else {
-            if (is_array($value)) {
-                $value = new static($value, true);
-            }
-            if (null === $name) {
-                $this->data[] = $value;
-            } else {
-                $this->data[$name] = $value;
-            }
+        if (is_array($value)) {
+            $value = new static($value, true);
         }
-    }
+        if (null === $name) {
+            $this->data[] = $value;
+        } else {
+            $this->data[$name] = $value;
+        }
 
-    /**
-     * Returns whether this Config object is read only or not.
-     *
-     * @return bool
-     */
-    public function isReadOnly()
-    {
-        return !$this->allowModifications;
+        return $this;
     }
 
     /**
@@ -82,17 +80,62 @@ class Config implements ArrayAccess
     /**
      * Retrieve a value and return $default if there is no element set.
      *
-     * @param  string $name
+     * @param  string $key
      * @param  mixed $default
      * @return mixed
      */
-    public function get($name, $default = null)
+    public function get($key, $default = null)
     {
-        if (array_key_exists($name, $this->data)) {
-            return $this->data[$name];
+        if (strpos($key, '.') === false) {
+            $value = $this->getByKey($key);
+        } else {
+            $value = $this->getByPath($key);
         }
 
-        return $default;
+        return $value === null ? $default : $value;
+    }
+
+    /**
+     * @param $key
+     * @return mixed|null
+     */
+    public function getByKey($key)
+    {
+        if ($this->hasByKey($key)) {
+            return $this->data[$key];
+        }
+
+        return null;
+    }
+
+    /**
+     * Determine if the given configuration value exists.
+     *
+     * @param  string $key
+     * @return bool
+     */
+    public function hasByKey($key)
+    {
+        return isset($this->data[$key]);
+    }
+
+    /**
+     * @param $path
+     * @return string
+     */
+    protected function getByPath($path)
+    {
+        $segments = explode('.', $path);
+        $value = $this;
+        foreach ($segments as $segment) {
+            if ($value->hasByKey($segment)) {
+                $value = $value->getByKey($segment);
+            } else {
+                return null;
+            }
+        }
+
+        return $value;
     }
 
     /**
@@ -112,7 +155,30 @@ class Config implements ArrayAccess
      */
     public function has($key)
     {
-        return isset($this->data[$key]);
+        if (strpos($key, '.') === false) {
+            return $this->hasByKey($key);
+        }
+
+        return $this->hasByPath($key);
+    }
+
+    /**
+     * @param $path
+     * @return bool
+     */
+    public function hasByPath($path)
+    {
+        $segments = explode('.', $path);
+        $value = $this;
+        foreach ($segments as $segment) {
+            if ($value->hasByKey($segment)) {
+                $value = $value->getByKey($segment);
+            } else {
+                return false;
+            }
+        }
+
+        return ($value !== null);
     }
 
     /**
@@ -150,6 +216,31 @@ class Config implements ArrayAccess
     }
 
     /**
+     * @param $name
+     * @param $value
+     * @return $this
+     * @throws Exception\RuntimeException
+     */
+    public function set($name, $value)
+    {
+        if ($this->isReadOnly()) {
+            throw new Exception\RuntimeException('Config is read only');
+        }
+
+        return $this->setDataItem($name, $value);
+    }
+
+    /**
+     * Returns whether this Config object is read only or not.
+     *
+     * @return bool
+     */
+    public function isReadOnly()
+    {
+        return !$this->allowModifications;
+    }
+
+    /**
      * Unset a configuration option.
      *
      * @param  string $key
@@ -166,8 +257,8 @@ class Config implements ArrayAccess
      */
     public function mergeFile($path)
     {
-        $config = Factory::fromFile($path, true);
-
+        $data = Factory::fromFile($path, false);
+        $config = new self($data, $this->allowModifications);
         return $this->merge($config);
     }
 
@@ -229,5 +320,79 @@ class Config implements ArrayAccess
         }
 
         return $array;
+    }
+
+    /**
+     * count(): defined by Countable interface.
+     *
+     * @see    Countable::count()
+     * @return int
+     */
+    public function count()
+    {
+        return count($this->data);
+    }
+
+    /**
+     * current(): defined by Iterator interface.
+     *
+     * @see    Iterator::current()
+     * @return mixed
+     */
+    public function current()
+    {
+        $this->skipNextIteration = false;
+
+        return current($this->data);
+    }
+
+    /**
+     * next(): defined by Iterator interface.
+     *
+     * @see    Iterator::next()
+     * @return void
+     */
+    public function next()
+    {
+        if ($this->skipNextIteration) {
+            $this->skipNextIteration = false;
+
+            return;
+        }
+        next($this->data);
+    }
+
+    /**
+     * rewind(): defined by Iterator interface.
+     *
+     * @see    Iterator::rewind()
+     * @return void
+     */
+    public function rewind()
+    {
+        $this->skipNextIteration = false;
+        reset($this->data);
+    }
+
+    /**
+     * valid(): defined by Iterator interface.
+     *
+     * @see    Iterator::valid()
+     * @return bool
+     */
+    public function valid()
+    {
+        return ($this->key() !== null);
+    }
+
+    /**
+     * key(): defined by Iterator interface.
+     *
+     * @see    Iterator::key()
+     * @return mixed
+     */
+    public function key()
+    {
+        return key($this->data);
     }
 }

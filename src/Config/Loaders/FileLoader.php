@@ -19,11 +19,11 @@ class FileLoader extends AbstractLoader
      * @var array
      */
     protected static $extensions = [
-        'ini' => 'ini',
-        'php' => 'php',
-        'json' => 'json',
-        'xml' => 'xml',
-        'yaml' => 'yaml',
+        'ini' => 'Ini',
+        'php' => 'Php',
+        'json' => 'Json',
+        'xml' => 'Xml',
+        'yaml' => 'Yaml',
     ];
     /**
      * @var
@@ -41,7 +41,7 @@ class FileLoader extends AbstractLoader
     {
         $type = self::$extensions[$this->getExtension()];
 
-        return $this->getFileParser($type)->parse($this->getResolvedPath());
+        return $this->getFileParser($type)->setPath($this->getResolvedPath())->parse();
     }
 
     /**

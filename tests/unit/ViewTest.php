@@ -15,20 +15,20 @@ class ViewTest extends \Codeception\TestCase\Test
     {
         $view = new View();
 
-        $this->assertEquals('\Nip\Helpers\View\Messages', $view->getHelperClass('Messages'));
-        $this->assertEquals('\Nip\Helpers\View\Paginator', $view->getHelperClass('Paginator'));
-        $this->assertEquals('\Nip\Helpers\View\Scripts', $view->getHelperClass('Scripts'));
-        $this->assertEquals('\Nip\Helpers\View\TinyMCE', $view->getHelperClass('TinyMCE'));
+        static::assertEquals('\Nip\Helpers\View\Messages', $view->getHelperClass('Messages'));
+        static::assertEquals('\Nip\Helpers\View\Paginator', $view->getHelperClass('Paginator'));
+        static::assertEquals('\Nip\Helpers\View\Scripts', $view->getHelperClass('Scripts'));
+        static::assertEquals('\Nip\Helpers\View\TinyMCE', $view->getHelperClass('TinyMCE'));
     }
 
     public function testDynamicCallHelper()
     {
         $view = new View();
 
-        $this->assertInstanceOf('Nip\Helpers\View\Messages', $view->Messages());
-        $this->assertInstanceOf('Nip\Helpers\View\Paginator', $view->Paginator());
-        $this->assertInstanceOf('Nip\Helpers\View\Scripts', $view->Scripts());
-        $this->assertInstanceOf('Nip\Helpers\View\TinyMCE', $view->TinyMCE());
+        static::assertInstanceOf('Nip\Helpers\View\Messages', $view->Messages());
+        static::assertInstanceOf('Nip\Helpers\View\Paginator', $view->Paginator());
+        static::assertInstanceOf('Nip\Helpers\View\Scripts', $view->Scripts());
+        static::assertInstanceOf('Nip\Helpers\View\TinyMCE', $view->TinyMCE());
     }
 
     // tests
@@ -37,9 +37,9 @@ class ViewTest extends \Codeception\TestCase\Test
     {
         $view = new View();
 
-        $this->assertInstanceOf('Nip\View', $view->Messages()->getView());
-        $this->assertInstanceOf('Nip\View', $view->Paginator()->getView());
-        $this->assertInstanceOf('Nip\View', $view->Scripts()->getView());
+        static::assertInstanceOf('Nip\View', $view->Messages()->getView());
+        static::assertInstanceOf('Nip\View', $view->Paginator()->getView());
+        static::assertInstanceOf('Nip\View', $view->Scripts()->getView());
     }
 
     protected function _before()

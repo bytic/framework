@@ -28,8 +28,8 @@ class RecordTest extends \Codeception\TestCase\Test
         $this->_object->getManager()->initRelationsFromArray('belongsTo', array('User'));
 
         $relation = $this->_object->newRelation('User');
-        $this->assertSame($users, $relation->getWith());
-        $this->assertSame($this->_object, $relation->getItem());
+        static::assertSame($users, $relation->getWith());
+        static::assertSame($this->_object, $relation->getItem());
     }
 
     protected function _before()
