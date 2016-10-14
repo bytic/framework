@@ -2,6 +2,7 @@
 
 namespace Nip\Mail;
 
+use Nip\Config\ConfigAwareTrait;
 use Nip\Mail\Transport\AbstractTransport;
 use Nip\Mail\Transport\SendgridTransport;
 use Swift_SmtpTransport as SmtpTransport;
@@ -12,6 +13,7 @@ use Swift_SmtpTransport as SmtpTransport;
  */
 class TransportManager
 {
+    use ConfigAwareTrait;
 
     /**
      * @return AbstractTransport
@@ -28,8 +30,12 @@ class TransportManager
      */
     protected function createSendgridTransport()
     {
-//        $config = $this->app['config']->get('services.sendgrid', []);
-        return new SendgridTransport();
+        $config = $this->getConfig();
+
+        $transport = new SendgridTransport();
+        $transport->setApiKey($config->get('SENDGRID.key'));
+
+        return $transport;
     }
 
     /**
