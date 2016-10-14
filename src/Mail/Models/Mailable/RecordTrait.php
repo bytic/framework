@@ -72,6 +72,13 @@ trait RecordTrait
      */
     public function buildMailMessageAttachments(&$message)
     {
+    }
+
+    /**
+     * @param Message $message
+     */
+    public function buildMailMessageMergeTags(&$message)
+    {
         $message->setMergeTags($this->getMergeTags());
     }
 
@@ -79,13 +86,6 @@ trait RecordTrait
      * @return array
      */
     abstract public function getMergeTags();
-
-    /**
-     * @param Message $message
-     */
-    public function buildMailMessageMergeTags(&$message)
-    {
-    }
 
     /**
      * @return string
