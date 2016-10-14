@@ -34,6 +34,7 @@ trait MailableTrait
         $this->buildMailMessageSubject($message);
         $this->buildMailMessageBody($message);
         $this->buildMailMessageAttachments($message);
+        $this->buildMailMessageMergeTags($message);
 
         return $message;
     }
@@ -51,25 +52,30 @@ trait MailableTrait
     /**
      * @param Message $message
      */
-    abstract public function buildMailMessageFrom($message);
+    abstract public function buildMailMessageFrom(&$message);
 
     /**
      * @param Message $message
      */
-    abstract public function buildMailMessageRecipients($message);
+    abstract public function buildMailMessageRecipients(&$message);
 
     /**
      * @param Message $message
      */
-    abstract public function buildMailMessageSubject($message);
+    abstract public function buildMailMessageSubject(&$message);
 
     /**
      * @param Message $message
      */
-    abstract public function buildMailMessageBody($message);
+    abstract public function buildMailMessageBody(&$message);
 
     /**
      * @param Message $message
      */
-    abstract public function buildMailMessageAttachments($message);
+    abstract public function buildMailMessageAttachments(&$message);
+
+    /**
+     * @param Message $message
+     */
+    abstract public function buildMailMessageMergeTags(&$message);
 }
