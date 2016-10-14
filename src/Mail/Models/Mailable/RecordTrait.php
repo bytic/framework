@@ -46,26 +46,26 @@ trait RecordTrait
      */
     public function buildMailMessageSubject(&$message)
     {
-        $message->setSubject($this->getCompiledSubject());
+        $message->setSubject($this->getSubject());
     }
 
     /**
      * @return string
      */
-    abstract public function getCompiledSubject();
+    abstract public function getSubject();
 
     /**
      * @param Message $message
      */
     public function buildMailMessageBody(&$message)
     {
-        $message->setBody($this->getCompiledBody());
+        $message->setBody($this->getBody());
     }
 
     /**
      * @return string
      */
-    abstract public function getCompiledBody();
+    abstract public function getBody();
 
     /**
      * @param Message $message
