@@ -2,12 +2,16 @@
 
 namespace Nip\Helpers\View;
 
+use Nip\Config\ConfigAwareTrait;
+
 /**
  * Class GoogleAnalytics
  * @package Nip\Helpers\View
  */
 class GoogleAnalytics extends AbstractHelper
 {
+
+    use ConfigAwareTrait;
 
     public $transactions = null;
 
@@ -181,11 +185,9 @@ class GoogleAnalytics extends AbstractHelper
     protected function initDomain()
     {
         $domain = '';
-        if (app()->has('config')) {
-            $config = app()->get('config');
-            if ($config->has('ANALYTICS.domain')) {
-                $domain = $config->get('ANALYTICS.domain');
-            }
+        $config = $this->getConfig();
+        if ($config->has('ANALYTICS.domain')) {
+            $domain = $config->get('ANALYTICS.domain');
         }
         $this->setDomain($domain);
     }
@@ -213,11 +215,9 @@ class GoogleAnalytics extends AbstractHelper
     protected function initUA()
     {
         $ua = '';
-        if (app()->has('config')) {
-            $config = app()->get('config');
-            if ($config->has('ANALYTICS.UA')) {
-                $ua = $config->get('ANALYTICS.UA');
-            }
+        $config = $this->getConfig();
+        if ($config->has('ANALYTICS.UA')) {
+            $ua = $config->get('ANALYTICS.UA');
         }
         $this->setUA($ua);
     }
