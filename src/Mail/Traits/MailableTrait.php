@@ -2,6 +2,7 @@
 
 namespace Nip\Mail\Traits;
 
+use Nip\Mail\Mailer;
 use Nip\Mail\Message;
 
 /**
@@ -20,7 +21,11 @@ trait MailableTrait
         $mailer = $this->getMailer();
         $message = $this->buildMailMessage();
 
-        return $mailer->send($message);
+        $this->beforeSend($mailer, $message);
+        $response = $mailer->send($message);
+        $this->afterSend($mailer, $message, $response);
+
+        return $response;
     }
 
     /**
@@ -47,6 +52,23 @@ trait MailableTrait
         $message = new Message();
 
         return $message;
+    }
+
+    /**
+     * @param Mailer $mailer
+     * @param Message $message
+     */
+    protected function beforeSend($mailer, $message)
+    {
+    }
+
+    /**
+     * @param Mailer $mailer
+     * @param Message $message
+     * @param $response
+     */
+    protected function afterSend($mailer, $message, $response)
+    {
     }
 
     /**
