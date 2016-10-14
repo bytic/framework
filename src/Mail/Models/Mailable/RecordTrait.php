@@ -35,8 +35,8 @@ trait RecordTrait
         foreach (['to', 'cc', 'bcc', 'replyTo'] as $type) {
             $method = 'get'.ucfirst($type).'s';
             $recipients = method_exists($this, $method) ? $this->{$method}() : $this->{$type};
-            foreach ($recipients as $recipient) {
-                $message->{'add'.ucfirst($type)}($recipient['address'], $recipient['name']);
+            foreach ($recipients as $address => $name) {
+                $message->{'add'.ucfirst($type)}($address, $name);
             }
         }
     }
