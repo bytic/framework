@@ -161,6 +161,17 @@ class Config implements ArrayAccess
     }
 
     /**
+     * @param string $path
+     * @return $this
+     */
+    public function mergeFile($path)
+    {
+        $config = Factory::fromFile($path, true);
+
+        return $this->merge($config);
+    }
+
+    /**
      * Merge another Config with this one.
      *
      * For duplicate keys, the following will be performed:

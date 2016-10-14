@@ -2,6 +2,7 @@
 
 namespace Nip;
 
+use Nip\Config\Config;
 use Nip\Container\Container;
 use Nip\Container\ContainerAwareTrait;
 use Nip\DebugBar\DataCollector\RouteCollector;
@@ -364,7 +365,7 @@ class Application
         $stage = $this->getStage();
         $pathInfo = $this->getFrontController()->getRequest()->getHttp()->getBaseUrl();
 
-        $baseURL = $stage->getHTTP() . $stage->getHost() . $pathInfo;
+        $baseURL = $stage->getHTTP().$stage->getHost().$pathInfo;
         define('BASE_URL', $baseURL);
     }
 
@@ -381,6 +382,13 @@ class Application
 
     public function setupConfig()
     {
+        $this->registerConfig();
+    }
+
+    protected function registerConfig()
+    {
+        $config = new Config();
+        $this->getContainer()->add('config', $config, true);
     }
 
     public function setupDatabase()
@@ -412,12 +420,12 @@ class Application
 
             if (!$sessionManager->isAutoStart()) {
                 $sessionManager->setRootDomain($domain);
-                $sessionManager->setLifetime(\Nip_Config::instance()->get('SESSION')->lifetime);
+                $sessionManager->setLifetime($this->getContainer()->get('config')->get('SESSION')->get('lifetime'));
             }
 
             if ($domain != 'localhost') {
                 Cookie\Jar::instance()->setDefaults(
-                    ['domain' => '.' . $domain]
+                    ['domain' => '.'.$domain]
                 );
             }
             $this->sessionManager->init();
