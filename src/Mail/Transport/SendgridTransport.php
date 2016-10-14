@@ -2,7 +2,10 @@
 
 namespace Nip\Mail\Transport;
 
+use Html2Text\Html2Text;
 use Nip\Mail\Message;
+use SendGrid;
+use SendGrid\Attachment;
 use SendGrid\Content;
 use SendGrid\Email;
 use SendGrid\Mail;
@@ -12,6 +15,7 @@ use Swift_Attachment;
 use Swift_Image;
 use Swift_Mime_Message as MessageInterface;
 use Swift_MimePart;
+use Swift_TransportException;
 
 /**
  * Class SendgridTransport
@@ -19,6 +23,8 @@ use Swift_MimePart;
  */
 class SendgridTransport extends AbstractTransport
 {
+    /** @var string|null */
+    protected $apiKey;
 
     /**
      * @var null|Mail|MessageInterface
@@ -38,6 +44,25 @@ class SendgridTransport extends AbstractTransport
         $this->populateSenders($message);
         $this->populatePersonalization($message);
         $this->populateContent($message);
+
+        $sg = $this->createApi();
+
+        /** @noinspection PhpUndefinedMethodInspection */
+        /** @var SendGrid\Response $response */
+        $response = $sg->client->mail()->send()->post($this->getMail());
+
+        if ($response->statusCode() == '202') {
+            return 1;
+        }
+//            echo $response->statusCode();
+//            echo '-----------';
+//            echo $response->body();
+//            echo '-----------';
+//            echo $response->headers();
+//            die('----------');
+//            return $response->body().$response->headers();
+
+        return 0;
     }
 
     public function initMail()
@@ -52,7 +77,7 @@ class SendgridTransport extends AbstractTransport
     {
         $from = $message->getFrom();
         foreach ($from as $address => $name) {
-            $email = new Email($address, $name);
+            $email = new Email($name, $address);
             $this->getMail()->setFrom($email);
 
             $reply_to = new ReplyTo($address);
@@ -131,7 +156,7 @@ class SendgridTransport extends AbstractTransport
             $bodyText = $message->getBody();
         } else {
             $bodyHtml = $message->getBody();
-            $bodyText = (new \Html2Text\Html2Text($bodyHtml))->getText();
+            $bodyText = (new Html2Text($bodyHtml))->getText();
         }
 
         foreach ($message->getChildren() as $child) {
@@ -142,11 +167,7 @@ class SendgridTransport extends AbstractTransport
                     'content' => base64_encode($child->getBody()),
                 ];
             } elseif ($child instanceof Swift_Attachment && !($child instanceof Swift_Image)) {
-                $attachments[] = [
-                    'type' => $child->getContentType(),
-                    'name' => $child->getFilename(),
-                    'content' => base64_encode($child->getBody()),
-                ];
+                $this->addAttachment($child);
             } elseif ($child instanceof Swift_MimePart && $this->supportsContentType($child->getContentType())) {
                 if ($child->getContentType() == "text/html") {
                     $bodyHtml = $child->getBody();
@@ -155,9 +176,6 @@ class SendgridTransport extends AbstractTransport
                 }
             }
         }
-
-        var_dump($attachments);
-        die();
 
         $content = new Content("text/plain", $bodyText);
         $this->getMail()->addContent($content);
@@ -207,5 +225,54 @@ class SendgridTransport extends AbstractTransport
             'text/plain',
             'text/html',
         ];
+    }
+
+    /**
+     * @param Swift_Attachment $attachment
+     */
+    protected function addAttachment($attachment)
+    {
+        $sgAttachment = new Attachment();
+        $sgAttachment->setContent(base64_encode($attachment->getBody()));
+        $sgAttachment->setType($attachment->getContentType());
+        $sgAttachment->setFilename($attachment->getFilename());
+        $sgAttachment->setDisposition("attachment");
+        $sgAttachment->setContentID($attachment->getId());
+        $this->getMail()->addAttachment($sgAttachment);
+    }
+
+    /**
+     * @return SendGrid
+     * @throws Swift_TransportException
+     */
+    protected function createApi()
+    {
+        if ($this->getApiKey() === null) {
+            throw new Swift_TransportException('Cannot create instance of \Mandrill while API key is NULL');
+        }
+
+
+        $sg = new SendGrid($this->getApiKey());
+
+        return $sg;
+    }
+
+    /**
+     * @return null|string
+     */
+    public function getApiKey()
+    {
+        return $this->apiKey;
+    }
+
+    /**
+     * @param string $apiKey
+     * @return $this
+     */
+    public function setApiKey($apiKey)
+    {
+        $this->apiKey = $apiKey;
+
+        return $this;
     }
 }

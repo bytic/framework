@@ -59,7 +59,7 @@ trait RecordTrait
      */
     public function buildMailMessageBody(&$message)
     {
-        $message->setBody($this->getBody());
+        $message->setBody($this->getBody(), 'text/html');
     }
 
     /**
