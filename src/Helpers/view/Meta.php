@@ -44,13 +44,13 @@ class Meta extends AbstractHelper
      */
     public function populateFromConfig($config)
     {
-        $this->setTitleBase($config->get('META.title'));
-        $this->authors = explode(",", $config->get('META.authors'));
-        $this->description = $config->get('META.description');
-        $this->addKeywords(explode(",", $config->get('META.keywords')));
-        $this->copyright = $config->get('META.copyright');
-        $this->robots = $config->get('META.robots');
-        $this->verify_v1 = $config->get('META.verify_v1');
+        $this->setTitleBase($config->get('title'));
+        $this->authors = explode(",", $config->get('authors'));
+        $this->description = $config->get('description');
+        $this->addKeywords(explode(",", $config->get('keywords')));
+        $this->copyright = $config->get('copyright');
+        $this->robots = $config->get('robots');
+        $this->verify_v1 = $config->get('verify_v1');
     }
 
     /**
