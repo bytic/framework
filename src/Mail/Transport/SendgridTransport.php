@@ -2,6 +2,7 @@
 
 namespace Nip\Mail\Transport;
 
+use Exception;
 use Html2Text\Html2Text;
 use Nip\Mail\Message;
 use SendGrid;
@@ -103,10 +104,14 @@ class SendgridTransport extends AbstractTransport
 
     /**
      * @param Message|MessageInterface $message
+     * @throws Exception
      */
     protected function populatePersonalization($message)
     {
         $emailsTos = $message->getTo();
+        if (!is_array($emailsTos) or count($emailsTos) < 1) {
+            throw new Exception('Cannot send email withought reciepients');
+        }
         $i = 0;
         foreach ($emailsTos as $emailTo => $nameTo) {
             $personalization = $this->generatePersonalization($emailTo, $nameTo, $message, $i);
