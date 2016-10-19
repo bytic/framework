@@ -6,6 +6,7 @@ use Nip\HelperBroker;
 use Nip\Logger\Exception;
 use Nip\Records\Relations\HasMany;
 use Nip\Records\Relations\Relation;
+use Nip\Utility\Traits\NameWorksTrait;
 
 /**
  * Class Row
@@ -15,10 +16,15 @@ use Nip\Records\Relations\Relation;
  */
 abstract class Record extends \Nip_Object
 {
+    use NameWorksTrait;
 
     protected $_name = null;
     protected $_manager = null;
-    protected $_managerName = null;
+
+    /**
+     * @var string
+     */
+    protected $managerName = null;
 
     protected $_dbData = [];
     protected $_helpers = [];
@@ -53,6 +59,7 @@ abstract class Record extends \Nip_Object
         }
 
         trigger_error("Call to undefined method $name", E_USER_ERROR);
+        return null;
     }
 
     /**
@@ -120,20 +127,36 @@ abstract class Record extends \Nip_Object
      */
     public function getManagerName()
     {
-        if ($this->_managerName == null) {
-            $this->inflectManagerName();
+        if ($this->managerName === null) {
+            $this->initManagerName();
         }
 
-        return $this->_managerName;
-    }
-
-    public function inflectManagerName()
-    {
-        return ucfirst(inflector()->pluralize(get_class($this)));
+        return $this->managerName;
     }
 
     /**
-     * @param RecordManager $class
+     * @param string $managerName
+     */
+    public function setManagerName($managerName)
+    {
+        $this->managerName = $managerName;
+    }
+
+    protected function initManagerName()
+    {
+        $this->setManagerName($this->inflectManagerName());
+    }
+
+    /**
+     * @return string
+     */
+    protected function inflectManagerName()
+    {
+        return ucfirst(inflector()->pluralize($this->getClassName()));
+    }
+
+    /**
+     * @param string $class
      * @return mixed
      * @throws Exception
      */
@@ -145,6 +168,10 @@ abstract class Record extends \Nip_Object
         throw new Exception('invalid manager name [' . $class . ']');
     }
 
+    /**
+     * @param string $relationName
+     * @return Relation|null
+     */
     public function newRelation($relationName)
     {
         $relation = clone $this->getManager()->getRelation($relationName);
@@ -153,6 +180,10 @@ abstract class Record extends \Nip_Object
         return $relation;
     }
 
+    /**
+     * @param $name
+     * @return \Nip\Helpers\AbstractHelper
+     */
     public function getHelper($name)
     {
         return HelperBroker::get($name);
@@ -187,11 +218,17 @@ abstract class Record extends \Nip_Object
         }
     }
 
+    /**
+     * @return array
+     */
     public function getDBData()
     {
         return $this->_dbData;
     }
 
+    /**
+     * @return mixed
+     */
     public function getPrimaryKey()
     {
         $pk = $this->getManager()->getPrimaryKey();
@@ -199,13 +236,19 @@ abstract class Record extends \Nip_Object
         return $this->{$pk};
     }
 
+    /**
+     * @return bool
+     */
     public function insert()
     {
         $pk = $this->getManager()->getPrimaryKey();
-        $this->$pk = $this->getManager()->insert($this);
-        return $this->$pk > 0;
+        $this->{$pk} = $this->getManager()->insert($this);
+        return $this->{$pk} > 0;
     }
 
+    /**
+     * @return bool|\Nip\Database\Result
+     */
     public function update()
     {
         $return = $this->getManager()->update($this);
@@ -244,39 +287,52 @@ abstract class Record extends \Nip_Object
         $this->getManager()->delete($this);
     }
 
+    /**
+     * @return bool
+     */
     public function isInDB()
     {
         $pk = $this->getManager()->getPrimaryKey();
-        return $this->$pk > 0;
+        return $this->{$pk} > 0;
     }
 
+    /**
+     * @return bool|false|Record
+     */
     public function exists()
     {
         return $this->getManager()->exists($this);
     }
 
+    /**
+     * @return string
+     */
     public function toJSON()
     {
         return json_encode($this->toArray());
     }
 
+    /**
+     * @return mixed
+     */
     public function toArray()
     {
         $vars = get_object_vars($this);
         return $vars['_data'];
     }
 
+    /**
+     * @return mixed
+     */
     public function toApiArray()
     {
         $data = $this->toArray();
         return $data;
     }
 
-    public function initManagerName()
-    {
-        $this->_managerName = $this->inflectManagerName();
-    }
-
+    /**
+     * @return Record
+     */
     public function getCloneWithRelations()
     {
         $item = $this->getClone();
@@ -285,6 +341,9 @@ abstract class Record extends \Nip_Object
         return $item;
     }
 
+    /**
+     * @return Record
+     */
     public function getClone()
     {
         $clone = $this->getManager()->getNew();

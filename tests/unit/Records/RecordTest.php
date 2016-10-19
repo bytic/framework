@@ -6,8 +6,13 @@ use Mockery as m;
 use Nip\Database\Connection;
 use Nip\Records\Record;
 use Nip\Records\RecordManager as Records;
+use Nip\Tests\Unit\AbstractTest;
 
-class RecordTest extends \Codeception\TestCase\Test
+/**
+ * Class RecordTest
+ * @package Nip\Tests\Unit\Records
+ */
+class RecordTest extends AbstractTest
 {
     /**
      * @var \UnitTester
@@ -17,7 +22,29 @@ class RecordTest extends \Codeception\TestCase\Test
     /**
      * @var Record
      */
-    protected $_object;
+    protected $object;
+
+    /**
+     * @return array
+     */
+    public function providerGetManagerName()
+    {
+        return [
+            ["Notifications_Table", "Notifications_Tables"],
+            ["Donation", "Donations"],
+        ];
+    }
+
+    /**
+     * @dataProvider providerGetManagerName
+     * @param string $recordName
+     * @param string $managerName
+     */
+    public function testGetManagerName($recordName, $managerName)
+    {
+        $this->object->setClassName($recordName);
+        self::assertSame($managerName, $this->object->getManagerName());
+    }
 
     public function testNewRelation()
     {
@@ -25,29 +52,23 @@ class RecordTest extends \Codeception\TestCase\Test
             ->shouldReceive('instance')->andReturnSelf()->getMock();
         m::namedMock('User', 'Record');
 
-        $this->_object->getManager()->initRelationsFromArray('belongsTo', array('User'));
+        $this->object->getManager()->initRelationsFromArray('belongsTo', ['User']);
 
-        $relation = $this->_object->newRelation('User');
+        $relation = $this->object->newRelation('User');
         static::assertSame($users, $relation->getWith());
-        static::assertSame($this->_object, $relation->getItem());
+        static::assertSame($this->object, $relation->getItem());
     }
 
-    protected function _before()
+    protected function setUp()
     {
+        parent::setUp();
         $wrapper = new Connection();
 
         $manager = new Records();
         $manager->setDB($wrapper);
         $manager->setTable('pages');
 
-        $this->_object = new Record();
-        $this->_object->setManager($manager);
+        $this->object = new Record();
+        $this->object->setManager($manager);
     }
-
-    // tests
-
-    protected function _after()
-    {
-    }
-
 }
