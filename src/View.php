@@ -195,6 +195,35 @@ class View
     }
 
     /**
+     * @param $view
+     * @return bool
+     */
+    public function existPath($view)
+    {
+        return is_file($this->buildPath($view));
+    }
+
+    /**
+     * Builds path for including
+     * If $view starts with / the path will be relative to the root of the views folder.
+     * Otherwise to caller file location.
+     *
+     * @param string $view
+     * @return string
+     */
+    protected function buildPath($view)
+    {
+        if ($view[0] == '/') {
+            return $this->getBasePath() . ltrim($view, "/") . '.php';
+        } else {
+            $backtrace = debug_backtrace();
+            $caller = $backtrace[3]['file'];
+
+            return dirname($caller) . "/" . $view . ".php";
+        }
+    }
+
+    /**
      * @return string
      */
     public function getBasePath()
@@ -231,35 +260,6 @@ class View
             return VIEWS_PATH;
         }
         return false;
-    }
-
-    /**
-     * @param $view
-     * @return bool
-     */
-    public function existPath($view)
-    {
-        return is_file($this->buildPath($view));
-    }
-
-    /**
-     * Builds path for including
-     * If $view starts with / the path will be relative to the root of the views folder.
-     * Otherwise to caller file location.
-     *
-     * @param string $view
-     * @return string
-     */
-    protected function buildPath($view)
-    {
-        if ($view[0] == '/') {
-            return $this->basePath . ltrim($view, "/") . '.php';
-        } else {
-            $backtrace = debug_backtrace();
-            $caller = $backtrace[3]['file'];
-
-            return dirname($caller) . "/" . $view . ".php";
-        }
     }
 
     /**
