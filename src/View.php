@@ -217,12 +217,20 @@ class View
         return $this;
     }
 
-    public function initBasePath()
+    protected function initBasePath()
+    {
+        $this->setBasePath($this->generateBasePath());
+    }
+
+    /**
+     * @return string
+     */
+    protected function generateBasePath()
     {
         if (defined('VIEWS_PATH')) {
-            $this->basePath = VIEWS_PATH;
+            return VIEWS_PATH;
         }
-        $this->basePath = false;
+        return false;
     }
 
     /**
