@@ -2,12 +2,15 @@
 
 namespace Nip;
 
+use Nip\Config\ConfigAwareTrait;
 use Nip\Container\Container;
 use Nip\Container\ContainerAwareTrait;
+use Nip\Database\Manager as DatabaseManager;
 use Nip\DebugBar\DataCollector\RouteCollector;
 use Nip\DebugBar\StandardDebugBar;
 use Nip\Logger\Manager as LoggerManager;
 use Nip\Mail\MailServiceProvider;
+use Nip\Mvc\MvcServiceProvider;
 use Nip\Staging\Stage;
 
 /**
@@ -17,6 +20,7 @@ use Nip\Staging\Stage;
 class Application
 {
     use ContainerAwareTrait;
+    use ConfigAwareTrait;
 
     /**
      * Indicates if the application has "booted".
@@ -89,12 +93,12 @@ class Application
 
     public function registerContainer()
     {
-        $this->getContainer()->add('mvc.modules', 'Nip\Mvc\Modules', true);
     }
 
     public function registerServices()
     {
         $this->getContainer()->addServiceProvider(MailServiceProvider::class);
+        $this->getContainer()->addServiceProvider(MvcServiceProvider::class);
     }
 
     /**
@@ -364,7 +368,7 @@ class Application
         $stage = $this->getStage();
         $pathInfo = $this->getFrontController()->getRequest()->getHttp()->getBaseUrl();
 
-        $baseURL = $stage->getHTTP() . $stage->getHost() . $pathInfo;
+        $baseURL = $stage->getHTTP().$stage->getHost().$pathInfo;
         define('BASE_URL', $baseURL);
     }
 
@@ -381,26 +385,22 @@ class Application
 
     public function setupConfig()
     {
+        $this->registerContainerConfig();
     }
 
     public function setupDatabase()
     {
         $stageConfig = $this->getStage()->getConfig();
+        $dbManager = new DatabaseManager();
+        $dbManager->setBootstrap($this);
 
-        $connection = new Database\Connection();
-
-        $adapter = $connection->newAdapter($stageConfig->DB->adapter);
-        $connection->setAdapter($adapter);
+        $connection = $dbManager->newConnectionFromConfig($stageConfig->get('DB'));
+        $this->getContainer()->set('database', $connection);
 
         if ($this->getDebugBar()->isEnabled()) {
+            $adapter = $connection->getAdapter();
             $this->getDebugBar()->initDatabaseAdapter($adapter);
         }
-        $connection->connect(
-            $stageConfig->DB->host,
-            $stageConfig->DB->user,
-            $stageConfig->DB->password,
-            $stageConfig->DB->name);
-        Container::getInstance()->set('database', $connection);
     }
 
     public function setupSession()
@@ -412,12 +412,12 @@ class Application
 
             if (!$sessionManager->isAutoStart()) {
                 $sessionManager->setRootDomain($domain);
-                $sessionManager->setLifetime(\Nip_Config::instance()->get('SESSION')->lifetime);
+                $sessionManager->setLifetime($this->getContainer()->get('config')->get('SESSION')->get('lifetime'));
             }
 
             if ($domain != 'localhost') {
                 Cookie\Jar::instance()->setDefaults(
-                    ['domain' => '.' . $domain]
+                    ['domain' => '.'.$domain]
                 );
             }
             $this->sessionManager->init();

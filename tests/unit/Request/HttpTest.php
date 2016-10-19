@@ -21,8 +21,8 @@ class HttpTest extends \Codeception\TestCase\Test
     public function testGetBaseUrl($uri, $server, $expectedBaseUrl, $expectedPathInfo)
     {
         $request = Request::create($uri, 'GET', array(), array(), array(), $server);
-        $this->assertSame($expectedBaseUrl, $request->getHttp()->getBaseUrl(), 'baseUrl');
-        $this->assertSame($expectedPathInfo, $request->getHttp()->getPathInfo(), 'pathInfo');
+        static::assertSame($expectedBaseUrl, $request->getHttp()->getBaseUrl(), 'baseUrl');
+        static::assertSame($expectedPathInfo, $request->getHttp()->getPathInfo(), 'pathInfo');
     }
 
     // tests
@@ -106,7 +106,7 @@ class HttpTest extends \Codeception\TestCase\Test
     public function testGetUri()
     {
         $request = Request::create('http://test.com/foo?bar=baz');
-        $this->assertEquals('http://test.com/foo?bar=baz', $request->getHttp()->getUri());
+        static::assertEquals('http://test.com/foo?bar=baz', $request->getHttp()->getUri());
     }
 
     protected function _after()

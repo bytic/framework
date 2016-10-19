@@ -4,6 +4,10 @@ namespace Nip\Tests\Unit\Inflector;
 
 use Nip\Inflector\Inflector;
 
+/**
+ * Class InflectorTest
+ * @package Nip\Tests\Unit\Inflector
+ */
 class InflectorTest extends \Codeception\TestCase\Test
 {
 

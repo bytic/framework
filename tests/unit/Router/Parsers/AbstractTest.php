@@ -38,8 +38,8 @@ class AbstractParserTest extends \Codeception\TestCase\Test
 //    {
 //        $map = 'module/test';
 //		$this->object->setMap($map);
-//		$this->assertEquals($map, $this->object->getMap());
-//		$this->assertEquals(2, count($this->object->getParts()));
+//		static::assertEquals($map, $this->object->getMap());
+//		static::assertEquals(2, count($this->object->getParts()));
 //    }
 //
 //    public function testAssemble()
@@ -49,10 +49,10 @@ class AbstractParserTest extends \Codeception\TestCase\Test
 //            'name' => 'ipsum',
 //            'company' => 'dolo&rem',
 //        );
-//		$this->assertEquals('?url=lorem&name=ipsum&company=dolo%26rem', $this->object->assemble($params));
+//		static::assertEquals('?url=lorem&name=ipsum&company=dolo%26rem', $this->object->assemble($params));
 //
 //        $this->object->setMap(':url/:name');
-//		$this->assertEquals('lorem/ipsum?company=dolo%26rem', $this->object->assemble($params));
+//		static::assertEquals('lorem/ipsum?company=dolo%26rem', $this->object->assemble($params));
 //    }
 //
 //    public function testStripEmptyParams()
@@ -67,7 +67,7 @@ class AbstractParserTest extends \Codeception\TestCase\Test
 //            '3' => array('123')
 //        );
 //
-//		$this->assertEquals($outputArray, $this->object->stripEmptyParams($inputArray));
+//		static::assertEquals($outputArray, $this->object->stripEmptyParams($inputArray));
 //    }
 
 }

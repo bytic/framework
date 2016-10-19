@@ -38,21 +38,21 @@ class DynamicTest extends  \Codeception\TestCase\Test
 //    {
 //        $map = 'shop/category_:url/:name';
 //		$this->object->setMap($map);
-//		$this->assertEquals($map, $this->object->getMap());
-//		$this->assertEquals(3, count($this->object->getParts()));
-//		$this->assertEquals(array('url', 'name'), $this->object->getVariables());
+//		static::assertEquals($map, $this->object->getMap());
+//		static::assertEquals(3, count($this->object->getParts()));
+//		static::assertEquals(array('url', 'name'), $this->object->getVariables());
 //    }
 //
 //    public function testGetVariableFromPart()
 //    {
-//		$this->assertEquals(array('url'), $this->object->getVariableFromPart(':url'));
-//		$this->assertEquals(array('url'), $this->object->getVariableFromPart('category_:url'));
-//		$this->assertEquals(array('category', 'url_shop'), $this->object->getVariableFromPart(':category:url_shop'));
-//		$this->assertEquals(array('category_main', 'url_shop'), $this->object->getVariableFromPart(':category_main:url_shop'));
-//		$this->assertEquals(array('category', 'url_product'), $this->object->getVariableFromPart(':category-:url_product'));
-//		$this->assertEquals(array('category', 'url_product'), $this->object->getVariableFromPart(':category-:url_product-test'));
-//		$this->assertEquals(array('category', 'url_product'), $this->object->getVariableFromPart('shop-:category-:url_product-test'));
-//		$this->assertEquals(array('category_main', 'url_product'), $this->object->getVariableFromPart('shop-:category_main-:url_product-test'));
+//		static::assertEquals(array('url'), $this->object->getVariableFromPart(':url'));
+//		static::assertEquals(array('url'), $this->object->getVariableFromPart('category_:url'));
+//		static::assertEquals(array('category', 'url_shop'), $this->object->getVariableFromPart(':category:url_shop'));
+//		static::assertEquals(array('category_main', 'url_shop'), $this->object->getVariableFromPart(':category_main:url_shop'));
+//		static::assertEquals(array('category', 'url_product'), $this->object->getVariableFromPart(':category-:url_product'));
+//		static::assertEquals(array('category', 'url_product'), $this->object->getVariableFromPart(':category-:url_product-test'));
+//		static::assertEquals(array('category', 'url_product'), $this->object->getVariableFromPart('shop-:category-:url_product-test'));
+//		static::assertEquals(array('category_main', 'url_product'), $this->object->getVariableFromPart('shop-:category_main-:url_product-test'));
 //    }
 //
 //
@@ -63,18 +63,18 @@ class DynamicTest extends  \Codeception\TestCase\Test
 //            'name' => 'ipsum',
 //            'company' => 'dolo&rem',
 //        );
-//		$this->assertEquals('?url=lorem&name=ipsum&company=dolo%26rem', $this->object->assemble($params));
+//		static::assertEquals('?url=lorem&name=ipsum&company=dolo%26rem', $this->object->assemble($params));
 //
 //        $this->object->setMap('shop/category_:url/:name');
-//		$this->assertEquals('shop/category_lorem/ipsum?company=dolo%26rem', $this->object->assemble($params));
+//		static::assertEquals('shop/category_lorem/ipsum?company=dolo%26rem', $this->object->assemble($params));
 //    }
 //
 //    public function testMatch()
 //    {
 //        $map = 'shop/category_:url/:name';
 //		$this->object->setMap($map);
-//		$this->assertFalse($this->object->match('shop/category_cast/'));
-//		$this->assertTrue($this->object->match('shop/category_cars/honda'));
+//		static::assertFalse($this->object->match('shop/category_cast/'));
+//		static::assertTrue($this->object->match('shop/category_cars/honda'));
 //    }
 
 }

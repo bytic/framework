@@ -32,7 +32,7 @@ class GoogleAnalyticsTest extends \Codeception\TestCase\Test
             1 => (object) $data
         );
 
-        $this->assertEquals($this->_object->getTransactions(), $response);
+        static::assertEquals($this->_object->getTransactions(), $response);
     }
 
     protected function _before()

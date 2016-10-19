@@ -2,97 +2,131 @@
 
 namespace Nip;
 
+use Nip\Config\Config;
 use Nip\Staging\Stage;
+use Nip\Utility\Traits\SingletonTrait;
 
+/**
+ * Class Staging
+ * @package Nip
+ */
 class Staging
 {
 
-    protected $_stage;
-    protected $_stages;
-    protected $_config;
-    protected $_publicStages = array('production', 'staging', 'demo');
-    protected $_testingStages = array('local');
+    use SingletonTrait;
 
     /**
-     * Singleton
-     * @return self
+     * @var Stage
      */
-    static public function instance()
-    {
-        static $instance;
-        if (!($instance instanceof self)) {
-            $instance = new self();
-        }
+    protected $stage;
 
-        return $instance;
-    }
+
+    /**
+     * @var Stage[]
+     */
+    protected $stages;
+
+    /**
+     * @var Config
+     */
+    protected $config;
+
+    protected $publicStages = ['production', 'staging', 'demo'];
+
+    protected $testingStages = ['local'];
 
     /**
      * @return Stage
      */
     public function getStage()
     {
-        if (!$this->_stage) {
+        if (!$this->stage) {
             $stage = $this->determineStage();
             $this->updateStage($stage);
         }
 
-        return $this->_stage;
+        return $this->stage;
     }
 
+    /**
+     * @return string
+     */
     public function determineStage()
     {
-        if ($stage = $this->determineStageFromConf()) {
+        $stage = $this->determineStageFromConf();
+        if ($stage) {
             return $stage;
         }
 
-        if ($stage = $this->determineStageFromHOST()) {
+        $stage = $this->determineStageFromHOST();
+        if ($stage) {
             return $stage;
         }
+
         return 'local';
     }
 
+    /**
+     * @return bool
+     */
     public function determineStageFromConf()
     {
-        if (isset($this->getConfig()->STAGE) && isset($this->getConfig()->STAGE->current)) {
-            return $this->getConfig()->STAGE->current;
+        if ($this->getConfig()->has('STAGE') && $this->getConfig()->get('STAGE')->has('current')) {
+            return $this->getConfig()->get('STAGE')->get('current');
         }
+
         return false;
     }
 
+    /**
+     * @return Config
+     */
     public function getConfig()
     {
-        if (!$this->_config) {
-            $this->_config = $this->initConfig();
+        if (!$this->config) {
+            $this->config = $this->initConfig();
         }
 
-        return $this->_config;
+        return $this->config;
     }
 
+    /**
+     * @return Config
+     */
     public function initConfig()
     {
-        $config = new \Nip_Config();
+        $config = new Config();
         if ($this->hasConfigFile('staging.ini')) {
-            $config->parse($this->getConfigFolder().'staging.ini');
+            $config->mergeFile($this->getConfigFolder().'staging.ini');
         }
 
         if ($this->hasConfigFile('stage.ini')) {
-            $config->parse($this->getConfigFolder().'stage.ini');
+            $config->mergeFile($this->getConfigFolder().'stage.ini');
         }
 
         return $config;
     }
 
+    /**
+     * @param $file
+     * @return bool
+     */
     protected function hasConfigFile($file)
     {
         return is_file($this->getConfigFolder().$file);
     }
 
+    /**
+     * @return null
+     */
     protected function getConfigFolder()
     {
         return defined('CONFIG_PATH') ? CONFIG_PATH : null;
     }
 
+    /**
+     * @return bool|int|string
+     */
     public function determineStageFromHOST()
     {
         $_stage = false;
@@ -106,45 +140,63 @@ class Staging
                 }
             }
         }
+
         return $_stage;
     }
 
+    /**
+     * @return array
+     */
     public function getStages()
     {
-        if (!$this->_stages) {
-            $stageObj = $this->getConfig()->HOSTS;
+        if (!$this->stages) {
+            $stageObj = $this->getConfig()->get('HOSTS');
             if ($stageObj) {
-                $this->_stages = get_object_vars($stageObj);
+                $this->stages = get_object_vars($stageObj);
 
-                if (is_array($this->_stages)) {
-                    foreach ($this->_stages as &$stage) {
+                if (is_array($this->stages)) {
+                    foreach ($this->stages as &$stage) {
                         if (strpos($stage, ',')) {
                             $stage = array_map("trim", explode(',', $stage));
                         } else {
-                            $stage = array(trim($stage));
+                            $stage = [trim($stage)];
                         }
                     }
                 }
             } else {
-                $this->_stages = [];
+                $this->stages = [];
             }
         }
-        return $this->_stages;
+
+        return $this->stages;
     }
 
+    /**
+     * @param $key
+     * @param $host
+     * @return int
+     */
     public function matchHost($key, $host)
     {
-        return preg_match('/^'.strtr($key, array('*' => '.*', '?' => '.?')).'$/i',
+        return preg_match('/^'.strtr($key, ['*' => '.*', '?' => '.?']).'$/i',
             $host);
     }
 
+    /**
+     * @param $name
+     * @return $this
+     */
     public function updateStage($name)
     {
-        $this->_stage = $this->newStage($name);
+        $this->stage = $this->newStage($name);
 
         return $this;
     }
 
+    /**
+     * @param $name
+     * @return Stage
+     */
     public function newStage($name)
     {
         $stage = new Stage();
@@ -159,13 +211,21 @@ class Staging
         return $stage;
     }
 
+    /**
+     * @param $name
+     * @return bool
+     */
     public function isInPublicStages($name)
     {
-        return in_array($name, $this->_publicStages);
+        return in_array($name, $this->publicStages);
     }
 
+    /**
+     * @param $name
+     * @return bool
+     */
     public function isInTestingStages($name)
     {
-        return in_array($name, $this->_testingStages);
+        return in_array($name, $this->testingStages);
     }
 }

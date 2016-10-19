@@ -20,7 +20,7 @@ class BelongsToTest extends \Codeception\TestCase\Test
 
     public function testInitResults()
     {
-        $this->assertSame($this->_user, $this->_object->getResults());
+        static::assertSame($this->_user, $this->_object->getResults());
     }
 
     protected function _before()

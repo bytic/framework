@@ -2,9 +2,17 @@
 
 namespace Nip\Inflector;
 
+use Nip\Utility\Traits\SingletonTrait;
+
+/**
+ * Class Inflector
+ * @package Nip\Inflector
+ */
 class Inflector
 {
-    protected $plural = array(
+    use SingletonTrait;
+
+    protected $plural = [
         '/(quiz)$/i' => '\1zes',
         '/^(ox)$/i' => '\1en',
         '/([m|l])ouse$/i' => '\1ice',
@@ -23,8 +31,8 @@ class Inflector
         '/(ax|test)is$/i' => '\1es',
         '/s$/i' => 's',
         '/$/' => 's',
-    );
-    protected $singular = array(
+    ];
+    protected $singular = [
         '/(quiz)zes$/i' => '\1',
         '/(matr)ices$/i' => '\1ix',
         '/(vert|ind)ices$/i' => '\1ex',
@@ -49,19 +57,22 @@ class Inflector
         '/([ti])a$/i' => '\1um',
         '/(n)ews$/i' => '\1ews',
         '/s$/i' => '',
-    );
-    protected $uncountable = array('equipment', 'information', 'rice', 'money', 'species', 'series', 'fish', 'sheep');
-    protected $irregular = array(
+    ];
+    protected $uncountable = ['equipment', 'information', 'rice', 'money', 'species', 'series', 'fish', 'sheep'];
+    protected $irregular = [
         'person' => 'people',
         'man' => 'men',
         'child' => 'children',
         'sex' => 'sexes',
         'move' => 'moves',
-    );
+    ];
     protected $dictionary;
     protected $cacheFile = null;
     protected $toCache = false;
 
+    /**
+     * Inflector constructor.
+     */
     public function __construct()
     {
         if (defined('CACHE_PATH')) {
@@ -73,8 +84,10 @@ class Inflector
     public function readCache()
     {
         if ($this->isCached()) {
+            /** @noinspection PhpIncludeInspection */
             include($this->cacheFile);
 
+            /** @noinspection PhpUndefinedVariableInspection */
             if ($inflector) {
                 foreach ($inflector as $type => $words) {
                     if ($words) {
@@ -87,6 +100,9 @@ class Inflector
         }
     }
 
+    /**
+     * @return bool
+     */
     public function isCached()
     {
         if ($this->hasCacheFile()) {
@@ -98,31 +114,27 @@ class Inflector
         return false;
     }
 
+    /**
+     * @return bool
+     */
     public function hasCacheFile()
     {
         return ($this->cacheFile && file_exists($this->cacheFile));
     }
 
+    /**
+     * @return int
+     */
     public function getCacheTTL()
     {
-        if (isset(\Nip_Config::instance()->MISC) && isset(\Nip_Config::instance()->MISC->inflector_cache)) {
-            return \Nip_Config::instance()->MISC->inflector_cache;
+        if (app()->has('config')) {
+            $config = app()->get('config');
+            if ($config->has('MISC.inflector_cache')) {
+                return $config->get('MISC.inflector_cache');
+            }
         }
 
         return 86400;
-    }
-
-    /**
-     * @return self
-     */
-    public static function instance()
-    {
-        static $instance;
-        if (!($instance instanceof self)) {
-            $instance = new self();
-        }
-
-        return $instance;
     }
 
     public function __destruct()
@@ -135,43 +147,69 @@ class Inflector
     public function writeCache()
     {
         if ($this->dictionary && $this->cacheFile) {
-            $file = new \Nip_File_Handler(array("path" => $this->cacheFile));
+            $file = new \Nip_File_Handler(["path" => $this->cacheFile]);
             $data = '<?php $inflector = '.var_export($this->dictionary, true).";";
             $file->rewrite($data);
         }
     }
 
+    /**
+     * @param $word
+     * @return mixed
+     */
     public function unclassify($word)
     {
         return $this->doInflection('unclassify', $word);
     }
 
+    /**
+     * @param $name
+     * @param $word
+     * @return mixed
+     */
     public function doInflection($name, $word)
     {
         if (!isset($this->dictionary[$name][$word])) {
             $this->toCache = true;
-            $method = "_".$name;
+            $method = "do".ucfirst($name);
             $this->dictionary[$name][$word] = $this->$method($word);
         }
 
         return $this->dictionary[$name][$word];
     }
 
+    /**
+     * @param $word
+     * @return mixed
+     */
     public function singularize($word)
     {
         return $this->doInflection('singularize', $word);
     }
 
+    /**
+     * @param $word
+     * @return mixed
+     */
     public function camelize($word)
     {
         return $this->doInflection('camelize', $word);
     }
 
+    /**
+     * @param $word
+     * @return mixed
+     */
     public function classify($word)
     {
         return $this->doInflection('classify', $word);
     }
 
+    /**
+     * @param $name
+     * @param $arguments
+     * @return mixed
+     */
     public function __call($name, $arguments)
     {
         $word = $arguments[0];
@@ -179,12 +217,16 @@ class Inflector
         return $this->doInflection($name, $word);
     }
 
-    protected function _pluralize($word)
+    /**
+     * @param $word
+     * @return bool|mixed
+     */
+    protected function doPluralize($word)
     {
-        $lowercased_word = strtolower($word);
+        $lowerCased_word = strtolower($word);
 
         foreach ($this->uncountable as $_uncountable) {
-            if (substr($lowercased_word, (-1 * strlen($_uncountable))) == $_uncountable) {
+            if (substr($lowerCased_word, (-1 * strlen($_uncountable))) == $_uncountable) {
                 return $word;
             }
         }
@@ -204,7 +246,11 @@ class Inflector
         return false;
     }
 
-    protected function _singularize($word)
+    /**
+     * @param $word
+     * @return mixed
+     */
+    protected function doSingularize($word)
     {
         $lowercased_word = strtolower($word);
         foreach ($this->uncountable as $_uncountable) {
@@ -228,19 +274,31 @@ class Inflector
         return $word;
     }
 
-    protected function _camelize($word)
+    /**
+     * @param $word
+     * @return mixed
+     */
+    protected function doCamelize($word)
     {
         return str_replace(' ', '', ucwords(preg_replace('/[^A-Z^a-z^0-9]+/', ' ', $word)));
     }
 
-    protected function _hyphenize($word)
+    /**
+     * @param $word
+     * @return mixed
+     */
+    protected function doHyphenize($word)
     {
-        $word = $this->_underscore($word);
+        $word = $this->doUnderscore($word);
 
         return str_replace('_', '-', $word);
     }
 
-    protected function _underscore($word)
+    /**
+     * @param $word
+     * @return string
+     */
+    protected function doUnderscore($word)
     {
         return strtolower(preg_replace('/[^A-Z^a-z^0-9]+/', '_',
             preg_replace('/([a-zd])([A-Z])/', '\1_\2', preg_replace('/([A-Z]+)([A-Z][a-z])/', '\1_\2', $word))));
@@ -255,16 +313,24 @@ class Inflector
      * @param string $class_name Class name for getting related table_name.
      * @return string plural_table_name
      */
-    protected function _tableize($class_name)
+    protected function doTableize($class_name)
     {
         return $this->pluralize($this->underscore($class_name));
     }
 
+    /**
+     * @param $word
+     * @return mixed
+     */
     public function pluralize($word)
     {
         return $this->doInflection('pluralize', $word);
     }
 
+    /**
+     * @param $word
+     * @return mixed
+     */
     public function underscore($word)
     {
         return $this->doInflection('underscore', $word);
@@ -276,10 +342,10 @@ class Inflector
      * @param string $string
      * @return string
      */
-    protected function _classify($string)
+    protected function doClassify($string)
     {
         $parts = explode("-", $string);
-        $parts = array_map(array($this, "camelize"), $parts);
+        $parts = array_map([$this, "camelize"], $parts);
 
         return implode("_", $parts);
     }
@@ -290,7 +356,7 @@ class Inflector
      * @param string $string
      * @return string
      */
-    protected function _unclassify($string)
+    protected function doUnclassify($string)
     {
         $string = str_replace('\\', '_', $string);
         $parts = explode("_", $string);
@@ -299,7 +365,11 @@ class Inflector
         return implode("-", $parts);
     }
 
-    protected function _ordinalize($number)
+    /**
+     * @param $number
+     * @return string
+     */
+    protected function doOrdinalize($number)
     {
         if (in_array(($number % 100), range(11, 13))) {
             return $number.'th';
@@ -319,5 +389,4 @@ class Inflector
             }
         }
     }
-
 }

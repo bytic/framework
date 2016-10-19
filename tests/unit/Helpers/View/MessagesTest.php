@@ -19,14 +19,14 @@ class MessagesTest extends \Codeception\TestCase\Test
 
     public function testWarning()
     {
-        $this->assertEquals(Messages::warning('messages'), '<div class="alert alert-warning">messages</div>');
-        $this->assertEquals($this->_object->warning('messages'), '<div class="alert alert-warning">messages</div>');
+        static::assertEquals(Messages::warning('messages'), '<div class="alert alert-warning">messages</div>');
+        static::assertEquals($this->_object->warning('messages'), '<div class="alert alert-warning">messages</div>');
     }
 
     public function testInfo()
     {
-        $this->assertEquals(Messages::info('messages'), '<div class="alert alert-info">messages</div>');
-        $this->assertEquals($this->_object->info('messages'), '<div class="alert alert-info">messages</div>');
+        static::assertEquals(Messages::info('messages'), '<div class="alert alert-info">messages</div>');
+        static::assertEquals($this->_object->info('messages'), '<div class="alert alert-info">messages</div>');
     }
 
     // tests

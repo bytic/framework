@@ -2,61 +2,246 @@
 
 namespace Nip\Staging;
 
+use Nip\Config\Config;
 use Nip\Request;
 use Nip\Staging;
 
+/**
+ * Class Stage
+ * @package Nip\Staging
+ */
 class Stage
 {
-    protected $_manager;
+    protected $manager;
 
-    protected $_name;
-    protected $_type = null;
+    protected $name;
 
-    protected $_hosts;
-    protected $_host;
-    protected $_baseURL;
-    protected $_projectDIR;
-    protected $_config;
+    protected $type = null;
+
+    protected $hosts;
+
+    protected $host;
+
+    protected $baseURL;
+
+    protected $projectDIR;
+
+    /**
+     * @var Config
+     */
+    protected $config;
 
     public function init()
     {
-        $hosts = $this->getConfig()->HOST->url;
+        $hosts = $this->getConfig()->get('HOST.url');
 
         if (strpos($hosts, ',')) {
             $hosts = array_map("trim", explode(',', $hosts));
         } else {
-            $hosts = array(trim($hosts));
+            $hosts = [trim($hosts)];
         }
         $this->setHosts($hosts);
     }
 
-    public function getName()
+    /**
+     * @return Config
+     */
+    public function getConfig()
     {
-        return $this->_name;
+        if (!$this->config) {
+            $this->initConfig();
+        }
+
+        return $this->config;
     }
 
-    public function setName($name)
+    /**
+     * @param Config $config
+     */
+    public function setConfig($config)
     {
-        $this->_name = $name;
+        $this->config = $config;
+    }
+
+    public function initConfig()
+    {
+        $config = $this->newConfig();
+        if ($this->hasConfigFile()) {
+            $config->mergeFile($this->getConfigPath());
+        }
+        $this->setConfig($config);
+    }
+
+    /**
+     * @return Config
+     */
+    public function newConfig()
+    {
+        return new Config();
+    }
+
+    /**
+     * @return bool
+     */
+    protected function hasConfigFile()
+    {
+        return is_file($this->getConfigPath());
+    }
+
+    /**
+     * @return string
+     */
+    protected function getConfigPath()
+    {
+        return $this->getConfigFolder().$this->name.'.ini';
+    }
+
+    /**
+     * @return null
+     */
+    protected function getConfigFolder()
+    {
+        return defined('CONFIG_STAGING_PATH') ? CONFIG_STAGING_PATH : null;
+    }
+
+    /**
+     * @param $hosts
+     * @return $this
+     */
+    public function setHosts($hosts)
+    {
+        $this->hosts = $hosts;
+
         return $this;
     }
 
-    public function getType()
+    public function getName()
     {
-        if ($this->_type === null) {
-            $this->initType();
-        }
-        return $this->_type;
+        return $this->name;
     }
 
-    public function initType()
+    /**
+     * @param $name
+     * @return $this
+     */
+    public function setName($name)
     {
-        $config = $this->getConfig();
-        if (isset($config->STAGE) && isset($config->STAGE->type)) {
-            $this->_type = $config->STAGE->type;
-        } else {
-            $this->_type = $this->_name;
+        $this->name = $name;
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isCurrent()
+    {
+        foreach ($this->hosts as $host) {
+            if (preg_match('/^'.strtr($host, ['*' => '.*', '?' => '.?']).'$/i',
+                $_SERVER['SERVER_NAME'])) {
+                return true;
+            }
         }
+
+        return false;
+    }
+
+    /**
+     * @return string
+     */
+    public function getBaseURL()
+    {
+        if (!$this->baseURL) {
+            $this->baseURL = $this->getHTTP().$this->getHost().$this->getProjectDir();
+        }
+
+        return $this->baseURL;
+    }
+
+    /**
+     * @return string
+     */
+    public function getHTTP()
+    {
+        $https = false;
+        if (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == "on") {
+            $https = true;
+        }
+
+        return "http".($https ? "s" : "")."://";
+    }
+
+    /**
+     * @return mixed|string
+     */
+    public function getHost()
+    {
+        if (!$this->host) {
+            if ($this->getConfig()->has('HOST.automatic') && $this->getConfig()->get('HOST.automatic') === false) {
+                $this->host = reset($this->hosts);
+            }
+
+            if (!$this->host) {
+                $this->host = isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST']
+                    : 'localhost';
+            }
+        }
+
+        return $this->host;
+    }
+
+    /**
+     * @return string
+     */
+    public function getProjectDir()
+    {
+        if (!$this->projectDIR) {
+            $this->projectDIR = $this->initProjectDir();
+        }
+
+        return $this->projectDIR;
+    }
+
+    /**
+     * @param $dir
+     */
+    public function setProjectDir($dir)
+    {
+        $this->projectDIR = $dir;
+    }
+
+    /**
+     * @return string
+     */
+    public function initProjectDir()
+    {
+        $request = new Request();
+
+        return $request->getHttp()->getPathInfo();
+    }
+
+    /**
+     * @return bool
+     */
+    public function inProduction()
+    {
+        return $this->name == 'production';
+    }
+
+    /**
+     * @return bool
+     */
+    public function isPublic()
+    {
+        return !$this->isAuthorized() && $this->getManager()->isInPublicStages($this->getType());
+    }
+
+    /**
+     * @return bool
+     */
+    public function isAuthorized()
+    {
+        return isset($_COOKIE['authorized']) && $_COOKIE['authorized'] === 'true';
     }
 
     /**
@@ -64,143 +249,45 @@ class Stage
      */
     public function getManager()
     {
-        return $this->_manager;
+        return $this->manager;
     }
 
     /**
      * @param Staging $manager
+     * @return $this
      */
     public function setManager($manager)
     {
-        $this->_manager = $manager;
+        $this->manager = $manager;
+
         return $this;
-    }
-
-    public function isCurrent()
-    {
-        foreach ($this->_hosts as $host) {
-            if (preg_match('/^' . strtr($host, array('*' => '.*', '?' => '.?')) . '$/i',
-                $_SERVER['SERVER_NAME'])) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public function setHosts($hosts)
-    {
-        $this->_hosts = $hosts;
-        return $this;
-    }
-
-    public function getHost()
-    {
-        if (!$this->_host) {
-            if (isset($this->getConfig()->HOST->automatic) && !$this->getConfig()->HOST->automatic) {
-                $this->_host = reset($this->_hosts);
-            }
-
-            if (!$this->_host) {
-                $this->_host = isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST']
-                    : 'localhost';
-            }
-        }
-
-        return $this->_host;
-    }
-
-    public function getBaseURL()
-    {
-        if (!$this->_baseURL) {
-            $this->_baseURL = $this->getHTTP() . $this->getHost() . $this->getProjectDir();
-        }
-
-        return $this->_baseURL;
-    }
-
-    public function getHTTP()
-    {
-        $https = false;
-        if (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == "on") {
-            $https = true;
-        }
-        return "http" . ($https ? "s" : "") . "://";
-    }
-
-    public function getProjectDir()
-    {
-        if (!$this->_projectDIR) {
-            $this->_projectDIR = $this->initProjectDir();
-        }
-
-        return $this->_projectDIR;
-    }
-
-    public function initProjectDir()
-    {
-        $request = new Request();
-        return $request->getHttp()->getPathInfo();
-    }
-
-    public function setProjectDir($dir)
-    {
-        $this->_projectDIR = $dir;
-    }
-
-    public function getConfig()
-    {
-        if (!$this->_config) {
-            $this->initConfig();
-        }
-        return $this->_config;
-    }
-
-    public function initConfig()
-    {
-        $this->_config =$this->newConfig();
-        if ($this->hasConfigFile()) {
-            $this->_config->parse($this->getConfigPath());
-        }
-    }
-
-    public function setConfig($config)
-    {
-        $this->_config = $config;
     }
 
     /**
-     * @return \Nip_Config
+     * @return null
      */
-    public function newConfig()
+    public function getType()
     {
-        return new \Nip_Config();
+        if ($this->type === null) {
+            $this->initType();
+        }
+
+        return $this->type;
     }
 
-    protected function hasConfigFile()
+    public function initType()
     {
-        return is_file($this->getConfigPath());
+        $config = $this->getConfig();
+        if (isset($config->STAGE) && isset($config->STAGE->type)) {
+            $this->type = $config->STAGE->type;
+        } else {
+            $this->type = $this->name;
+        }
     }
 
-    protected function getConfigPath()
-    {
-        return $this->getConfigFolder() . $this->_name . '.ini';
-    }
-
-    protected function getConfigFolder()
-    {
-        return defined('CONFIG_STAGING_PATH') ? CONFIG_STAGING_PATH : null;
-    }
-
-    public function inProduction()
-    {
-        return $this->_name == 'production';
-    }
-
-    public function isPublic()
-    {
-        return !$this->isAuthorized() && $this->getManager()->isInPublicStages($this->getType());
-    }
-
+    /**
+     * @return bool
+     */
     public function inTesting()
     {
         return $this->isAuthorized() || $this->getManager()->isInTestingStages($this->getType());
@@ -208,11 +295,6 @@ class Stage
 
     public function doAuthorize()
     {
-        setcookie('authorized','true',time()+60*60*24, '/');
-    }
-
-    public function isAuthorized()
-    {
-        return isset($_COOKIE['authorized']) && $_COOKIE['authorized'] === 'true';
+        setcookie('authorized', 'true', time() + 60 * 60 * 24, '/');
     }
 }

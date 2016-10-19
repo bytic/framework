@@ -2,42 +2,42 @@
 
 namespace Nip\Tests\Unit;
 
-class StagingTest extends \Codeception\TestCase\Test
+use Nip\Config\Config;
+use Nip\Staging;
+
+/**
+ * Class StagingTest
+ * @package Nip\Tests\Unit
+ */
+class StagingTest extends AbstractTest
 {
-    /**
-     * @var \UnitTester
-     */
-    protected $tester;
 
     /**
-     * @var \Nip\Staging
+     * @var Staging
      */
-    protected $_object;
+    protected $object;
 
     public function testIsInPublicStages()
     {
-        foreach (array('production', 'staging', 'demo') as $stage) {
-            $this->assertTrue($this->_object->isInPublicStages($stage));
+        foreach (['production', 'staging', 'demo'] as $stage) {
+            static::assertTrue($this->object->isInPublicStages($stage));
         }
-        $this->assertFalse($this->_object->isInPublicStages('local'));
-        $this->assertFalse($this->_object->isInPublicStages('localhost'));
+        static::assertFalse($this->object->isInPublicStages('local'));
+        static::assertFalse($this->object->isInPublicStages('localhost'));
     }
 
     public function testNewStageProduction()
     {
         $stageName = 'production';
-        $newStage = $this->_object->newStage($stageName);
+        $newStage = $this->object->newStage($stageName);
 
-        $config = $newStage->newConfig();
-        $STAGE = new \stdClass();
-        $STAGE->type = 'production';
-        $config->set('STAGE', $STAGE);
+        $config = new Config(['STAGE' => ['type' => 'production']]);
         $newStage->setConfig($config);
 
-        $this->assertInstanceOf('\Nip\Staging\Stage', $newStage);
-        $this->assertEquals($stageName, $newStage->getName());
-        $this->assertTrue($newStage->inProduction());
-        $this->assertTrue($newStage->isPublic());
+        static::assertInstanceOf('\Nip\Staging\Stage', $newStage);
+        static::assertEquals($stageName, $newStage->getName());
+        static::assertTrue($newStage->inProduction());
+        static::assertTrue($newStage->isPublic());
     }
 
     // tests
@@ -45,21 +45,17 @@ class StagingTest extends \Codeception\TestCase\Test
     public function testNewStageLocal()
     {
         $stageName = 'local';
-        $newStage = $this->_object->newStage($stageName);
+        $newStage = $this->object->newStage($stageName);
 
-        $this->assertInstanceOf('\Nip\Staging\Stage', $newStage);
-        $this->assertEquals($stageName, $newStage->getName());
-        $this->assertFalse($newStage->inProduction());
-        $this->assertFalse($newStage->isPublic());
+        static::assertInstanceOf('\Nip\Staging\Stage', $newStage);
+        static::assertEquals($stageName, $newStage->getName());
+        static::assertFalse($newStage->inProduction());
+        static::assertFalse($newStage->isPublic());
     }
 
-    protected function _before()
+    protected function setUp()
     {
-        $this->_object = new \Nip\Staging();
+        parent::setUp();
+        $this->object = new Staging();
     }
-
-    protected function _after()
-    {
-    }
-    
 }

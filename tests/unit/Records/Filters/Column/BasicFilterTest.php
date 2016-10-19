@@ -21,18 +21,18 @@ class BasicFilterTest extends \Codeception\TestCase\Test
     {
         $this->_object->setField('title');
 
-        $this->assertEquals($this->_object->getName(), 'title');
+        static::assertEquals($this->_object->getName(), 'title');
     }
 
     public function testOverwriteFieldGetName()
     {
         $this->_object->setField('title');
 
-        $this->assertEquals($this->_object->getName(), 'title');
+        static::assertEquals($this->_object->getName(), 'title');
 
         $this->_object->setField('title2');
 
-        $this->assertEquals($this->_object->getName(), 'title');
+        static::assertEquals($this->_object->getName(), 'title');
     }
 
     /**
@@ -46,7 +46,7 @@ class BasicFilterTest extends \Codeception\TestCase\Test
         $this->_object->setField('title');
         $this->_object->setRequest($request);
 
-        $this->assertSame($filterValue, $this->_object->getValueFromRequest());
+        static::assertSame($filterValue, $this->_object->getValueFromRequest());
     }
 
     public function getValueFromRequestProvider()
@@ -69,8 +69,8 @@ class BasicFilterTest extends \Codeception\TestCase\Test
         $this->_object->setField('title');
         $this->_object->setRequest($request);
 
-        $this->assertSame($filterValue, $this->_object->getValue());
-        $this->assertSame($hasValue, $this->_object->hasValue());
+        static::assertSame($filterValue, $this->_object->getValue());
+        static::assertSame($hasValue, $this->_object->hasValue());
     }
 
     public function testHasGetValueProvider()

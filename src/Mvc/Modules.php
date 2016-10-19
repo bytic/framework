@@ -4,11 +4,18 @@ namespace Nip\Mvc;
 
 use ArrayAccess;
 
+/**
+ * Class Modules
+ * @package Nip\Mvc
+ */
 class Modules implements ArrayAccess
 {
 
     protected $modules = [];
 
+    /**
+     * Modules constructor.
+     */
     public function __construct()
     {
         $this->init();
@@ -20,26 +27,14 @@ class Modules implements ArrayAccess
         $this->addModule('default');
     }
 
-    public function hasModule($name)
-    {
-        return $this->offsetExists($name);
-    }
-
+    /**
+     * @param $name
+     */
     public function addModule($name)
     {
         if (!$this->offsetExists($name)) {
             $this->modules[$name] = $name;
         }
-    }
-
-    public function getNames()
-    {
-        return $this->modules;
-    }
-
-    public function getViewPath($name)
-    {
-        return MODULES_PATH . $name . '/views/';
     }
 
     /**
@@ -51,6 +46,49 @@ class Modules implements ArrayAccess
     public function offsetExists($key)
     {
         return array_key_exists($key, $this->modules);
+    }
+
+    /**
+     * @param $name
+     * @return bool
+     */
+    public function hasModule($name)
+    {
+        return $this->offsetExists($name);
+    }
+
+    /**
+     * @return array
+     */
+    public function getNames()
+    {
+        return $this->modules;
+    }
+
+    /**
+     * @param $name
+     * @return string
+     */
+    public function getViewPath($name)
+    {
+        return $this->getModuleDirectory($name).DIRECTORY_SEPARATOR.'views'.DIRECTORY_SEPARATOR;
+    }
+
+    /**
+     * @param $name
+     * @return string
+     */
+    public function getModuleDirectory($name)
+    {
+        return $this->getModulesBaseDirectory().$name;
+    }
+
+    /**
+     * @return string
+     */
+    public function getModulesBaseDirectory()
+    {
+        return defined('MODULES_PATH') ? MODULES_PATH : '';
     }
 
     /**

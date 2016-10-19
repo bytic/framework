@@ -2,6 +2,7 @@
 
 namespace Nip;
 
+use Nip\Config\ConfigAwareTrait;
 use Nip\Utility\Traits\NameWorksTrait;
 use Nip_Flash_Messages as FlashMessages;
 
@@ -16,6 +17,7 @@ use Nip_Flash_Messages as FlashMessages;
 class Controller
 {
     use NameWorksTrait;
+    use ConfigAwareTrait;
 
     /**
      * @var null|Dispatcher
@@ -37,8 +39,6 @@ class Controller
      * @var Request
      */
     protected $request;
-
-    protected $config;
 
     /**
      * @var Helpers\AbstractHelper[]
@@ -240,19 +240,6 @@ class Controller
         $controller->populateFromRequest($newRequest);
 
         return $controller;
-    }
-
-    /**
-     * Returns the config Object
-     * @return \Nip_Config
-     */
-    public function getConfig()
-    {
-        if (!$this->config instanceof \Nip_Config) {
-            $this->config = \Nip_Config::instance();
-        }
-
-        return $this->config;
     }
 
     /**
