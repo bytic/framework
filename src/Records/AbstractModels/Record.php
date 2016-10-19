@@ -3,6 +3,7 @@
 namespace Nip\Records\AbstractModels;
 
 use Nip\HelperBroker;
+use Nip\Logger\Exception;
 use Nip\Records\Relations\HasMany;
 use Nip\Records\Relations\Relation;
 
@@ -28,10 +29,6 @@ abstract class Record extends \Nip_Object
      * @var array
      */
     protected $relations = [];
-
-    public function __construct()
-    {
-    }
 
 
     /**
@@ -71,11 +68,18 @@ abstract class Record extends \Nip_Object
         return $this->relations[$relationName];
     }
 
+    /**
+     * @param $key
+     * @return bool
+     */
     public function hasRelation($key)
     {
         return array_key_exists($key, $this->relations);
     }
 
+    /**
+     * @param $relationName
+     */
     public function initRelation($relationName)
     {
         if (!$this->getManager()->hasRelation($relationName)) {
@@ -96,17 +100,24 @@ abstract class Record extends \Nip_Object
         return $this->_manager;
     }
 
+    /**
+     * @param RecordManager $manager
+     */
     public function setManager($manager)
     {
         $this->_manager = $manager;
     }
 
-    public function initManager()
+    protected function initManager()
     {
         $class = $this->getManagerName();
-        $this->_manager = call_user_func(array($class, 'instance'));
+        $manager = $this->getManagerInstance($class);
+        $this->setManager($manager);
     }
 
+    /**
+     * @return null
+     */
     public function getManagerName()
     {
         if ($this->_managerName == null) {
@@ -119,6 +130,19 @@ abstract class Record extends \Nip_Object
     public function inflectManagerName()
     {
         return ucfirst(inflector()->pluralize(get_class($this)));
+    }
+
+    /**
+     * @param RecordManager $class
+     * @return mixed
+     * @throws Exception
+     */
+    protected function getManagerInstance($class)
+    {
+        if (class_exists($class)) {
+            return call_user_func([$class, 'instance']);
+        }
+        throw new Exception('invalid manager name [' . $class . ']');
     }
 
     public function newRelation($relationName)
