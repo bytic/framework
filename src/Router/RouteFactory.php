@@ -46,9 +46,8 @@ class RouteFactory
         $params = []
     ) {
         $map = $mapPrefix.$map;
-        $map = str_replace('//', '/', $map);
 
-        return self::generateGenericRoute($collection, $name, $class, $mapPrefix.$map, $params);
+        return self::generateGenericRoute($collection, $name, $class, $map, $params);
     }
 
     /**
@@ -66,8 +65,9 @@ class RouteFactory
         $map,
         $params = []
     ) {
-        $route = new $class($map, $params);
+        $map = str_replace('//', '/', $map);
 
+        $route = new $class($map, $params);
         return $collection->add($route, $name);
     }
 
