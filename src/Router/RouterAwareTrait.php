@@ -60,6 +60,6 @@ trait RouterAwareTrait
      */
     protected function newRouter()
     {
-        return RouterServiceProvider::newRouter();
+        return app()->get('router');
     }
 }

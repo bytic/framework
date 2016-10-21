@@ -56,6 +56,6 @@ trait DispatcherAwareTrait
      */
     protected function newDispatcher()
     {
-        return DispatcherServiceProvider::newDispatcher();
+        return app()->get('dispatcher');
     }
 }
