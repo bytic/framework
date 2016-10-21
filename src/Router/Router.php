@@ -128,25 +128,57 @@ class Router
     /**
      * @param $name
      * @param array $params
-     * @return mixed|string
+     * @return string
      */
-    public function assemble($name, $params = [])
+    public function assembleFull($name, $params = [])
+    {
+        $route = $this->getDefaultRoute($name, $params);
+        if ($route) {
+            return $route->assembleFull($params);
+        }
+
+        trigger_error("Route \"$name\" not connected", E_USER_ERROR);
+
+        return null;
+    }
+
+    /**
+     * @param $name
+     * @param array $params
+     * @return Route
+     */
+    public function getDefaultRoute($name, &$params = [])
     {
         $route = $this->getRoute($name);
         if (!$route) {
             $parts = explode(".", $name);
-            if (count($parts) <= 2) {
-                list($params['controller'], $params['action']) = $parts;
-                $route = $this->getRoute('default');
+            $count = count($parts);
+            if ($count <= 3) {
+                if (in_array(reset($parts), app('mvc.modules')->getNames())) {
+                    $module = array_shift($parts);
+                    list($params['controller'], $params['action']) = $parts;
+                    $route = $this->getRoute($module.'.default');
+                }
             }
         }
+
+        return $route;
+    }
+
+    /**
+     * @param $name
+     * @param array $params
+     * @return mixed|string
+     */
+    public function assemble($name, $params = [])
+    {
+        $route = $this->getDefaultRoute($name, $params);
 
         if ($route) {
             return $route->assemble($params);
         }
 
         trigger_error("Route \"$name\" not connected", E_USER_ERROR);
-
         return null;
     }
 
