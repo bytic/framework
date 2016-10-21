@@ -18,7 +18,7 @@ abstract class AbstractRoute
     /**
      * @var string
      */
-    protected $type;
+    protected $type = null;
 
     protected $parser = null;
 
@@ -91,10 +91,8 @@ abstract class AbstractRoute
      */
     public function getType()
     {
-        if (!$this->type) {
-            $name = get_class($this);
-            $parts = explode('_', $name);
-            $this->type = strtolower(end($parts));
+        if ($this->type === null) {
+            $this->initType();
         }
 
         return $this->type;
@@ -109,6 +107,22 @@ abstract class AbstractRoute
         $this->type = $type;
 
         return $this;
+    }
+
+    protected function initType()
+    {
+        $this->setType($this->generateType());
+    }
+
+    /**
+     * @return string
+     */
+    protected function generateType()
+    {
+        $name = get_class($this);
+        $parts = explode('_', $name);
+
+        return strtolower(end($parts));
     }
 
     public function init()
