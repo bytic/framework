@@ -91,12 +91,24 @@ class Router
         }
 
         if ($current instanceof Route) {
+            $this->setCurrent($current);
             $current->populateRequest();
 
             return $current->getParams() + $current->getMatches();
         } else {
             return [];
         }
+    }
+
+    /**
+     * @param Route $route
+     * @return $this
+     */
+    public function setCurrent($route)
+    {
+        $this->route = $route;
+
+        return $this;
     }
 
     /**
@@ -122,17 +134,6 @@ class Router
         trigger_error("Route \"$name\" not connected", E_USER_ERROR);
 
         return null;
-    }
-
-    /**
-     * @param Route $route
-     * @return $this
-     */
-    public function setCurrent($route)
-    {
-        $this->route = $route;
-
-        return $this;
     }
 
     /**
