@@ -1,10 +1,13 @@
 <?php
+use Nip\Dispatcher\Dispatcher;
 
 /**
  * Class Nip_Helper_Url
  */
 class Nip_Helper_Url extends Nip\Helpers\AbstractHelper
 {
+
+    use \Nip\Router\RouterAwareTrait;
 
     protected $_pieces = [];
     protected $_router;
@@ -26,7 +29,7 @@ class Nip_Helper_Url extends Nip\Helpers\AbstractHelper
     public function __call($name, $arguments)
     {
         if ($name == ucfirst($name)) {
-            $this->_pieces[] = Nip\Dispatcher::reverseControllerName($name);
+            $this->_pieces[] = Dispatcher::reverseControllerName($name);
             return $this;
         } else {
             $this->_pieces[] = $name;
@@ -37,51 +40,54 @@ class Nip_Helper_Url extends Nip\Helpers\AbstractHelper
         return $this->assemble($name, $arguments[0]);
     }
 
+    /**
+     * @param $name
+     * @param bool $params
+     * @return mixed
+     */
     public function assemble($name, $params = false)
     {
         return $this->getRouter()->assembleFull($name, $params);
     }
 
     /**
-     * @return \Nip\Router\Router;
+     * @param $name
+     * @param bool $params
+     * @return mixed
      */
-    public function getRouter()
-    {
-        if (!$this->_router) {
-            $this->_router = $this->initRouter();
-        }
-
-        return $this->_router;
-    }
-
-    /**
-     * @return Nip\Router\Router;
-     */
-    public function initRouter()
-    {
-        return \Nip\FrontController::instance()->getRouter();
-    }
-
     public function get($name, $params = false)
     {
         return $this->assemble($name, $params);
     }
 
+    /**
+     * @param $name
+     * @param bool $params
+     * @return mixed|string
+     */
     public function route($name, $params = false)
     {
         return $this->getRouter()->assemble($name, $params);
     }
 
-    public function base($params = array())
+    public function base($params = [])
     {
         return $this->getRouter()->getCurrent()->getBase($params) . ($params ? "?" . http_build_query($params) : '');
     }
 
+    /**
+     * @param bool $url
+     * @return string
+     */
     public function image($url = false)
     {
         return IMAGES_URL . $url;
     }
 
+    /**
+     * @param bool $url
+     * @return string
+     */
     public function flash($url = false)
     {
         return FLASH_URL . $url;
@@ -113,7 +119,7 @@ class Nip_Helper_Url extends Nip\Helpers\AbstractHelper
      */
     public function encode($input)
     {
-        $chars = array(
+        $chars = [
             '&#x102;' => 'a',
             '&#x103;' => 'a',
             '&#xC2;' => 'A',
@@ -128,7 +134,7 @@ class Nip_Helper_Url extends Nip\Helpers\AbstractHelper
             '&#x21B;' => 't',
             '&#354;' => 'T',
             '&#355;' => 't'
-        );
+        ];
 
         $change = $with = [];
         foreach ($chars as $i => $v) {
@@ -139,5 +145,9 @@ class Nip_Helper_Url extends Nip\Helpers\AbstractHelper
 
         preg_match_all("/[a-z0-9]+/i", $input, $sections);
         return strtolower(implode("-", $sections[0]));
+    }
+
+    public function getRequest()
+    {
     }
 }

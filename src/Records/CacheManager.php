@@ -4,18 +4,30 @@ namespace Nip\Records;
 
 use Nip\Records\AbstractModels\RecordManager as Records;
 
-class CacheManager extends \Nip\Cache\Manager {
+/**
+ * Class CacheManager
+ * @package Nip\Records
+ */
+class CacheManager extends \Nip\Cache\Manager
+{
 
     /**
      * @var Records
      */
     protected $_manager;
 
-    public function  __construct()
+    /**
+     * CacheManager constructor.
+     */
+    public function __construct()
     {
-        $this->_active = (\Nip\FrontController::instance()->getRequest()->getModuleName() == 'default');
+        $this->_active = (app('kernel')->getRequest()->getModuleName() == 'default');
     }
 
+    /**
+     * @param $cacheId
+     * @return string
+     */
     public function filePath($cacheId)
     {
         $cacheId = $this->getCacheId($cacheId);
@@ -23,6 +35,10 @@ class CacheManager extends \Nip\Cache\Manager {
         return $this->cachePath().$cacheId.'.php';
     }
 
+    /**
+     * @param bool $type
+     * @return string
+     */
     public function getCacheId($type = false)
     {
         $cacheId = $this->getManager()->getController().'-'.$type;
@@ -49,8 +65,11 @@ class CacheManager extends \Nip\Cache\Manager {
         return $this;
     }
 
-    public function cachePath() {
-        return parent::cachePath() . '/records/';
+    /**
+     * @return string
+     */
+    public function cachePath()
+    {
+        return parent::cachePath().'/records/';
     }
-
 }

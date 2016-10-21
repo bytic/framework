@@ -671,7 +671,7 @@ abstract class Nip_Form_Abstract
     public function getControllerView()
     {
         if (!$this->_controllerView) {
-            $this->_controllerView = Nip_FrontController::instance()->getDispatcher()->getCurrentController()->getView();
+            $this->_controllerView = app('kernel')->getDispatcher()->getCurrentController()->getView();
         }
 
         return $this->_controllerView;

@@ -25,11 +25,6 @@ class Controller
      */
     protected $dispatcher = null;
 
-    /**
-     * @var FrontController
-     */
-    protected $frontController;
-
     protected $fullName = null;
 
     protected $name = null;
@@ -208,7 +203,6 @@ class Controller
     public function setDispatcher(Dispatcher $dispatcher)
     {
         $this->dispatcher = $dispatcher;
-        $this->frontController = $dispatcher->getFrontController();
 
         return $this;
     }
@@ -244,15 +238,6 @@ class Controller
     }
 
     /**
-     * Returns the dispatcher Object
-     * @return FrontController
-     */
-    public function getFrontController()
-    {
-        return $this->frontController;
-    }
-
-    /**
      * @return string
      */
     public function getAction()
@@ -284,7 +269,7 @@ class Controller
      */
     public function getApplication()
     {
-        return $this->getDispatcher()->getFrontController()->getApplication();
+        return app('kernel');
     }
 
     /**
