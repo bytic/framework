@@ -5,28 +5,15 @@ namespace Nip\DebugBar\DataCollector;
 use DebugBar\DataCollector\DataCollector;
 use DebugBar\DataCollector\Renderable;
 use Nip\Router\Route\AbstractRoute as Route;
-use Nip\Router\Router as Router;
+use Nip\Router\RouterAwareTrait;
 
+/**
+ * Class RouteCollector
+ * @package Nip\DebugBar\DataCollector
+ */
 class RouteCollector extends DataCollector implements Renderable
 {
-
-    /**
-     * @var Router
-     */
-    protected $_router;
-
-    public function getRouter()
-    {
-        return $this->_router;
-    }
-
-    /**
-     * @param Router $router
-     */
-    public function setRouter($router)
-    {
-        $this->_router = $router;
-    }
+    use RouterAwareTrait;
 
     /**
      * {@inheritDoc}
@@ -92,7 +79,7 @@ class RouteCollector extends DataCollector implements Renderable
      */
     protected function displayRoutes(array $routes)
     {
-        $routes = array('1',2,5);
+        $routes = ['1', 2, 5];
         $this->table->setHeaders($this->headers)->setRows($routes);
         $this->table->render($this->getOutput());
     }

@@ -67,9 +67,4 @@ trait RouterAwareTrait
     {
         return RouterServiceProvider::newRouter();
     }
-
-    /**
-     * @return Request
-     */
-    abstract public function getRequest();
 }
