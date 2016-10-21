@@ -49,7 +49,7 @@ trait AutoLoaderAwareTrait
     /**
      * @return AutoLoader
      */
-    protected function newDispatcher()
+    protected function newAutoLoader()
     {
         return AutoLoaderServiceProvider::newAutoLoader();
     }
