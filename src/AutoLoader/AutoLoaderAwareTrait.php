@@ -41,7 +41,7 @@ trait AutoLoaderAwareTrait
         if (app()->has('autoloader')) {
             $autoLoader = app()->get('autoloader');
         } else {
-            $autoLoader = $this->newDispatcher();
+            $autoLoader = $this->newAutoLoader();
         }
         $this->setAutoLoader($autoLoader);
     }
