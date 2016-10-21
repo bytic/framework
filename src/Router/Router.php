@@ -29,22 +29,6 @@ class Router
     protected $routes = null;
 
     /**
-     * @return mixed
-     */
-    public function getRequest()
-    {
-        return $this->request;
-    }
-
-    /**
-     * @param mixed $request
-     */
-    public function setRequest($request)
-    {
-        $this->request = $request;
-    }
-
-    /**
      * @param $name
      * @return bool
      */
@@ -134,6 +118,7 @@ class Router
     {
         $route = $this->getDefaultRoute($name, $params);
         if ($route) {
+            $route->setRequest($this->getRequest());
             return $route->assembleFull($params);
         }
 
@@ -166,6 +151,22 @@ class Router
     }
 
     /**
+     * @return mixed
+     */
+    public function getRequest()
+    {
+        return $this->request;
+    }
+
+    /**
+     * @param mixed $request
+     */
+    public function setRequest($request)
+    {
+        $this->request = $request;
+    }
+
+    /**
      * @param $name
      * @param array $params
      * @return mixed|string
@@ -175,6 +176,7 @@ class Router
         $route = $this->getDefaultRoute($name, $params);
 
         if ($route) {
+            $route->setRequest($this->getRequest());
             return $route->assemble($params);
         }
 
