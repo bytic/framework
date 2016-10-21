@@ -1557,6 +1557,14 @@ abstract class RecordManager
     }
 
     /**
+     * @return \Nip\Request
+     */
+    public function getRequest()
+    {
+        return app('kernel')->getRequest();
+    }
+
+    /**
      * Sets model and database table from the class name
      */
     protected function inflect()

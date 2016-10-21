@@ -383,4 +383,9 @@ abstract class Record extends \Nip_Object
     {
         return $this->getManager()->cloneRelations($from, $this);
     }
+
+    protected function getRequest()
+    {
+        return $this->getManager()->getRequest();
+    }
 }

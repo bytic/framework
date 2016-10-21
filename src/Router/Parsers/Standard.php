@@ -24,20 +24,6 @@ class Standard extends Dynamic
         return parent::assemble($params);
     }
 
-    /**
-     * @param $uri
-     * @return bool
-     */
-    public function match($uri)
-    {
-        $return = parent::match($uri);
-
-        if ($return && !empty($this->getParam('controller'))) {
-            return $return;
-        }
-        return false;
-    }
-
     /** @noinspection PhpMissingParentCallCommonInspection
      * @return bool
      */
@@ -47,6 +33,31 @@ class Standard extends Dynamic
         $uriCount = substr_count($this->uri, '/') + 1;
         $difference = $mapCount - $uriCount;
         if ($difference == 0 || $difference == 1) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    protected function postMatch()
+    {
+        if (parent::postMatch()) {
+            return $this->validateController();
+        }
+
+        return false;
+    }
+
+    /**
+     * @return bool
+     */
+    protected function validateController()
+    {
+        $controller = $this->getParam('controller');
+        if (!empty($controller)) {
             return true;
         }
 
