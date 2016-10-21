@@ -2,28 +2,33 @@
 
 namespace Nip;
 
+use Nip\Dispatcher\DispatcherAwareTrait;
+use Nip\Router\RouterAwareTrait;
+
+/**
+ * Class FrontController
+ * @package Nip
+ */
 class FrontController
 {
+    use DispatcherAwareTrait;
+    use RouterAwareTrait;
 
     /**
      * @var Application
      */
     protected $application;
 
-    protected $_staging;
-    protected $_stage;
+    protected $request;
 
-    protected $_router;
-    protected $_dispatcher;
-    protected $_request;
-    protected $_requestURI = null;
+    protected $requestURI = null;
 
     /**
      * Singleton
      *
      * @return self
      */
-    static public function instance()
+    public static function instance()
     {
         static $instance;
         if (!($instance instanceof self)) {
@@ -50,98 +55,15 @@ class FrontController
     }
 
     /**
-     * @return mixed
-     */
-    public function getStage()
-    {
-        return $this->_stage;
-    }
-
-    /**
-     * @param mixed $stage
-     */
-    public function setStage($stage)
-    {
-        $this->_stage = $stage;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getStaging()
-    {
-        return $this->_staging;
-    }
-
-    /**
-     * @param mixed $staging
-     */
-    public function setStaging($staging)
-    {
-        $this->_staging = $staging;
-    }
-
-    public function dispatch(Request $request = null)
-    {
-        $this->getDispatcher()->dispatch($request);
-    }
-
-    /**
-     * @return Dispatcher
-     */
-    public function getDispatcher()
-    {
-        if (!$this->_dispatcher) {
-            $this->initDispatcher();
-        }
-
-        return $this->_dispatcher;
-    }
-
-    /**
-     * @param bool|Dispatcher $dispatcher
-     * @return $this
-     */
-    public function setDispatcher($dispatcher = false)
-    {
-        $this->_dispatcher = $dispatcher;
-
-        return $this;
-    }
-
-    public function initDispatcher()
-    {
-        $this->_dispatcher = $this->newDispatcher();
-    }
-
-    /**
-     * @return Dispatcher
-     */
-    public function newDispatcher()
-    {
-        $dispatcher = Dispatcher::instance();
-        $dispatcher->setFrontController($this);
-        return $dispatcher;
-    }
-
-    public function route($request = false)
-    {
-        $request = $request ? $request : $this->getRequest();
-        $params = $this->getRouter()->route($request);
-
-        return $params;
-    }
-
-    /**
      * @return Request
      */
     public function getRequest()
     {
-        if (!$this->_request) {
-            $this->_request = new Request();
+        if (!$this->request) {
+            $this->request = new Request();
         }
 
-        return $this->_request;
+        return $this->request;
     }
 
     /**
@@ -150,23 +72,7 @@ class FrontController
      */
     public function setRequest($request = false)
     {
-        $this->_request = $request;
-        return $this;
-    }
-
-    public function getRouter()
-    {
-        if (!$this->_router) {
-            $this->_router = new \Nip\Router\Router();
-        }
-
-        return $this->_router;
-    }
-
-    public function setRouter(\Nip\Router\Router $router = null)
-    {
-        $this->_router = $router;
-
+        $this->request = $request;
         return $this;
     }
 

@@ -3,6 +3,7 @@
 namespace Nip;
 
 use Nip\Config\ConfigAwareTrait;
+use Nip\Dispatcher\Dispatcher;
 use Nip\Utility\Traits\NameWorksTrait;
 use Nip_Flash_Messages as FlashMessages;
 

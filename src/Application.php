@@ -2,15 +2,21 @@
 
 namespace Nip;
 
+use Nip\AutoLoader\AutoLoader;
+use Nip\AutoLoader\AutoLoaderAwareTrait;
+use Nip\AutoLoader\AutoLoaderServiceProvider;
 use Nip\Config\ConfigAwareTrait;
 use Nip\Container\Container;
 use Nip\Container\ContainerAwareTrait;
 use Nip\Database\Manager as DatabaseManager;
 use Nip\DebugBar\DataCollector\RouteCollector;
 use Nip\DebugBar\StandardDebugBar;
+use Nip\Dispatcher\DispatcherServiceProvider;
 use Nip\Logger\Manager as LoggerManager;
 use Nip\Mail\MailServiceProvider;
 use Nip\Mvc\MvcServiceProvider;
+use Nip\Router\RouterAwareTrait;
+use Nip\Router\RouterServiceProvider;
 use Nip\Staging\Stage;
 
 /**
@@ -21,6 +27,8 @@ class Application
 {
     use ContainerAwareTrait;
     use ConfigAwareTrait;
+    use AutoLoaderAwareTrait;
+    use RouterAwareTrait;
 
     /**
      * Indicates if the application has "booted".
@@ -28,11 +36,6 @@ class Application
      * @var bool
      */
     protected $booted = false;
-
-    /**
-     * @var AutoLoader
-     */
-    protected $autoloader = null;
 
     protected $frontController = null;
 
@@ -82,7 +85,7 @@ class Application
         $this->registerServices();
         $this->setupRequest();
         $this->setupStaging();
-        $this->setupAutoloader();
+        $this->setupAutoLoader();
         $this->setupErrorHandling();
         $this->setupURLConstants();
     }
@@ -93,12 +96,16 @@ class Application
 
     public function registerContainer()
     {
+        $this->getContainer()->singleton('kernel', $this);
     }
 
     public function registerServices()
     {
+        $this->getContainer()->addServiceProvider(AutoLoaderServiceProvider::class);
         $this->getContainer()->addServiceProvider(MailServiceProvider::class);
         $this->getContainer()->addServiceProvider(MvcServiceProvider::class);
+        $this->getContainer()->addServiceProvider(DispatcherServiceProvider::class);
+        $this->getContainer()->addServiceProvider(RouterServiceProvider::class);
     }
 
     /**
@@ -171,8 +178,43 @@ class Application
 
     public function setupStaging()
     {
-        $this->getFrontController()->setStaging($this->getStaging());
-        $this->getFrontController()->setStage($this->getStage());
+    }
+
+    public function setupAutoLoader()
+    {
+        AutoLoader::registerHandler($this->getAutoLoader());
+
+        $this->setupAutoLoaderCache();
+        $this->setupAutoLoaderPaths();
+
+        if ($this->getStage()->inTesting()) {
+            $this->getAutoLoader()->getClassMapLoader()->setRetry(true);
+        }
+    }
+
+    public function setupAutoLoaderCache()
+    {
+    }
+
+    public function setupAutoLoaderPaths()
+    {
+    }
+
+    /**
+     * @return Stage
+     */
+    public function getStage()
+    {
+        if ($this->stage == null) {
+            $this->initStage();
+        }
+
+        return $this->stage;
+    }
+
+    public function initStage()
+    {
+        $this->stage = $this->getStaging()->getStage();
     }
 
     /**
@@ -198,76 +240,6 @@ class Application
     public function newStaging()
     {
         return Staging::instance();
-    }
-
-    /**
-     * @return Stage
-     */
-    public function getStage()
-    {
-        if ($this->stage == null) {
-            $this->initStage();
-        }
-
-        return $this->stage;
-    }
-
-    public function initStage()
-    {
-        $this->stage = $this->getStaging()->getStage();
-    }
-
-    public function setupAutoloader()
-    {
-        AutoLoader::registerHandler($this->getAutoloader());
-
-        $this->setupAutoloaderCache();
-        $this->setupAutoloaderPaths();
-
-        if ($this->getStage()->inTesting()) {
-            $this->getAutoloader()->getClassMapLoader()->setRetry(true);
-        }
-    }
-
-    /**
-     * @return AutoLoader
-     */
-    public function getAutoloader()
-    {
-        if ($this->autoloader == null) {
-            $this->initAutoloader();
-        }
-
-        return $this->autoloader;
-    }
-
-    /**
-     * @param AutoLoader $autoloader
-     */
-    public function setAutoloader(AutoLoader $autoloader)
-    {
-        $this->autoloader = $autoloader;
-    }
-
-    public function initAutoloader()
-    {
-        $this->setAutoloader($this->newAutoloader());
-    }
-
-    /**
-     * @return AutoLoader
-     */
-    public function newAutoloader()
-    {
-        return AutoLoader::instance();
-    }
-
-    public function setupAutoloaderCache()
-    {
-    }
-
-    public function setupAutoloaderPaths()
-    {
     }
 
     public function setupErrorHandling()
@@ -464,22 +436,13 @@ class Application
 
     public function setupRouting()
     {
-        $router = $this->newRouter();
-        $router->setRequest($this->getFrontController()->getRequest());
-        $this->getFrontController()->setRouter($router);
+        $router = $this->getRouter();
+        $router->setRequest($this->getRequest());
         if ($this->getDebugBar()->isEnabled()) {
             /** @var RouteCollector $routeCollector */
             $routeCollector = $this->getDebugBar()->getCollector('route');
             $routeCollector->setRouter($router);
         }
-    }
-
-    /**
-     * @return Router\Router
-     */
-    public function newRouter()
-    {
-        return new Router\Router();
     }
 
     public function boot()

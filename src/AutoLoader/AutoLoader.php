@@ -1,8 +1,7 @@
 <?php
 
-namespace Nip;
+namespace Nip\AutoLoader;
 
-use Nip\AutoLoader\Exception;
 use Nip\AutoLoader\Exception as AutoloadException;
 use Nip\AutoLoader\Loaders\AbstractLoader;
 use Nip\AutoLoader\Loaders\ClassMap;
@@ -10,7 +9,7 @@ use Nip\AutoLoader\Loaders\Psr4Class;
 
 /**
  * Class AutoLoader
- * @package Nip
+ * @package Nip\AutoLoader
  */
 class AutoLoader
 {
@@ -51,7 +50,7 @@ class AutoLoader
             return spl_autoload_register([$autoloader, 'autoload']);
         }
 
-        throw new AutoloadException('Invalid Autoloader specified in register handler');
+        throw new AutoloadException('Invalid AutoLoader specified in register handler');
     }
 
     /**
@@ -146,7 +145,7 @@ class AutoLoader
      */
     public function addLoader($name, $loader)
     {
-        $loader->setAutoloader($this);
+        $loader->setAutoLoader($this);
         $this->loaders[$name] = $loader;
     }
 
@@ -232,7 +231,7 @@ class AutoLoader
     }
 
     /**
-     * @return AutoLoader\Loaders\AbstractLoader[]
+     * @return AbstractLoader[]
      */
     public function getLoaders()
     {

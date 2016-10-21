@@ -109,7 +109,7 @@ class ClassMap extends AbstractLoader
     {
         $fileName = $this->getCacheName($dir);
 
-        return $this->getAutoloader()->getCachePath().$fileName;
+        return $this->getAutoLoader()->getCachePath().$fileName;
     }
 
     /**

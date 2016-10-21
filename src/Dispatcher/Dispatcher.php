@@ -1,20 +1,18 @@
 <?php
 
-namespace Nip;
+namespace Nip\Dispatcher;
 
-use Nip\Dispatcher\ForwardException;
+use Nip\AutoLoader\AutoLoader;
+use Nip\AutoLoader\Exception as AutoLoaderException;
+use Nip\Controller;
+use Nip\Request;
 
 /**
  * Class Dispatcher
- * @package Nip
+ * @package Nip\Dispatcher
  */
 class Dispatcher
 {
-    /**
-     * @var bool|FrontController
-     */
-    protected $frontController = false;
-
 
     /**
      * @var null|Request
@@ -46,21 +44,6 @@ class Dispatcher
         $name[0] = strtolower($name[0]);
 
         return $name;
-    }
-
-    /**
-     * Singleton
-     *
-     * @return self
-     */
-    public static function instance()
-    {
-        static $instance;
-        if (!($instance instanceof self)) {
-            $instance = new self();
-        }
-
-        return $instance;
     }
 
     /**
@@ -136,10 +119,9 @@ class Dispatcher
         $controllerClass = $this->getFullControllerNameFromRequest($request);
 
         try {
-            AutoLoader::instance()->load($controllerClass);
-        } catch (AutoLoader\Exception $e) {
-            $this->getFrontController()->getTrace()->add($e->getMessage());
-
+            $this->getAutoloader()->load($controllerClass);
+        } catch (AutoLoaderException $e) {
+//            $this->getFrontController()->getTrace()->add($e->getMessage());
             return null;
         }
 
@@ -200,7 +182,7 @@ class Dispatcher
     public function getFullControllerName($module, $controller)
     {
         $namespaceClass = $this->generateFullControllerNameNamespace($module, $controller);
-        $loader = $this->getFrontController()->getApplication()->getAutoloader()->getPsr4ClassLoader();
+        $loader = $this->getAutoloader()->getPsr4ClassLoader();
         $loader->load($namespaceClass);
         if ($loader->isLoaded($namespaceClass)) {
             return $namespaceClass;
@@ -216,7 +198,7 @@ class Dispatcher
      */
     protected function generateFullControllerNameNamespace($module, $controller)
     {
-        $name = $this->getFrontController()->getApplication()->getRootNamespace().'Modules\\';
+        $name = app()->get('kernel')->getRootNamespace().'Modules\\';
         $module = $module == 'Default' ? 'Frontend' : $module;
         $name .= $module.'\Controllers\\';
         $name .= str_replace('_', '\\', $controller)."Controller";
@@ -225,40 +207,11 @@ class Dispatcher
     }
 
     /**
-     * @return FrontController
+     * @return AutoLoader
      */
-    public function getFrontController()
+    protected function getAutoloader()
     {
-        if (!$this->frontController) {
-            $this->initFrontController();
-        }
-
-        return $this->frontController;
-    }
-
-    /**
-     * @param FrontController $controller
-     * @return $this
-     */
-    public function setFrontController(FrontController $controller)
-    {
-        $this->frontController = $controller;
-        $this->request = $controller->getRequest();
-
-        return $this;
-    }
-
-    public function initFrontController()
-    {
-        $this->frontController = $this->newFrontController();
-    }
-
-    /**
-     * @return FrontController
-     */
-    public function newFrontController()
-    {
-        return FrontController::instance();
+        return app('autoloader');
     }
 
     /**
@@ -289,7 +242,7 @@ class Dispatcher
      */
     public function throwError($params = false)
     {
-        $this->getFrontController()->getTrace()->add($params);
+//        $this->getFrontController()->getTrace()->add($params);
         $this->setErrorControler();
         $this->forward('index');
 

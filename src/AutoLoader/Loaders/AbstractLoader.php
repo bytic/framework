@@ -2,7 +2,7 @@
 
 namespace Nip\AutoLoader\Loaders;
 
-use Nip\AutoLoader;
+use Nip\AutoLoader\AutoLoader;
 use Nip\AutoLoader\Exception as AutoloadException;
 
 /**
@@ -19,7 +19,7 @@ abstract class AbstractLoader
     /**
      * @return AutoLoader
      */
-    public function getAutoloader()
+    public function getAutoLoader()
     {
         return $this->autoloader;
     }
@@ -27,7 +27,7 @@ abstract class AbstractLoader
     /**
      * @param AutoLoader $autoloader
      */
-    public function setAutoloader($autoloader)
+    public function setAutoLoader($autoloader)
     {
         $this->autoloader = $autoloader;
     }
