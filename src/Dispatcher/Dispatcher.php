@@ -52,7 +52,11 @@ class Dispatcher
      */
     public function dispatch(Request $request = null)
     {
-        $request = $request ? $request : $this->getRequest();
+        if ($request) {
+            $this->setRequest($request);
+        } else {
+            $request = $this->getRequest();
+        }
         $this->hops++;
 
         if ($this->hops <= $this->maxHops) {
@@ -101,6 +105,14 @@ class Dispatcher
     public function getRequest()
     {
         return $this->request;
+    }
+
+    /**
+     * @param Request|null $request
+     */
+    public function setRequest($request)
+    {
+        $this->request = $request;
     }
 
     public function setErrorControler()

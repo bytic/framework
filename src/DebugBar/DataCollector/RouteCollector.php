@@ -29,6 +29,7 @@ class RouteCollector extends DataCollector implements Renderable
     public function collect()
     {
         $route = $this->getRouter()->getCurrent();
+
         return $this->getRouteInformation($route);
     }
 
@@ -38,13 +39,16 @@ class RouteCollector extends DataCollector implements Renderable
      */
     public function getRouteInformation($route)
     {
-
-        $result = [
-            'uri' => $route->getUri(),
-            'name' => $route->getName(),
-            'class' => $route->getClassName(),
-            'params' =>  $this->getDataFormatter()->formatVar($route->getParams())
-        ];
+        if ($route) {
+            $result = [
+                'uri' => $route->getUri(),
+                'name' => $route->getName(),
+                'class' => $route->getClassName(),
+                'params' => $this->getDataFormatter()->formatVar($route->getParams()),
+            ];
+        } else {
+            $result = [];
+        }
 
         return $result;
     }
@@ -59,15 +63,16 @@ class RouteCollector extends DataCollector implements Renderable
                 "icon" => "share",
                 "widget" => "PhpDebugBar.Widgets.VariableListWidget",
                 "map" => "route",
-                "default" => "{}"
+                "default" => "{}",
             ],
             "currentroute" => [
                 "icon" => "share",
                 "tooltip" => "Route",
                 "map" => "route.uri",
-                "default" => ""
-            ]
+                "default" => "",
+            ],
         ];
+
         return $widgets;
     }
 

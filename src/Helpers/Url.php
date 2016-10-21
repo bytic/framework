@@ -10,7 +10,6 @@ class Nip_Helper_Url extends Nip\Helpers\AbstractHelper
     use \Nip\Router\RouterAwareTrait;
 
     protected $_pieces = [];
-    protected $_router;
 
     /**
      * Singleton
@@ -70,9 +69,16 @@ class Nip_Helper_Url extends Nip\Helpers\AbstractHelper
         return $this->getRouter()->assemble($name, $params);
     }
 
+    /**
+     * @param array $params
+     * @return string
+     */
     public function base($params = [])
     {
-        return $this->getRouter()->getCurrent()->getBase($params) . ($params ? "?" . http_build_query($params) : '');
+        $currentRoute = $this->getRouter()->getCurrent();
+        $base = $currentRoute ? $currentRoute->getBase($params) : BASE_URL;
+
+        return $base.($params ? "?".http_build_query($params) : '');
     }
 
     /**
