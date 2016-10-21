@@ -50,14 +50,9 @@ trait RouterAwareTrait
         return $this;
     }
 
-    public function initRouter()
+    protected function initRouter()
     {
-        if (app()->has('router')) {
-            $router = app()->get('router');
-        } else {
-            $router = $this->newRouter();
-        }
-        $this->setRouter($router);
+        $this->setRouter($this->newRouter());
     }
 
     /**

@@ -46,14 +46,9 @@ trait DispatcherAwareTrait
         return $this;
     }
 
-    public function initDispatcher()
+    protected function initDispatcher()
     {
-        if (app()->has('dispatcher')) {
-            $dispatcher = app()->get('dispatcher');
-        } else {
-            $dispatcher = $this->newDispatcher();
-        }
-        $this->setDispatcher($dispatcher);
+        $this->setDispatcher($this->newDispatcher());
     }
 
     /**

@@ -36,14 +36,9 @@ trait AutoLoaderAwareTrait
         return $this;
     }
 
-    public function initAutoLoader()
+    protected function initAutoLoader()
     {
-        if (app()->has('autoloader')) {
-            $autoLoader = app()->get('autoloader');
-        } else {
-            $autoLoader = $this->newAutoLoader();
-        }
-        $this->setAutoLoader($autoLoader);
+        $this->setAutoLoader($this->newAutoLoader());
     }
 
     /**
@@ -51,6 +46,6 @@ trait AutoLoaderAwareTrait
      */
     protected function newAutoLoader()
     {
-        return AutoLoaderServiceProvider::newAutoLoader();
+        return app()->get('autoloader');
     }
 }
