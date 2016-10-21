@@ -48,9 +48,10 @@ class RecordTest extends AbstractTest
 
     public function testNewRelation()
     {
-        $users = m::namedMock('Users', 'Nip\Records\RecordManager')->shouldDeferMissing()
+        $users = m::namedMock('Users', Records::class)->shouldDeferMissing()
             ->shouldReceive('instance')->andReturnSelf()->getMock();
-        m::namedMock('User', 'Record');
+
+        m::namedMock('User', Record::class);
 
         $this->object->getManager()->initRelationsFromArray('belongsTo', ['User']);
 

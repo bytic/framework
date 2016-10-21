@@ -1,6 +1,6 @@
 <?php
 
-namespace Nip\FrontController;
+namespace Nip\Application;
 
 class Trace
 {

@@ -35,18 +35,18 @@ class AutoLoader
     protected $ignoreTokens = [];
 
     /**
-     * @param AutoLoader $autoloader
+     * @param self $autoloader
      * @return bool
      * @throws Exception
      */
-    public static function registerHandler(AutoLoader $autoloader)
+    public static function registerHandler($autoloader)
     {
         // Only register once per instance
         if (static::$splHandler) {
             return false;
         }
 
-        if ($autoloader instanceof AutoLoader) {
+        if ($autoloader instanceof self) {
             return spl_autoload_register([$autoloader, 'autoload']);
         }
 

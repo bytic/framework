@@ -6,8 +6,13 @@ use Mockery as m;
 use Nip\Database\Connection;
 use Nip\Records\RecordManager as Records;
 use Nip\Request;
+use Nip\Tests\Unit\AbstractTest;
 
-class RecordsTest extends \Codeception\TestCase\Test
+/**
+ * Class RecordsTest
+ * @package Nip\Tests\Unit\Records
+ */
+class RecordsTest extends AbstractTest
 {
     /**
      * @var \UnitTester
@@ -102,13 +107,13 @@ class RecordsTest extends \Codeception\TestCase\Test
 
     public function testInitRelationsFromArrayBelongsToSimple()
     {
-        $users = m::namedMock('Users', 'Records')->shouldDeferMissing()
+        $users = m::namedMock('Users', Records::class)->shouldDeferMissing()
             ->shouldReceive('instance')->andReturnSelf()
             ->getMock();
         $users->setPrimaryFK('id_user');
 
-        m::namedMock('User', 'Record');
-        m::namedMock('Articles', 'Records');
+        m::namedMock('User', Records::class);
+        m::namedMock('Articles', Records::class);
 
         $this->_object->setPrimaryFK('id_object');
 
@@ -206,8 +211,9 @@ class RecordsTest extends \Codeception\TestCase\Test
         self::assertEquals('id', $records->getPrimaryKey());
     }
 
-    protected function _before()
+    protected function setUp()
     {
+        parent::setUp();
         $wrapper = new Connection();
 
         $this->_object = new Records();

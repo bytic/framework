@@ -29,10 +29,10 @@ class ConnectionTest extends \Codeception\TestCase\Test
 
     public function testNewQueryProvider()
     {
-        $types = array('select', 'insert', 'delete');
-        $return = array();
+        $types = ['select', 'insert', 'delete'];
+        $return = [];
         foreach ($types as $type) {
-            $return[] = array($type, 'Nip\Database\Query\\'.ucfirst($type));
+            $return[] = [$type, 'Nip\Database\Query\\'.ucfirst($type)];
         }
         return $return;
     }

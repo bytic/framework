@@ -7,4 +7,6 @@ namespace Nip\Tests\Unit;
  */
 class AbstractTest extends \Codeception\TestCase\Test
 {
+
+    protected $object;
 }
