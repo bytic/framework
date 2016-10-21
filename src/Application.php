@@ -443,7 +443,7 @@ class Application
         } catch (\Exception $e) {
             $this->logger->handleException($e);
         }
-        $this->postHandle();
+        $this->postHandleRequest();
     }
 
     public function preHandleRequest()
