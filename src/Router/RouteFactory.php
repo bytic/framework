@@ -9,6 +9,24 @@ namespace Nip\Router;
 class RouteFactory
 {
 
+    /**
+     * @param RouteCollection $collection
+     * @param $name
+     * @param $class
+     * @param string $mapPrefix
+     * @return mixed
+     */
+    public static function generateIndexRoute(
+        $collection,
+        $name,
+        $class,
+        $mapPrefix = ''
+    ) {
+        $params = ["controller" => "index", "action" => "index"];
+        $map = '/';
+
+        return self::generateLiteralRoute($collection, $name, $class, $mapPrefix, $map, $params);
+    }
 
     /**
      * @param RouteCollection $collection
@@ -27,6 +45,9 @@ class RouteFactory
         $map = '/',
         $params = []
     ) {
+        $map = $mapPrefix.$map;
+        $map = str_replace('//', '/', $map);
+
         return self::generateGenericRoute($collection, $name, $class, $mapPrefix.$map, $params);
     }
 
