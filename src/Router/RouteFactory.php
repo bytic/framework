@@ -11,6 +11,7 @@ class RouteFactory
 
 
     /**
+     * @param $name
      * @param RouteCollection $collection
      * @param $class
      * @param string $mapPrefix
@@ -19,6 +20,7 @@ class RouteFactory
      * @return mixed
      */
     public static function generateStandardRoute(
+        $name,
         $collection,
         $class,
         $mapPrefix = '',
@@ -27,6 +29,6 @@ class RouteFactory
     ) {
         $route = new $class($mapPrefix.$map, $params);
 
-        return $collection->add($route);
+        return $collection->add($route, $name);
     }
 }
