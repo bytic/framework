@@ -59,7 +59,32 @@ class Router
      */
     public function getRoute($name)
     {
-        return $this->routes[$name];
+        return $this->getRoutes()->get($name);
+    }
+
+    /**
+     * @return RouteCollection
+     */
+    public function getRoutes()
+    {
+        if ($this->routes === null) {
+            $this->initRoutes();
+        }
+
+        return $this->routes;
+    }
+
+    protected function initRoutes()
+    {
+        $this->routes = $this->newRoutesCollection();
+    }
+
+    /**
+     * @return RouteCollection
+     */
+    protected function newRoutesCollection()
+    {
+        return new RouteCollection();
     }
 
     /**
@@ -139,31 +164,6 @@ class Router
      */
     public function hasRoute($name)
     {
-        return array_key_exists($name, $this->routes);
-    }
-
-    /**
-     * @return RouteCollection
-     */
-    public function getRoutes()
-    {
-        if ($this->routes === null) {
-            $this->initRoutes();
-        }
-
-        return $this->routes;
-    }
-
-    protected function initRoutes()
-    {
-        $this->routes = $this->newRoutesCollection();
-    }
-
-    /**
-     * @return RouteCollection
-     */
-    protected function newRoutesCollection()
-    {
-        return new RouteCollection();
+        return $this->getRoutes()->has($name);
     }
 }
