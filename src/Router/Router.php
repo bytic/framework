@@ -24,20 +24,9 @@ class Router
     protected $route;
 
     /**
-     * @var Route[]
+     * @var RouteCollection|Route[]
      */
-    protected $routes = [];
-
-    /**
-     * @param Route $route
-     * @param $name
-     */
-    public function connect($route, $name)
-    {
-        $route->setRequest($this->getRequest());
-        $route->setName($name);
-        $this->routes[$name] = $route;
-    }
+    protected $routes = null;
 
     /**
      * @return mixed
@@ -154,10 +143,27 @@ class Router
     }
 
     /**
-     * @return Route[]
+     * @return RouteCollection
      */
-    public function getAll()
+    public function getRoutes()
     {
+        if ($this->routes === null) {
+            $this->initRoutes();
+        }
+
         return $this->routes;
+    }
+
+    protected function initRoutes()
+    {
+        $this->routes = $this->newRoutesCollection();
+    }
+
+    /**
+     * @return RouteCollection
+     */
+    protected function newRoutesCollection()
+    {
+        return new RouteCollection();
     }
 }
