@@ -1,24 +1,33 @@
 <?php
 
-namespace Nip\Router\Parser;
+namespace Nip\Router\Parsers;
 
+/**
+ * Class Literal
+ * @package Nip\Router\Parsers
+ */
 class Literal extends AbstractParser
 {
 
+    /**
+     * @param $uri
+     * @return bool
+     */
     public function match($uri)
     {
         $return = parent::match($uri);
 
-        if ($return) {
-            return $this->_map == $uri;
-        }
+        return ($return) ? $this->getMap() == $uri : false;
     }
 
-
-    public function assemble($params = array())
+    /** @noinspection PhpMissingParentCallCommonInspection
+     * @param array $params
+     * @return mixed|string
+     */
+    public function assemble($params = [])
     {
         $params = $this->stripEmptyParams($params);
-        return $this->_map . ($params ? '?' . http_build_query($params) : '');
-    }
 
+        return $this->getMap().($params ? '?'.http_build_query($params) : '');
+    }
 }

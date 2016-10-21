@@ -1,13 +1,21 @@
 <?php
 
-namespace Nip\Router\Parser;
+namespace Nip\Router\Parsers;
 
+/**
+ * Class Standard
+ * @package Nip\Router\Parsers
+ */
 class Standard extends Dynamic
 {
 
-    protected $_map = ':controller/:action';
+    protected $map = ':controller/:action';
 
-    public function assemble($params = array())
+    /**
+     * @param array $params
+     * @return mixed|string
+     */
+    public function assemble($params = [])
     {
         if (!$params['action']) {
             $params['action'] = '';
@@ -16,20 +24,27 @@ class Standard extends Dynamic
         return parent::assemble($params);
     }
 
+    /**
+     * @param $uri
+     * @return bool
+     */
     public function match($uri)
     {
         $return = parent::match($uri);
 
-        if ($return && !empty($this->_params['controller'])) {
+        if ($return && !empty($this->getParam('controller'))) {
             return $return;
         }
         return false;
     }
 
+    /** @noinspection PhpMissingParentCallCommonInspection
+     * @return bool
+     */
     protected function preMatch()
     {
-        $mapCount = count($this->_parts);
-        $uriCount = substr_count($this->_uri, '/') + 1;
+        $mapCount = count($this->getParts());
+        $uriCount = substr_count($this->uri, '/') + 1;
         $difference = $mapCount - $uriCount;
         if ($difference == 0 || $difference == 1) {
             return true;
@@ -37,6 +52,4 @@ class Standard extends Dynamic
 
         return false;
     }
-
-
 }

@@ -4,6 +4,7 @@ namespace Nip\Tests\Unit;
 
 use Nip\Application;
 use Nip\Mail\Mailer;
+use Nip\Mvc\Modules;
 
 /**
  * Class ApplicationTest
@@ -21,6 +22,7 @@ class ApplicationTest extends AbstractTest
         $this->application->registerServices();
 
         static::assertInstanceOf(Mailer::class, $this->application->getContainer()->get('mailer'));
+        static::assertInstanceOf(Modules::class, $this->application->getContainer()->get('mvc.modules'));
     }
 
     /**

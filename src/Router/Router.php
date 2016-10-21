@@ -5,26 +5,28 @@ namespace Nip\Router;
 use Nip\Request;
 use Nip\Router\Route\AbstractRoute as Route;
 
-use Nip_Profiler as Profiler;
-
+/**
+ * Class Router
+ * @package Nip\Router
+ */
 class Router
 {
 
     /**
      * @var \Nip\Request
      */
-    protected $_request;
+    protected $request;
 
 
     /**
      * @var Route
      */
-    protected $_route;
+    protected $route;
 
     /**
      * @var Route[]
      */
-    protected $_routes = [];
+    protected $routes = [];
 
     /**
      * @param Route $route
@@ -34,12 +36,41 @@ class Router
     {
         $route->setRequest($this->getRequest());
         $route->setName($name);
-        $this->_routes[$name] = $route;
+        $this->routes[$name] = $route;
     }
 
+    /**
+     * @return mixed
+     */
+    public function getRequest()
+    {
+        return $this->request;
+    }
+
+    /**
+     * @param mixed $request
+     */
+    public function setRequest($request)
+    {
+        $this->request = $request;
+    }
+
+    /**
+     * @param $name
+     * @return bool
+     */
     public function connected($name)
     {
         return ($this->getRoute($name) instanceof Route);
+    }
+
+    /**
+     * @param $name
+     * @return Route
+     */
+    public function getRoute($name)
+    {
+        return $this->routes[$name];
     }
 
     /**
@@ -48,30 +79,32 @@ class Router
      */
     public function route($request)
     {
-        $this->_route = false;
+        $current = false;
         $uri = $request->getHttp()->getPathInfo();
 
-        foreach ($this->_routes as $name => $route) {
+        foreach ($this->routes as $name => $route) {
             $route->setRequest($request);
-            Profiler::instance()->start('route [' . $name . '] [' . $uri . ']');
             if ($route->match($uri)) {
-                $this->_route = $route;
-                Profiler::instance()->end('route [' . $name . '] [' . $uri . ']');
+                $current = $route;
                 break;
             }
-
-            Profiler::instance()->end('route [' . $name . '] [' . $uri . ']');
         }
 
-        if ($this->_route) {
-            $this->_route->populateRequest();
-            return $this->_route->getParams() + $this->_route->getMatches();
+        if ($current instanceof Route) {
+            $current->populateRequest();
+
+            return $current->getParams() + $current->getMatches();
         } else {
-            return array();
+            return [];
         }
     }
 
-    public function assemble($name, $params = array())
+    /**
+     * @param $name
+     * @param array $params
+     * @return mixed|string
+     */
+    public function assemble($name, $params = [])
     {
         $route = $this->getRoute($name);
         if (!$route) {
@@ -87,41 +120,43 @@ class Router
         }
 
         trigger_error("Route \"$name\" not connected", E_USER_ERROR);
+
+        return null;
     }
 
+    /**
+     * @param Route $route
+     * @return $this
+     */
+    public function setCurrent($route)
+    {
+        $this->route = $route;
+
+        return $this;
+    }
+
+    /**
+     * @return Route
+     */
     public function getCurrent()
     {
-        return $this->_route;
+        return $this->route;
     }
 
-    public function getRoute($name)
-    {
-        return $this->_routes[$name];
-    }
-
+    /**
+     * @param $name
+     * @return bool
+     */
     public function hasRoute($name)
     {
-        return array_key_exists($name, $this->_routes);
+        return array_key_exists($name, $this->routes);
     }
 
+    /**
+     * @return Route[]
+     */
     public function getAll()
     {
-        return $this->_routes;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getRequest()
-    {
-        return $this->_request;
-    }
-
-    /**
-     * @param mixed $request
-     */
-    public function setRequest($request)
-    {
-        $this->_request = $request;
+        return $this->routes;
     }
 }
