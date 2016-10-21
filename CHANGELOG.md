@@ -10,9 +10,12 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Deprecated
 - rename all Autoloader -> AutoLoader.
+- rename Application dispatch() -> handleRequest().
+- rename Application preDispatch() -> preHandleRequest().
+- rename Application postDispatch() -> postDispatch().
 
 ### Removed
-- Nothing.
+- FrontController
 
 ### Fixed
 - Nothing.

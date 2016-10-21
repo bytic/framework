@@ -11,6 +11,7 @@ use Nip\Container\ContainerAwareTrait;
 use Nip\Database\Manager as DatabaseManager;
 use Nip\DebugBar\DataCollector\RouteCollector;
 use Nip\DebugBar\StandardDebugBar;
+use Nip\Dispatcher\DispatcherAwareTrait;
 use Nip\Dispatcher\DispatcherServiceProvider;
 use Nip\Logger\Manager as LoggerManager;
 use Nip\Mail\MailServiceProvider;
@@ -29,6 +30,7 @@ class Application
     use ConfigAwareTrait;
     use AutoLoaderAwareTrait;
     use RouterAwareTrait;
+    use DispatcherAwareTrait;
 
     /**
      * Indicates if the application has "booted".
@@ -36,8 +38,6 @@ class Application
      * @var bool
      */
     protected $booted = false;
-
-    protected $frontController = null;
 
     /**
      * @var null|Request
@@ -71,7 +71,7 @@ class Application
         $this->loadFiles();
         $this->prepare();
         $this->setup();
-        $this->dispatch();
+        $this->handleRequest();
     }
 
     public function loadFiles()
@@ -108,72 +108,8 @@ class Application
         $this->getContainer()->addServiceProvider(RouterServiceProvider::class);
     }
 
-    /**
-     *
-     */
     public function setupRequest()
     {
-        $request = $this->getRequest();
-        $this->getFrontController()->setRequest($request);
-    }
-
-    /**
-     * @return Request|null
-     */
-    public function getRequest()
-    {
-        if ($this->request == null) {
-            $this->initRequest();
-        }
-
-        return $this->request;
-    }
-
-    /**
-     * @return $this
-     */
-    public function initRequest()
-    {
-        $request = Request::createFromGlobals();
-        Request::instance($request);
-        $this->request = $request;
-
-        return $this;
-    }
-
-    /**
-     * @return FrontController|null
-     */
-    protected function getFrontController()
-    {
-        if ($this->frontController === null) {
-            $this->initFrontController();
-        }
-
-        return $this->frontController;
-    }
-
-    /**
-     * @param null $frontController
-     */
-    public function setFrontController($frontController)
-    {
-        $this->frontController = $frontController;
-    }
-
-    protected function initFrontController()
-    {
-        $fc = $this->newFrontController();
-        $fc->setApplication($this);
-        $this->setFrontController($fc);
-    }
-
-    /**
-     * @return FrontController
-     */
-    public function newFrontController()
-    {
-        return FrontController::instance();
     }
 
     public function setupStaging()
@@ -332,16 +268,40 @@ class Application
     public function setupURLConstants()
     {
         $this->determineBaseURL();
-        define('CURRENT_URL', $this->getFrontController()->getRequest()->getHttp()->getUri());
+        define('CURRENT_URL', $this->getRequest()->getHttp()->getUri());
     }
 
     protected function determineBaseURL()
     {
         $stage = $this->getStage();
-        $pathInfo = $this->getFrontController()->getRequest()->getHttp()->getBaseUrl();
+        $pathInfo = $this->getRequest()->getHttp()->getBaseUrl();
 
         $baseURL = $stage->getHTTP().$stage->getHost().$pathInfo;
         define('BASE_URL', $baseURL);
+    }
+
+    /**
+     * @return Request|null
+     */
+    public function getRequest()
+    {
+        if ($this->request == null) {
+            $this->initRequest();
+        }
+
+        return $this->request;
+    }
+
+    /**
+     * @return $this
+     */
+    public function initRequest()
+    {
+        $request = Request::createFromGlobals();
+        Request::instance($request);
+        $this->request = $request;
+
+        return $this;
     }
 
     public function setup()
@@ -377,8 +337,8 @@ class Application
 
     public function setupSession()
     {
-        if ($this->getFrontController()->getRequest()->isCLI() == false) {
-            $requestHTTP = $this->getFrontController()->getRequest()->getHttp();
+        if ($this->getRequest()->isCLI() == false) {
+            $requestHTTP = $this->getRequest()->getHttp();
             $domain = $requestHTTP->getRootDomain();
             $sessionManager = $this->getSession();
 
@@ -464,25 +424,29 @@ class Application
         return $this->booted;
     }
 
-    public function dispatch()
+    /**
+     * @param null|Request $request
+     */
+    public function handleRequest($request = null)
     {
+        $request = $request ? $request : $this->getRequest();
         try {
             ob_start();
-            $this->preDispatch();
+            $this->preHandleRequest();
 
             $this->preRouting();
-            $this->getFrontController()->route();
+            $this->route($request);
             $this->postRouting();
 
-            $this->getFrontController()->dispatch();
+            $this->dispatchRequest($request);
             ob_end_flush();
         } catch (\Exception $e) {
             $this->logger->handleException($e);
         }
-        $this->postDispatch();
+        $this->postHandle();
     }
 
-    public function preDispatch()
+    public function preHandleRequest()
     {
     }
 
@@ -494,7 +458,7 @@ class Application
     {
     }
 
-    public function postDispatch()
+    public function postHandleRequest()
     {
     }
 
@@ -513,7 +477,7 @@ class Application
     public function initTranslator()
     {
         $translator = $this->newTranslator();
-        $translator->setRequest($this->getFrontController()->getRequest());
+        $translator->setRequest($this->getRequest());
 
         Container::getInstance()->set('translator', $translator);
     }

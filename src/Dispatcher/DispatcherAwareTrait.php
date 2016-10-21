@@ -18,7 +18,7 @@ trait DispatcherAwareTrait
     /**
      * @param Request|null $request
      */
-    public function dispatch(Request $request = null)
+    public function dispatchRequest(Request $request = null)
     {
         $this->getDispatcher()->dispatch($request);
     }
