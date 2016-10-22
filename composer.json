@@ -25,7 +25,8 @@
     "monolog/monolog": "1.20.*",
     "html2text/html2text": "4.0.1",
     "sendgrid/sendgrid": "~5.0.7",
-    "swiftmailer/swiftmailer": "5.4.*"
+    "swiftmailer/swiftmailer": "5.4.*",
+    "symfony/http-foundation": "3.1.*"
   },
   "require-dev": {
     "codeception/codeception": "2.2.*",
