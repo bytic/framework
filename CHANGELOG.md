@@ -8,6 +8,9 @@ All notable changes to this project will be documented in this file, in reverse 
 - DispatcherServiceProvider
 - RouterServiceProvider
 
+### Changed
+- Make Request extend Symfony Request
+
 ### Deprecated
 - rename all Autoloader -> AutoLoader.
 - rename Application dispatch() -> handleRequest().
