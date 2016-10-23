@@ -20,6 +20,11 @@ trait NameWorksTrait
     protected $classNameParts = null;
 
     /**
+     * @var null|boolean
+     */
+    protected $classFirstName = null;
+
+    /**
      * @var null|string
      */
     protected $namespacePath = null;
@@ -49,11 +54,17 @@ trait NameWorksTrait
         $this->className = $className;
     }
 
+    /**
+     * @return string
+     */
     protected function generateClassName()
     {
         return get_class($this);
     }
 
+    /**
+     * @return mixed|null
+     */
     public function getNamespaceParentFolder()
     {
         if (!$this->isNamespaced()) {
@@ -124,4 +135,23 @@ trait NameWorksTrait
             $this->namespacePath = implode('\\', $parts);
         }
     }
+
+    /**
+     * @return bool|null
+     */
+    public function getClassFirstName()
+    {
+        if ($this->classFirstName === null) {
+            $this->initClassFirstName();
+        }
+
+        return $this->classFirstName;
+    }
+
+    protected function initClassFirstName()
+    {
+        $parts = $this->getClassNameParts();
+        $this->classFirstName = array_pop($parts);
+    }
 }
+
