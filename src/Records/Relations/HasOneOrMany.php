@@ -9,11 +9,21 @@ use Nip\Records\Collections\Associated as AssociatedCollection;
 use Nip\Records\Collections\Collection;
 use Nip\Records\Collections\Collection as RecordCollection;
 
+/**
+ * Class HasOneOrMany
+ * @package Nip\Records\Relations
+ */
 abstract class HasOneOrMany extends Relation
 {
 
-    protected $_type = 'hasMany';
+    /**
+     * @var string
+     */
+    protected $type = 'hasMany';
 
+    /**
+     * @return bool
+     */
     public function save()
     {
         if ($this->hasResults()) {
@@ -25,16 +35,22 @@ abstract class HasOneOrMany extends Relation
         return true;
     }
 
+    /**
+     * @return bool
+     */
     public function hasResults()
     {
         return $this->isPopulated() && count($this->getResults()) > 0;
     }
 
+    /**
+     * @param Record $item
+     */
     public function saveResult(Record $item)
     {
         $pk = $this->getManager()->getPrimaryKey();
         $fk = $this->getFK();
-        $item->$fk = $this->getItem()->$pk;
+        $item->{$fk} = $this->getItem()->{$pk};
         $item->saveRecord();
     }
 
@@ -47,6 +63,9 @@ abstract class HasOneOrMany extends Relation
         $this->setResults($collection);
     }
 
+    /**
+     * @return AssociatedCollection
+     */
     public function newCollection()
     {
         $class = $this->getCollectionClass();
@@ -57,6 +76,9 @@ abstract class HasOneOrMany extends Relation
         return $collection;
     }
 
+    /**
+     * @return mixed|string
+     */
     public function getCollectionClass()
     {
         $collection = $this->getParam('collection');
@@ -78,7 +100,7 @@ abstract class HasOneOrMany extends Relation
         }
     }
 
-    /**
+    /** @noinspection PhpMissingParentCallCommonInspection
      * @param RecordCollection $collection
      * @return Query
      */
@@ -90,7 +112,7 @@ abstract class HasOneOrMany extends Relation
         return $query;
     }
 
-    /**
+    /** @noinspection PhpMissingParentCallCommonInspection
      * @param RecordCollection $collection
      * @return array
      */
@@ -108,7 +130,7 @@ abstract class HasOneOrMany extends Relation
      * @param Record $record
      * @return AssociatedCollection
      */
-    function getResultsFromCollectionDictionary($dictionary, $collection, $record)
+    public function getResultsFromCollectionDictionary($dictionary, $collection, $record)
     {
         $fk = $record->getManager()->getPrimaryKey();
         $pk = $record->{$fk};
@@ -138,6 +160,9 @@ abstract class HasOneOrMany extends Relation
         return $dictionary;
     }
 
+    /**
+     * @return string
+     */
     protected function getDictionaryKey()
     {
         return $this->getFK();

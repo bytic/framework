@@ -3,30 +3,44 @@
 namespace Nip\Records\Relations;
 
 use Nip\Database\Connection;
+use Nip\Database\Query\AbstractQuery;
+use Nip\Database\Query\Select as SelectQuery;
 use Nip\Records\Collections\Collection as RecordCollection;
-use Nip\Database\Query\Select as Query;
 
+/**
+ * Class HasAndBelongsToMany
+ * @package Nip\Records\Relations
+ */
 class HasAndBelongsToMany extends HasOneOrMany
 {
 
-    protected $_type = 'hasAndBelongsToMany';
+    /**
+     * @var string
+     */
+    protected $type = 'hasAndBelongsToMany';
 
-    protected $_joinFields = null;
+    /**
+     * @var null
+     */
+    protected $joinFields = null;
 
 
+    /** @noinspection PhpMissingParentCallCommonInspection
+     * @return SelectQuery
+     */
     public function newQuery()
     {
-        $query = $this->getDB()->newQuery();
+        $query = $this->getDB()->newSelect();
 
         $query->from($this->getWith()->getFullNameTable());
-        $query->from($this->getDB()->getDatabase() . '.' . $this->getTable());
+        $query->from($this->getDB()->getDatabase().'.'.$this->getTable());
 
         foreach ($this->getWith()->getFields() as $field) {
-            $query->cols(array("{$this->getWith()->getTable()}.$field", $field));
+            $query->cols(["{$this->getWith()->getTable()}.$field", $field]);
         }
 
         foreach ($this->getJoinFields() as $field) {
-            $query->cols(array("{$this->getTable()}.$field", "__$field"));
+            $query->cols(["{$this->getTable()}.$field", "__$field"]);
         }
 
         $pk = $this->getWith()->getPrimaryKey();
@@ -36,7 +50,7 @@ class HasAndBelongsToMany extends HasOneOrMany
         $order = $this->getParam('order');
         if ($order) {
             foreach ($order as $item) {
-                $query->order(array($item[0], $item[1]));
+                $query->order([$item[0], $item[1]]);
             }
         }
 
@@ -44,38 +58,49 @@ class HasAndBelongsToMany extends HasOneOrMany
     }
 
     /**
-     * @param Query $query
-     * @return Query
+     * @return Connection
      */
-    public function populateQuerySpecific(Query $query)
+    public function getDB()
     {
-        $pk1 = $this->getManager()->getPrimaryKey();
-        $fk1 = $this->getManager()->getPrimaryFK();
-
-        $query->where("`{$this->getTable()}`.`$fk1` = ?", $this->getItem()->$pk1);
-
-        return $query;
+        return $this->getParam("link-db") == 'with' ? $this->getWith()->getDB() : parent::getDB();
     }
 
-
+    /**
+     * @return null|array
+     */
     protected function getJoinFields()
     {
-        if ($this->_joinFields == null) {
+        if ($this->joinFields == null) {
             $this->initJoinFields();
         }
-        return $this->_joinFields;
+
+        return $this->joinFields;
     }
 
     protected function initJoinFields()
     {
         $structure = $this->getDB()->describeTable($this->getTable());
-        $this->_joinFields = array_keys($structure["fields"]);
+        $this->joinFields = array_keys($structure["fields"]);
+    }
+
+    /**
+     * @param AbstractQuery $query
+     * @return AbstractQuery
+     */
+    public function populateQuerySpecific(AbstractQuery $query)
+    {
+        $pk1 = $this->getManager()->getPrimaryKey();
+        $fk1 = $this->getManager()->getPrimaryFK();
+
+        $query->where("`{$this->getTable()}`.`$fk1` = ?", $this->getItem()->{$pk1});
+
+        return $query;
     }
 
     /**
      * Simple select query from the link table
      * @param bool $specific
-     * @return Query
+     * @return SelectQuery
      */
     public function getLinkQuery($specific = true)
     {
@@ -86,13 +111,13 @@ class HasAndBelongsToMany extends HasOneOrMany
         $query->from($this->getTable());
 
         if ($specific) {
-            $query->where("`{$this->getTable()}`.`$fk` = ?", $this->getItem()->$pk);
+            $query->where("`{$this->getTable()}`.`$fk` = ?", $this->getItem()->{$pk});
         }
 
         return $query;
     }
 
-    /**
+    /** @noinspection PhpMissingParentCallCommonInspection
      * @param RecordCollection $collection
      * @return RecordCollection
      */
@@ -117,20 +142,30 @@ class HasAndBelongsToMany extends HasOneOrMany
         return $return;
     }
 
-    protected function getDictionaryKey()
-    {
-        return '__'.$this->getFK();
-    }
-
+    /** @noinspection PhpMissingParentCallCommonInspection
+     * @return $this
+     */
     public function save()
     {
-        $this->_delete();
-        $this->_save();
+        $this->deleteConnections();
+        $this->saveConnections();
 
         return $this;
     }
 
-    protected function _save()
+    protected function deleteConnections()
+    {
+        $query = $this->getDB()->newQuery('delete');
+        $query->table($this->getTable());
+        $query->where(
+            "{$this->getManager()->getPrimaryFK()} = ?",
+            $this->getItem()->{$this->getManager()->getPrimaryKey()}
+        );
+//        echo $query;
+        $query->execute();
+    }
+
+    protected function saveConnections()
     {
         if ($this->hasResults()) {
             $query = $this->getDB()->newQuery("insert");
@@ -138,10 +173,10 @@ class HasAndBelongsToMany extends HasOneOrMany
             $results = $this->getResults();
 
             foreach ($results as $item) {
-                $data = array(
+                $data = [
                     $this->getManager()->getPrimaryFK() => $this->getItem()->{$this->getManager()->getPrimaryKey()},
-                    $this->getWith()->getPrimaryFK() => $item->{$this->getWith()->getPrimaryKey()}
-                );
+                    $this->getWith()->getPrimaryFK() => $item->{$this->getWith()->getPrimaryKey()},
+                ];
                 foreach ($this->getJoinFields() as $field) {
                     if ($item->{"__$field"}) {
                         $data[$field] = $item->{"__$field"};
@@ -157,33 +192,20 @@ class HasAndBelongsToMany extends HasOneOrMany
         }
     }
 
-    protected function _delete()
-    {
-        $query = $this->getDB()->newQuery('delete');
-        $query->table($this->getTable());
-        $query->where("{$this->getManager()->getPrimaryFK()} = ?", $this->getItem()->{$this->getManager()->getPrimaryKey()});
-//        echo $query;
-        $query->execute();
-    }
-
-
+    /** @noinspection PhpMissingParentCallCommonInspection
+     * @return mixed
+     */
     public function getWithClass()
     {
         return $this->getName();
     }
 
-    /**
-     * @return Connection
+    /** @noinspection PhpMissingParentCallCommonInspection
+     * @return string
      */
-    public function getDB()
+    public function generateTable()
     {
-        return $this->getParam("link-db") == 'with' ? $this->getWith()->getDB() : parent::getDB();
-    }
-
-    public function initTable()
-    {
-        $tableName = $this->getCrossTable();
-        $this->setTable($tableName);
+        return $this->getCrossTable();
     }
 
     /**
@@ -192,8 +214,17 @@ class HasAndBelongsToMany extends HasOneOrMany
      */
     public function getCrossTable()
     {
-        $tables = array($this->getManager()->getTable(), $this->getWith()->getTable());
+        $tables = [$this->getManager()->getTable(), $this->getWith()->getTable()];
         sort($tables);
+
         return implode("-", $tables);
+    }
+
+    /** @noinspection PhpMissingParentCallCommonInspection
+     * @return string
+     */
+    protected function getDictionaryKey()
+    {
+        return '__'.$this->getFK();
     }
 }

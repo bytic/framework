@@ -3,60 +3,87 @@
 namespace Nip\Records\Relations;
 
 use Nip\Database\Connection;
+use Nip\Database\Query\AbstractQuery;
 use Nip\Database\Query\Select as Query;
 use Nip\HelperBroker;
 use Nip\Records\AbstractModels\Record as Record;
 use Nip\Records\AbstractModels\RecordManager;
+use Nip\Records\Collections\Collection;
 use Nip\Records\Collections\Collection as RecordCollection;
 
+/**
+ * Class Relation
+ * @package Nip\Records\Relations
+ */
 abstract class Relation
 {
 
-    protected $_name;
+    /**
+     * @var
+     */
+    protected $name;
 
-    protected $_type = 'relation';
+    /**
+     * @var string
+     */
+    protected $type = 'relation';
 
     /**
      * @var Record
      */
-    protected $_item;
+    protected $item;
 
     /**
      * @var RecordManager
      */
-    protected $_manager = null;
+    protected $manager = null;
 
 
     /**
      * @var RecordManager
      */
-    protected $_with = null;
+    protected $with = null;
 
-    protected $_table = null;
-    protected $_fk = null;
+    /**
+     * @var null|string
+     */
+    protected $table = null;
+
+    /**
+     * @var null|string
+     */
+    protected $fk = null;
 
     /**
      * @var Query
      */
-    protected $_query;
+    protected $query;
 
-
+    /**
+     * @var bool
+     */
     protected $populated = false;
 
-    protected $_params = [];
+    /**
+     * @var array
+     */
+    protected $params = [];
 
-    protected $_results = null;
+    /**
+     * @var null|Collection|Record
+     */
+    protected $results = null;
 
     /**
      * @return Query
      */
     public function getQuery()
     {
-        if ($this->_query == null) {
+        if ($this->query == null) {
             $this->initQuery();
         }
 
-        return $this->_query;
+        return $this->query;
     }
 
     /**
@@ -65,7 +92,7 @@ abstract class Relation
      */
     public function setQuery($query)
     {
-        $this->_query = $query;
+        $this->query = $query;
 
         return $this;
     }
@@ -75,7 +102,7 @@ abstract class Relation
         $query = $this->newQuery();
         $this->populateQuerySpecific($query);
 
-        $this->_query = $query;
+        $this->query = $query;
     }
 
     /**
@@ -91,11 +118,11 @@ abstract class Relation
      */
     public function getWith()
     {
-        if ($this->_with == null) {
+        if ($this->with == null) {
             $this->initWith();
         }
 
-        return $this->_with;
+        return $this->with;
     }
 
     /**
@@ -104,7 +131,7 @@ abstract class Relation
      */
     public function setWith(RecordManager $object)
     {
-        $this->_with = $object;
+        $this->with = $object;
 
         return $this;
     }
@@ -115,6 +142,9 @@ abstract class Relation
         $this->setWithClass($className);
     }
 
+    /**
+     * @return mixed
+     */
     public function getWithClass()
     {
         return inflector()->pluralize($this->getName());
@@ -125,7 +155,7 @@ abstract class Relation
      */
     public function getName()
     {
-        return $this->_name;
+        return $this->name;
     }
 
     /**
@@ -133,7 +163,7 @@ abstract class Relation
      */
     public function setName($name)
     {
-        $this->_name = $name;
+        $this->name = $name;
     }
 
     /**
@@ -150,10 +180,21 @@ abstract class Relation
     }
 
     /**
-     * @param Query $query
+     * @param AbstractQuery $query
      */
-    public function populateQuerySpecific(Query $query)
+    public function populateQuerySpecific(AbstractQuery $query)
     {
+    }
+
+    /**
+     * @return \Nip\Database\Query\Delete
+     */
+    public function getDeleteQuery()
+    {
+        $query = $this->getWith()->newDeleteQuery();
+        $this->populateQuerySpecific($query);
+
+        return $query;
     }
 
     /**
@@ -169,11 +210,11 @@ abstract class Relation
      */
     public function getManager()
     {
-        if ($this->_manager == null) {
+        if ($this->manager == null) {
             $this->initManager();
         }
 
-        return $this->_manager;
+        return $this->manager;
     }
 
     /**
@@ -181,12 +222,12 @@ abstract class Relation
      */
     public function setManager($manager)
     {
-        $this->_manager = $manager;
+        $this->manager = $manager;
     }
 
     public function initManager()
     {
-        $this->_manager = $this->getItem()->getManager();
+        $this->manager = $this->getItem()->getManager();
     }
 
     /**
@@ -194,21 +235,32 @@ abstract class Relation
      */
     public function getItem()
     {
-        return $this->_item;
+        return $this->item;
     }
 
+    /**
+     * @param Record $item
+     * @return $this
+     */
     public function setItem(Record $item)
     {
-        $this->_item = $item;
+        $this->item = $item;
 
         return $this;
     }
 
+    /**
+     * @param $key
+     * @return mixed
+     */
     public function getParam($key)
     {
-        return $this->_params[$key];
+        return $this->params[$key];
     }
 
+    /**
+     * @param $params
+     */
     public function addParams($params)
     {
         $this->checkParamClass($params);
@@ -218,6 +270,9 @@ abstract class Relation
         $this->setParams($params);
     }
 
+    /**
+     * @param $params
+     */
     public function checkParamClass($params)
     {
         if (isset($params['class'])) {
@@ -264,7 +319,7 @@ abstract class Relation
      */
     public function setParams($params)
     {
-        $this->_params = $params;
+        $this->params = $params;
     }
 
     /**
@@ -272,11 +327,11 @@ abstract class Relation
      */
     public function getTable()
     {
-        if ($this->_table == null) {
+        if ($this->table == null) {
             $this->initTable();
         }
 
-        return $this->_table;
+        return $this->table;
     }
 
     /**
@@ -284,13 +339,20 @@ abstract class Relation
      */
     public function setTable($name)
     {
-        $this->_table = $name;
+        $this->table = $name;
     }
 
-    public function initTable()
+    protected function initTable()
     {
-        $tableName = $this->getWith()->getTable();
-        $this->setTable($tableName);
+        $this->setTable($this->generateTable());
+    }
+
+    /**
+     * @return string
+     */
+    protected function generateTable()
+    {
+        return $this->getWith()->getTable();
     }
 
     /**
@@ -303,7 +365,7 @@ abstract class Relation
             $this->initResults();
         }
 
-        return $this->_results;
+        return $this->results;
     }
 
     /**
@@ -312,10 +374,10 @@ abstract class Relation
      */
     public function setResults($results)
     {
-        $this->_results = $results;
+        $this->results = $results;
         $this->populated = true;
 
-        return $this->_results;
+        return $this->results;
     }
 
     /**
@@ -371,22 +433,32 @@ abstract class Relation
      */
     public function getFK()
     {
-        if ($this->_fk == null) {
+        if ($this->fk == null) {
             $this->initFK();
         }
 
-        return $this->_fk;
+        return $this->fk;
     }
 
+    /**
+     * @param $name
+     */
     public function setFK($name)
     {
-        $this->_fk = $name;
+        $this->fk = $name;
     }
 
-    public function initFK()
+    protected function initFK()
     {
-        $name = $this->getManager()->getPrimaryFK();
-        $this->setFK($name);
+        $this->setFK($this->generateFK());
+    }
+
+    /**
+     * @return string
+     */
+    protected function generateFK()
+    {
+        return $this->getManager()->getPrimaryFK();
     }
 
     /**
@@ -441,6 +513,6 @@ abstract class Relation
      */
     public function getType()
     {
-        return $this->_type;
+        return $this->type;
     }
 }

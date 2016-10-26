@@ -15,6 +15,11 @@ use Nip\Database\Query\Select\Union;
 class Select extends AbstractQuery
 {
 
+    /**
+     * @param $name
+     * @param $arguments
+     * @return $this
+     */
     public function __call($name, $arguments)
     {
         if (in_array($name, ['min', 'max', 'count', 'avg', 'sum'])) {
@@ -52,7 +57,7 @@ class Select extends AbstractQuery
         $match = [];
         foreach ($fields as $itemField) {
             if (!is_array($itemField)) {
-                $itemField = array($itemField);
+                $itemField = [$itemField];
 
                 $field = isset($itemField[0]) ? $itemField[0] : false;
                 $protected = isset($itemField[1]) ? $itemField[1] : true;
