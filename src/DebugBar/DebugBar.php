@@ -2,11 +2,11 @@
 
 namespace Nip\DebugBar;
 
-use DebugBar\DebugBar as DebugBarGeneric;
 use DebugBar\Bridge\MonologCollector;
-
-use Nip\DebugBar\Formatter\MonologFormatter;
+use DebugBar\DebugBar as DebugBarGeneric;
 use Monolog\Logger as MonologLogger;
+use Nip\DebugBar\Formatter\MonologFormatter;
+use Nip\Http\Response\Response;
 
 abstract class DebugBar extends DebugBarGeneric
 {
@@ -37,6 +37,19 @@ abstract class DebugBar extends DebugBarGeneric
         }
     }
 
+    public function boot()
+    {
+        if ($this->booted) {
+            return;
+        }
+
+        $this->doBoot();
+    }
+
+    public function doBoot()
+    {
+    }
+
     /**
      * Disable the DebugBar
      */
@@ -57,33 +70,35 @@ abstract class DebugBar extends DebugBarGeneric
         return $this->enabled;
     }
 
-    public function boot()
-    {
-        if ($this->booted) {
-            return;
-        }
-
-        $this->doBoot();
-    }
-
-    public function doBoot()
-    {
-    }
-
+    /**
+     * @param MonologLogger $monolog
+     */
     public function addMonolog(MonologLogger $monolog)
     {
-        $colector = new MonologCollector($monolog);
-        $colector->setFormatter(new MonologFormatter());
-        $this->addCollector($colector);
+        $collector = new MonologCollector($monolog);
+        $collector->setFormatter(new MonologFormatter());
+        $this->addCollector($collector);
     }
 
     /**
      * Injects the web debug toolbar
+     * @param Response $response
      */
-    public function injectDebugBar()
+    public function injectDebugBar(Response $response)
     {
+        $content = $response->getContent();
+
         $renderer = $this->getJavascriptRenderer();
         $renderedContent = $renderer->renderHead() . $renderer->render();
-        echo $renderedContent;
+
+        $pos = strripos($content, '</body>');
+        if (false !== $pos) {
+            $content = substr($content, 0, $pos).$renderedContent.substr($content, $pos);
+        } else {
+            $content = $content.$renderedContent;
+        }
+        // Update the new content and reset the content length
+        $response->setContent($content);
+        $response->headers->remove('Content-Length');
     }
 }
