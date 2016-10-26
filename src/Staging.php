@@ -24,7 +24,7 @@ class Staging
     /**
      * @var Stage[]
      */
-    protected $stages;
+    protected $stages = null;
 
     /**
      * @var Config
@@ -149,26 +149,30 @@ class Staging
      */
     public function getStages()
     {
-        if (!$this->stages) {
-            $stageObj = $this->getConfig()->get('HOSTS');
-            if ($stageObj) {
-                $this->stages = get_object_vars($stageObj);
-
-                if (is_array($this->stages)) {
-                    foreach ($this->stages as &$stage) {
-                        if (strpos($stage, ',')) {
-                            $stage = array_map("trim", explode(',', $stage));
-                        } else {
-                            $stage = [trim($stage)];
-                        }
-                    }
-                }
-            } else {
-                $this->stages = [];
-            }
+        if ($this->stages == null) {
+            $this->initStages();
         }
 
         return $this->stages;
+    }
+
+    protected function initStages()
+    {
+        $stageObj = $this->getConfig()->get('HOSTS');
+        if ($stageObj) {
+            $this->stages = $stageObj->toArray();
+            if (is_array($this->stages)) {
+                foreach ($this->stages as &$stage) {
+                    if (strpos($stage, ',')) {
+                        $stage = array_map("trim", explode(',', $stage));
+                    } else {
+                        $stage = [trim($stage)];
+                    }
+                }
+            }
+        } else {
+            $this->stages = [];
+        }
     }
 
     /**
