@@ -4,7 +4,6 @@ namespace Nip\Dispatcher;
 
 use Exception;
 use Nip\AutoLoader\AutoLoader;
-use Nip\AutoLoader\Exception as AutoLoaderException;
 use Nip\Controller;
 use Nip\Request;
 
@@ -112,10 +111,7 @@ class Dispatcher
     {
         $controllerClass = $this->getFullControllerNameFromRequest($request);
 
-        try {
-            $this->getAutoloader()->load($controllerClass);
-        } catch (AutoLoaderException $e) {
-//            $this->getFrontController()->getTrace()->add($e->getMessage());
+        if (!$this->getAutoloader()->isClass($controllerClass)) {
             return null;
         }
 

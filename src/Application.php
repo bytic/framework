@@ -449,9 +449,8 @@ class Application
             $this->preRouting();
             $this->route($request);
             $this->postRouting();
-
             return $this->getResponseFromRequest($request);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return $this->handleException($request, $e);
         }
     }
@@ -474,20 +473,22 @@ class Application
      */
     protected function getResponseFromRequest($request)
     {
-        ob_start();
         $this->dispatchRequest($request);
+        $content = ob_get_clean();
 
-        return ResponseFactory::make(ob_get_flush());
+        return ResponseFactory::make($content);
     }
 
     /**
      * @param Exception $e
      * @param Request $request
+     * @return Response
      */
     protected function handleException(Request $request, Exception $e)
     {
         $this->reportException($e);
-        $this->renderException($request, $e);
+
+        return $this->renderException($request, $e);
     }
 
     /**
@@ -509,16 +510,16 @@ class Application
     protected function renderException(Request $request, Exception $e)
     {
         if ($this->getStage()->isPublic()) {
+            $this->getDispatcher()->setErrorControler();
+
+            return $this->getResponseFromRequest($request);
+        } else {
             $whoops = new WhoopsRun;
             $whoops->allowQuit(false);
             $whoops->writeToOutput(false);
             $whoops->pushHandler(new PrettyPageHandler());
 
             return ResponseFactory::make($whoops->handleException($e));
-        } else {
-            $this->getDispatcher()->setErrorControler();
-
-            return $this->getResponseFromRequest($request);
         }
     }
 
