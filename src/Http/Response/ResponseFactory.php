@@ -17,7 +17,7 @@ class ResponseFactory
      * @param array $headers
      * @return Response
      */
-    public function make($content = '', $status = 200, array $headers = [])
+    public static function make($content = '', $status = 200, array $headers = [])
     {
         return new Response($content, $status, $headers);
     }

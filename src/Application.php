@@ -14,6 +14,8 @@ use Nip\DebugBar\DataCollector\RouteCollector;
 use Nip\DebugBar\StandardDebugBar;
 use Nip\Dispatcher\DispatcherAwareTrait;
 use Nip\Dispatcher\DispatcherServiceProvider;
+use Nip\Http\Response\Response;
+use Nip\Http\Response\ResponseFactory;
 use Nip\Logger\Manager as LoggerManager;
 use Nip\Mail\MailServiceProvider;
 use Nip\Mvc\MvcServiceProvider;
@@ -74,7 +76,13 @@ class Application
         $this->loadFiles();
         $this->prepare();
         $this->setup();
-        $this->handleRequest();
+
+        $request = $this->getRequest();
+        $response = $this->handleRequest($request);
+
+        $response = $this->filterResponse($response, $request);
+        $response->send();
+        $this->terminate($request, $response);
     }
 
     public function loadFiles()
@@ -429,6 +437,7 @@ class Application
 
     /**
      * @param null|Request $request
+     * @return Response
      */
     public function handleRequest($request = null)
     {
@@ -441,12 +450,10 @@ class Application
             $this->route($request);
             $this->postRouting();
 
-            $this->dispatchRequest($request);
-            ob_end_flush();
+            return $this->getResponseFromRequest($request);
         } catch (\Exception $e) {
-            $this->handleException($request, $e);
+            return $this->handleException($request, $e);
         }
-        $this->postHandleRequest();
     }
 
     public function preHandleRequest()
@@ -459,6 +466,18 @@ class Application
 
     public function postRouting()
     {
+    }
+
+    /**
+     * @param Request $request
+     * @return Response
+     */
+    protected function getResponseFromRequest($request)
+    {
+        ob_start();
+        $this->dispatchRequest($request);
+
+        return ResponseFactory::make(ob_get_flush());
     }
 
     /**
@@ -485,19 +504,39 @@ class Application
     /**
      * @param Request $request
      * @param Exception $e
+     * @return Response
      */
     protected function renderException(Request $request, Exception $e)
     {
         if ($this->getStage()->isPublic()) {
             $whoops = new WhoopsRun;
+            $whoops->allowQuit(false);
+            $whoops->writeToOutput(false);
             $whoops->pushHandler(new PrettyPageHandler());
-            $whoops->handleException($e);
+
+            return ResponseFactory::make($whoops->handleException($e));
         } else {
-            $this->getDispatcher()->setErrorControler()->dispatch();
+            $this->getDispatcher()->setErrorControler();
+
+            return $this->getResponseFromRequest($request);
         }
     }
 
-    public function postHandleRequest()
+    /**
+     * @param Request $request
+     * @param Response $response
+     * @return Response
+     */
+    public function filterResponse(Response $response, Request $request)
+    {
+        return $response;
+    }
+
+    /**
+     * @param Request $request
+     * @param Response $response
+     */
+    public function terminate(Request $request, Response $response)
     {
     }
 
