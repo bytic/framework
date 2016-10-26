@@ -2,6 +2,7 @@
 
 namespace Nip;
 
+use Exception;
 use Nip\AutoLoader\AutoLoader;
 use Nip\AutoLoader\AutoLoaderAwareTrait;
 use Nip\AutoLoader\AutoLoaderServiceProvider;
@@ -19,6 +20,8 @@ use Nip\Mvc\MvcServiceProvider;
 use Nip\Router\RouterAwareTrait;
 use Nip\Router\RouterServiceProvider;
 use Nip\Staging\Stage;
+use Whoops\Handler\PrettyPageHandler;
+use Whoops\Run as WhoopsRun;
 
 /**
  * Class Application
@@ -441,7 +444,7 @@ class Application
             $this->dispatchRequest($request);
             ob_end_flush();
         } catch (\Exception $e) {
-            $this->logger->handleException($e);
+            $this->handleException($request, $e);
         }
         $this->postHandleRequest();
     }
@@ -456,6 +459,42 @@ class Application
 
     public function postRouting()
     {
+    }
+
+    /**
+     * @param Exception $e
+     * @param Request $request
+     */
+    protected function handleException(Request $request, Exception $e)
+    {
+        $this->reportException($e);
+        $this->renderException($request, $e);
+    }
+
+    /**
+     * Report the exception to the exception handler.
+     *
+     * @param  Exception $e
+     * @return void
+     */
+    protected function reportException(Exception $e)
+    {
+        $this->getLogger()->handleException($e);
+    }
+
+    /**
+     * @param Request $request
+     * @param Exception $e
+     */
+    protected function renderException(Request $request, Exception $e)
+    {
+        if ($this->getStage()->isPublic()) {
+            $whoops = new WhoopsRun;
+            $whoops->pushHandler(new PrettyPageHandler());
+            $whoops->handleException($e);
+        } else {
+            $this->getDispatcher()->setErrorControler()->dispatch();
+        }
     }
 
     public function postHandleRequest()

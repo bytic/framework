@@ -2,6 +2,7 @@
 
 namespace Nip\Dispatcher;
 
+use Exception;
 use Nip\AutoLoader\AutoLoader;
 use Nip\AutoLoader\Exception as AutoLoaderException;
 use Nip\Controller;
@@ -49,6 +50,7 @@ class Dispatcher
     /**
      * @param Request|null $request
      * @return bool
+     * @throws Exception
      */
     public function dispatch(Request $request = null)
     {
@@ -61,16 +63,11 @@ class Dispatcher
 
         if ($this->hops <= $this->maxHops) {
             if ($request->getControllerName() == null) {
-                $this->setErrorControler();
-
-                return $this->dispatch();
+                throw new Exception('No valid controller name in request ['.$request->getMCA().']');
             }
 
             $controller = $this->generateController($request);
 
-            $profilerName = "dispatch [{$request->getMCA()}]";
-
-            \Nip_Profiler::instance()->start($profilerName);
             if ($controller instanceof Controller) {
                 try {
                     $this->currentController = $controller;
@@ -78,23 +75,15 @@ class Dispatcher
                     $controller->dispatch();
                 } catch (ForwardException $e) {
                     $return = $this->dispatch();
-                    \Nip_Profiler::instance()->end($profilerName);
 
                     return $return;
                 }
             } else {
-                $this->setErrorControler();
-                $return = $this->dispatch();
-                \Nip_Profiler::instance()->end($profilerName);
-
-                return $return;
+                throw new Exception('Error finding a valid controller for ['.$request->getMCA().']');
             }
         } else {
-            trigger_error("Maximum number of hops ($this->maxHops) has been reached for {$request->getMCA()}",
-                E_USER_ERROR);
+            throw new Exception("Maximum number of hops ($this->maxHops) has been reached for {$request->getMCA()}");
         }
-
-        \Nip_Profiler::instance()->end($profilerName);
 
         return true;
     }
@@ -113,13 +102,6 @@ class Dispatcher
     public function setRequest($request)
     {
         $this->request = $request;
-    }
-
-    public function setErrorControler()
-    {
-        $this->getRequest()->setActionName('index');
-        $this->getRequest()->setControllerName('error');
-        $this->getRequest()->setModuleName('default');
     }
 
     /**
@@ -259,6 +241,18 @@ class Dispatcher
         $this->forward('index');
 
         return;
+    }
+
+    /**
+     * @return $this
+     */
+    public function setErrorControler()
+    {
+        $this->getRequest()->setActionName('index');
+        $this->getRequest()->setControllerName('error');
+        $this->getRequest()->setModuleName('default');
+
+        return $this;
     }
 
     /**

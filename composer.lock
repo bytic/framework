@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "b347c9cc47ad0da2b2d39b414bc8048d",
-    "content-hash": "d75e36f9a7fad6200b5d4cedc8efd314",
+    "hash": "abd5fdd5841676451d3a8fb5a005ad29",
+    "content-hash": "59c622d9e9db3234886b786a34938663",
     "packages": [
         {
             "name": "container-interop/container-interop",
@@ -33,6 +33,66 @@
             ],
             "description": "Promoting the interoperability of container objects (DIC, SL, etc.)",
             "time": "2014-12-30 15:22:37"
+        },
+        {
+            "name": "filp/whoops",
+            "version": "2.1.4",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/filp/whoops.git",
+                "reference": "3f5cbd0e6a2fc17bc40b0238025ef1ff4c8c3efa"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/filp/whoops/zipball/3f5cbd0e6a2fc17bc40b0238025ef1ff4c8c3efa",
+                "reference": "3f5cbd0e6a2fc17bc40b0238025ef1ff4c8c3efa",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^5.5.9 || ^7.0"
+            },
+            "require-dev": {
+                "mockery/mockery": "0.9.*",
+                "phpunit/phpunit": "^4.8 || ^5.0",
+                "symfony/var-dumper": "^2.6 || ^3.0"
+            },
+            "suggest": {
+                "symfony/var-dumper": "Pretty print complex values better with var-dumper available",
+                "whoops/soap": "Formats errors as SOAP responses"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "2.0-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Whoops\\": "src/Whoops/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Filipe Dobreira",
+                    "homepage": "https://github.com/filp",
+                    "role": "Developer"
+                }
+            ],
+            "description": "php error handling for cool kids",
+            "homepage": "https://filp.github.io/whoops/",
+            "keywords": [
+                "error",
+                "exception",
+                "handling",
+                "library",
+                "whoops",
+                "zf2"
+            ],
+            "time": "2016-10-11 15:32:23"
         },
         {
             "name": "html2text/html2text",
@@ -1764,16 +1824,16 @@
         },
         {
             "name": "phpunit/phpunit",
-            "version": "5.6.1",
+            "version": "5.6.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/phpunit.git",
-                "reference": "60c32c5b5e79c2248001efa2560f831da11cc2d7"
+                "reference": "cd13b23ac5a519a4708e00736c26ee0bb28b2e01"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/60c32c5b5e79c2248001efa2560f831da11cc2d7",
-                "reference": "60c32c5b5e79c2248001efa2560f831da11cc2d7",
+                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/cd13b23ac5a519a4708e00736c26ee0bb28b2e01",
+                "reference": "cd13b23ac5a519a4708e00736c26ee0bb28b2e01",
                 "shasum": ""
             },
             "require": {
@@ -1842,7 +1902,7 @@
                 "testing",
                 "xunit"
             ],
-            "time": "2016-10-07 13:03:26"
+            "time": "2016-10-25 07:40:25"
         },
         {
             "name": "phpunit/phpunit-mock-objects",
