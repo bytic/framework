@@ -122,7 +122,7 @@ class Application
         $this->setupAutoLoaderCache();
         $this->setupAutoLoaderPaths();
 
-        if ($this->getStage()->inTesting()) {
+        if ($this->getStaging()->getStage()->inTesting()) {
             $this->getAutoLoader()->getClassMapLoader()->setRetry(true);
         }
     }
