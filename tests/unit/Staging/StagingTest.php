@@ -1,9 +1,11 @@
 <?php
 
-namespace Nip\Tests\Unit;
+namespace Nip\Tests\Unit\Staging;
 
 use Nip\Config\Config;
-use Nip\Staging;
+use Nip\Staging\Stage\Stage;
+use Nip\Staging\Staging;
+use Nip\Tests\Unit\AbstractTest;
 
 /**
  * Class StagingTest
@@ -34,7 +36,7 @@ class StagingTest extends AbstractTest
         $config = new Config(['STAGE' => ['type' => 'production']]);
         $newStage->setConfig($config);
 
-        static::assertInstanceOf('\Nip\Staging\Stage', $newStage);
+        static::assertInstanceOf(Stage::class, $newStage);
         static::assertEquals($stageName, $newStage->getName());
         static::assertTrue($newStage->inProduction());
         static::assertTrue($newStage->isPublic());
@@ -47,7 +49,7 @@ class StagingTest extends AbstractTest
         $stageName = 'local';
         $newStage = $this->object->newStage($stageName);
 
-        static::assertInstanceOf('\Nip\Staging\Stage', $newStage);
+        static::assertInstanceOf(Stage::class, $newStage);
         static::assertEquals($stageName, $newStage->getName());
         static::assertFalse($newStage->inProduction());
         static::assertFalse($newStage->isPublic());
