@@ -1,19 +1,16 @@
 <?php
 
-namespace Nip;
+namespace Nip\Staging;
 
 use Nip\Config\Config;
-use Nip\Staging\Stage;
-use Nip\Utility\Traits\SingletonTrait;
+use Nip\Staging\Stage\Stage;
 
 /**
  * Class Staging
- * @package Nip
+ * @package Nip\Staging
  */
 class Staging
 {
-
-    use SingletonTrait;
 
     /**
      * @var Stage
@@ -97,11 +94,11 @@ class Staging
     {
         $config = new Config();
         if ($this->hasConfigFile('staging.ini')) {
-            $config->mergeFile($this->getConfigFolder().'staging.ini');
+            $config->mergeFile($this->getConfigFolder() . 'staging.ini');
         }
 
         if ($this->hasConfigFile('stage.ini')) {
-            $config->mergeFile($this->getConfigFolder().'stage.ini');
+            $config->mergeFile($this->getConfigFolder() . 'stage.ini');
         }
 
         return $config;
@@ -113,7 +110,7 @@ class Staging
      */
     protected function hasConfigFile($file)
     {
-        return is_file($this->getConfigFolder().$file);
+        return is_file($this->getConfigFolder() . $file);
     }
 
     /**
@@ -182,8 +179,7 @@ class Staging
      */
     public function matchHost($key, $host)
     {
-        return preg_match('/^'.strtr($key, ['*' => '.*', '?' => '.?']).'$/i',
-            $host);
+        return preg_match('/^' . strtr($key, ['*' => '.*', '?' => '.?']) . '$/i', $host);
     }
 
     /**

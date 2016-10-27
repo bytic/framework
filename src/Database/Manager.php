@@ -53,9 +53,9 @@ class Manager
             $connection->connect($host, $user, $password, $database);
             $this->initNewConnection($connection);
 
-        } catch (Nip_DB_Exception $e) {
+        } catch (Exception $e) {
             echo '<h1>Error connecting to database</h1>';
-            if (Nip_Staging::instance()->getStage()->inTesting()) {
+            if (app()->get('staging')->getStage()->inTesting()) {
                 echo '<h4>' . $e->getMessage() . '</h4>';
                 $e->log();
             }
