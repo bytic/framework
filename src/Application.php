@@ -230,7 +230,7 @@ class Application
 
     protected function determineBaseURL()
     {
-        $stage = $this->getStage();
+        $stage = $this->getStaging()->getStage();
         $pathInfo = $this->getRequest()->getHttp()->getBaseUrl();
 
         $baseURL = $stage->getHTTP().$stage->getHost().$pathInfo;
@@ -279,7 +279,7 @@ class Application
 
     public function setupDatabase()
     {
-        $stageConfig = $this->getStage()->getConfig();
+        $stageConfig = $this->getStaging()->getStage()->getConfig();
         $dbManager = new DatabaseManager();
         $dbManager->setBootstrap($this);
 
@@ -455,7 +455,7 @@ class Application
      */
     protected function renderException(Request $request, Exception $e)
     {
-        if ($this->getStage()->isPublic()) {
+        if ($this->getStaging()->getStage()->isPublic()) {
             $this->getDispatcher()->setErrorControler();
 
             return $this->getResponseFromRequest($request);
