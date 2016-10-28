@@ -3,9 +3,12 @@
 namespace Nip\Helpers\View\CachebleBlocks;
 
 use Nip\Filesystem\Exception\IOException;
-use Nip\Staging as Staging;
 use Nip_File_System as FileSystem;
 
+/**
+ * Class AbstractBlock
+ * @package Nip\Helpers\View\CachebleBlocks
+ */
 class AbstractBlock
 {
 
@@ -13,9 +16,15 @@ class AbstractBlock
 
     /** $_model Nip_Record */
     protected $_model;
+
     protected $_manager;
+
     protected $_viewPath;
 
+    /**
+     * @param $name
+     * @return $this
+     */
     public function setName($name)
     {
         $this->_name = $name;
@@ -23,6 +32,10 @@ class AbstractBlock
         return $this;
     }
 
+    /**
+     * @param $model
+     * @return $this
+     */
     public function setModel($model)
     {
         $this->_model = $model;
@@ -30,6 +43,10 @@ class AbstractBlock
         return $this;
     }
 
+    /**
+     * @param $manager
+     * @return $this
+     */
     public function setManager($manager)
     {
         $this->_manager = $manager;
@@ -55,14 +72,21 @@ class AbstractBlock
     {
         $fileName = str_replace('/', '+', $this->_viewPath);
 
-        return $this->cachePath().$fileName.'.html';
+        return $this->cachePath() . $fileName . '.html';
     }
 
+    /**
+     * @return mixed
+     */
     public function cachePath()
     {
         return $this->_model->getCacheBlocksPath();
     }
 
+    /**
+     * @param $ttl
+     * @return bool
+     */
     public function valid($ttl)
     {
         $ttl = $ttl !== null ? $ttl : $this->_ttl;
@@ -107,8 +131,8 @@ class AbstractBlock
             return true;
         } else {
             $message = "Cannot open CachebleBlocks file for writing: ";
-            if (Staging::instance()->getStage()->inTesting()) {
-                $message .= " [ ".$file." ] ";
+            if (app()->get('staging')->getStage()->inTesting()) {
+                $message .= " [ " . $file . " ] ";
             }
             die($message);
         }

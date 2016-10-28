@@ -21,7 +21,8 @@ use Nip\Mail\MailServiceProvider;
 use Nip\Mvc\MvcServiceProvider;
 use Nip\Router\RouterAwareTrait;
 use Nip\Router\RouterServiceProvider;
-use Nip\Staging\Stage;
+use Nip\Staging\StagingAwareTrait;
+use Nip\Staging\StagingServiceProvider;
 use Whoops\Handler\PrettyPageHandler;
 use Whoops\Run as WhoopsRun;
 
@@ -36,6 +37,7 @@ class Application
     use AutoLoaderAwareTrait;
     use RouterAwareTrait;
     use DispatcherAwareTrait;
+    use StagingAwareTrait;
 
     /**
      * Indicates if the application has "booted".
@@ -61,16 +63,6 @@ class Application
 
     protected $debugBar = null;
 
-    /**
-     * @var Staging
-     */
-    protected $staging = null;
-
-    /**
-     * @var Stage
-     */
-    protected $stage = null;
-
     public function run()
     {
         $this->loadFiles();
@@ -95,7 +87,6 @@ class Application
         $this->registerContainer();
         $this->registerServices();
         $this->setupRequest();
-        $this->setupStaging();
         $this->setupAutoLoader();
         $this->setupErrorHandling();
         $this->setupURLConstants();
@@ -116,14 +107,11 @@ class Application
         $this->getContainer()->addServiceProvider(MailServiceProvider::class);
         $this->getContainer()->addServiceProvider(MvcServiceProvider::class);
         $this->getContainer()->addServiceProvider(DispatcherServiceProvider::class);
+        $this->getContainer()->addServiceProvider(StagingServiceProvider::class);
         $this->getContainer()->addServiceProvider(RouterServiceProvider::class);
     }
 
     public function setupRequest()
-    {
-    }
-
-    public function setupStaging()
     {
     }
 
@@ -134,7 +122,7 @@ class Application
         $this->setupAutoLoaderCache();
         $this->setupAutoLoaderPaths();
 
-        if ($this->getStage()->inTesting()) {
+        if ($this->getStaging()->getStage()->inTesting()) {
             $this->getAutoLoader()->getClassMapLoader()->setRetry(true);
         }
     }
@@ -147,55 +135,13 @@ class Application
     {
     }
 
-    /**
-     * @return Stage
-     */
-    public function getStage()
-    {
-        if ($this->stage == null) {
-            $this->initStage();
-        }
-
-        return $this->stage;
-    }
-
-    public function initStage()
-    {
-        $this->stage = $this->getStaging()->getStage();
-    }
-
-    /**
-     * @return Staging
-     */
-    public function getStaging()
-    {
-        if ($this->staging == null) {
-            $this->initStaging();
-        }
-
-        return $this->staging;
-    }
-
-    public function initStaging()
-    {
-        $this->staging = $this->newStaging();
-    }
-
-    /**
-     * @return Staging
-     */
-    public function newStaging()
-    {
-        return Staging::instance();
-    }
-
     public function setupErrorHandling()
     {
         fix_input_quotes();
 
         $this->getLogger()->init();
 
-        if ($this->getStage()->inTesting()) {
+        if ($this->getStaging()->getStage()->inTesting()) {
             $this->getDebugBar()->enable();
             $this->getDebugBar()->addMonolog($this->getLogger()->getMonolog());
         }
@@ -284,7 +230,7 @@ class Application
 
     protected function determineBaseURL()
     {
-        $stage = $this->getStage();
+        $stage = $this->getStaging()->getStage();
         $pathInfo = $this->getRequest()->getHttp()->getBaseUrl();
 
         $baseURL = $stage->getHTTP().$stage->getHost().$pathInfo;
@@ -333,7 +279,7 @@ class Application
 
     public function setupDatabase()
     {
-        $stageConfig = $this->getStage()->getConfig();
+        $stageConfig = $this->getStaging()->getStage()->getConfig();
         $dbManager = new DatabaseManager();
         $dbManager->setBootstrap($this);
 
@@ -509,7 +455,7 @@ class Application
      */
     protected function renderException(Request $request, Exception $e)
     {
-        if ($this->getStage()->isPublic()) {
+        if ($this->getStaging()->getStage()->isPublic()) {
             $this->getDispatcher()->setErrorControler();
 
             return $this->getResponseFromRequest($request);

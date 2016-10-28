@@ -105,7 +105,7 @@ class Manager implements PsrLoggerInterface
 
     public function initErrorDisplay()
     {
-        if ($this->getBootstrap()->getStage()->inTesting()) {
+        if ($this->getBootstrap()->getStaging()->getStage()->inTesting()) {
             ini_set('html_errors', 1);
             ini_set('display_errors', 1);
         } else {
