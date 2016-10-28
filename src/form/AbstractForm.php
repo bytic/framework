@@ -10,8 +10,9 @@ use Nip_Form_Renderer_Abstract as AbstractRenderer;
  * Class AbstractForm
  *
  *
- * @method addSelect($name, $label = false, $type = 'input', $isRequired = false)
  * @method addInput($name, $label = false, $type = 'input', $isRequired = false)
+ * @method addHidden($name, $label = false, $type = 'input', $isRequired = false)
+ * @method addSelect($name, $label = false, $type = 'input', $isRequired = false)
  * @method addDateinput($name, $label = false, $type = 'input', $isRequired = false)
  * @method addRadioGroup($name, $label = false, $type = 'input', $isRequired = false)
  * @method addBsRadioGroup($name, $label = false, $type = 'input', $isRequired = false)
