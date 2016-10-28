@@ -1,5 +1,7 @@
 <?php
 
+use Nip\Form\AbstractForm;
+
 abstract class Nip_Form_Button_Abstract
 {
 
@@ -56,6 +58,7 @@ abstract class Nip_Form_Button_Abstract
     public function setId($id)
     {
         $this->setAttrib('id', $id);
+
         return $this;
     }
 
@@ -67,6 +70,7 @@ abstract class Nip_Form_Button_Abstract
     public function setName($name)
     {
         $this->setAttrib('name', $name);
+
         return $this;
     }
 
@@ -78,6 +82,7 @@ abstract class Nip_Form_Button_Abstract
     public function setLabel($label)
     {
         $this->setAttrib('label', $label);
+
         return $this;
     }
 
@@ -89,6 +94,7 @@ abstract class Nip_Form_Button_Abstract
     public function setValue($value)
     {
         $this->setAttrib('value', $value);
+
         return $this;
     }
 
@@ -127,6 +133,7 @@ abstract class Nip_Form_Button_Abstract
     public function clearAttribs()
     {
         $this->_attribs = [];
+
         return $this;
     }
 
@@ -139,6 +146,7 @@ abstract class Nip_Form_Button_Abstract
         foreach ($attribs as $key => $value) {
             $this->setAttrib($key, $value);
         }
+
         return $this;
     }
 
@@ -149,6 +157,7 @@ abstract class Nip_Form_Button_Abstract
     {
         if (isset($this->_attribs[$key])) {
             unset($this->_attribs[$key]);
+
             return true;
         }
 
@@ -166,23 +175,29 @@ abstract class Nip_Form_Button_Abstract
     }
 
     /**
-     * @return Nip_Form_Abstract
+     * @return AbstractForm
      */
     public function getForm()
     {
         return $this->_form;
     }
 
-    public function setForm(Nip_Form_Abstract $form)
+    /**
+     * @param AbstractForm $form
+     * @return $this
+     */
+    public function setForm(AbstractForm $form)
     {
         $this->_form = $form;
 
         return $this;
     }
 
+    /**
+     * @return string
+     */
     public function getType()
     {
         return $this->_type;
     }
-
 }
