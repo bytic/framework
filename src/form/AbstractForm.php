@@ -2,6 +2,7 @@
 
 namespace Nip\Form;
 
+use Nip\Form\Traits\MagicMethodElementsFormTrait;
 use Nip_Form_DisplayGroup;
 use Nip_Form_Element_Abstract;
 use Nip_Form_Renderer_Abstract as AbstractRenderer;
@@ -9,18 +10,11 @@ use Nip_Form_Renderer_Abstract as AbstractRenderer;
 /**
  * Class AbstractForm
  *
- *
- * @method addInput($name, $label = false, $type = 'input', $isRequired = false)
- * @method addHidden($name, $label = false, $type = 'input', $isRequired = false)
- * @method addSelect($name, $label = false, $type = 'input', $isRequired = false)
- * @method addDateinput($name, $label = false, $type = 'input', $isRequired = false)
- * @method addRadioGroup($name, $label = false, $type = 'input', $isRequired = false)
- * @method addBsRadioGroup($name, $label = false, $type = 'input', $isRequired = false)
- * @method addTextarea($name, $label = false, $type = 'input', $isRequired = false)
- *
  */
 abstract class AbstractForm
 {
+    use MagicMethodElementsFormTrait;
+
     const ENCTYPE_URLENCODED = 'application/x-www-form-urlencoded';
     const ENCTYPE_MULTIPART = 'multipart/form-data';
 
@@ -28,28 +22,6 @@ abstract class AbstractForm
      * @var array
      */
     protected $methods = ['delete', 'get', 'post', 'put'];
-
-    protected $elementsTypes = [
-        'input',
-        'hidden',
-        'password',
-        'hash',
-        'file',
-        'multiElement',
-        'dateinput',
-        'dateselect',
-        'timeselect',
-        'textarea',
-        'texteditor',
-        'textSimpleEditor',
-        'textMiniEditor',
-        'select',
-        'radio',
-        'radioGroup',
-        'checkbox',
-        'checkboxGroup',
-        'html',
-    ];
 
     protected $_attribs = [];
     protected $_options = [];
@@ -105,30 +77,6 @@ abstract class AbstractForm
 
     public function postInit()
     {
-    }
-
-    /**
-     * @param $name
-     * @param $arguments
-     * @return AbstractForm
-     */
-    public function __call($name, $arguments)
-    {
-        if (strpos($name, 'add') === 0) {
-            $type = str_replace('add', '', $name);
-            $type[0] = strtolower($type[0]);
-            if (in_array($type, $this->elementsTypes)) {
-                $name = $arguments[0];
-                $label = $arguments[1];
-                $isRequired = $arguments[2];
-
-                return $this->add($name, $label, $type, $isRequired);
-            } else {
-                trigger_error('Undefined element type for add operation: ['.$type.']', E_USER_ERROR);
-            }
-        }
-
-        trigger_error('Call to undefined method: ['.$name.']', E_USER_ERROR);
     }
 
     /**
