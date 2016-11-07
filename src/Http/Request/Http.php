@@ -14,7 +14,7 @@ namespace Nip\Http\Request;
 class Http
 {
 
-    protected $_request;
+    protected $request;
 
     /**
      * @var string
@@ -50,13 +50,16 @@ class Http
         foreach (explode('&', $qs) as $param) {
             if ('' === $param || '=' === $param[0]) {
                 // Ignore useless delimiters, e.g. "x=y&".
-                // Also ignore pairs with empty key, even if there was a value, e.g. "=value", as such nameless values cannot be retrieved anyway.
+                // Also ignore pairs with empty key, even if there was a value, e.g. "=value",
+                // as such nameless values cannot be retrieved anyway.
                 // PHP also does not include them when building _GET.
                 continue;
             }
             $keyValuePair = explode('=', $param, 2);
-            // GET parameters, that are submitted from a HTML form, encode spaces as "+" by default (as defined in enctype application/x-www-form-urlencoded).
-            // PHP also converts "+" to spaces when filling the global _GET or when using the function parse_str. This is why we use urldecode and then normalize to
+            // GET parameters, that are submitted from a HTML form, encode spaces as "+" by default
+            // (as defined in enctype application/x-www-form-urlencoded).
+            // PHP also converts "+" to spaces when filling the global _GET or when using the function parse_str.
+            // This is why we use urldecode and then normalize to
             // RFC 3986 with rawurlencode.
             $parts[] = isset($keyValuePair[1]) ?
                 rawurlencode(urldecode($keyValuePair[0])) . '=' . rawurlencode(urldecode($keyValuePair[1])) :
@@ -80,7 +83,7 @@ class Http
         if (null !== $qs = $this->getQueryString()) {
             $qs = '?' . $qs;
         }
-        return $this->getSchemeAndHttpHost() . $this->getBaseUrl() . $this->getPathInfo() . $qs;
+        return $this->getSchemeAndHttpHost() . $this->getBaseUrl() . $this->getRequest()->getPathInfo() . $qs;
     }
 
     /**
@@ -103,7 +106,7 @@ class Http
      */
     public function getRequest()
     {
-        return $this->_request;
+        return $this->request;
     }
 
     /*
@@ -119,7 +122,7 @@ class Http
      */
     public function setRequest($request)
     {
-        $this->_request = $request;
+        $this->request = $request;
     }
 
     /**
@@ -145,6 +148,9 @@ class Http
         return $this->isSecure() ? 'https' : 'http';
     }
 
+    /**
+     * @return bool
+     */
     public function isSecure()
     {
         $https = $this->getRequest()->server->get('HTTPS');
@@ -170,6 +176,9 @@ class Http
         return $this->getHost() . ':' . $port;
     }
 
+    /**
+     * @return mixed
+     */
     public function getPort()
     {
         return $this->getRequest()->server->get('SERVER_PORT');
@@ -201,7 +210,8 @@ class Http
         // host is lowercase as per RFC 952/2181
         $host = strtolower(preg_replace('/:\d+$/', '', trim($host)));
 
-        // as the host can come from the user (HTTP_HOST and depending on the configuration, SERVER_NAME too can come from the user)
+        // as the host can come from the user (HTTP_HOST and depending on the configuration,
+        // SERVER_NAME too can come from the user)
         // check that it does not contain forbidden characters (see RFC 952 and RFC 2181)
         // use preg_replace() instead of preg_match() to prevent DoS attacks with long host names
         if ($host && '' !== preg_replace('/(?:^\[)?[a-zA-Z0-9-:\]_]+\.?/', '', $host)) {
@@ -242,6 +252,9 @@ class Http
         return $this->requestUri;
     }
 
+    /**
+     * @return bool|mixed
+     */
     public function getSubdomain()
     {
         $name = $this->getServerName();
@@ -255,11 +268,17 @@ class Http
         return false;
     }
 
+    /**
+     * @return mixed
+     */
     public function getServerName()
     {
         return $this->getRequest()->server->get('SERVER_NAME');
     }
 
+    /**
+     * @return bool|mixed|string
+     */
     public function getRootDomain()
     {
         $name = $this->getServerName();
@@ -285,6 +304,9 @@ class Http
      * @return string|false The prefix as it is encoded in $string, or false
      */
 
+    /**
+     * @return bool
+     */
     public function isConsole()
     {
         if (php_sapi_name() === 'cli') {
@@ -357,6 +379,9 @@ class Http
         return rtrim($baseUrl, '/' . DIRECTORY_SEPARATOR);
     }
 
+    /**
+     * @return string
+     */
     protected function prepareRequestUri()
     {
         $requestUri = '';
@@ -396,6 +421,11 @@ class Http
         return $requestUri;
     }
 
+    /**
+     * @param $string
+     * @param $prefix
+     * @return bool
+     */
     private function getUrlencodedPrefix($string, $prefix)
     {
         if (0 !== strpos(rawurldecode($string), $prefix)) {
