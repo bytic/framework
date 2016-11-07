@@ -1,5 +1,7 @@
 <?php
 
+use Nip\Form\AbstractForm;
+
 abstract class Nip_Form_Element_Abstract implements Nip_Form_Element_Interface
 {
 
@@ -90,7 +92,7 @@ abstract class Nip_Form_Element_Abstract implements Nip_Form_Element_Interface
     }
 
     /**
-     * @return Nip_Form_Abstract
+     * @return AbstractForm
      */
     public function getForm()
     {
@@ -98,10 +100,10 @@ abstract class Nip_Form_Element_Abstract implements Nip_Form_Element_Interface
     }
 
     /**
-     * @param Nip_Form_Abstract $form
+     * @param AbstractForm $form
      * @return $this
      */
-    public function setForm(Nip_Form_Abstract $form)
+    public function setForm(AbstractForm $form)
     {
         $this->_form = $form;
 
