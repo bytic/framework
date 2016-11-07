@@ -81,30 +81,6 @@ class Stage
     }
 
     /**
-     * @return bool
-     */
-    protected function hasConfigFile()
-    {
-        return is_file($this->getConfigPath());
-    }
-
-    /**
-     * @return string
-     */
-    protected function getConfigPath()
-    {
-        return $this->getConfigFolder() . $this->name . '.ini';
-    }
-
-    /**
-     * @return null
-     */
-    protected function getConfigFolder()
-    {
-        return defined('CONFIG_STAGING_PATH') ? CONFIG_STAGING_PATH : null;
-    }
-
-    /**
      * @param $hosts
      * @return $this
      */
@@ -216,7 +192,7 @@ class Stage
     {
         $request = new Request();
 
-        return $request->getHttp()->getPathInfo();
+        return $request->path();
     }
 
     /**
@@ -295,5 +271,29 @@ class Stage
     public function doAuthorize()
     {
         setcookie('authorized', 'true', time() + 60 * 60 * 24, '/');
+    }
+
+    /**
+     * @return bool
+     */
+    protected function hasConfigFile()
+    {
+        return is_file($this->getConfigPath());
+    }
+
+    /**
+     * @return string
+     */
+    protected function getConfigPath()
+    {
+        return $this->getConfigFolder() . $this->name . '.ini';
+    }
+
+    /**
+     * @return null
+     */
+    protected function getConfigFolder()
+    {
+        return defined('CONFIG_STAGING_PATH') ? CONFIG_STAGING_PATH : null;
     }
 }

@@ -58,19 +58,6 @@ class Router
         return $this->routes;
     }
 
-    protected function initRoutes()
-    {
-        $this->routes = $this->newRoutesCollection();
-    }
-
-    /**
-     * @return RouteCollection
-     */
-    protected function newRoutesCollection()
-    {
-        return new RouteCollection();
-    }
-
     /**
      * @param Request $request
      * @return array
@@ -78,7 +65,7 @@ class Router
     public function route($request)
     {
         $current = false;
-        $uri = $request->getHttp()->getPathInfo();
+        $uri = $request->path();
 
         foreach ($this->routes as $name => $route) {
             $route->setRequest($request);
@@ -199,5 +186,18 @@ class Router
     public function hasRoute($name)
     {
         return $this->getRoutes()->has($name);
+    }
+
+    protected function initRoutes()
+    {
+        $this->routes = $this->newRoutesCollection();
+    }
+
+    /**
+     * @return RouteCollection
+     */
+    protected function newRoutesCollection()
+    {
+        return new RouteCollection();
     }
 }

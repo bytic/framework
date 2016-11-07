@@ -1,6 +1,6 @@
 <?php
 
-namespace Nip\Request;
+namespace Nip\Http\Request;
 
 /**
  * Nip Framework
@@ -29,37 +29,6 @@ class Http
      * @var string
      */
     protected $baseUrl;
-
-
-    /**
-     * Generates a normalized URI (URL) for the Request.
-     *
-     * @return string A normalized URI (URL) for the Request
-     *
-     * @see getQueryString()
-     */
-    public function getUri()
-    {
-        if (null !== $qs = $this->getQueryString()) {
-            $qs = '?' . $qs;
-        }
-        return $this->getSchemeAndHttpHost() . $this->getBaseUrl() . $this->getPathInfo() . $qs;
-    }
-
-    /**
-     * Generates the normalized query string for the Request.
-     *
-     * It builds a normalized query string, where keys/value pairs are alphabetized
-     * and have consistent escaping.
-     *
-     * @return string|null A normalized query string for the Request
-     */
-    public function getQueryString()
-    {
-        $qs = static::normalizeQueryString($this->getRequest()->server->get('QUERY_STRING'));
-
-        return '' === $qs ? null : $qs;
-    }
 
     /**
      * Normalizes a query string.
@@ -90,13 +59,43 @@ class Http
             // PHP also converts "+" to spaces when filling the global _GET or when using the function parse_str. This is why we use urldecode and then normalize to
             // RFC 3986 with rawurlencode.
             $parts[] = isset($keyValuePair[1]) ?
-                rawurlencode(urldecode($keyValuePair[0])).'='.rawurlencode(urldecode($keyValuePair[1])) :
+                rawurlencode(urldecode($keyValuePair[0])) . '=' . rawurlencode(urldecode($keyValuePair[1])) :
                 rawurlencode(urldecode($keyValuePair[0]));
             $order[] = urldecode($keyValuePair[0]);
         }
         array_multisort($order, SORT_ASC, $parts);
 
         return implode('&', $parts);
+    }
+
+    /**
+     * Generates a normalized URI (URL) for the Request.
+     *
+     * @return string A normalized URI (URL) for the Request
+     *
+     * @see getQueryString()
+     */
+    public function getUri()
+    {
+        if (null !== $qs = $this->getQueryString()) {
+            $qs = '?' . $qs;
+        }
+        return $this->getSchemeAndHttpHost() . $this->getBaseUrl() . $this->getPathInfo() . $qs;
+    }
+
+    /**
+     * Generates the normalized query string for the Request.
+     *
+     * It builds a normalized query string, where keys/value pairs are alphabetized
+     * and have consistent escaping.
+     *
+     * @return string|null A normalized query string for the Request
+     */
+    public function getQueryString()
+    {
+        $qs = static::normalizeQueryString($this->getRequest()->server->get('QUERY_STRING'));
+
+        return '' === $qs ? null : $qs;
     }
 
     /**
@@ -133,7 +132,7 @@ class Http
      */
     public function getSchemeAndHttpHost()
     {
-        return $this->getScheme().'://'.$this->getHttpHost();
+        return $this->getScheme() . '://' . $this->getHttpHost();
     }
 
     /**
@@ -168,7 +167,7 @@ class Http
             return $this->getHost();
         }
 
-        return $this->getHost().':'.$port;
+        return $this->getHost() . ':' . $port;
     }
 
     public function getPort()
@@ -231,6 +230,74 @@ class Http
     }
 
     /**
+     * Returns the requested URI (path and query string).
+     *
+     * @return string The raw URI (i.e. not URI decoded)
+     */
+    public function getRequestUri()
+    {
+        if (null === $this->requestUri) {
+            $this->requestUri = $this->prepareRequestUri();
+        }
+        return $this->requestUri;
+    }
+
+    public function getSubdomain()
+    {
+        $name = $this->getServerName();
+        if ($name) {
+            if (substr_count($name, '.') > 1) {
+                $parts = explode('.', $name);
+                return reset($parts);
+            }
+        }
+
+        return false;
+    }
+
+    public function getServerName()
+    {
+        return $this->getRequest()->server->get('SERVER_NAME');
+    }
+
+    public function getRootDomain()
+    {
+        $name = $this->getServerName();
+        if ($name) {
+            if (substr_count($name, '.') > 1) {
+                $parts = explode('.', $name);
+                array_shift($parts);
+                return implode('.', $parts);
+            }
+            return $name;
+        }
+
+        return false;
+    }
+
+    /*
+     * Returns the prefix as encoded in the string when the string starts with
+     * the given prefix, false otherwise.
+     *
+     * @param string $string The urlencoded string
+     * @param string $prefix The prefix not encoded
+     *
+     * @return string|false The prefix as it is encoded in $string, or false
+     */
+
+    public function isConsole()
+    {
+        if (php_sapi_name() === 'cli') {
+            return true;
+        }
+        if (php_sapi_name() === 'cgi-fcgi') {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
      * Prepares the base URL.
      *
      * @return string
@@ -266,7 +333,9 @@ class Http
             // full $baseUrl matches
             return $prefix;
         }
-        if ($baseUrl && false !== $prefix = $this->getUrlencodedPrefix($requestUri, rtrim(dirname($baseUrl), '/' . DIRECTORY_SEPARATOR) . '/')) {
+        if ($baseUrl && false !== $prefix = $this->getUrlencodedPrefix($requestUri,
+                rtrim(dirname($baseUrl), '/' . DIRECTORY_SEPARATOR) . '/')
+        ) {
             // directory portion of $baseUrl matches
             return rtrim($prefix, '/' . DIRECTORY_SEPARATOR);
         }
@@ -286,19 +355,6 @@ class Http
             $baseUrl = substr($requestUri, 0, $pos + strlen($baseUrl));
         }
         return rtrim($baseUrl, '/' . DIRECTORY_SEPARATOR);
-    }
-
-    /**
-     * Returns the requested URI (path and query string).
-     *
-     * @return string The raw URI (i.e. not URI decoded)
-     */
-    public function getRequestUri()
-    {
-        if (null === $this->requestUri) {
-            $this->requestUri = $this->prepareRequestUri();
-        }
-        return $this->requestUri;
     }
 
     protected function prepareRequestUri()
@@ -348,108 +404,6 @@ class Http
         $len = strlen($prefix);
         if (preg_match(sprintf('#^(%%[[:xdigit:]]{2}|.){%d}#', $len), $string, $match)) {
             return $match[0];
-        }
-
-        return false;
-    }
-
-    /**
-     * Returns the path being requested relative to the executed script.
-     *
-     * The path info always starts with a /.
-     *
-     * Suppose this request is instantiated from /mysite on localhost:
-     *
-     *  * http://localhost/mysite              returns an empty string
-     *  * http://localhost/mysite/about        returns '/about'
-     *  * http://localhost/mysite/enco%20ded   returns '/enco%20ded'
-     *  * http://localhost/mysite/about?var=1  returns '/about'
-     *
-     * @return string The raw path (i.e. not urldecoded)
-     */
-    public function getPathInfo()
-    {
-        if (null === $this->pathInfo) {
-            $this->pathInfo = $this->preparePathInfo();
-        }
-        return $this->pathInfo;
-    }
-
-    /**
-     * Prepares the path info.
-     *
-     * @return string path info
-     */
-    protected function preparePathInfo()
-    {
-        $baseUrl = $this->getBaseUrl();
-        if (null === ($requestUri = $this->getRequestUri())) {
-            return '/';
-        }
-        // Remove the query string from REQUEST_URI
-        if ($pos = strpos($requestUri, '?')) {
-            $requestUri = substr($requestUri, 0, $pos);
-        }
-        $pathInfo = substr($requestUri, strlen($baseUrl));
-        if (null !== $baseUrl && (false === $pathInfo || '' === $pathInfo)) {
-            // If substr() returns false then PATH_INFO is set to an empty string
-            return '/';
-        } elseif (null === $baseUrl) {
-            return $requestUri;
-        }
-        return (string)$pathInfo;
-    }
-
-    /*
-     * Returns the prefix as encoded in the string when the string starts with
-     * the given prefix, false otherwise.
-     *
-     * @param string $string The urlencoded string
-     * @param string $prefix The prefix not encoded
-     *
-     * @return string|false The prefix as it is encoded in $string, or false
-     */
-
-    public function getSubdomain()
-    {
-        $name = $this->getServerName();
-        if ($name) {
-            if (substr_count($name, '.') > 1) {
-                $parts = explode('.', $name);
-                return reset($parts);
-            }
-        }
-
-        return false;
-    }
-
-    public function getServerName()
-    {
-        return $this->getRequest()->server->get('SERVER_NAME');
-    }
-
-    public function getRootDomain()
-    {
-        $name = $this->getServerName();
-        if ($name) {
-            if (substr_count($name, '.') > 1) {
-                $parts = explode('.', $name);
-                array_shift($parts);
-                return implode('.', $parts);
-            }
-            return $name;
-        }
-
-        return false;
-    }
-
-    public function isConsole()
-    {
-        if (php_sapi_name() === 'cli') {
-            return true;
-        }
-        if (php_sapi_name() === 'cgi-fcgi') {
-            return true;
         }
 
         return false;

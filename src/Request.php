@@ -2,7 +2,7 @@
 
 namespace Nip;
 
-use Nip\Request\Http;
+use Nip\Http\Request\Http;
 
 /**
  * Class Request
@@ -127,7 +127,7 @@ class Request extends \Symfony\Component\HttpFoundation\Request implements \Arra
      */
     public function getMCA()
     {
-        return $this->getModuleName().'.'.$this->getControllerName().'.'.$this->getActionName();
+        return $this->getModuleName() . '.' . $this->getControllerName() . '.' . $this->getActionName();
     }
 
     /**
@@ -258,12 +258,12 @@ class Request extends \Symfony\Component\HttpFoundation\Request implements \Arra
 
     /**
      * Returns Http object
-     * @return Request\Http
+     * @return Http
      */
     public function getHttp()
     {
         if (!$this->http) {
-            $this->http = new Request\Http();
+            $this->http = new Http();
             $this->http->setRequest($this);
         }
 
@@ -311,9 +311,9 @@ class Request extends \Symfony\Component\HttpFoundation\Request implements \Arra
         $request = parse_url($_SERVER['REQUEST_URI']);
 
         if ($components['path'] != $request['path']) {
-            $redirect = $url.($request['query'] ? '?'.$request['query'] : '');
+            $redirect = $url . ($request['query'] ? '?' . $request['query'] : '');
 
-            header("Location: ".$redirect, true, $code);
+            header("Location: " . $redirect, true, $code);
             exit();
         }
     }
@@ -323,7 +323,7 @@ class Request extends \Symfony\Component\HttpFoundation\Request implements \Arra
      */
     public function redirect($url)
     {
-        header("Location: ".$url);
+        header("Location: " . $url);
         exit();
     }
 
@@ -408,5 +408,30 @@ class Request extends \Symfony\Component\HttpFoundation\Request implements \Arra
     public function offsetUnset($offset)
     {
         $this->attributes->remove($offset);
+    }
+
+    /**
+     * Get the current path info for the request.
+     *
+     * @return string
+     */
+    public function path()
+    {
+        $pattern = trim($this->getPathInfo(), '/');
+        return $pattern == '' ? '/' : $pattern;
+    }
+
+    /**
+     * @return array|mixed|string
+     */
+    protected function prepareRequestUri()
+    {
+        if ((int)$this->server->get('REDIRECT_STATUS', '200') >= 400 && $this->server->has('REDIRECT_URL')) {
+            $requestUri = $this->server->get('REDIRECT_URL');
+            $this->server->set('REQUEST_URI', $requestUri);
+            return $requestUri;
+        }
+
+        return parent::prepareRequestUri();
     }
 }
