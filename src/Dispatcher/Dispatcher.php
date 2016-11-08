@@ -106,13 +106,14 @@ class Dispatcher
     /**
      * @param Request $request
      * @return Controller|null
+     * @throws Exception
      */
     public function generateController($request)
     {
         $controllerClass = $this->getFullControllerNameFromRequest($request);
 
         if (!$this->getAutoloader()->isClass($controllerClass)) {
-            return null;
+            throw new Exception('Error finding a valid controller ['.$controllerClass.'] for ['.$request->getMCA().']');
         }
 
         /* @var $controllerClass Controller */
@@ -233,7 +234,7 @@ class Dispatcher
     public function throwError($params = false)
     {
 //        $this->getFrontController()->getTrace()->add($params);
-        $this->setErrorControler();
+        $this->setErrorController();
         $this->forward('index');
 
         return;
@@ -242,7 +243,7 @@ class Dispatcher
     /**
      * @return $this
      */
-    public function setErrorControler()
+    public function setErrorController()
     {
         $this->getRequest()->setActionName('index');
         $this->getRequest()->setControllerName('error');
