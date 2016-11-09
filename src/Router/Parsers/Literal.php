@@ -16,8 +16,10 @@ class Literal extends AbstractParser
     public function match($uri)
     {
         $return = parent::match($uri);
+        $map = rtrim($this->getMap(), '/');
+        $uri = rtrim($uri, '/');
 
-        return ($return) ? $this->getMap() == $uri : false;
+        return ($return) ? $map == $uri : false;
     }
 
     /** @noinspection PhpMissingParentCallCommonInspection

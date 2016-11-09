@@ -456,7 +456,7 @@ class Application
     protected function renderException(Request $request, Exception $e)
     {
         if ($this->getStaging()->getStage()->isPublic()) {
-            $this->getDispatcher()->setErrorControler();
+            $this->getDispatcher()->setErrorController();
 
             return $this->getResponseFromRequest($request);
         } else {
