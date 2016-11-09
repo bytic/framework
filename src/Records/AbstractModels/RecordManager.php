@@ -33,7 +33,7 @@ abstract class RecordManager
      */
     protected $db = null;
 
-    protected $_collectionClass = '\Nip\Records\Collections\Collection';
+    protected $_collectionClass = RecordCollection::class;
 
     protected $helpers = [];
 
