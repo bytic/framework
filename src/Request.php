@@ -428,6 +428,10 @@ class Request extends \Symfony\Component\HttpFoundation\Request implements \Arra
     {
         if ((int)$this->server->get('REDIRECT_STATUS', '200') >= 400 && $this->server->has('REDIRECT_URL')) {
             $requestUri = $this->server->get('REDIRECT_URL');
+            $schemeAndHttpHost = $this->getSchemeAndHttpHost();
+            if (strpos($requestUri, $schemeAndHttpHost) === 0) {
+                $requestUri = substr($requestUri, strlen($schemeAndHttpHost));
+            }
             $this->server->set('REQUEST_URI', $requestUri);
             return $requestUri;
         }
