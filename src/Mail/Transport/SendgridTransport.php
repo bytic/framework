@@ -54,16 +54,12 @@ class SendgridTransport extends AbstractTransport
 
         if ($response->statusCode() == '202') {
             return 1;
+        } else {
+            throw new Swift_TransportException(
+                'Error sending email Code ['.$response->statusCode().']. '.
+                $response->body().$response->headers()
+            );
         }
-//            echo $response->statusCode();
-//            echo '-----------';
-//            echo $response->body();
-//            echo '-----------';
-//            echo $response->headers();
-//            die('----------');
-//            return $response->body().$response->headers();
-
-        return 0;
     }
 
     public function initMail()

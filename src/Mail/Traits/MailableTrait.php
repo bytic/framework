@@ -22,10 +22,10 @@ trait MailableTrait
         $message = $this->buildMailMessage();
 
         $this->beforeSend($mailer, $message);
-        $response = $mailer->send($message);
-        $this->afterSend($mailer, $message, $response);
+        $recipients = $mailer->send($message);
+        $this->afterSend($mailer, $message, $recipients);
 
-        return $response;
+        return $recipients;
     }
 
     /**
@@ -65,9 +65,9 @@ trait MailableTrait
     /**
      * @param Mailer $mailer
      * @param Message $message
-     * @param $response
+     * @param int $recipients
      */
-    protected function afterSend($mailer, $message, $response)
+    protected function afterSend($mailer, $message, $recipients)
     {
     }
 
