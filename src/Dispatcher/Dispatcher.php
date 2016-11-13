@@ -5,6 +5,7 @@ namespace Nip\Dispatcher;
 use Exception;
 use Nip\AutoLoader\AutoLoader;
 use Nip\Controller;
+use Nip\Http\Response\Response;
 use Nip\Request;
 
 /**
@@ -48,7 +49,7 @@ class Dispatcher
 
     /**
      * @param Request|null $request
-     * @return bool
+     * @return null|Response
      * @throws Exception
      */
     public function dispatch(Request $request = null)
@@ -71,7 +72,8 @@ class Dispatcher
                 try {
                     $this->currentController = $controller;
                     $controller->setRequest($request);
-                    $controller->dispatch();
+
+                    return $controller->dispatch();
                 } catch (ForwardException $e) {
                     $return = $this->dispatch();
 
@@ -84,7 +86,7 @@ class Dispatcher
             throw new Exception("Maximum number of hops ($this->maxHops) has been reached for {$request->getMCA()}");
         }
 
-        return true;
+        return null;
     }
 
     /**

@@ -4,6 +4,9 @@ namespace Nip;
 
 use Nip\Config\ConfigAwareTrait;
 use Nip\Dispatcher\Dispatcher;
+use Nip\Dispatcher\DispatcherAwareTrait;
+use Nip\Http\Response\Response;
+use Nip\Http\Response\ResponseAwareTrait;
 use Nip\Utility\Traits\NameWorksTrait;
 use Nip_Flash_Messages as FlashMessages;
 
@@ -19,11 +22,8 @@ class Controller
 {
     use NameWorksTrait;
     use ConfigAwareTrait;
-
-    /**
-     * @var null|Dispatcher
-     */
-    protected $dispatcher = null;
+    use DispatcherAwareTrait;
+    use ResponseAwareTrait;
 
     protected $fullName = null;
 
@@ -128,7 +128,7 @@ class Controller
 
     /**
      * @param bool $action
-     * @return bool
+     * @return Response
      */
     public function dispatchAction($action = false)
     {
@@ -143,7 +143,7 @@ class Controller
                 $this->{$action}();
                 $this->afterAction();
 
-                return true;
+                return $this->getResponse();
             } else {
                 $this->getDispatcher()->throwError('Action ['.$action.'] is not valid for '.get_class($this));
             }
@@ -151,7 +151,7 @@ class Controller
             trigger_error('No action specified', E_USER_ERROR);
         }
 
-        return false;
+        return null;
     }
 
     /**
@@ -185,26 +185,6 @@ class Controller
     protected function afterAction()
     {
         return true;
-    }
-
-    /**
-     * Returns the dispatcher Object
-     * @return Dispatcher
-     */
-    public function getDispatcher()
-    {
-        return $this->dispatcher;
-    }
-
-    /**
-     * @param Dispatcher $dispatcher
-     * @return self
-     */
-    public function setDispatcher(Dispatcher $dispatcher)
-    {
-        $this->dispatcher = $dispatcher;
-
-        return $this;
     }
 
     /**

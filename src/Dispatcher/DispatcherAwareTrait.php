@@ -2,6 +2,7 @@
 
 namespace Nip\Dispatcher;
 
+use Nip\Http\Response\Response;
 use Nip\Request;
 
 /**
@@ -17,10 +18,11 @@ trait DispatcherAwareTrait
 
     /**
      * @param Request|null $request
+     * @return Response|null
      */
     public function dispatchRequest(Request $request = null)
     {
-        $this->getDispatcher()->dispatch($request);
+        return $this->getDispatcher()->dispatch($request);
     }
 
     /**

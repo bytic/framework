@@ -395,6 +395,7 @@ class Application
             $this->preRouting();
             $this->route($request);
             $this->postRouting();
+
             return $this->getResponseFromRequest($request);
         } catch (Exception $e) {
             return $this->handleException($request, $e);
@@ -419,10 +420,10 @@ class Application
      */
     protected function getResponseFromRequest($request)
     {
-        $this->dispatchRequest($request);
+        $response = $this->dispatchRequest($request);
         $content = ob_get_clean();
 
-        return ResponseFactory::make($content);
+        return $response;
     }
 
     /**
