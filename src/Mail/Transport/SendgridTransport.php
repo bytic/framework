@@ -39,12 +39,10 @@ class SendgridTransport extends AbstractTransport
     {
         $this->initMail();
 
-//        $mail->addCategory($this->type);
-//        $mail->addCustomArg("id_email", (string)$this->id);
-
         $this->populateSenders($message);
         $this->populatePersonalization($message);
         $this->populateContent($message);
+        $this->populateCustomArg($message);
 
         $sg = $this->createApi();
 
@@ -240,6 +238,21 @@ class SendgridTransport extends AbstractTransport
         $sgAttachment->setDisposition("attachment");
         $sgAttachment->setContentID($attachment->getId());
         $this->getMail()->addAttachment($sgAttachment);
+    }
+
+    /**
+     * @param Message|MessageInterface $message
+     */
+    protected function populateCustomArg($message)
+    {
+        $args = $message->getCustomArgs();
+        foreach ($args as $key => $value) {
+            if ($key == 'category') {
+                $this->getMail()->addCategory($value);
+            } else {
+                $this->getMail()->addCustomArg($key, (string)$value);
+            }
+        }
     }
 
     /**

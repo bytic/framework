@@ -40,6 +40,7 @@ trait MailableTrait
         $this->buildMailMessageBody($message);
         $this->buildMailMessageAttachments($message);
         $this->buildMailMessageMergeTags($message);
+        $this->buildMailMessageCustomArgs($message);
 
         return $message;
     }
@@ -100,4 +101,9 @@ trait MailableTrait
      * @param Message $message
      */
     abstract public function buildMailMessageMergeTags(&$message);
+
+    /**
+     * @param Message $message
+     */
+    abstract public function buildMailMessageCustomArgs(&$message);
 }

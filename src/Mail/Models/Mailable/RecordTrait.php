@@ -90,6 +90,19 @@ trait RecordTrait
     abstract public function getMergeTags();
 
     /**
+     * @param Message $message
+     */
+    public function buildMailMessageCustomArgs(&$message)
+    {
+        $message->setCustomArgs($this->getCustomArgs());
+    }
+
+    /**
+     * @return array
+     */
+    abstract protected function getCustomArgs();
+
+    /**
      * @return string
      */
     abstract public function getTos();
