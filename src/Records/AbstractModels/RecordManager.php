@@ -103,7 +103,7 @@ abstract class RecordManager
      */
     public function getModelNamespace()
     {
-        return static::getRootNamespace() . $this->getModelNamespacePath();
+        return static::getRootNamespace().$this->getModelNamespacePath();
     }
 
     /**
@@ -121,10 +121,10 @@ abstract class RecordManager
     public function initModelNamespacePath()
     {
         if ($this->isNamespaced()) {
-            $path = $this->generateModelNamespacePathFromClassName() . '\\';
+            $path = $this->generateModelNamespacePathFromClassName().'\\';
         } else {
             $controller = $this->generateControllerGeneric();
-            $path = inflector()->classify($controller) . '\\';
+            $path = inflector()->classify($controller).'\\';
         }
         $this->modelNamespacePath = $path;
     }
@@ -198,14 +198,6 @@ abstract class RecordManager
     }
 
     /**
-     * @param null $tableStructure
-     */
-    public function setTableStructure($tableStructure)
-    {
-        $this->tableStructure = $tableStructure;
-    }
-
-    /**
      * @return Connection
      */
     public function getDB()
@@ -233,7 +225,7 @@ abstract class RecordManager
     public function checkDB()
     {
         if (!$this->hasDB()) {
-            trigger_error("Database connection missing for [" . get_class($this) . "]", E_USER_ERROR);
+            trigger_error("Database connection missing for [".get_class($this)."]", E_USER_ERROR);
         }
     }
 
@@ -263,11 +255,6 @@ abstract class RecordManager
     public function setTable($table)
     {
         $this->table = $table;
-    }
-
-    public function initTable()
-    {
-        $this->table = $this->getController();
     }
 
     /**
@@ -383,7 +370,7 @@ abstract class RecordManager
     public function newQuery($type = 'select')
     {
         $query = $this->getDB()->newQuery($type);
-        $query->cols("`" . $this->getTable() . "`.*");
+        $query->cols("`".$this->getTable()."`.*");
         $query->from($this->getFullNameTable());
         $query->table($this->getTable());
 
@@ -397,7 +384,7 @@ abstract class RecordManager
     {
         $database = $this->getDB()->getDatabase();
 
-        return $database ? $database . '.' . $this->getTable() : $this->getTable();
+        return $database ? $database.'.'.$this->getTable() : $this->getTable();
     }
 
     /**
@@ -516,7 +503,7 @@ abstract class RecordManager
                 $class = ucfirst(inflector()->singularize($class));
             }
 
-            return implode($nsParts, '\\') . '\\' . $class;
+            return implode($nsParts, '\\').'\\'.$class;
         }
 
         return ucfirst(inflector()->singularize($class));
@@ -639,7 +626,7 @@ abstract class RecordManager
         }
 
         foreach ($fields as $field) {
-            $params['where'][$field . '-UNQ'] = ["$field = ?", $item->{$field}];
+            $params['where'][$field.'-UNQ'] = ["$field = ?", $item->{$field}];
         }
 
         $pk = $this->getPrimaryKey();
@@ -1121,7 +1108,7 @@ abstract class RecordManager
     {
         $singularize = inflector()->singularize($this->getController());
 
-        return $this->getPrimaryKey() . "_" . inflector()->underscore($singularize);
+        return $this->getPrimaryKey()."_".inflector()->underscore($singularize);
     }
 
     /**
@@ -1220,7 +1207,7 @@ abstract class RecordManager
      */
     public function getRelationClass($type)
     {
-        $class = 'Nip\Records\Relations\\' . ucfirst($type);
+        $class = 'Nip\Records\Relations\\'.ucfirst($type);
 
         return $class;
     }
@@ -1290,7 +1277,7 @@ abstract class RecordManager
             /** @var \Nip\Records\Relations\HasMany $relation */
             if ($relation->getType() != 'belongsTo') {
                 /** @var Record[] $associatedOld */
-                $associatedOld = $from->{'get' . $name}();
+                $associatedOld = $from->{'get'.$name}();
                 if (count($associatedOld)) {
                     $associatedNew = $to->getRelation($name)->newCollection();
                     foreach ($associatedOld as $associated) {
@@ -1336,6 +1323,19 @@ abstract class RecordManager
         return app('kernel')->getRequest();
     }
 
+    protected function initTable()
+    {
+        $this->setTable($this->generateTable());
+    }
+
+    /**
+     * @return string
+     */
+    protected function generateTable()
+    {
+        return $this->getController();
+    }
+
     /**
      * @return string
      */
@@ -1370,22 +1370,22 @@ abstract class RecordManager
     {
         $operations = ["find", "delete", "count"];
         foreach ($operations as $operation) {
-            if (strpos($name, $operation . "By") !== false || strpos($name, $operation . "OneBy") !== false) {
+            if (strpos($name, $operation."By") !== false || strpos($name, $operation."OneBy") !== false) {
                 $params = [];
                 if (count($arguments) > 1) {
                     $params = end($arguments);
                 }
 
-                $match = str_replace([$operation . "By", $operation . "OneBy"], "", $name);
+                $match = str_replace([$operation."By", $operation."OneBy"], "", $name);
                 $field = inflector()->underscore($match);
 
                 if ($field == $this->getPrimaryKey()) {
                     return $this->findByPrimary($arguments[0]);
                 }
 
-                $params['where'][] = ["$field " . (is_array($arguments[0]) ? "IN" : "=") . " ?", $arguments[0]];
+                $params['where'][] = ["$field ".(is_array($arguments[0]) ? "IN" : "=")." ?", $arguments[0]];
 
-                $operation = str_replace($match, "", $name) . "Params";
+                $operation = str_replace($match, "", $name)."Params";
 
                 return $this->$operation($params);
             }
@@ -1409,6 +1409,14 @@ abstract class RecordManager
         }
 
         return $this->tableStructure;
+    }
+
+    /**
+     * @param null $tableStructure
+     */
+    public function setTableStructure($tableStructure)
+    {
+        $this->tableStructure = $tableStructure;
     }
 
     protected function initTableStructure()
@@ -1479,12 +1487,12 @@ abstract class RecordManager
             $controller = $this->getController();
 
             if (substr($action, 0, 5) == 'Async') {
-                $controller = 'async-' . $controller;
+                $controller = 'async-'.$controller;
                 $action = substr($action, 5);
             }
 
             if (substr($action, 0, 5) == 'Modal') {
-                $controller = 'modal-' . $controller;
+                $controller = 'modal-'.$controller;
                 $action = substr($action, 5);
             }
 
@@ -1511,11 +1519,11 @@ abstract class RecordManager
         $params['controller'] = $params['controller'] ? $params['controller'] : $this->getController();
         $params['module'] = $params['module'] ? $params['module'] : Request::instance()->getModuleName();
 
-        $routeName = $params['module'] . '.' . $params['controller'] . '.' . $params['action'];
+        $routeName = $params['module'].'.'.$params['controller'].'.'.$params['action'];
         if ($this->Url()->getRouter()->hasRoute($routeName)) {
             unset($params['module'], $params['controller'], $params['action']);
         } else {
-            $routeName = $params['module'] . '.default';
+            $routeName = $params['module'].'.default';
         }
 
         return $this->Url()->assemble($routeName, $params);
@@ -1545,8 +1553,8 @@ abstract class RecordManager
      */
     protected function initRelationsType($type)
     {
-        if (property_exists($this, '_' . $type)) {
-            $array = $this->{'_' . $type};
+        if (property_exists($this, '_'.$type)) {
+            $array = $this->{'_'.$type};
             $this->initRelationsFromArray($type, $array);
         }
     }
