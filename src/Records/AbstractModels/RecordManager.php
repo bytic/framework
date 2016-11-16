@@ -861,6 +861,7 @@ abstract class RecordManager
     /**
      * Saves a Record's database entry
      * @param Record $model
+     * @return mixed
      */
     public function save(Record $model)
     {
@@ -1054,8 +1055,9 @@ abstract class RecordManager
      */
     public function countByQuery($query)
     {
-        $query->setCols('count(*) as count');
-        $result = $this->getDB()->execute($query);
+        $queryCount = clone $query;
+        $queryCount->setCols('count(*) as count');
+        $result = $this->getDB()->execute($queryCount);
 
         if ($result->numRows()) {
             $row = $result->fetchResult();
@@ -1323,6 +1325,14 @@ abstract class RecordManager
         return app('kernel')->getRequest();
     }
 
+    /**
+     * @param null $tableStructure
+     */
+    public function setTableStructure($tableStructure)
+    {
+        $this->tableStructure = $tableStructure;
+    }
+
     protected function initTable()
     {
         $this->setTable($this->generateTable());
@@ -1409,14 +1419,6 @@ abstract class RecordManager
         }
 
         return $this->tableStructure;
-    }
-
-    /**
-     * @param null $tableStructure
-     */
-    public function setTableStructure($tableStructure)
-    {
-        $this->tableStructure = $tableStructure;
     }
 
     protected function initTableStructure()
