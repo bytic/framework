@@ -6,50 +6,60 @@ use Mockery as m;
 use Nip\Database\Connection;
 use Nip\Database\Query\Insert;
 
+/**
+ * Class InsertTest
+ * @package Nip\Tests\Unit\Database\Query
+ */
 class InsertTest extends \Codeception\TestCase\Test
 {
-	/**
-	 * @var \UnitTester
-	 */
-	protected $tester;
+    /**
+     * @var \UnitTester
+     */
+    protected $tester;
 
-	/**
-	 * @var Nip_DB_object_Insert
-	 */
-	protected $_object;
+    /**
+     * @var Insert
+     */
+    protected $object;
 
-	public function testOnDuplicate()
-	{
-		$this->_object->table("table");
-		$this->_object->data(array("id" => 3, "name" => "Lorem Ipsum"));
-		$this->_object->onDuplicate(array("id" => array("VALUES(`id`)", false), "name" => array("VALUES(`name`)", false)));
+    public function testOnDuplicate()
+    {
+        $this->object->table("table");
+        $this->object->data(["id" => 3, "name" => "Lorem Ipsum"]);
+        $this->object->onDuplicate([
+            "id" => ["VALUES(`id`)", false],
+            "name" => ["VALUES(`name`)", false]
+        ]);
 
-        static::assertEquals("INSERT INTO `table` (`id`,`name`) VALUES (3, 'Lorem Ipsum') ON DUPLICATE KEY UPDATE `id` = VALUES(`id`), `name` = VALUES(`name`)",
-            $this->_object->assemble());
-	}
+        static::assertEquals(
+            "INSERT INTO `table` (`id`,`name`) VALUES (3, 'Lorem Ipsum') ON DUPLICATE KEY UPDATE `id` = VALUES(`id`), `name` = VALUES(`name`)",
+            $this->object->assemble()
+        );
+    }
 
-	public function testMultiple()
-	{
-		$this->_object->table("table");
+    public function testMultiple()
+    {
+        $this->object->table("table");
 
-		$items = array(
-			array("name" => "Lorem Ipsum", "telephone" => 1234),
-			array("name" => "Dolor sit amet", "telephone" => 5678)
-		);
+        $items = [
+            ["name" => "Lorem Ipsum", "telephone" => 1234],
+            ["name" => "Dolor sit amet", "telephone" => 5678]
+        ];
 
-		foreach ($items as $item) {
-			$this->_object->data($item);
-		}
+        foreach ($items as $item) {
+            $this->object->data($item);
+        }
 
-        static::assertEquals("INSERT INTO `table` (`name`,`telephone`) VALUES ('Lorem Ipsum', 1234), ('Dolor sit amet', 5678)",
-            $this->_object->assemble());
+        static::assertEquals(
+            "INSERT INTO `table` (`name`,`telephone`) VALUES ('Lorem Ipsum', 1234), ('Dolor sit amet', 5678)",
+            $this->object->assemble()
+        );
     }
 
     protected function setUp()
     {
         parent::setUp();
-        $this->_object = new Insert();
-
+        $this->object = new Insert();
 
         $adapterMock = m::mock('Nip\Database\Adapters\MySQLi')->shouldDeferMissing();
         $adapterMock->shouldReceive('cleanData')->andReturnUsing(function ($data) {
@@ -57,6 +67,6 @@ class InsertTest extends \Codeception\TestCase\Test
         });
         $manager = new Connection();
         $manager->setAdapter($adapterMock);
-        $this->_object->setManager($manager);
-	}
+        $this->object->setManager($manager);
+    }
 }
