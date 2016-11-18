@@ -10,6 +10,7 @@ use Nip\Records\AbstractModels\Record as Record;
 use Nip\Records\AbstractModels\RecordManager;
 use Nip\Records\Collections\Collection;
 use Nip\Records\Collections\Collection as RecordCollection;
+use Nip_Helper_Arrays as ArraysHelper;
 
 /**
  * Class Relation
@@ -255,7 +256,16 @@ abstract class Relation
      */
     public function getParam($key)
     {
-        return $this->params[$key];
+        return $this->hasParam($key) ? $this->params[$key] : null;
+    }
+
+    /**
+     * @param $key
+     * @return mixed
+     */
+    public function hasParam($key)
+    {
+        return isset($this->params[$key]);
     }
 
     /**
@@ -342,19 +352,6 @@ abstract class Relation
         $this->table = $name;
     }
 
-    protected function initTable()
-    {
-        $this->setTable($this->generateTable());
-    }
-
-    /**
-     * @return string
-     */
-    protected function generateTable()
-    {
-        return $this->getWith()->getTable();
-    }
-
     /**
      * Get the results of the relationship.
      * @return Record|RecordCollection
@@ -423,7 +420,9 @@ abstract class Relation
      */
     public function getEagerFkList(RecordCollection $collection)
     {
-        $return = HelperBroker::get('Arrays')->pluck($collection, $this->getFK());
+        /** @var ArraysHelper $arrayHelper */
+        $arrayHelper = HelperBroker::get('Arrays');
+        $return = $arrayHelper->pluck($collection, $this->getFK());
 
         return array_unique($return);
     }
@@ -446,19 +445,6 @@ abstract class Relation
     public function setFK($name)
     {
         $this->fk = $name;
-    }
-
-    protected function initFK()
-    {
-        $this->setFK($this->generateFK());
-    }
-
-    /**
-     * @return string
-     */
-    protected function generateFK()
-    {
-        return $this->getManager()->getPrimaryFK();
     }
 
     /**
@@ -489,14 +475,6 @@ abstract class Relation
     }
 
     /**
-     * Build model dictionary keyed by the relation's foreign key.
-     *
-     * @param RecordCollection $collection
-     * @return array
-     */
-    abstract protected function buildDictionary(RecordCollection $collection);
-
-    /**
      * @param $dictionary
      * @param $collection
      * @param $record
@@ -515,4 +493,38 @@ abstract class Relation
     {
         return $this->type;
     }
+
+    protected function initTable()
+    {
+        $this->setTable($this->generateTable());
+    }
+
+    /**
+     * @return string
+     */
+    protected function generateTable()
+    {
+        return $this->getWith()->getTable();
+    }
+
+    protected function initFK()
+    {
+        $this->setFK($this->generateFK());
+    }
+
+    /**
+     * @return string
+     */
+    protected function generateFK()
+    {
+        return $this->getManager()->getPrimaryFK();
+    }
+
+    /**
+     * Build model dictionary keyed by the relation's foreign key.
+     *
+     * @param RecordCollection $collection
+     * @return array
+     */
+    abstract protected function buildDictionary(RecordCollection $collection);
 }

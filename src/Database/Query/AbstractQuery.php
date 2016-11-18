@@ -14,7 +14,7 @@ use Nip\Database\Result;
  * @method $this setWhere() setWhere(array|string $cols = null)
  *
  * @method $this cols() cols(array|string $cols)
- * @method $this count() count(array|string $cols)
+ * @method $this count() count(string $col, string $alias = null)
  * @method $this sum() sum(array|string $cols)
  * @method $this from() from(array|string $from)
  * @method $this data() data(array $data)
@@ -68,18 +68,6 @@ abstract class AbstractQuery
     }
 
     /**
-     * @param $name
-     * @return $this
-     */
-    protected function initPart($name)
-    {
-        $this->isGenerated(false);
-        $this->parts[$name] = [];
-
-        return $this;
-    }
-
-    /**
      * @param null $generated
      * @return bool
      */
@@ -90,23 +78,6 @@ abstract class AbstractQuery
         }
 
         return $this->string !== null;
-    }
-
-    /**
-     * @param $name
-     * @param $value
-     * @return $this
-     */
-    protected function addPart($name, $value)
-    {
-        if (!isset($this->parts[$name])) {
-            $this->initPart($name);
-        }
-
-        $this->isGenerated(false);
-        $this->parts[$name][] = $value;
-
-        return $this;
     }
 
     /**
@@ -121,39 +92,6 @@ abstract class AbstractQuery
         $this->checkParamGroup($params);
         $this->checkParamHaving($params);
         $this->checkParamLimit($params);
-    }
-
-    /**
-     * @param $params
-     */
-    protected function checkParamSelect($params)
-    {
-        if (isset($params['select']) && is_array($params['select'])) {
-            call_user_func_array([$this, 'cols'], $params['select']);
-        }
-    }
-
-    /**
-     * @param $params
-     */
-    protected function checkParamFrom($params)
-    {
-        if (isset($params['from']) && !empty($params['from'])) {
-            $this->from($params['from']);
-        }
-    }
-
-    /**
-     * @param $params
-     */
-    protected function checkParamWhere($params)
-    {
-        if (isset($params['where']) && is_array($params['where'])) {
-            foreach ($params['where'] as $condition) {
-                $condition = (array)$condition;
-                $this->where($condition[0], $condition[1]);
-            }
-        }
     }
 
     /**
@@ -190,46 +128,6 @@ abstract class AbstractQuery
         }
 
         return $condition;
-    }
-
-    /**
-     * @param $params
-     */
-    protected function checkParamOrder($params)
-    {
-        if (isset($params['order']) && !empty($params['order'])) {
-            call_user_func_array([$this, 'order'], $params['order']);
-        }
-    }
-
-    /**
-     * @param $params
-     */
-    protected function checkParamGroup($params)
-    {
-        if (isset($params['group']) && !empty($params['group'])) {
-            call_user_func_array([$this, 'group'], [$params['group']]);
-        }
-    }
-
-    /**
-     * @param $params
-     */
-    protected function checkParamHaving($params)
-    {
-        if (isset($params['having']) && !empty($params['having'])) {
-            call_user_func_array([$this, 'having'], [$params['having']]);
-        }
-    }
-
-    /**
-     * @param $params
-     */
-    protected function checkParamLimit($params)
-    {
-        if (isset($params['limit']) && !empty($params['limit'])) {
-            call_user_func_array([$this, 'limit'], [$params['limit']]);
-        }
     }
 
     /**
@@ -346,6 +244,126 @@ abstract class AbstractQuery
     }
 
     /**
+     * @param $name
+     * @return mixed|null
+     */
+    public function getPart($name)
+    {
+        return $this->hasPart($name) ? $this->parts[$name] : null;
+    }
+
+    /**
+     * @param $name
+     * @return bool
+     */
+    public function hasPart($name)
+    {
+        return isset($this->parts[$name]) && count($this->parts[$name]);
+    }
+
+    /**
+     * @param $name
+     * @return $this
+     */
+    protected function initPart($name)
+    {
+        $this->isGenerated(false);
+        $this->parts[$name] = [];
+
+        return $this;
+    }
+
+    /**
+     * @param $name
+     * @param $value
+     * @return $this
+     */
+    protected function addPart($name, $value)
+    {
+        if (!isset($this->parts[$name])) {
+            $this->initPart($name);
+        }
+
+        $this->isGenerated(false);
+        $this->parts[$name][] = $value;
+
+        return $this;
+    }
+
+    /**
+     * @param $params
+     */
+    protected function checkParamSelect($params)
+    {
+        if (isset($params['select']) && is_array($params['select'])) {
+            call_user_func_array([$this, 'cols'], $params['select']);
+        }
+    }
+
+    /**
+     * @param $params
+     */
+    protected function checkParamFrom($params)
+    {
+        if (isset($params['from']) && !empty($params['from'])) {
+            $this->from($params['from']);
+        }
+    }
+
+    /**
+     * @param $params
+     */
+    protected function checkParamWhere($params)
+    {
+        if (isset($params['where']) && is_array($params['where'])) {
+            foreach ($params['where'] as $condition) {
+                $condition = (array)$condition;
+                $this->where($condition[0], $condition[1]);
+            }
+        }
+    }
+
+    /**
+     * @param $params
+     */
+    protected function checkParamOrder($params)
+    {
+        if (isset($params['order']) && !empty($params['order'])) {
+            call_user_func_array([$this, 'order'], $params['order']);
+        }
+    }
+
+    /**
+     * @param $params
+     */
+    protected function checkParamGroup($params)
+    {
+        if (isset($params['group']) && !empty($params['group'])) {
+            call_user_func_array([$this, 'group'], [$params['group']]);
+        }
+    }
+
+    /**
+     * @param $params
+     */
+    protected function checkParamHaving($params)
+    {
+        if (isset($params['having']) && !empty($params['having'])) {
+            call_user_func_array([$this, 'having'], [$params['having']]);
+        }
+    }
+
+    /**
+     * @param $params
+     */
+    protected function checkParamLimit($params)
+    {
+        if (isset($params['limit']) && !empty($params['limit'])) {
+            call_user_func_array([$this, 'limit'], [$params['limit']]);
+        }
+    }
+
+    /**
      * @return null|string
      */
     protected function assembleWhere()
@@ -378,24 +396,6 @@ abstract class AbstractQuery
         }
 
         return null;
-    }
-
-    /**
-     * @param $name
-     * @return mixed|null
-     */
-    public function getPart($name)
-    {
-        return $this->hasPart($name) ? $this->parts[$name] : null;
-    }
-
-    /**
-     * @param $name
-     * @return bool
-     */
-    public function hasPart($name)
-    {
-        return isset($this->parts[$name]) && count($this->parts[$name]);
     }
 
     /**

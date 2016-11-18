@@ -28,7 +28,9 @@ class Select extends AbstractQuery
             if (is_array($input)) {
                 $input[] = false;
             } else {
-                $input = [$input, $arguments[1], $arguments[2]];
+                $alias = isset($arguments[1]) ? $arguments[1] : null;
+                $protected = isset($arguments[2]) ? $arguments[2] : null;
+                $input = [$input, $alias, $protected];
             }
 
             $input[0] = strtoupper($name) . '(' . $this->protect($input[0]) . ')';
@@ -68,7 +70,7 @@ class Select extends AbstractQuery
         $match = "MATCH(" . implode(",",
                 $match) . ") AGAINST ('" . $against . "'" . ($boolean_mode ? " IN BOOLEAN MODE" : "") . ")";
 
-        return $this->cols(array($match, $alias, false))->where(array($match));
+        return $this->cols([$match, $alias, false])->where([$match]);
     }
 
     /**
@@ -91,7 +93,7 @@ class Select extends AbstractQuery
             $lastTable = $lastTable[1];
         }
 
-        $this->parts['join'][$lastTable][] = array($table, $on, $type);
+        $this->parts['join'][$lastTable][] = [$table, $on, $type];
 
         return $this;
     }
@@ -159,13 +161,34 @@ class Select extends AbstractQuery
     }
 
     /**
+     * @return null|string
+     */
+    public function parseOptions()
+    {
+        if (!empty($this->parts['options'])) {
+            return implode(" ", array_map("strtoupper", $this->parts['options']));
+        }
+
+        return null;
+    }
+
+    /**
+     * @param $query
+     * @return Union
+     */
+    public function union($query)
+    {
+        return new Union($this, $query);
+    }
+
+    /**
      * Parses SELECT entries
      *
      * @return string
      */
     protected function parseCols()
     {
-        if (!isset($this->parts['cols']) OR !is_array($this->parts['cols']) OR count($this->parts['cols']) < 1) {
+        if (!isset($this->parts['cols']) or !is_array($this->parts['cols']) or count($this->parts['cols']) < 1) {
             return '*';
         } else {
             $selectParts = [];
@@ -184,15 +207,6 @@ class Select extends AbstractQuery
 
             return implode(', ', $selectParts);
         }
-    }
-
-    public function parseOptions()
-    {
-        if (!empty($this->parts['options'])) {
-            return implode(" ", array_map("strtoupper", $this->parts['options']));
-        }
-
-        return null;
     }
 
     /**
@@ -244,7 +258,7 @@ class Select extends AbstractQuery
         if (isset($this->parts['join'][$table])) {
             foreach ($this->parts['join'][$table] as $join) {
                 if (!is_array($join[0])) {
-                    $join[0] = array($join[0]);
+                    $join[0] = [$join[0]];
                 }
 
                 $joinTable = isset($join[0][0]) ? $join[0][0] : false;
@@ -290,7 +304,7 @@ class Select extends AbstractQuery
             if (is_array($this->parts['group']['fields'])) {
                 $groupFields = [];
                 foreach ($this->parts['group']['fields'] as $field) {
-                    $field = is_array($field) ? $field : array($field);
+                    $field = is_array($field) ? $field : [$field];
                     $column = isset($field[0]) ? $field[0] : false;
                     $type = isset($field[1]) ? $field[1] : '';
 
@@ -309,10 +323,4 @@ class Select extends AbstractQuery
 
         return $group;
     }
-
-    public function union($query)
-    {
-        return new Union($this, $query);
-    }
-
 }
