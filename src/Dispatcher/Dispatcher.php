@@ -85,8 +85,6 @@ class Dispatcher
         } else {
             throw new Exception("Maximum number of hops ($this->maxHops) has been reached for {$request->getMCA()}");
         }
-
-        return null;
     }
 
     /**
@@ -112,28 +110,21 @@ class Dispatcher
      */
     public function generateController($request)
     {
-        $controllerClass = $this->getFullControllerNameFromRequest($request);
-
-        if (!$this->getAutoloader()->isClass($controllerClass)) {
-            throw new Exception('Error finding a valid controller ['.$controllerClass.'] for ['.$request->getMCA().']');
-        }
-
-        /* @var $controllerClass Controller */
-        $controller = $this->newController($controllerClass);
-
-        return $controller;
-    }
-
-    /**
-     * @param Request $request
-     * @return string
-     */
-    public function getFullControllerNameFromRequest($request)
-    {
         $module = $this->formatModuleName($request->getModuleName());
         $controller = $this->formatControllerName($request->getControllerName());
 
-        return $this->getFullControllerName($module, $controller);
+        $namespaceClass = $this->generateFullControllerNameNamespace($module, $controller);
+        if ($this->isValidControllerNamespace($namespaceClass)) {
+            return $this->newController($namespaceClass);
+        } else {
+            $classicClass = $this->generateFullControllerNameString($module, $controller);
+            if ($this->getAutoloader()->isClass($classicClass)) {
+                return $this->newController($classicClass);
+            }
+        }
+        throw new Exception(
+            'Error finding a valid controller ['.$namespaceClass.']['.$classicClass.'] for ['.$request->getMCA().']'
+        );
     }
 
     /**
@@ -165,56 +156,6 @@ class Dispatcher
     public function getControllerName($controller)
     {
         return inflector()->classify($controller);
-    }
-
-    /**
-     * @param $module
-     * @param $controller
-     * @return string
-     */
-    public function getFullControllerName($module, $controller)
-    {
-        $namespaceClass = $this->generateFullControllerNameNamespace($module, $controller);
-        $loader = $this->getAutoloader()->getPsr4ClassLoader();
-        $loader->load($namespaceClass);
-        if ($loader->isLoaded($namespaceClass)) {
-            return $namespaceClass;
-        }
-
-        return $this->generateFullControllerNameString($module, $controller);
-    }
-
-    /**
-     * @param $module
-     * @param $controller
-     * @return string
-     */
-    protected function generateFullControllerNameNamespace($module, $controller)
-    {
-        $name = app()->get('kernel')->getRootNamespace().'Modules\\';
-        $module = $module == 'Default' ? 'Frontend' : $module;
-        $name .= $module.'\Controllers\\';
-        $name .= str_replace('_', '\\', $controller)."Controller";
-
-        return $name;
-    }
-
-    /**
-     * @return AutoLoader
-     */
-    protected function getAutoloader()
-    {
-        return app('autoloader');
-    }
-
-    /**
-     * @param $module
-     * @param $controller
-     * @return string
-     */
-    protected function generateFullControllerNameString($module, $controller)
-    {
-        return $module."_".$controller."Controller";
     }
 
     /**
@@ -285,5 +226,53 @@ class Dispatcher
     public function getCurrentController()
     {
         return $this->currentController;
+    }
+
+    /**
+     * @param $module
+     * @param $controller
+     * @return string
+     */
+    protected function generateFullControllerNameNamespace($module, $controller)
+    {
+        $name = app()->get('kernel')->getRootNamespace().'Modules\\';
+        $module = $module == 'Default' ? 'Frontend' : $module;
+        $name .= $module.'\Controllers\\';
+        $name .= str_replace('_', '\\', $controller)."Controller";
+
+        return $name;
+    }
+
+    /**
+     * @param $namespaceClass
+     * @return bool
+     */
+    protected function isValidControllerNamespace($namespaceClass)
+    {
+        $loader = $this->getAutoloader()->getPsr4ClassLoader();
+        $loader->load($namespaceClass);
+        if ($loader->isLoaded($namespaceClass)) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * @return AutoLoader
+     */
+    protected function getAutoloader()
+    {
+        return app('autoloader');
+    }
+
+    /**
+     * @param $module
+     * @param $controller
+     * @return string
+     */
+    protected function generateFullControllerNameString($module, $controller)
+    {
+        return $module."_".$controller."Controller";
     }
 }
