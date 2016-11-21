@@ -94,7 +94,7 @@ abstract class RecordManager
     /**
      * @return string
      */
-    public static function getRootNamespace()
+    public function getRootNamespace()
     {
         return 'App\Models\\';
     }
@@ -104,7 +104,7 @@ abstract class RecordManager
      */
     public function getModelNamespace()
     {
-        return static::getRootNamespace().$this->getModelNamespacePath();
+        return $this->getRootNamespace().$this->getModelNamespacePath();
     }
 
     /**
@@ -1364,7 +1364,7 @@ abstract class RecordManager
     protected function generateModelNamespacePathFromClassName()
     {
         $className = $this->getClassName();
-        $rootNamespace = static::getRootNamespace();
+        $rootNamespace = $this->getRootNamespace();
         $path = str_replace($rootNamespace, '', $className);
 
         $nsParts = explode('\\', $path);
