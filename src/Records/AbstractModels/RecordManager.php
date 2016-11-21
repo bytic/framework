@@ -1332,7 +1332,7 @@ abstract class RecordManager
     protected function generateFilterManagerClass()
     {
         if ($this->isNamespaced()) {
-            $base = $this->getNamespaceParentFolder();
+            $base = $this->getNamespacePath();
             $namespaceClass = $base.'\Filters\FilterManager';
             /** @var Psr4Class $loader */
             $loader = app('autoloader')->getPsr4ClassLoader();
