@@ -34,7 +34,12 @@ abstract class RecordManager
      */
     protected $db = null;
 
-    protected $_collectionClass = RecordCollection::class;
+    /**
+     * Collection class for current record manager
+     *
+     * @var string
+     */
+    protected $collectionClass = null;
 
     protected $helpers = [];
 
@@ -151,6 +156,7 @@ abstract class RecordManager
             return $return;
         }
 
+        /** @noinspection PhpAssignmentInConditionInspection */
         if ($return = $this->isCallUrl($name, $arguments)) {
             return $return;
         }
@@ -334,7 +340,19 @@ abstract class RecordManager
      */
     public function getCollectionClass()
     {
-        return $this->_collectionClass;
+        if ($this->collectionClass === null) {
+            $this->initCollectionClass();
+        }
+
+        return $this->collectionClass;
+    }
+
+    /**
+     * @param string $collectionClass
+     */
+    public function setCollectionClass($collectionClass)
+    {
+        $this->collectionClass = $collectionClass;
     }
 
     /**
@@ -400,6 +418,7 @@ abstract class RecordManager
         $results = $this->getDB()->execute($query);
         if ($results->numRows() > 0) {
             $pk = $this->getPrimaryKey();
+            /** @noinspection PhpAssignmentInConditionInspection */
             while ($row = $results->fetchResult()) {
                 $item = $this->getNew($row);
                 if (is_string($pk)) {
@@ -1324,6 +1343,19 @@ abstract class RecordManager
     public function getRequest()
     {
         return app('kernel')->getRequest();
+    }
+
+    protected function initCollectionClass()
+    {
+        $this->setCollectionClass($this->generateClassName());
+    }
+
+    /**
+     * @return string
+     */
+    protected function generateCollectionClass()
+    {
+        return RecordCollection::class;
     }
 
     /**
