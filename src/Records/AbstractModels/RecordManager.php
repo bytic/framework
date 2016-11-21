@@ -2,6 +2,7 @@
 
 namespace Nip\Records\AbstractModels;
 
+use Nip\AutoLoader\Loaders\Psr4Class;
 use Nip\Database\Connection;
 use Nip\Database\Query\AbstractQuery as Query;
 use Nip\Database\Query\Delete as DeleteQuery;
@@ -573,7 +574,7 @@ abstract class RecordManager
      */
     public function getFilterManagerClass()
     {
-        return '\Nip\Records\Filters\FilterManager';
+        return $this->generateFilterManagerClass();
     }
 
     /**
@@ -1326,11 +1327,22 @@ abstract class RecordManager
     }
 
     /**
-     * @param null $tableStructure
+     * @return mixed
      */
-    public function setTableStructure($tableStructure)
+    protected function generateFilterManagerClass()
     {
-        $this->tableStructure = $tableStructure;
+        if ($this->isNamespaced()) {
+            $base = $this->getNamespaceParentFolder();
+            $namespaceClass = $base.'\Filters\FilterManager';
+            /** @var Psr4Class $loader */
+            $loader = app('autoloader')->getPsr4ClassLoader();
+            $loader->load($namespaceClass);
+            if ($loader->isLoaded($namespaceClass)) {
+                return $namespaceClass;
+            }
+        }
+
+        return FilterManager::class;
     }
 
     protected function initTable()
@@ -1419,6 +1431,14 @@ abstract class RecordManager
         }
 
         return $this->tableStructure;
+    }
+
+    /**
+     * @param null $tableStructure
+     */
+    public function setTableStructure($tableStructure)
+    {
+        $this->tableStructure = $tableStructure;
     }
 
     protected function initTableStructure()
