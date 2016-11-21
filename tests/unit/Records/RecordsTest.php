@@ -4,6 +4,7 @@ namespace Nip\Tests\Unit\Records;
 
 use Mockery as m;
 use Nip\Database\Connection;
+use Nip\Records\Collections\Collection;
 use Nip\Records\RecordManager as Records;
 use Nip\Request;
 use Nip\Tests\Unit\AbstractTest;
@@ -107,9 +108,11 @@ class RecordsTest extends AbstractTest
 
     public function testInitRelationsFromArrayBelongsToSimple()
     {
+        /** @var Records $users */
         $users = m::namedMock('Users', Records::class)->shouldDeferMissing()
             ->shouldReceive('instance')->andReturnSelf()
             ->getMock();
+
         $users->setPrimaryFK('id_user');
 
         m::namedMock('User', Records::class);
@@ -126,15 +129,6 @@ class RecordsTest extends AbstractTest
         $this->_testInitRelationsFromArrayBelongsToUser('UserName');
 
         self::assertSame($users, $this->_object->getRelation('User')->getWith());
-    }
-
-    protected function _testInitRelationsFromArrayBelongsToUser($name)
-    {
-        self::assertTrue($this->_object->hasRelation($name));
-        self::assertInstanceOf('Nip\Records\Relations\BelongsTo', $this->_object->getRelation($name));
-        self::assertInstanceOf('Nip\Records\RecordManager', $this->_object->getRelation($name)->getWith());
-        self::assertEquals($this->_object->getRelation($name)->getWith()->getPrimaryFK(),
-            $this->_object->getRelation($name)->getFK());
     }
 
     public function testNewCollection()
@@ -166,7 +160,6 @@ class RecordsTest extends AbstractTest
         $filtersArray = $this->_object->requestFilters($request);
         self::assertSame($filtersArray, $params);
     }
-
 
     /**
      * @return array
@@ -204,19 +197,37 @@ class RecordsTest extends AbstractTest
     public function testGetPrimaryKey()
     {
         $records = new Records();
-        $tableStructure = unserialize(file_get_contents(codecept_data_dir() . '\database_structure\users.serialize'));
+        $tableStructure = unserialize(file_get_contents(codecept_data_dir().'\database_structure\users.serialize'));
         $records->setTableStructure($tableStructure);
         $records->setPrimaryKey('id');
 
         self::assertEquals('id', $records->getPrimaryKey());
     }
 
+    public function testGetCollectionClass()
+    {
+        self::assertEquals(Collection::class, $this->_object->getCollectionClass());
+    }
+
+    protected function _testInitRelationsFromArrayBelongsToUser($name)
+    {
+        self::assertTrue($this->_object->hasRelation($name));
+        self::assertInstanceOf('Nip\Records\Relations\BelongsTo', $this->_object->getRelation($name));
+        self::assertInstanceOf('Nip\Records\RecordManager', $this->_object->getRelation($name)->getWith());
+        self::assertEquals($this->_object->getRelation($name)->getWith()->getPrimaryFK(),
+            $this->_object->getRelation($name)->getFK());
+    }
+
     protected function setUp()
     {
         parent::setUp();
+
         $wrapper = new Connection();
 
-        $this->_object = new Records();
+        $this->_object = m::mock(Records::class)->shouldDeferMissing()
+            ->shouldReceive('getRequest')->andReturn(Request::create('/'))
+            ->getMock();
+
         $this->_object->setDB($wrapper);
         $this->_object->setTable('pages');
     }

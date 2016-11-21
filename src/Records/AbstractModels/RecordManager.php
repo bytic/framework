@@ -1347,7 +1347,7 @@ abstract class RecordManager
 
     protected function initCollectionClass()
     {
-        $this->setCollectionClass($this->generateClassName());
+        $this->setCollectionClass($this->generateCollectionClass());
     }
 
     /**
