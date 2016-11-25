@@ -1,11 +1,12 @@
 <?php
 
+use Nip\Collection;
 use Nip\Form\AbstractForm;
 
 /**
  * Class Nip_Form_DisplayGroup
  */
-class Nip_Form_DisplayGroup extends Nip_Collection
+class Nip_Form_DisplayGroup extends Collection
 {
     /**
      * Group attributes

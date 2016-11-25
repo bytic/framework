@@ -2,11 +2,16 @@
 
 namespace Nip\Records\Collections;
 
+use Nip\Collection as AbstractCollection;
 use Nip\HelperBroker;
 use Nip\Records\AbstractModels\RecordManager as Records;
 use Nip\Records\Record as Record;
 
-class Collection extends \Nip_Collection
+/**
+ * Class Collection
+ * @package Nip\Records\Collections
+ */
+class Collection extends AbstractCollection
 {
     protected $_indexKey = false;
 
