@@ -4,7 +4,11 @@ namespace Nip\Tests\Unit;
 
 use Nip\Controller;
 
-class ControllerTest extends \Codeception\TestCase\Test
+/**
+ * Class ControllerTest
+ * @package Nip\Tests\Unit
+ */
+class ControllerTest extends AbstractTest
 {
     /**
      * @var \UnitTester

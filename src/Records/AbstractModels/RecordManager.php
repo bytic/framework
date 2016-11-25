@@ -2,6 +2,7 @@
 
 namespace Nip\Records\AbstractModels;
 
+use Nip\AutoLoader\Loaders\Psr4Class;
 use Nip\Database\Connection;
 use Nip\Database\Query\AbstractQuery as Query;
 use Nip\Database\Query\Delete as DeleteQuery;
@@ -33,7 +34,12 @@ abstract class RecordManager
      */
     protected $db = null;
 
-    protected $_collectionClass = RecordCollection::class;
+    /**
+     * Collection class for current record manager
+     *
+     * @var string
+     */
+    protected $collectionClass = null;
 
     protected $helpers = [];
 
@@ -93,7 +99,7 @@ abstract class RecordManager
     /**
      * @return string
      */
-    public static function getRootNamespace()
+    public function getRootNamespace()
     {
         return 'App\Models\\';
     }
@@ -103,7 +109,7 @@ abstract class RecordManager
      */
     public function getModelNamespace()
     {
-        return static::getRootNamespace().$this->getModelNamespacePath();
+        return $this->getRootNamespace().$this->getModelNamespacePath();
     }
 
     /**
@@ -150,6 +156,7 @@ abstract class RecordManager
             return $return;
         }
 
+        /** @noinspection PhpAssignmentInConditionInspection */
         if ($return = $this->isCallUrl($name, $arguments)) {
             return $return;
         }
@@ -333,7 +340,19 @@ abstract class RecordManager
      */
     public function getCollectionClass()
     {
-        return $this->_collectionClass;
+        if ($this->collectionClass === null) {
+            $this->initCollectionClass();
+        }
+
+        return $this->collectionClass;
+    }
+
+    /**
+     * @param string $collectionClass
+     */
+    public function setCollectionClass($collectionClass)
+    {
+        $this->collectionClass = $collectionClass;
     }
 
     /**
@@ -399,6 +418,7 @@ abstract class RecordManager
         $results = $this->getDB()->execute($query);
         if ($results->numRows() > 0) {
             $pk = $this->getPrimaryKey();
+            /** @noinspection PhpAssignmentInConditionInspection */
             while ($row = $results->fetchResult()) {
                 $item = $this->getNew($row);
                 if (is_string($pk)) {
@@ -573,7 +593,7 @@ abstract class RecordManager
      */
     public function getFilterManagerClass()
     {
-        return '\Nip\Records\Filters\FilterManager';
+        return $this->generateFilterManagerClass();
     }
 
     /**
@@ -1325,12 +1345,36 @@ abstract class RecordManager
         return app('kernel')->getRequest();
     }
 
-    /**
-     * @param null $tableStructure
-     */
-    public function setTableStructure($tableStructure)
+    protected function initCollectionClass()
     {
-        $this->tableStructure = $tableStructure;
+        $this->setCollectionClass($this->generateCollectionClass());
+    }
+
+    /**
+     * @return string
+     */
+    protected function generateCollectionClass()
+    {
+        return RecordCollection::class;
+    }
+
+    /**
+     * @return mixed
+     */
+    protected function generateFilterManagerClass()
+    {
+        if ($this->isNamespaced()) {
+            $base = $this->getNamespacePath();
+            $namespaceClass = $base.'\Filters\FilterManager';
+            /** @var Psr4Class $loader */
+            $loader = app('autoloader')->getPsr4ClassLoader();
+            $loader->load($namespaceClass);
+            if ($loader->isLoaded($namespaceClass)) {
+                return $namespaceClass;
+            }
+        }
+
+        return FilterManager::class;
     }
 
     protected function initTable()
@@ -1352,7 +1396,7 @@ abstract class RecordManager
     protected function generateModelNamespacePathFromClassName()
     {
         $className = $this->getClassName();
-        $rootNamespace = static::getRootNamespace();
+        $rootNamespace = $this->getRootNamespace();
         $path = str_replace($rootNamespace, '', $className);
 
         $nsParts = explode('\\', $path);
@@ -1419,6 +1463,14 @@ abstract class RecordManager
         }
 
         return $this->tableStructure;
+    }
+
+    /**
+     * @param null $tableStructure
+     */
+    public function setTableStructure($tableStructure)
+    {
+        $this->tableStructure = $tableStructure;
     }
 
     protected function initTableStructure()

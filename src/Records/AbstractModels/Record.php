@@ -115,13 +115,6 @@ abstract class Record extends \Nip_Object
         $this->_manager = $manager;
     }
 
-    protected function initManager()
-    {
-        $class = $this->getManagerName();
-        $manager = $this->getManagerInstance($class);
-        $this->setManager($manager);
-    }
-
     /**
      * @return null
      */
@@ -140,32 +133,6 @@ abstract class Record extends \Nip_Object
     public function setManagerName($managerName)
     {
         $this->managerName = $managerName;
-    }
-
-    protected function initManagerName()
-    {
-        $this->setManagerName($this->inflectManagerName());
-    }
-
-    /**
-     * @return string
-     */
-    protected function inflectManagerName()
-    {
-        return ucfirst(inflector()->pluralize($this->getClassName()));
-    }
-
-    /**
-     * @param string $class
-     * @return mixed
-     * @throws Exception
-     */
-    protected function getManagerInstance($class)
-    {
-        if (class_exists($class)) {
-            return call_user_func([$class, 'instance']);
-        }
-        throw new Exception('invalid manager name [' . $class . ']');
     }
 
     /**
@@ -242,8 +209,12 @@ abstract class Record extends \Nip_Object
     public function insert()
     {
         $pk = $this->getManager()->getPrimaryKey();
-        $this->{$pk} = $this->getManager()->insert($this);
-        return $this->{$pk} > 0;
+        $lastId = $this->getManager()->insert($this);
+        if ($pk == 'id') {
+            $this->{$pk} = $lastId;
+        }
+
+        return $lastId > 0;
     }
 
     /**
@@ -382,6 +353,39 @@ abstract class Record extends \Nip_Object
     public function cloneRelations($from)
     {
         return $this->getManager()->cloneRelations($from, $this);
+    }
+
+    protected function initManager()
+    {
+        $class = $this->getManagerName();
+        $manager = $this->getManagerInstance($class);
+        $this->setManager($manager);
+    }
+
+    protected function initManagerName()
+    {
+        $this->setManagerName($this->inflectManagerName());
+    }
+
+    /**
+     * @return string
+     */
+    protected function inflectManagerName()
+    {
+        return ucfirst(inflector()->pluralize($this->getClassName()));
+    }
+
+    /**
+     * @param string $class
+     * @return mixed
+     * @throws Exception
+     */
+    protected function getManagerInstance($class)
+    {
+        if (class_exists($class)) {
+            return call_user_func([$class, 'instance']);
+        }
+        throw new Exception('invalid manager name ['.$class.']');
     }
 
     protected function getRequest()
