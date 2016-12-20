@@ -411,6 +411,18 @@ class Request extends \Symfony\Component\HttpFoundation\Request implements \Arra
     }
 
     /**
+     * @return bool
+     */
+    public function isMaliciousUri()
+    {
+        $uri = $this->path();
+        if (in_array($uri, self::getMaliciousUriArray())) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
      * Get the current path info for the request.
      *
      * @return string
@@ -419,6 +431,23 @@ class Request extends \Symfony\Component\HttpFoundation\Request implements \Arra
     {
         $pattern = trim($this->getPathInfo(), '/');
         return $pattern == '' ? '/' : '/' . $pattern;
+    }
+
+    /**
+     * @return array
+     */
+    public static function getMaliciousUriArray()
+    {
+        return [
+            '/wp-login.php',
+            '/wp-admin/',
+            '/xmlrpc.php',
+            '/old/wp-admin/',
+            '/wp/wp-admin/',
+            '/wordpress/wp-admin/',
+            '/blog/wp-admin/',
+            '/test/wp-admin/',
+        ];
     }
 
     /**

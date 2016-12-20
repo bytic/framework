@@ -393,7 +393,12 @@ class Application
             $this->preHandleRequest();
 
             $this->preRouting();
-            $this->route($request);
+
+            // check is valid request
+            if ($this->isValidRequest($request)) {
+                $this->route($request);
+            }
+
             $this->postRouting();
 
             return $this->getResponseFromRequest($request);
@@ -410,6 +415,18 @@ class Application
     {
     }
 
+    /**
+     * @param Request $request
+     * @return bool
+     */
+    protected function isValidRequest($request)
+    {
+        if ($request->isMaliciousUri()) {
+            return false;
+        }
+        return true;
+    }
+
     public function postRouting()
     {
     }
@@ -421,7 +438,7 @@ class Application
     protected function getResponseFromRequest($request)
     {
         $response = $this->dispatchRequest($request);
-        $content = ob_get_clean();
+        ob_get_clean();
 
         return $response;
     }
@@ -470,7 +487,8 @@ class Application
         }
     }
 
-    /**
+    /** @noinspection PhpUnusedParameterInspection
+     *
      * @param Request $request
      * @param Response $response
      * @return Response
