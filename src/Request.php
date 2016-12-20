@@ -123,6 +123,14 @@ class Request extends \Symfony\Component\HttpFoundation\Request implements \Arra
     }
 
     /**
+     * @return bool
+     */
+    public function hasMCA()
+    {
+        return $this->getMCA() != '..';
+    }
+
+    /**
      * @return string
      */
     public function getMCA()

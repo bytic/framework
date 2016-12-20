@@ -23,6 +23,8 @@ use Nip\Router\RouterAwareTrait;
 use Nip\Router\RouterServiceProvider;
 use Nip\Staging\StagingAwareTrait;
 use Nip\Staging\StagingServiceProvider;
+use Symfony\Component\HttpKernel\Exception\HttpException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Whoops\Handler\PrettyPageHandler;
 use Whoops\Run as WhoopsRun;
 
@@ -233,7 +235,7 @@ class Application
         $stage = $this->getStaging()->getStage();
         $pathInfo = $this->getRequest()->getHttp()->getBaseUrl();
 
-        $baseURL = $stage->getHTTP().$stage->getHost().$pathInfo;
+        $baseURL = $stage->getHTTP() . $stage->getHost() . $pathInfo;
         define('BASE_URL', $baseURL);
     }
 
@@ -306,7 +308,7 @@ class Application
 
             if ($domain != 'localhost') {
                 Cookie\Jar::instance()->setDefaults(
-                    ['domain' => '.'.$domain]
+                    ['domain' => '.' . $domain]
                 );
             }
             $this->sessionManager->init();
@@ -437,10 +439,14 @@ class Application
      */
     protected function getResponseFromRequest($request)
     {
-        $response = $this->dispatchRequest($request);
-        ob_get_clean();
+        if ($request->hasMCA()) {
+            $response = $this->dispatchRequest($request);
+            ob_get_clean();
 
-        return $response;
+            return $response;
+        }
+
+        throw new NotFoundHttpException('No MCA in Request');
     }
 
     /**
@@ -504,6 +510,24 @@ class Application
      */
     public function terminate(Request $request, Response $response)
     {
+    }
+
+    /**
+     * Throw an HttpException with the given data.
+     *
+     * @param  int $code
+     * @param  string $message
+     * @param  array $headers
+     * @return void
+     *
+     * @throws HttpException
+     */
+    public function abort($code, $message = '', array $headers = [])
+    {
+        if ($code == 404) {
+            throw new NotFoundHttpException($message);
+        }
+        throw new HttpException($code, $message, null, $headers);
     }
 
     /**

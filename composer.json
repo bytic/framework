@@ -26,6 +26,7 @@
     "sendgrid/sendgrid": "~5.0.7",
     "swiftmailer/swiftmailer": "5.4.*",
     "symfony/http-foundation": "3.1.*",
+    "symfony/http-kernel": "3.1.*",
     "monolog/monolog": "1.20.*",
     "filp/whoops": "2.*"
   },
