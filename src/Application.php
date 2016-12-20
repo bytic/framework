@@ -399,6 +399,8 @@ class Application
             // check is valid request
             if ($this->isValidRequest($request)) {
                 $this->route($request);
+            } else {
+                die('');
             }
 
             $this->postRouting();
