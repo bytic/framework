@@ -455,6 +455,8 @@ class Request extends \Symfony\Component\HttpFoundation\Request implements \Arra
             '/wordpress/wp-admin/',
             '/blog/wp-admin/',
             '/test/wp-admin/',
+            '/openserver/',
+            '/recordings/LICENSE.txt',
             '/webdav/',
             '/license.txt',
             '/hetlerx.php',
