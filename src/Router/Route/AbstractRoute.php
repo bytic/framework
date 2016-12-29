@@ -3,6 +3,7 @@
 namespace Nip\Router\Route;
 
 use Nip\Router\Parsers\AbstractParser;
+use Nip\Utility\Traits\NameWorksTrait;
 
 /**
  * Class AbstractRoute
@@ -10,6 +11,8 @@ use Nip\Router\Parsers\AbstractParser;
  */
 abstract class AbstractRoute
 {
+    use NameWorksTrait;
+
     /**
      * @var string
      */
@@ -119,6 +122,10 @@ abstract class AbstractRoute
      */
     protected function generateType()
     {
+        if ($this->isNamespaced()) {
+            $name = strtolower($this->getClassFirstName());
+            return str_replace('route', '', $name);
+        }
         $name = get_class($this);
         $parts = explode('_', $name);
 
