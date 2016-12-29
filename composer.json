@@ -7,6 +7,12 @@
       "email": "hello@gabrielsolomon.ro"
     }
   ],
+  "repositories": [
+    {
+      "type": "git",
+      "url": "https://github.com/ByTIC/RequestDetective.git"
+    }
+  ],
   "autoload": {
     "classmap": [
       "src"
@@ -19,6 +25,7 @@
   },
   "require": {
     "php": ">=5.5.0",
+    "ByTIC/RequestDetective": "dev-develop",
     "container-interop/container-interop": "1.1.*",
     "nesbot/carbon": "^1.21",
     "maximebf/debugbar": "1.*",

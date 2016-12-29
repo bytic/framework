@@ -2,6 +2,7 @@
 
 namespace Nip;
 
+use ByTIC\RequestDetective\RequestDetective;
 use Nip\Http\Request\Http;
 
 /**
@@ -423,11 +424,7 @@ class Request extends \Symfony\Component\HttpFoundation\Request implements \Arra
      */
     public function isMaliciousUri()
     {
-        $uri = $this->path();
-        if (in_array($uri, self::getMaliciousUriArray())) {
-            return true;
-        }
-        return false;
+        return RequestDetective::isMalicious($this);
     }
 
     /**
@@ -439,28 +436,6 @@ class Request extends \Symfony\Component\HttpFoundation\Request implements \Arra
     {
         $pattern = trim($this->getPathInfo(), '/');
         return $pattern == '' ? '/' : '/' . $pattern;
-    }
-
-    /**
-     * @return array
-     */
-    public static function getMaliciousUriArray()
-    {
-        return [
-            '/wp-login.php',
-            '/wp-admin/',
-            '/xmlrpc.php',
-            '/old/wp-admin/',
-            '/wp/wp-admin/',
-            '/wordpress/wp-admin/',
-            '/blog/wp-admin/',
-            '/test/wp-admin/',
-            '/openserver/',
-            '/recordings/LICENSE.txt',
-            '/webdav/',
-            '/license.txt',
-            '/hetlerx.php',
-        ];
     }
 
     /**
