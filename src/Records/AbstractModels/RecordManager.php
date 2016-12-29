@@ -539,7 +539,7 @@ abstract class RecordManager
     /**
      * Factory
      * @param string $type
-     * @return Query
+     * @return Query|SelectQuery
      */
     public function newQuery($type = 'select')
     {
@@ -699,7 +699,7 @@ abstract class RecordManager
      */
     protected function isCallUrl($name, $arguments)
     {
-        if (substr($name, 0, 3) == "get" || substr($name, -3) == "URL") {
+        if (substr($name, 0, 3) == "get" && substr($name, -3) == "URL") {
             $action = substr($name, 3, -3);
             $params = $arguments[0];
             $module = $arguments[1];
