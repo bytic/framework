@@ -539,7 +539,7 @@ abstract class RecordManager
     /**
      * Factory
      * @param string $type
-     * @return Query|SelectQuery
+     * @return Query|SelectQuery|InsertQuery|DeleteQuery|UpdateQuery
      */
     public function newQuery($type = 'select')
     {

@@ -4,8 +4,8 @@ namespace Nip\Records\Collections;
 
 use Nip\Collection as AbstractCollection;
 use Nip\HelperBroker;
+use Nip\Records\AbstractModels\Record as Record;
 use Nip\Records\AbstractModels\RecordManager as Records;
-use Nip\Records\Record as Record;
 
 /**
  * Class Collection
@@ -21,6 +21,9 @@ class Collection extends AbstractCollection
     protected $_manager = null;
 
 
+    /**
+     * @param $relations
+     */
     public function loadRelations($relations)
     {
         if (is_string($relations)) {
@@ -32,6 +35,10 @@ class Collection extends AbstractCollection
         }
     }
 
+    /**
+     * @param $name
+     * @return Collection
+     */
     public function loadRelation($name)
     {
         $relation = $this->getRelation($name);
@@ -40,6 +47,10 @@ class Collection extends AbstractCollection
         return $results;
     }
 
+    /**
+     * @param $name
+     * @return \Nip\Records\Relations\Relation|null
+     */
     public function getRelation($name)
     {
         return $this->getManager()->getRelation($name);
@@ -74,6 +85,9 @@ class Collection extends AbstractCollection
         $this->setManager($manager);
     }
 
+    /**
+     * @return string
+     */
     public function toJSON()
     {
         $return = [];
@@ -103,13 +117,18 @@ class Collection extends AbstractCollection
         return $this->offsetSet($index, $record);
     }
 
+    /**
+     * @param Record $record
+     * @param null $index
+     * @return bool|mixed|null
+     */
     public function getRecordKey(Record $record, $index = null)
     {
         if ($index) {
-            $index = $record->$index;
+            $index = $record->{$index};
         } else {
             $index = $this->getIndexKey();
-            $index = $index ? $record->$index : $record->getPrimaryKey();
+            $index = $index ? $record->{$index} : $record->getPrimaryKey();
             if (!$index) {
                 $index = null;
             }
@@ -117,16 +136,27 @@ class Collection extends AbstractCollection
         return $index;
     }
 
+    /**
+     * @return bool
+     */
     public function getIndexKey()
     {
         return $this->_indexKey;
     }
 
+    /**
+     * @param $key
+     * @return mixed
+     */
     public function setIndexKey($key)
     {
         return $this->_indexKey = $key;
     }
 
+    /**
+     * @param Record $record
+     * @return bool
+     */
     public function has(Record $record)
     {
         $index = $this->getRecordKey($record);
@@ -134,6 +164,9 @@ class Collection extends AbstractCollection
         return $this->offsetExists($index) && $this->offsetGet($index) == $record;
     }
 
+    /**
+     * @param $record
+     */
     public function remove($record)
     {
         foreach ($this as $key => $item) {
