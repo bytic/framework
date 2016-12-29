@@ -99,17 +99,17 @@ abstract class RecordManager
     /**
      * @return string
      */
-    public function getRootNamespace()
+    public function getModelNamespace()
     {
-        return 'App\Models\\';
+        return $this->getRootNamespace().$this->getModelNamespacePath();
     }
 
     /**
      * @return string
      */
-    public function getModelNamespace()
+    public function getRootNamespace()
     {
-        return $this->getRootNamespace().$this->getModelNamespacePath();
+        return 'App\Models\\';
     }
 
     /**
@@ -133,6 +133,31 @@ abstract class RecordManager
             $path = inflector()->classify($controller).'\\';
         }
         $this->modelNamespacePath = $path;
+    }
+
+    /**
+     * @return string
+     */
+    protected function generateModelNamespacePathFromClassName()
+    {
+        $className = $this->getClassName();
+        $rootNamespace = $this->getRootNamespace();
+        $path = str_replace($rootNamespace, '', $className);
+
+        $nsParts = explode('\\', $path);
+        array_pop($nsParts);
+
+        return implode($nsParts, '\\');
+    }
+
+    /**
+     * @return string
+     */
+    protected function generateControllerGeneric()
+    {
+        $class = $this->getClassName();
+
+        return inflector()->unclassify($class);
     }
 
     /**
@@ -171,6 +196,39 @@ abstract class RecordManager
     }
 
     /**
+     * @param $name
+     * @param $arguments
+     * @return RecordCollection|null
+     */
+    protected function isCallDatabaseOperation($name, $arguments)
+    {
+        $operations = ["find", "delete", "count"];
+        foreach ($operations as $operation) {
+            if (strpos($name, $operation . "By") !== false || strpos($name, $operation . "OneBy") !== false) {
+                $params = [];
+                if (count($arguments) > 1) {
+                    $params = end($arguments);
+                }
+
+                $match = str_replace([$operation . "By", $operation . "OneBy"], "", $name);
+                $field = inflector()->underscore($match);
+
+                if ($field == $this->getPrimaryKey()) {
+                    return $this->findByPrimary($arguments[0]);
+                }
+
+                $params['where'][] = ["$field " . (is_array($arguments[0]) ? "IN" : "=") . " ?", $arguments[0]];
+
+                $operation = str_replace($match, "", $name) . "Params";
+
+                return $this->$operation($params);
+            }
+        }
+
+        return null;
+    }
+
+    /**
      * @return string
      */
     public function getPrimaryKey()
@@ -190,6 +248,11 @@ abstract class RecordManager
         $this->primaryKey = $primaryKey;
     }
 
+    protected function initPrimaryKey()
+    {
+        $this->setPrimaryKey($this->generatePrimaryKey());
+    }
+
     /**
      * @return string
      */
@@ -202,6 +265,31 @@ abstract class RecordManager
         }
 
         return $primaryKey;
+    }
+
+    /**
+     * @return mixed
+     */
+    protected function getTableStructure()
+    {
+        if ($this->tableStructure == null) {
+            $this->initTableStructure();
+        }
+
+        return $this->tableStructure;
+    }
+
+    /**
+     * @param null $tableStructure
+     */
+    public function setTableStructure($tableStructure)
+    {
+        $this->tableStructure = $tableStructure;
+    }
+
+    protected function initTableStructure()
+    {
+        $this->setTableStructure($this->getDB()->getMetadata()->describeTable($this->getTable()));
     }
 
     /**
@@ -227,6 +315,19 @@ abstract class RecordManager
         $this->db = $db;
 
         return $this;
+    }
+
+    protected function initDB()
+    {
+        $this->setDB($this->newDbConnection());
+    }
+
+    /**
+     * @return Connection
+     */
+    protected function newDbConnection()
+    {
+        return db();
     }
 
     public function checkDB()
@@ -264,6 +365,19 @@ abstract class RecordManager
         $this->table = $table;
     }
 
+    protected function initTable()
+    {
+        $this->setTable($this->generateTable());
+    }
+
+    /**
+     * @return string
+     */
+    protected function generateTable()
+    {
+        return $this->getController();
+    }
+
     /**
      * @return string
      */
@@ -282,6 +396,27 @@ abstract class RecordManager
     public function setController($controller)
     {
         $this->controller = $controller;
+    }
+
+    protected function initController()
+    {
+        if ($this->isNamespaced()) {
+            $controller = $this->generateControllerNamespaced();
+        } else {
+            $controller = $this->generateControllerGeneric();
+        }
+        $this->setController($controller);
+    }
+
+    /**
+     * @return string
+     */
+    protected function generateControllerNamespaced()
+    {
+        $class = $this->getModelNamespacePath();
+        $class = trim($class, '\\');
+
+        return inflector()->unclassify($class);
     }
 
     /**
@@ -355,6 +490,19 @@ abstract class RecordManager
         $this->collectionClass = $collectionClass;
     }
 
+    protected function initCollectionClass()
+    {
+        $this->setCollectionClass($this->generateCollectionClass());
+    }
+
+    /**
+     * @return string
+     */
+    protected function generateCollectionClass()
+    {
+        return RecordCollection::class;
+    }
+
     /**
      * @return \Nip_Registry
      */
@@ -379,6 +527,13 @@ abstract class RecordManager
         $query->addParams($params);
 
         return $query;
+    }
+
+    /**
+     * @param array $params
+     */
+    protected function injectParams(&$params = [])
+    {
     }
 
     /**
@@ -505,6 +660,14 @@ abstract class RecordManager
         $this->model = $model;
     }
 
+    protected function inflectModel()
+    {
+        $class = $this->getClassName();
+        if ($this->model == null) {
+            $this->model = $this->generateModelClass($class);
+        }
+    }
+
     /**
      * @param null $class
      * @return string
@@ -527,6 +690,63 @@ abstract class RecordManager
         }
 
         return ucfirst(inflector()->singularize($class));
+    }
+
+    /**
+     * @param $name
+     * @param $arguments
+     * @return bool
+     */
+    protected function isCallUrl($name, $arguments)
+    {
+        if (substr($name, 0, 3) == "get" || substr($name, -3) == "URL") {
+            $action = substr($name, 3, -3);
+            $params = $arguments[0];
+            $module = $arguments[1];
+
+            return $this->compileURL($action, $params, $module);
+        }
+
+        return false;
+    }
+
+    /**
+     * @param $action
+     * @param array $params
+     * @param null $module
+     * @return mixed
+     */
+    public function compileURL($action, $params = [], $module = null)
+    {
+        $controller = $this->getController();
+
+        if (substr($action, 0, 5) == 'Async') {
+            $controller = 'async-' . $controller;
+            $action = substr($action, 5);
+        }
+
+        if (substr($action, 0, 5) == 'Modal') {
+            $controller = 'modal-' . $controller;
+            $action = substr($action, 5);
+        }
+
+        $params['action'] = (!empty($action)) ? $action : 'index';
+        $params['controller'] = $controller;
+
+        $params['action'] = inflector()->unclassify($params['action']);
+        $params['action'] = ($params['action'] == 'index') ? false : $params['action'];
+
+        $params['controller'] = $controller ? $controller : $this->getController();
+        $params['module'] = $module ? $module : Request::instance()->getModuleName();
+
+        $routeName = $params['module'] . '.' . $params['controller'] . '.' . $params['action'];
+        if ($this->Url()->getRouter()->hasRoute($routeName)) {
+            unset($params['module'], $params['controller'], $params['action']);
+        } else {
+            $routeName = $params['module'] . '.default';
+        }
+
+        return $this->Url()->assemble($routeName, $params);
     }
 
     /**
@@ -594,6 +814,33 @@ abstract class RecordManager
     public function getFilterManagerClass()
     {
         return $this->generateFilterManagerClass();
+    }
+
+    /**
+     * @return mixed
+     */
+    protected function generateFilterManagerClass()
+    {
+        if ($this->isNamespaced()) {
+            $base = $this->getNamespacePath();
+            $namespaceClass = $base . '\Filters\FilterManager';
+            /** @var Psr4Class $loader */
+            $loader = app('autoloader')->getPsr4ClassLoader();
+            $loader->load($namespaceClass);
+            if ($loader->isLoaded($namespaceClass)) {
+                return $namespaceClass;
+            }
+        }
+
+        return FilterManager::class;
+    }
+
+    /**
+     * @return \Nip\Request
+     */
+    public function getRequest()
+    {
+        return app('kernel')->getRequest();
     }
 
     /**
@@ -1197,6 +1444,36 @@ abstract class RecordManager
     }
 
     /**
+     * Check if the model needs to initRelations
+     * @return void
+     */
+    protected function checkInitRelations()
+    {
+        if ($this->relations === null) {
+            $this->initRelations();
+        }
+    }
+
+    protected function initRelations()
+    {
+        $this->relations = [];
+        foreach ($this->relationTypes as $type) {
+            $this->initRelationsType($type);
+        }
+    }
+
+    /**
+     * @param string $type
+     */
+    protected function initRelationsType($type)
+    {
+        if (property_exists($this, '_' . $type)) {
+            $array = $this->{'_' . $type};
+            $this->initRelationsFromArray($type, $array);
+        }
+    }
+
+    /**
      * @param $type
      * @param $array
      */
@@ -1207,6 +1484,19 @@ abstract class RecordManager
             $params = is_array($item) ? $item : [];
             $this->initRelation($type, $name, $params);
         }
+    }
+
+    /**
+     * @param string $type
+     * @param string $name
+     * @param array $params
+     * @return void
+     */
+    protected function initRelation($type, $name, $params)
+    {
+        $this->relations[$name] = $this->newRelation($type);
+        $this->relations[$name]->setName($name);
+        $this->relations[$name]->addParams($params);
     }
 
     /**
@@ -1335,295 +1625,6 @@ abstract class RecordManager
         $this->relations = $relations;
 
         return $this;
-    }
-
-    /**
-     * @return \Nip\Request
-     */
-    public function getRequest()
-    {
-        return app('kernel')->getRequest();
-    }
-
-    protected function initCollectionClass()
-    {
-        $this->setCollectionClass($this->generateCollectionClass());
-    }
-
-    /**
-     * @return string
-     */
-    protected function generateCollectionClass()
-    {
-        return RecordCollection::class;
-    }
-
-    /**
-     * @return mixed
-     */
-    protected function generateFilterManagerClass()
-    {
-        if ($this->isNamespaced()) {
-            $base = $this->getNamespacePath();
-            $namespaceClass = $base.'\Filters\FilterManager';
-            /** @var Psr4Class $loader */
-            $loader = app('autoloader')->getPsr4ClassLoader();
-            $loader->load($namespaceClass);
-            if ($loader->isLoaded($namespaceClass)) {
-                return $namespaceClass;
-            }
-        }
-
-        return FilterManager::class;
-    }
-
-    protected function initTable()
-    {
-        $this->setTable($this->generateTable());
-    }
-
-    /**
-     * @return string
-     */
-    protected function generateTable()
-    {
-        return $this->getController();
-    }
-
-    /**
-     * @return string
-     */
-    protected function generateModelNamespacePathFromClassName()
-    {
-        $className = $this->getClassName();
-        $rootNamespace = $this->getRootNamespace();
-        $path = str_replace($rootNamespace, '', $className);
-
-        $nsParts = explode('\\', $path);
-        array_pop($nsParts);
-
-        return implode($nsParts, '\\');
-    }
-
-    /**
-     * @return string
-     */
-    protected function generateControllerGeneric()
-    {
-        $class = $this->getClassName();
-
-        return inflector()->unclassify($class);
-    }
-
-    /**
-     * @param $name
-     * @param $arguments
-     * @return RecordCollection|null
-     */
-    protected function isCallDatabaseOperation($name, $arguments)
-    {
-        $operations = ["find", "delete", "count"];
-        foreach ($operations as $operation) {
-            if (strpos($name, $operation."By") !== false || strpos($name, $operation."OneBy") !== false) {
-                $params = [];
-                if (count($arguments) > 1) {
-                    $params = end($arguments);
-                }
-
-                $match = str_replace([$operation."By", $operation."OneBy"], "", $name);
-                $field = inflector()->underscore($match);
-
-                if ($field == $this->getPrimaryKey()) {
-                    return $this->findByPrimary($arguments[0]);
-                }
-
-                $params['where'][] = ["$field ".(is_array($arguments[0]) ? "IN" : "=")." ?", $arguments[0]];
-
-                $operation = str_replace($match, "", $name)."Params";
-
-                return $this->$operation($params);
-            }
-        }
-
-        return null;
-    }
-
-    protected function initPrimaryKey()
-    {
-        $this->setPrimaryKey($this->generatePrimaryKey());
-    }
-
-    /**
-     * @return mixed
-     */
-    protected function getTableStructure()
-    {
-        if ($this->tableStructure == null) {
-            $this->initTableStructure();
-        }
-
-        return $this->tableStructure;
-    }
-
-    /**
-     * @param null $tableStructure
-     */
-    public function setTableStructure($tableStructure)
-    {
-        $this->tableStructure = $tableStructure;
-    }
-
-    protected function initTableStructure()
-    {
-        $this->setTableStructure($this->getDB()->getMetadata()->describeTable($this->getTable()));
-    }
-
-    protected function initDB()
-    {
-        $this->setDB($this->newDbConnection());
-    }
-
-    /**
-     * @return Connection
-     */
-    protected function newDbConnection()
-    {
-        return db();
-    }
-
-    protected function initController()
-    {
-        if ($this->isNamespaced()) {
-            $controller = $this->generateControllerNamespaced();
-        } else {
-            $controller = $this->generateControllerGeneric();
-        }
-        $this->setController($controller);
-    }
-
-    /**
-     * @return string
-     */
-    protected function generateControllerNamespaced()
-    {
-        $class = $this->getModelNamespacePath();
-        $class = trim($class, '\\');
-
-        return inflector()->unclassify($class);
-    }
-
-    /**
-     * @param array $params
-     */
-    protected function injectParams(&$params = [])
-    {
-    }
-
-    protected function inflectModel()
-    {
-        $class = $this->getClassName();
-        if ($this->model == null) {
-            $this->model = $this->generateModelClass($class);
-        }
-    }
-
-    /**
-     * @param $name
-     * @param $arguments
-     * @return bool
-     */
-    protected function isCallUrl($name, $arguments)
-    {
-        if (substr($name, 0, 3) == "get" || substr($name, -3) == "URL") {
-            $action = substr($name, 3, -3);
-            $params = $arguments[0];
-
-            $controller = $this->getController();
-
-            if (substr($action, 0, 5) == 'Async') {
-                $controller = 'async-'.$controller;
-                $action = substr($action, 5);
-            }
-
-            if (substr($action, 0, 5) == 'Modal') {
-                $controller = 'modal-'.$controller;
-                $action = substr($action, 5);
-            }
-
-            $params['action'] = (!empty($action)) ? $action : 'index';
-            $params['controller'] = $controller;
-            if ($arguments[1]) {
-                $params['module'] = $arguments[1];
-            }
-
-            return $this->_getURL($params);
-        }
-
-        return false;
-    }
-
-    /**
-     * @param array $params
-     * @return mixed
-     */
-    protected function _getURL($params = [])
-    {
-        $params['action'] = inflector()->unclassify($params['action']);
-        $params['action'] = ($params['action'] == 'index') ? false : $params['action'];
-        $params['controller'] = $params['controller'] ? $params['controller'] : $this->getController();
-        $params['module'] = $params['module'] ? $params['module'] : Request::instance()->getModuleName();
-
-        $routeName = $params['module'].'.'.$params['controller'].'.'.$params['action'];
-        if ($this->Url()->getRouter()->hasRoute($routeName)) {
-            unset($params['module'], $params['controller'], $params['action']);
-        } else {
-            $routeName = $params['module'].'.default';
-        }
-
-        return $this->Url()->assemble($routeName, $params);
-    }
-
-    /**
-     * Check if the model needs to initRelations
-     * @return void
-     */
-    protected function checkInitRelations()
-    {
-        if ($this->relations === null) {
-            $this->initRelations();
-        }
-    }
-
-    protected function initRelations()
-    {
-        $this->relations = [];
-        foreach ($this->relationTypes as $type) {
-            $this->initRelationsType($type);
-        }
-    }
-
-    /**
-     * @param string $type
-     */
-    protected function initRelationsType($type)
-    {
-        if (property_exists($this, '_'.$type)) {
-            $array = $this->{'_'.$type};
-            $this->initRelationsFromArray($type, $array);
-        }
-    }
-
-    /**
-     * @param string $type
-     * @param string $name
-     * @param array $params
-     * @return void
-     */
-    protected function initRelation($type, $name, $params)
-    {
-        $this->relations[$name] = $this->newRelation($type);
-        $this->relations[$name]->setName($name);
-        $this->relations[$name]->addParams($params);
     }
 
     /**
