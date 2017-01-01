@@ -234,6 +234,7 @@ class Collection implements Countable, IteratorAggregate, ArrayAccess
     public function getNth($index)
     {
         $keys = $this->keys();
+        $index = $index - 1;
         if (isset($keys[$index])) {
             $key = $keys[$index];
             return $this->offsetGet($key);
