@@ -2,7 +2,7 @@
 
 namespace Nip\Tests\Unit;
 
-use Nip_Collection as Collection;
+use Nip\Collection as Collection;
 use stdClass;
 
 /**
