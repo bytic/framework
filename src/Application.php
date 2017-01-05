@@ -426,9 +426,9 @@ class Application
     protected function isValidRequest($request)
     {
         if ($request->isMaliciousUri()) {
-            return false;
+            return true;
         }
-        return true;
+        return false;
     }
 
     public function postRouting()
