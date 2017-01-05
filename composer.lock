@@ -13,21 +13,20 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/ByTIC/RequestDetective.git",
-                "reference": "0b87d1a53eed6a90bc6cb6c5170663034a1e75cb"
+                "reference": "0f2ae4f3271f713ba6651746daff20b068404904"
             },
             "require": {
                 "php": ">=5.5.0",
                 "symfony/http-foundation": "3.1.*"
             },
             "require-dev": {
-                "codeception/codeception": "2.2.*",
-                "codeception/mockery-module": "0.2.*"
+                "phpunit/phpunit": "5.7.*"
             },
             "type": "library",
             "autoload": {
-                "classmap": [
-                    "src"
-                ]
+                "psr-4": {
+                    "ByTIC\\RequestDetective\\": "src/"
+                }
             },
             "authors": [
                 {
@@ -36,7 +35,7 @@
                 }
             ],
             "description": "Detect common bot or malicious requests",
-            "time": "2016-12-29 14:49:55"
+            "time": "2017-01-05 13:41:04"
         },
         {
             "name": "container-interop/container-interop",
@@ -164,16 +163,16 @@
         },
         {
             "name": "maximebf/debugbar",
-            "version": "v1.13.0",
+            "version": "1.13.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/maximebf/php-debugbar.git",
-                "reference": "5f49a5ed6cfde81d31d89378806670d77462526e"
+                "reference": "afee79a236348e39a44cb837106b7c5b4897ac2a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/maximebf/php-debugbar/zipball/5f49a5ed6cfde81d31d89378806670d77462526e",
-                "reference": "5f49a5ed6cfde81d31d89378806670d77462526e",
+                "url": "https://api.github.com/repos/maximebf/php-debugbar/zipball/afee79a236348e39a44cb837106b7c5b4897ac2a",
+                "reference": "afee79a236348e39a44cb837106b7c5b4897ac2a",
                 "shasum": ""
             },
             "require": {
@@ -221,7 +220,7 @@
                 "debug",
                 "debugbar"
             ],
-            "time": "2016-09-15 14:01:59"
+            "time": "2017-01-05 08:46:19"
         },
         {
             "name": "monolog/monolog",

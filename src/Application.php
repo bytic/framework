@@ -425,10 +425,11 @@ class Application
      */
     protected function isValidRequest($request)
     {
-        if ($request->isMaliciousUri()) {
-            return true;
+        if ($request->isMalicious()) {
+            return false;
         }
-        return false;
+
+        return true;
     }
 
     public function postRouting()

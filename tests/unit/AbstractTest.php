@@ -2,10 +2,12 @@
 
 namespace Nip\Tests\Unit;
 
+use Codeception\TestCase\Test;
+
 /**
  * Class AbstractTest
  */
-class AbstractTest extends \Codeception\TestCase\Test
+class AbstractTest extends Test
 {
 
     protected $object;

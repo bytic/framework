@@ -422,7 +422,7 @@ class Request extends \Symfony\Component\HttpFoundation\Request implements \Arra
     /**
      * @return bool
      */
-    public function isMaliciousUri()
+    public function isMalicious()
     {
         return RequestDetective::isMalicious($this);
     }

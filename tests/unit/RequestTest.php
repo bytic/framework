@@ -134,6 +134,15 @@ class RequestTest extends AbstractTest
             '::fromGlobals() uses values from $_FILES');
     }
 
+    public function testIsMalicious()
+    {
+        $this->request = Request::create('/wp-admin/');
+        static::assertTrue($this->request->isMalicious());
+
+        $this->request = Request::create('/controller/action');
+        static::assertFalse($this->request->isMalicious());
+    }
+
     protected function setUp()
     {
         parent::setUp();
