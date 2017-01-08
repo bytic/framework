@@ -9,6 +9,7 @@ use Nip\Http\Response\Response;
 use Nip\Http\Response\ResponseAwareTrait;
 use Nip\Utility\Traits\NameWorksTrait;
 use Nip_Flash_Messages as FlashMessages;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
  * Class Controller
@@ -83,7 +84,7 @@ class Controller
 
     /**
      * @param null|Request $request
-     * @return bool
+     * @return Response
      */
     public function dispatch($request = null)
     {
@@ -145,13 +146,11 @@ class Controller
 
                 return $this->getResponse();
             } else {
-                $this->getDispatcher()->throwError('Action ['.$action.'] is not valid for '.get_class($this));
+                throw new NotFoundHttpException('Controller method [' . $action . '] not found for ' . get_class($this));
             }
-        } else {
-            trigger_error('No action specified', E_USER_ERROR);
         }
 
-        return null;
+        throw new NotFoundHttpException('No action specified for ' . get_class($this));
     }
 
     /**
