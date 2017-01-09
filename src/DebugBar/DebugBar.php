@@ -115,6 +115,9 @@ abstract class DebugBar extends DebugBarGeneric
         echo '<script type="text/javascript">jQuery.noConflict(true);</script>';
         $content = ob_get_clean();
 
+        if (defined('FONTS_URL')) {
+            $content = str_replace('../fonts/', FONTS_URL, $content);
+        }
         return $content;
     }
 
