@@ -138,19 +138,19 @@ trait MagicMethodElementsFormTrait
 
     /**
      * @param $arguments
-     * @return mixed
+     * @return string|false
      */
     protected function getElementLabelFromMagicMethodArguments($arguments)
     {
-        return $arguments[1];
+        return isset($arguments[1]) ? $arguments[1] : false;
     }
 
     /**
      * @param $arguments
-     * @return mixed
+     * @return string|false
      */
     protected function getElementIsRequiredFromMagicMethodArguments($arguments)
     {
-        return $arguments[2];
+        return isset($arguments[2]) ? $arguments[2] : false;
     }
 }

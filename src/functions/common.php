@@ -93,9 +93,12 @@ function encode_url($input)
     return $return_;
 }
 
+/**
+ * @return string
+ */
 function current_url()
 {
-    return CURRENT_URL;
+    return defined('CURRENT_URL') ? CURRENT_URL : null;
 }
 
 /**
@@ -107,7 +110,7 @@ function current_url()
  */
 function _date($datetime, $format = false)
 {
-    $format = $format ? $format : Nip_Locale::instance()->getOption(array('time', 'dateFormat'));
+    $format = $format ? $format : Nip_Locale::instance()->getOption(['time', 'dateFormat']);
     $time = is_numeric($datetime) ? $datetime : strtotime($datetime);
 
     return $time ? date($format, $time) : false;

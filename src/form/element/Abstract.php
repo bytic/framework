@@ -85,6 +85,7 @@ abstract class Nip_Form_Element_Abstract implements Nip_Form_Element_Interface
     public function getUniqueId()
     {
         if (!$this->_uniqueID) {
+            $this->initUniqueId();
         }
 
         return $this->_uniqueID;
@@ -96,6 +97,50 @@ abstract class Nip_Form_Element_Abstract implements Nip_Form_Element_Interface
     public function setUniqueID($uniqueID)
     {
         $this->_uniqueID = $uniqueID;
+    }
+
+    protected function initUniqueId()
+    {
+        $this->setUniqueID($this->generateUniqueId());
+    }
+
+    /**
+     * @return null|string
+     */
+    protected function generateUniqueId()
+    {
+        $name = $this->getName();
+        $registeredNames = (array)$this->getForm()->getCache('elements_names');
+        if (in_array($name, $registeredNames)) {
+            $name = uniqid($name);
+        }
+        $registeredNames[] = $name;
+        $this->getForm()->setCache('elements_names', $registeredNames);
+        return $name;
+    }
+
+    public function getName()
+    {
+        return $this->getAttrib('name');
+    }
+
+    /**
+     * @return AbstractForm
+     */
+    public function getForm()
+    {
+        return $this->_form;
+    }
+
+    /**
+     * @param AbstractForm $form
+     * @return $this
+     */
+    public function setForm(AbstractForm $form)
+    {
+        $this->_form = $form;
+
+        return $this;
     }
 
     public function setName($name)
@@ -523,50 +568,6 @@ abstract class Nip_Form_Element_Abstract implements Nip_Form_Element_Interface
     public function renderErrors()
     {
         return $this->getRenderer()->renderErrors($this);
-    }
-
-    protected function initUniqueId()
-    {
-        $this->setUniqueID($this->generateUniqueId());
-    }
-
-    /**
-     * @return null|string
-     */
-    protected function generateUniqueId()
-    {
-        $name = $this->getName();
-        $registeredNames = (array)$this->getForm()->getCache('elements_names');
-        if (in_array($name, $registeredNames)) {
-            $name = uniqid($name);
-        }
-        $registeredNames[] = $name;
-        $this->getForm()->setCache('elements_names', $registeredNames);
-        return $name;
-    }
-
-    public function getName()
-    {
-        return $this->getAttrib('name');
-    }
-
-    /**
-     * @return AbstractForm
-     */
-    public function getForm()
-    {
-        return $this->_form;
-    }
-
-    /**
-     * @param AbstractForm $form
-     * @return $this
-     */
-    public function setForm(AbstractForm $form)
-    {
-        $this->_form = $form;
-
-        return $this;
     }
 
 }

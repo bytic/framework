@@ -117,7 +117,7 @@ abstract class AbstractForm
 
     /**
      * @param $type
-     * @return ElementAbstract
+     * @return string
      */
     public function getElementClassName($type)
     {
@@ -136,7 +136,7 @@ abstract class AbstractForm
     }
 
     /**
-     * @param $element
+     * @param ElementAbstract $element
      * @return ElementAbstract
      */
     public function initNewElement($element)
