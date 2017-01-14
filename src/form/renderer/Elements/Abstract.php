@@ -4,11 +4,6 @@ abstract class Nip_Form_Renderer_Elements_Abstract {
     protected $_renderer;
     protected $_element;
     
-    public function setRenderer(Nip_Form_Renderer_Abstract $renderer) {
-        $this->_renderer = $renderer;
-        return $this;
-    }
-
     /**
      * @return Nip_Form_Renderer_Abstract
     */
@@ -16,23 +11,16 @@ abstract class Nip_Form_Renderer_Elements_Abstract {
         return $this->_renderer;
     }
 
-    public function setElement(Nip_Form_Element_Abstract $element) {
-        $this->_element = $element;
+    public function setRenderer(Nip_Form_Renderer_Abstract $renderer)
+    {
+        $this->_renderer = $renderer;
         return $this;
     }
-
-    /**
-     * @return Nip_Form_Element_Abstract
-    */
-    public function getElement() {
-        return $this->_element;
-    }
-
 
     public function render() {
         $return = '';
         $return .= $this->renderElement();
-        
+
         $renderErrors = $this->getElement()->getForm()->getOption('render_input_errors');
         if ($renderErrors !== false) {
             $return .= $this->renderErrors();
@@ -46,11 +34,7 @@ abstract class Nip_Form_Renderer_Elements_Abstract {
         $this->getElement()->setRendered(true);
         return $return;
     }
-    
-    public function generateElement() {
-        return;
-    }
-    
+
     public function renderDecorators($return, $position = false) {
         if ($position) {
             $decorators = $this->getElement()->getDecoratorsByPosition($position);
@@ -61,6 +45,25 @@ abstract class Nip_Form_Renderer_Elements_Abstract {
             }
         }
         return $return;
+    }
+
+    /**
+     * @return Nip_Form_Element_Abstract
+     */
+    public function getElement()
+    {
+        return $this->_element;
+    }
+
+    public function setElement(Nip_Form_Element_Abstract $element)
+    {
+        $this->_element = $element;
+        return $this;
+    }
+
+    public function generateElement()
+    {
+        return;
     }
 
     public function renderErrors() {
