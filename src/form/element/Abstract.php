@@ -2,6 +2,9 @@
 
 use Nip\Form\AbstractForm;
 
+/**
+ * Class Nip_Form_Element_Abstract
+ */
 abstract class Nip_Form_Element_Abstract implements Nip_Form_Element_Interface
 {
 

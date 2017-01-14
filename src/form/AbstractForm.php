@@ -3,8 +3,10 @@
 namespace Nip\Form;
 
 use Nip\Form\Traits\MagicMethodElementsFormTrait;
+use Nip\View;
+use Nip_Form_Button_Abstract as ButtonAbstract;
 use Nip_Form_DisplayGroup;
-use Nip_Form_Element_Abstract;
+use Nip_Form_Element_Abstract as ElementAbstract;
 use Nip_Form_Renderer_Abstract as AbstractRenderer;
 
 /**
@@ -35,9 +37,9 @@ abstract class AbstractForm
 
     protected $_decorators = [];
     protected $_renderer;
-    protected $_messages = array(
-        'error' => array(),
-    );
+    protected $_messages = [
+        'error' => [],
+    ];
     protected $_messageTemplates = [];
     protected $_cache;
 
@@ -57,6 +59,10 @@ abstract class AbstractForm
         $this->setAction(current_url());
     }
 
+    /**
+     * @param $action
+     * @return AbstractForm
+     */
     public function setAction($action)
     {
         return $this->setAttrib('action', (string)$action);
@@ -100,7 +106,7 @@ abstract class AbstractForm
 
     /**
      * @param $type
-     * @return Nip_Form_Element_Abstract
+     * @return ElementAbstract
      */
     public function getNewElement($type)
     {
@@ -111,7 +117,7 @@ abstract class AbstractForm
 
     /**
      * @param $type
-     * @return Nip_Form_Element_Abstract
+     * @return ElementAbstract
      */
     public function getElementClassName($type)
     {
@@ -120,7 +126,7 @@ abstract class AbstractForm
 
     /**
      * @param $className
-     * @return Nip_Form_Element_Abstract
+     * @return ElementAbstract
      */
     public function getNewElementByClass($className)
     {
@@ -131,7 +137,7 @@ abstract class AbstractForm
 
     /**
      * @param $element
-     * @return Nip_Form_Element_Abstract
+     * @return ElementAbstract
      */
     public function initNewElement($element)
     {
@@ -141,10 +147,10 @@ abstract class AbstractForm
     }
 
     /**
-     * @param Nip_Form_Element_Abstract $element
+     * @param ElementAbstract $element
      * @return $this
      */
-    public function addElement(Nip_Form_Element_Abstract $element)
+    public function addElement(ElementAbstract $element)
     {
         $name = $element->getUniqueId();
         $this->_elements[$name] = $element;
@@ -156,7 +162,7 @@ abstract class AbstractForm
 
     /**
      * @param $name
-     * @return Nip_Form_Element_Abstract|null
+     * @return ElementAbstract|null
      */
     public function __get($name)
     {
@@ -170,7 +176,7 @@ abstract class AbstractForm
 
     /**
      * @param $name
-     * @return Nip_Form_Element_Abstract
+     * @return ElementAbstract
      */
     public function getElement($name)
     {
@@ -285,17 +291,30 @@ abstract class AbstractForm
      */
     public function addButton($name, $label = false, $type = 'button')
     {
-        $class = 'Nip_Form_Button_'.ucfirst($type);
-        $this->_buttons[$name] = new $class($this);
-        $this->_buttons[$name]->setName($name)
-            ->setLabel($label);
+        $this->_buttons[$name] = $this->newButton($name, $label, $type);
 
         return $this;
     }
 
     /**
      * @param $name
-     * @return Nip_Form_Element_Abstract
+     * @param bool $label
+     * @param string $type
+     * @return mixed
+     */
+    protected function newButton($name, $label = false, $type = 'button')
+    {
+        $class = 'Nip_Form_Button_'.ucfirst($type);
+        /** @var ButtonAbstract $button */
+        $button = new $class($this);
+        $button->setName($name)
+            ->setLabel($label);
+        return $button;
+    }
+
+    /**
+     * @param $name
+     * @return ElementAbstract
      */
     public function getButton($name)
     {
@@ -317,7 +336,7 @@ abstract class AbstractForm
 
     /**
      * @param $label
-     * @return Nip_Form_Element_Abstract
+     * @return ElementAbstract
      */
     public function getElementByLabel($label)
     {
@@ -813,7 +832,7 @@ abstract class AbstractForm
     }
 
     /**
-     * @return mixed
+     * @return string
      */
     public function render()
     {
@@ -821,7 +840,7 @@ abstract class AbstractForm
     }
 
     /**
-     * @return Nip_Form_Renderer
+     * @return AbstractRenderer
      */
     public function getRenderer()
     {
@@ -832,6 +851,9 @@ abstract class AbstractForm
         return $this->_renderer;
     }
 
+    /**
+     * @return View|null
+     */
     public function getControllerView()
     {
         if (!$this->_controllerView) {
@@ -841,6 +863,9 @@ abstract class AbstractForm
         return $this->_controllerView;
     }
 
+    /**
+     * @return array
+     */
     protected function getData()
     {
         $data = [];
