@@ -2,6 +2,7 @@
 
 namespace Nip\Records\Filters;
 
+use Nip\Database\Query\Select;
 use Nip\Utility\Traits\HasRequestTrait;
 
 /**
@@ -33,7 +34,7 @@ class AbstractFilter implements FilterInterface
     protected $manager;
 
     /**
-     * @param $query
+     * @param Select $query
      */
     public function filterQuery($query)
     {
@@ -81,6 +82,9 @@ class AbstractFilter implements FilterInterface
         $this->setValue($value);
     }
 
+    /**
+     * @return bool|string
+     */
     public function getProcessedRequestValue()
     {
         $value = $this->getValueFromRequest();
