@@ -6,6 +6,7 @@ use Nip\Database\Connection;
 use Nip\Database\Query\AbstractQuery;
 use Nip\Database\Query\Select as Query;
 use Nip\HelperBroker;
+use Nip\Logger\Exception;
 use Nip\Records\AbstractModels\Record as Record;
 use Nip\Records\AbstractModels\RecordManager;
 use Nip\Records\Collections\Collection;
@@ -169,6 +170,7 @@ abstract class Relation
 
     /**
      * @param string $name
+     * @throws Exception
      */
     public function setWithClass($name)
     {
@@ -176,7 +178,7 @@ abstract class Relation
         if (is_object($object) && $object instanceof RecordManager) {
             $this->setWith($object);
         } else {
-            trigger_error("Cannot instance records [".$name."] in relation", E_USER_WARNING);
+            throw new Exception("Cannot instance records [" . $name . "] in relation");
         }
     }
 
@@ -352,6 +354,19 @@ abstract class Relation
         $this->table = $name;
     }
 
+    protected function initTable()
+    {
+        $this->setTable($this->generateTable());
+    }
+
+    /**
+     * @return string
+     */
+    protected function generateTable()
+    {
+        return $this->getWith()->getTable();
+    }
+
     /**
      * Get the results of the relationship.
      * @return Record|RecordCollection
@@ -409,7 +424,7 @@ abstract class Relation
     {
         $fkList = $this->getEagerFkList($collection);
         $query = $this->newQuery();
-        $query->where($this->getWithPK().' IN ?', $fkList);
+        $query->where($this->getWithPK() . ' IN ?', $fkList);
 
         return $query;
     }
@@ -447,6 +462,19 @@ abstract class Relation
         $this->fk = $name;
     }
 
+    protected function initFK()
+    {
+        $this->setFK($this->generateFK());
+    }
+
+    /**
+     * @return string
+     */
+    protected function generateFK()
+    {
+        return $this->getManager()->getPrimaryFK();
+    }
+
     /**
      * @return string
      */
@@ -475,6 +503,14 @@ abstract class Relation
     }
 
     /**
+     * Build model dictionary keyed by the relation's foreign key.
+     *
+     * @param RecordCollection $collection
+     * @return array
+     */
+    abstract protected function buildDictionary(RecordCollection $collection);
+
+    /**
      * @param $dictionary
      * @param $collection
      * @param $record
@@ -493,38 +529,4 @@ abstract class Relation
     {
         return $this->type;
     }
-
-    protected function initTable()
-    {
-        $this->setTable($this->generateTable());
-    }
-
-    /**
-     * @return string
-     */
-    protected function generateTable()
-    {
-        return $this->getWith()->getTable();
-    }
-
-    protected function initFK()
-    {
-        $this->setFK($this->generateFK());
-    }
-
-    /**
-     * @return string
-     */
-    protected function generateFK()
-    {
-        return $this->getManager()->getPrimaryFK();
-    }
-
-    /**
-     * Build model dictionary keyed by the relation's foreign key.
-     *
-     * @param RecordCollection $collection
-     * @return array
-     */
-    abstract protected function buildDictionary(RecordCollection $collection);
 }
