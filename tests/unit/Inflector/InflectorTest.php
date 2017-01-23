@@ -85,10 +85,11 @@ class InflectorTest extends \Codeception\TestCase\Test
     public function testPluralize()
     {
         self::assertEquals("mice", $this->inflector->pluralize("mouse"));
-        self::assertEquals("company", $this->inflector->pluralize("companies"));
         self::assertEquals("people", $this->inflector->pluralize("person"));
         self::assertEquals("scos", $this->inflector->pluralize("sco"));
         self::assertEquals("statuses", $this->inflector->pluralize("status"));
+        self::assertEquals("companies", $this->inflector->pluralize("company"));
+        self::assertEquals("companies", $this->inflector->pluralize("companies"));
     }
 
     protected function setUp()
