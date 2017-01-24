@@ -134,6 +134,7 @@ class FilterManager
     public function prepareFilter($filter)
     {
         $filter->setManager($this);
+        $filter->setRequest($this->getRequest());
     }
 
     /**
