@@ -15,9 +15,19 @@ class Nip_File_Handler
     const MODE_APPEND = "a";
 
 
+    /**
+     * @var string
+     */
     public $name;
 
+    /**
+     * @var null|string
+     */
     public $path = null;
+
+    /**
+     * @var null|string
+     */
     public $url = null;
 
     public $data;
@@ -25,15 +35,24 @@ class Nip_File_Handler
     public $permissions = 0777;
     protected $handle = null;
 
+    /**
+     * Nip_File_Handler constructor.
+     * @param bool $data
+     */
     public function __construct($data = false)
     {
         if ($data) {
             foreach ($data as $key => $value) {
-                $this->$key = $value;
+                $this->{$key} = $value;
             }
         }
     }
 
+    /**
+     * @param $name
+     * @param $arguments
+     * @return $this
+     */
     public function __call($name, $arguments)
     {
         if (substr($name, 0, 3) == 'set') {
@@ -47,16 +66,25 @@ class Nip_File_Handler
         }
     }
 
+    /**
+     * @param $upload
+     */
     public function upload($upload)
     {
         move_uploaded_file($upload["tmp_name"], $this->path);
     }
 
+    /**
+     * @return $this
+     */
     public function delete()
     {
         return Nip_File_System::instance()->deleteFile($this->path);
     }
 
+    /**
+     * @return $this|false
+     */
     public function gzip()
     {
         if (function_exists("gzencode")) {
@@ -67,6 +95,10 @@ class Nip_File_Handler
         return $this;
     }
 
+    /**
+     * @param bool $data
+     * @param string $mode
+     */
     public function write($data = false, $mode = self::MODE_APPEND)
     {
         if ($data) {
@@ -80,17 +112,27 @@ class Nip_File_Handler
         chmod($this->path, $this->permissions);
     }
 
+    /**
+     * @param bool $data
+     */
     public function rewrite($data = false)
     {
         return $this->write($data, self::MODE_WRITE);
     }
 
+    /**
+     * @param string $mode
+     * @return $this
+     */
     public function open($mode = self::MODE_READ)
     {
         $this->handle = fopen($this->path, $mode);
         return $this;
     }
 
+    /**
+     * @return $this
+     */
     public function close()
     {
         if ($this->handle) {
@@ -104,6 +146,9 @@ class Nip_File_Handler
     }
 
 
+    /**
+     * @return null|string
+     */
     public function getUrl()
     {
         if ($this->url === null) {
@@ -112,11 +157,15 @@ class Nip_File_Handler
         return $this->url;
     }
 
+
     public function initUrl()
     {
         $this->url = '';
     }
 
+    /**
+     * @return null|string
+     */
     public function getPath()
     {
         if ($this->path === null) {
