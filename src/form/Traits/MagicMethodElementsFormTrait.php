@@ -15,6 +15,7 @@ use Nip\Form\AbstractForm;
  * @method addRadioGroup($name, $label = false, $isRequired = false)
  * @method addBsRadioGroup($name, $label = false, $isRequired = false)
  * @method addTextarea($name, $label = false, $isRequired = false)
+ * @method addTextSimpleEditor($name, $label = false, $isRequired = false)
  * @method addFile($name, $label = false, $isRequired = false)
  */
 trait MagicMethodElementsFormTrait
