@@ -390,9 +390,9 @@ class Manager implements PsrLoggerInterface
 
     /**
      * @private
-     * @param \Exception $e
+     * @param \Throwable $e
      */
-    public function handleException(\Exception $e)
+    public function handleException(\Throwable $e)
     {
         $errorLevelMap = static::$errorLevelMap;
         $logMessages = [];
