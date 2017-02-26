@@ -9,7 +9,9 @@ use Psr\Log\LoggerInterface as PsrLoggerInterface;
 
 /**
  * Class Manager
+ *
  * @package Nip\Logger
+ *
  */
 class Manager implements PsrLoggerInterface
 {
@@ -49,23 +51,27 @@ class Manager implements PsrLoggerInterface
         E_DEPRECATED => self::DEBUG,
         E_USER_DEPRECATED => self::DEBUG,
     ];
+
     /**
      * Registered error handler
      *
      * @var bool
      */
     protected static $registeredErrorHandler = false;
+
     /**
      * Registered exception handler
      *
      * @var bool
      */
     protected static $registeredExceptionHandler = false;
+
     /**
      * container for the Monolog instance
      * @var \Monolog\Logger
      */
     protected $monolog = null;
+
     /**
      * @var Application
      */
