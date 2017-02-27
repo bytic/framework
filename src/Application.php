@@ -3,6 +3,7 @@
 namespace Nip;
 
 use Exception;
+use Nip\Application\Bootstrap\LoadConfiguration;
 use Nip\Application\Traits\BindPathsTrait;
 use Nip\AutoLoader\AutoLoader;
 use Nip\AutoLoader\AutoLoaderAwareTrait;
@@ -24,10 +25,10 @@ use Nip\Router\RouterAwareTrait;
 use Nip\Router\RouterServiceProvider;
 use Nip\Staging\StagingAwareTrait;
 use Nip\Staging\StagingServiceProvider;
+use Symfony\Component\HttpFoundation\Request as SymfonyRequest;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
-use Symfony\Component\HttpFoundation\Request as SymfonyRequest;
 use Whoops\Handler\PrettyPageHandler;
 use Whoops\Run as WhoopsRun;
 
@@ -308,7 +309,7 @@ class Application extends Container implements HttpKernelInterface
 
     public function setupConfig()
     {
-        $this->registerContainerConfig();
+        (new LoadConfiguration())->bootstrap($this);
     }
 
     public function setupDatabase()
@@ -413,11 +414,6 @@ class Application extends Container implements HttpKernelInterface
     public function isBooted()
     {
         return $this->booted;
-    }
-
-    public function handle(SymfonyRequest $request, $type = self::MASTER_REQUEST, $catch = true)
-    {
-        return $this->handleRequest($request);
     }
 
     /**
@@ -550,6 +546,11 @@ class Application extends Container implements HttpKernelInterface
      */
     public function terminate(Request $request, Response $response)
     {
+    }
+
+    public function handle(SymfonyRequest $request, $type = self::MASTER_REQUEST, $catch = true)
+    {
+        return $this->handleRequest($request);
     }
 
     /**
