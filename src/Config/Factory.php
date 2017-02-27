@@ -25,4 +25,9 @@ class Factory
 
         return $loader->getResult();
     }
+
+    public function fromFiles($path)
+    {
+
+    }
 }
