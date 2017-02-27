@@ -25,6 +25,8 @@ use Nip\Staging\StagingAwareTrait;
 use Nip\Staging\StagingServiceProvider;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\HttpKernel\HttpKernelInterface;
+use Symfony\Component\HttpFoundation\Request as SymfonyRequest;
 use Whoops\Handler\PrettyPageHandler;
 use Whoops\Run as WhoopsRun;
 
@@ -32,7 +34,7 @@ use Whoops\Run as WhoopsRun;
  * Class Application
  * @package Nip
  */
-class Application
+class Application extends Container implements HttpKernelInterface
 {
     use ContainerAwareTrait;
     use ConfigAwareTrait;
@@ -40,6 +42,20 @@ class Application
     use RouterAwareTrait;
     use DispatcherAwareTrait;
     use StagingAwareTrait;
+
+    /**
+     * The ByTIC framework version.
+     *
+     * @var string
+     */
+    const VERSION = '1.0.1';
+
+    /**
+     * Indicates if the application has been bootstrapped before.
+     *
+     * @var bool
+     */
+    protected $hasBeenBootstrapped = false;
 
     /**
      * Indicates if the application has "booted".
@@ -383,6 +399,11 @@ class Application
         return $this->booted;
     }
 
+    public function handle(SymfonyRequest $request, $type = self::MASTER_REQUEST, $catch = true)
+    {
+        return $this->handleRequest($request);
+    }
+
     /**
      * @param null|Request $request
      * @return Response
@@ -559,6 +580,32 @@ class Application
     public function newTranslator()
     {
         return new I18n\Translator();
+    }
+
+    /**
+     * Run the given array of bootstrap classes.
+     *
+     * @param  array  $bootstrappers
+     * @return void
+     */
+    public function bootstrapWith(array $bootstrappers)
+    {
+        $this->hasBeenBootstrapped = true;
+        foreach ($bootstrappers as $bootstrapper) {
+//            $this['events']->fire('bootstrapping: '.$bootstrapper, [$this]);
+            $this->make($bootstrapper)->bootstrap($this);
+//            $this['events']->fire('bootstrapped: '.$bootstrapper, [$this]);
+        }
+    }
+
+    /**
+     * Determine if the application has been bootstrapped before.
+     *
+     * @return bool
+     */
+    public function hasBeenBootstrapped()
+    {
+        return $this->hasBeenBootstrapped;
     }
 
     /**
