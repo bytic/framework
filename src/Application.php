@@ -3,6 +3,7 @@
 namespace Nip;
 
 use Exception;
+use Nip\Application\Traits\BindPathsTrait;
 use Nip\AutoLoader\AutoLoader;
 use Nip\AutoLoader\AutoLoaderAwareTrait;
 use Nip\AutoLoader\AutoLoaderServiceProvider;
@@ -36,6 +37,7 @@ use Whoops\Run as WhoopsRun;
  */
 class Application extends Container implements HttpKernelInterface
 {
+    use BindPathsTrait;
     use ContainerAwareTrait;
     use ConfigAwareTrait;
     use AutoLoaderAwareTrait;
@@ -80,6 +82,20 @@ class Application extends Container implements HttpKernelInterface
     protected $sessionManager = null;
 
     protected $debugBar = null;
+
+    /**
+     * Create a new Illuminate application instance.
+     *
+     * @param  string|null $basePath
+     *
+     * @return void
+     */
+    public function __construct($basePath = null)
+    {
+        if ($basePath) {
+            $this->setBasePath($basePath);
+        }
+    }
 
     public function run()
     {
@@ -585,7 +601,7 @@ class Application extends Container implements HttpKernelInterface
     /**
      * Run the given array of bootstrap classes.
      *
-     * @param  array  $bootstrappers
+     * @param  array $bootstrappers
      * @return void
      */
     public function bootstrapWith(array $bootstrappers)

@@ -23,14 +23,17 @@ class Container implements ArrayAccess, ContainerInterface
      * @var static
      */
     protected static $instance;
+
     /**
      * @var Definition\DefinitionInterface[]
      */
     protected $definitions = [];
+
     /**
      * @var \Nip\Container\ServiceProvider\ProviderRepository
      */
     protected $providers = null;
+
     /**
      * The container's shared instances.
      *
