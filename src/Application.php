@@ -10,7 +10,6 @@ use Nip\AutoLoader\AutoLoaderAwareTrait;
 use Nip\AutoLoader\AutoLoaderServiceProvider;
 use Nip\Config\ConfigAwareTrait;
 use Nip\Container\Container;
-use Nip\Container\ContainerAwareTrait;
 use Nip\Database\Manager as DatabaseManager;
 use Nip\DebugBar\DataCollector\RouteCollector;
 use Nip\DebugBar\StandardDebugBar;
@@ -39,7 +38,6 @@ use Whoops\Run as WhoopsRun;
 class Application extends Container implements HttpKernelInterface
 {
     use BindPathsTrait;
-    use ContainerAwareTrait;
     use ConfigAwareTrait;
     use AutoLoaderAwareTrait;
     use RouterAwareTrait;
@@ -133,17 +131,21 @@ class Application extends Container implements HttpKernelInterface
 
     public function registerContainer()
     {
-        $this->getContainer()->singleton('kernel', $this);
+        static::setInstance($this);
+
+        $this->singleton('app', $this);
+        $this->singleton(Container::class, $this);
+        $this->singleton('kernel', $this);
     }
 
     public function registerServices()
     {
-        $this->getContainer()->addServiceProvider(AutoLoaderServiceProvider::class);
-        $this->getContainer()->addServiceProvider(MailServiceProvider::class);
-        $this->getContainer()->addServiceProvider(MvcServiceProvider::class);
-        $this->getContainer()->addServiceProvider(DispatcherServiceProvider::class);
-        $this->getContainer()->addServiceProvider(StagingServiceProvider::class);
-        $this->getContainer()->addServiceProvider(RouterServiceProvider::class);
+        $this->addServiceProvider(AutoLoaderServiceProvider::class);
+        $this->addServiceProvider(MailServiceProvider::class);
+        $this->addServiceProvider(MvcServiceProvider::class);
+        $this->addServiceProvider(DispatcherServiceProvider::class);
+        $this->addServiceProvider(StagingServiceProvider::class);
+        $this->addServiceProvider(RouterServiceProvider::class);
     }
 
     public function setupRequest()
@@ -319,7 +321,7 @@ class Application extends Container implements HttpKernelInterface
         $dbManager->setBootstrap($this);
 
         $connection = $dbManager->newConnectionFromConfig($stageConfig->get('DB'));
-        $this->getContainer()->set('database', $connection);
+        $this->set('database', $connection);
 
         if ($this->getDebugBar()->isEnabled()) {
             $adapter = $connection->getAdapter();
@@ -336,7 +338,7 @@ class Application extends Container implements HttpKernelInterface
 
             if (!$sessionManager->isAutoStart()) {
                 $sessionManager->setRootDomain($domain);
-                $sessionManager->setLifetime($this->getContainer()->get('config')->get('SESSION')->get('lifetime'));
+                $sessionManager->setLifetime($this->get('config')->get('SESSION')->get('lifetime'));
             }
 
             if ($domain != 'localhost') {
@@ -403,7 +405,7 @@ class Application extends Container implements HttpKernelInterface
             return;
         }
 
-        $this->getContainer()->getProviders()->boot();
+        $this->getProviders()->boot();
     }
 
     /**
@@ -576,11 +578,11 @@ class Application extends Container implements HttpKernelInterface
      */
     public function getTranslator()
     {
-        if (!$this->getContainer()->has('translator')) {
+        if (!$this->has('translator')) {
             $this->initTranslator();
         }
 
-        return $this->getContainer()->get('translator');
+        return $this->get('translator');
     }
 
     public function initTranslator()
