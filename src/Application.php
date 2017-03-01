@@ -10,6 +10,7 @@ use Nip\AutoLoader\AutoLoaderAwareTrait;
 use Nip\AutoLoader\AutoLoaderServiceProvider;
 use Nip\Config\ConfigAwareTrait;
 use Nip\Container\Container;
+use Nip\Container\ContainerAliasBindingsTrait;
 use Nip\Database\Manager as DatabaseManager;
 use Nip\DebugBar\DataCollector\RouteCollector;
 use Nip\DebugBar\StandardDebugBar;
@@ -35,8 +36,9 @@ use Whoops\Run as WhoopsRun;
  * Class Application
  * @package Nip
  */
-class Application extends Container implements HttpKernelInterface
+class Application implements HttpKernelInterface
 {
+    use ContainerAliasBindingsTrait;
     use BindPathsTrait;
     use ConfigAwareTrait;
     use AutoLoaderAwareTrait;
@@ -131,11 +133,11 @@ class Application extends Container implements HttpKernelInterface
 
     public function registerContainer()
     {
-        static::setInstance($this);
+        $this->initContainer();
 
-        $this->singleton('app', $this);
-        $this->singleton(Container::class, $this);
-        $this->singleton('kernel', $this);
+        $this->share('app', $this);
+        $this->share(Container::class, $this);
+        $this->share('kernel', $this);
     }
 
     public function registerServices()
@@ -321,7 +323,7 @@ class Application extends Container implements HttpKernelInterface
         $dbManager->setBootstrap($this);
 
         $connection = $dbManager->newConnectionFromConfig($stageConfig->get('DB'));
-        $this->set('database', $connection);
+        $this->share('database', $connection);
 
         if ($this->getDebugBar()->isEnabled()) {
             $adapter = $connection->getAdapter();

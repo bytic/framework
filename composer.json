@@ -26,7 +26,8 @@
   "require": {
     "php": ">=5.5.0",
     "ByTIC/RequestDetective": "dev-develop",
-    "container-interop/container-interop": "^1.1",
+    "composer require psr/container": "^1.0",
+    "league/container": "^2.3",
     "nesbot/carbon": "^1.21",
     "maximebf/debugbar": "^1.13",
     "html2text/html2text": "^4.0",
