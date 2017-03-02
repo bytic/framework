@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "438ae99ce11c956a510ec4854e66cd0f",
+    "content-hash": "64d76b47628e1647869ed4a05a615ca2",
     "packages": [
         {
             "name": "ByTIC/RequestDetective",
@@ -519,16 +519,16 @@
         },
         {
             "name": "sendgrid/php-http-client",
-            "version": "3.5.1",
+            "version": "3.6.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sendgrid/php-http-client.git",
-                "reference": "3c4c35eafd364ebcfdbb0a37f655417beed8ee0f"
+                "reference": "f886cd3cf48bafd3c7b28b1ca5c2484f7916cff1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sendgrid/php-http-client/zipball/3c4c35eafd364ebcfdbb0a37f655417beed8ee0f",
-                "reference": "3c4c35eafd364ebcfdbb0a37f655417beed8ee0f",
+                "url": "https://api.github.com/repos/sendgrid/php-http-client/zipball/f886cd3cf48bafd3c7b28b1ca5c2484f7916cff1",
+                "reference": "f886cd3cf48bafd3c7b28b1ca5c2484f7916cff1",
                 "shasum": ""
             },
             "require": {
@@ -567,20 +567,20 @@
                 "rest",
                 "sendgrid"
             ],
-            "time": "2016-11-17T22:45:31+00:00"
+            "time": "2017-03-02T05:51:19+00:00"
         },
         {
             "name": "sendgrid/sendgrid",
-            "version": "5.2.0",
+            "version": "5.2.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sendgrid/sendgrid-php.git",
-                "reference": "d2886a7d875758aa5110761b1d0fe3b555114502"
+                "reference": "bb77bb263de3b77241d889d65e171aff9316bfda"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sendgrid/sendgrid-php/zipball/d2886a7d875758aa5110761b1d0fe3b555114502",
-                "reference": "d2886a7d875758aa5110761b1d0fe3b555114502",
+                "url": "https://api.github.com/repos/sendgrid/sendgrid-php/zipball/bb77bb263de3b77241d889d65e171aff9316bfda",
+                "reference": "bb77bb263de3b77241d889d65e171aff9316bfda",
                 "shasum": ""
             },
             "require": {
@@ -613,7 +613,7 @@
                 "send",
                 "sendgrid"
             ],
-            "time": "2017-02-24T00:32:07+00:00"
+            "time": "2017-03-01T21:34:15+00:00"
         },
         {
             "name": "swiftmailer/swiftmailer",
