@@ -1,13 +1,13 @@
 <?php
 
-namespace Nip\Application\Bootstrap;
+namespace Nip\Application\Bootstrap\Bootstrapers;
 
 use Nip\Application;
 use Nip\Config\Config;
 use Nip\Config\Factory;
 use Symfony\Component\Finder\Finder;
 
-class LoadConfiguration
+class LoadConfiguration extends AbstractBootstraper
 {
     /**
      * Bootstrap the given application.
@@ -29,7 +29,7 @@ class LoadConfiguration
         // Next we will spin through all of the configuration files in the configuration
         // directory and load each one into the repository. This will make all of the
         // options available to the developer for use in various parts of this app.
-        $app->singleton('config', $config = new Config($items));
+        $app->share('config', $config = new Config($items));
 
 //        if (!isset($loadedFromCache)) {
         $this->loadConfigurationFiles($app, $config);

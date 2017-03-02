@@ -3,6 +3,7 @@
 namespace Nip;
 
 use Exception;
+use Nip\Application\Bootstrap\BootstrapAwareTrait;
 use Nip\Application\Bootstrap\LoadConfiguration;
 use Nip\Application\Traits\BindPathsTrait;
 use Nip\AutoLoader\AutoLoader;
@@ -39,6 +40,7 @@ use Whoops\Run as WhoopsRun;
 class Application implements HttpKernelInterface
 {
     use ContainerAliasBindingsTrait;
+    use BootstrapAwareTrait;
     use BindPathsTrait;
     use ConfigAwareTrait;
     use AutoLoaderAwareTrait;
@@ -52,13 +54,6 @@ class Application implements HttpKernelInterface
      * @var string
      */
     const VERSION = '1.0.1';
-
-    /**
-     * Indicates if the application has been bootstrapped before.
-     *
-     * @var bool
-     */
-    protected $hasBeenBootstrapped = false;
 
     /**
      * Indicates if the application has "booted".
@@ -100,6 +95,7 @@ class Application implements HttpKernelInterface
 
     public function run()
     {
+        $this->bootstrap();
         $this->loadFiles();
         $this->prepare();
         $this->setup();
@@ -601,32 +597,6 @@ class Application implements HttpKernelInterface
     public function newTranslator()
     {
         return new I18n\Translator();
-    }
-
-    /**
-     * Run the given array of bootstrap classes.
-     *
-     * @param  array $bootstrappers
-     * @return void
-     */
-    public function bootstrapWith(array $bootstrappers)
-    {
-        $this->hasBeenBootstrapped = true;
-        foreach ($bootstrappers as $bootstrapper) {
-//            $this['events']->fire('bootstrapping: '.$bootstrapper, [$this]);
-            $this->make($bootstrapper)->bootstrap($this);
-//            $this['events']->fire('bootstrapped: '.$bootstrapper, [$this]);
-        }
-    }
-
-    /**
-     * Determine if the application has been bootstrapped before.
-     *
-     * @return bool
-     */
-    public function hasBeenBootstrapped()
-    {
-        return $this->hasBeenBootstrapped;
     }
 
     /**
