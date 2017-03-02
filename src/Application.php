@@ -3,8 +3,7 @@
 namespace Nip;
 
 use Exception;
-use Nip\Application\Bootstrap\BootstrapAwareTrait;
-use Nip\Application\Bootstrap\LoadConfiguration;
+use Nip\Application\Bootstrap\CoreBootstrapersTrait;
 use Nip\Application\Traits\BindPathsTrait;
 use Nip\AutoLoader\AutoLoader;
 use Nip\AutoLoader\AutoLoaderAwareTrait;
@@ -40,7 +39,7 @@ use Whoops\Run as WhoopsRun;
 class Application implements HttpKernelInterface
 {
     use ContainerAliasBindingsTrait;
-    use BootstrapAwareTrait;
+    use CoreBootstrapersTrait;
     use BindPathsTrait;
     use ConfigAwareTrait;
     use AutoLoaderAwareTrait;
@@ -96,7 +95,6 @@ class Application implements HttpKernelInterface
     public function run()
     {
         $this->bootstrap();
-        $this->loadFiles();
         $this->prepare();
         $this->setup();
 
@@ -108,32 +106,13 @@ class Application implements HttpKernelInterface
         $this->terminate($request, $response);
     }
 
-    public function loadFiles()
-    {
-    }
-
     public function prepare()
     {
-        $this->includeVendorAutoload();
-        $this->registerContainer();
         $this->registerServices();
         $this->setupRequest();
         $this->setupAutoLoader();
         $this->setupErrorHandling();
         $this->setupURLConstants();
-    }
-
-    public function includeVendorAutoload()
-    {
-    }
-
-    public function registerContainer()
-    {
-        $this->initContainer();
-
-        $this->share('app', $this);
-        $this->share(Container::class, $this);
-        $this->share('kernel', $this);
     }
 
     public function registerServices()
@@ -298,18 +277,12 @@ class Application implements HttpKernelInterface
 
     public function setup()
     {
-        $this->setupConfig();
         $this->setupDatabase();
         $this->setupSession();
         $this->setupTranslation();
         $this->setupLocale();
         $this->setupRouting();
         $this->boot();
-    }
-
-    public function setupConfig()
-    {
-        (new LoadConfiguration())->bootstrap($this);
     }
 
     public function setupDatabase()
