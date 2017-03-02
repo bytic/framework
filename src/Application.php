@@ -11,8 +11,8 @@ use Nip\AutoLoader\AutoLoaderServiceProvider;
 use Nip\Config\ConfigAwareTrait;
 use Nip\Container\Container;
 use Nip\Container\ContainerAliasBindingsTrait;
+use Nip\Container\ServiceProviders\ServiceProviderAwareTrait;
 use Nip\Database\Manager as DatabaseManager;
-use Nip\DebugBar\DataCollector\RouteCollector;
 use Nip\Dispatcher\DispatcherAwareTrait;
 use Nip\Dispatcher\DispatcherServiceProvider;
 use Nip\Http\Response\Response;
@@ -38,6 +38,7 @@ class Application implements HttpKernelInterface
 {
     use ContainerAliasBindingsTrait;
     use CoreBootstrapersTrait;
+    use ServiceProviderAwareTrait;
     use BindPathsTrait;
     use ConfigAwareTrait;
     use AutoLoaderAwareTrait;
@@ -266,11 +267,11 @@ class Application implements HttpKernelInterface
     {
         $router = $this->getRouter();
         $router->setRequest($this->getRequest());
-        if ($this->getDebugBar()->isEnabled()) {
-            /** @var RouteCollector $routeCollector */
-            $routeCollector = $this->getDebugBar()->getCollector('route');
-            $routeCollector->setRouter($router);
-        }
+//        if ($this->getDebugBar()->isEnabled()) {
+//            /** @var RouteCollector $routeCollector */
+//            $routeCollector = $this->getDebugBar()->getCollector('route');
+//            $routeCollector->setRouter($router);
+//        }
     }
 
     public function boot()
@@ -279,7 +280,8 @@ class Application implements HttpKernelInterface
             return;
         }
 
-        $this->getProviders()->boot();
+        $this->bootProviders();
+        $this->booted = true;
     }
 
     /**

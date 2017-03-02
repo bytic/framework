@@ -1,6 +1,6 @@
 <?php
 
-namespace Nip\Container\ServiceProviders\Services;
+namespace Nip\Container\ServiceProviders\Providers;
 
 use Nip\Container\ServiceProvider\AbstractServiceProvider as AbstractProvider;
 use Nip\Container\ServiceProvider\SignatureServiceProviderInterface as AbstractInterface;

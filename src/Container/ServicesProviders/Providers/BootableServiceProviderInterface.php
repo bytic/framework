@@ -1,6 +1,6 @@
 <?php
 
-namespace Nip\Container\ServiceProviders\Services;
+namespace Nip\Container\ServiceProviders\Providers;
 
 /**
  * Interface BootableServiceProviderInterface
