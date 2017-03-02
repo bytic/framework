@@ -17,7 +17,6 @@ use Nip\Dispatcher\DispatcherAwareTrait;
 use Nip\Dispatcher\DispatcherServiceProvider;
 use Nip\Http\Response\Response;
 use Nip\Http\Response\ResponseFactory;
-use Nip\Logger\Manager as LoggerManager;
 use Nip\Mail\MailServiceProvider;
 use Nip\Mvc\MvcServiceProvider;
 use Nip\Router\RouterAwareTrait;
@@ -64,11 +63,6 @@ class Application implements HttpKernelInterface
      * @var null|Request
      */
     protected $request = null;
-
-    /**
-     * @var null|LoggerManager
-     */
-    protected $logger = null;
 
     /**
      * @var null|Session
