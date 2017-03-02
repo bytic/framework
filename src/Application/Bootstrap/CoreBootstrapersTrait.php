@@ -2,6 +2,7 @@
 
 namespace Nip\Application\Bootstrap;
 
+use Nip\Application\Bootstrap\Bootstrapers\HandleExceptions;
 use Nip\Application\Bootstrap\Bootstrapers\LoadConfiguration;
 use Nip\Application\Bootstrap\Bootstrapers\RegisterContainer;
 
@@ -17,5 +18,6 @@ trait CoreBootstrapersTrait
     protected $bootstrappers = [
         RegisterContainer::class,
         LoadConfiguration::class,
+        HandleExceptions::class,
     ];
 }

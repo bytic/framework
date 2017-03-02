@@ -13,7 +13,6 @@ use Nip\Container\Container;
 use Nip\Container\ContainerAliasBindingsTrait;
 use Nip\Database\Manager as DatabaseManager;
 use Nip\DebugBar\DataCollector\RouteCollector;
-use Nip\DebugBar\StandardDebugBar;
 use Nip\Dispatcher\DispatcherAwareTrait;
 use Nip\Dispatcher\DispatcherServiceProvider;
 use Nip\Http\Response\Response;
@@ -76,8 +75,6 @@ class Application implements HttpKernelInterface
      */
     protected $sessionManager = null;
 
-    protected $debugBar = null;
-
     /**
      * Create a new Illuminate application instance.
      *
@@ -111,7 +108,6 @@ class Application implements HttpKernelInterface
         $this->registerServices();
         $this->setupRequest();
         $this->setupAutoLoader();
-        $this->setupErrorHandling();
         $this->setupURLConstants();
     }
 
@@ -147,93 +143,6 @@ class Application implements HttpKernelInterface
 
     public function setupAutoLoaderPaths()
     {
-    }
-
-    public function setupErrorHandling()
-    {
-        fix_input_quotes();
-
-        $this->getLogger()->init();
-
-        if ($this->getStaging()->getStage()->inTesting()) {
-            $this->getDebugBar()->enable();
-            $this->getDebugBar()->addMonolog($this->getLogger()->getMonolog());
-        }
-    }
-
-    /**
-     * @return LoggerManager|null
-     */
-    public function getLogger()
-    {
-        if ($this->logger == null) {
-            $this->initLogger();
-        }
-
-        return $this->logger;
-    }
-
-    /**
-     * @param  LoggerManager $logger
-     * @return $this
-     */
-    public function setLogger($logger)
-    {
-        $this->logger = $logger;
-
-        return $this;
-    }
-
-    public function initLogger()
-    {
-        $logger = $this->newLogger();
-        $logger->setBootstrap($this);
-        $this->setLogger($logger);
-    }
-
-    /**
-     * @return LoggerManager
-     */
-    public function newLogger()
-    {
-        $logger = new LoggerManager();
-
-        return $logger;
-    }
-
-    /**
-     * @return StandardDebugBar
-     */
-    public function getDebugBar()
-    {
-        if ($this->debugBar == null) {
-            $this->initDebugBar();
-        }
-
-        return $this->debugBar;
-    }
-
-    /**
-     * @param null $debugBar
-     */
-    public function setDebugBar($debugBar)
-    {
-        $this->debugBar = $debugBar;
-    }
-
-    public function initDebugBar()
-    {
-        $this->setDebugBar($this->newDebugBar());
-    }
-
-    /**
-     * @return StandardDebugBar
-     */
-    public function newDebugBar()
-    {
-        $debugBar = new StandardDebugBar();
-
-        return $debugBar;
     }
 
     public function setupURLConstants()
@@ -294,10 +203,10 @@ class Application implements HttpKernelInterface
         $connection = $dbManager->newConnectionFromConfig($stageConfig->get('DB'));
         $this->share('database', $connection);
 
-        if ($this->getDebugBar()->isEnabled()) {
-            $adapter = $connection->getAdapter();
-            $this->getDebugBar()->initDatabaseAdapter($adapter);
-        }
+//        if ($this->getDebugBar()->isEnabled()) {
+//            $adapter = $connection->getAdapter();
+//            $this->getDebugBar()->initDatabaseAdapter($adapter);
+//        }
     }
 
     public function setupSession()
