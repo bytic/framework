@@ -64,6 +64,7 @@ class ProviderRepository implements ProviderRepositoryInterface
                 $this->services[$service] = $provider;
             }
             $this->providers[] = $provider;
+
             return $this;
         }
 
