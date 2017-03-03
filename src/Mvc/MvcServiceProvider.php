@@ -2,7 +2,7 @@
 
 namespace Nip\Mvc;
 
-use Nip\Container\ServiceProvider\AbstractSignatureServiceProvider;
+use Nip\Container\ServiceProviders\Providers\AbstractSignatureServiceProvider;
 
 /**
  * Class MailServiceProvider
@@ -22,7 +22,7 @@ class MvcServiceProvider extends AbstractSignatureServiceProvider
     protected function registerModules()
     {
         $modules = new Modules();
-        $this->getContainer()->singleton('mvc.modules', $modules);
+        $this->getContainer()->share('mvc.modules', $modules);
     }
 
     /**

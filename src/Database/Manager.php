@@ -29,7 +29,8 @@ class Manager
             $config->host,
             $config->user,
             $config->password,
-            $config->name);
+            $config->name
+        );
         return $connection;
     }
 

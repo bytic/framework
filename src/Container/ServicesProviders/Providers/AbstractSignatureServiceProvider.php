@@ -2,14 +2,13 @@
 
 namespace Nip\Container\ServiceProviders\Providers;
 
-use Nip\Container\ServiceProvider\AbstractServiceProvider as AbstractProvider;
-use Nip\Container\ServiceProvider\SignatureServiceProviderInterface as AbstractInterface;
+use Nip\Container\ServiceProviders\Providers\SignatureServiceProviderInterface as SignatureInterface;
 
 /**
  * Class AbstractSignatureServiceProvider
  * @package Nip\Container\ServiceProvider
  */
-abstract class AbstractSignatureServiceProvider extends AbstractProvider implements AbstractInterface
+abstract class AbstractSignatureServiceProvider extends AbstractServiceProvider implements SignatureInterface
 {
     /**
      * @var string

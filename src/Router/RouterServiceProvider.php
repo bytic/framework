@@ -2,7 +2,7 @@
 
 namespace Nip\Router;
 
-use Nip\Container\ServiceProvider\AbstractSignatureServiceProvider;
+use Nip\Container\ServiceProviders\Providers\AbstractSignatureServiceProvider;
 
 /**
  * Class MailServiceProvider
@@ -23,7 +23,7 @@ class RouterServiceProvider extends AbstractSignatureServiceProvider
 
     protected function registerRouter()
     {
-        $this->getContainer()->singleton('router', self::newRouter());
+        $this->getContainer()->share('router', self::newRouter());
     }
 
     /**
@@ -41,7 +41,7 @@ class RouterServiceProvider extends AbstractSignatureServiceProvider
      */
     protected function registerUrlGenerator()
     {
-        $this->getContainer()->singleton('url', function ($app) {
+        $this->getContainer()->share('url', function ($app) {
 
             $routes = $app['router']->getRoutes();
 

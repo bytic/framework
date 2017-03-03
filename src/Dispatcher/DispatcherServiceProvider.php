@@ -2,7 +2,7 @@
 
 namespace Nip\Dispatcher;
 
-use Nip\Container\ServiceProvider\AbstractSignatureServiceProvider;
+use Nip\Container\ServiceProviders\Providers\AbstractSignatureServiceProvider;
 
 /**
  * Class MailServiceProvider
@@ -22,7 +22,7 @@ class DispatcherServiceProvider extends AbstractSignatureServiceProvider
     protected function registerDispatcher()
     {
         $dispatcher = self::newDispatcher();
-        $this->getContainer()->singleton('dispatcher', $dispatcher);
+        $this->getContainer()->share('dispatcher', $dispatcher);
     }
 
     /**
