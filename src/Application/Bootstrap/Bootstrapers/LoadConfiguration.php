@@ -7,6 +7,11 @@ use Nip\Config\Config;
 use Nip\Config\Factory;
 use Symfony\Component\Finder\Finder;
 
+/**
+ * Class LoadConfiguration
+ *
+ * @package Nip\Application\Bootstrap\Bootstrapers
+ */
 class LoadConfiguration extends AbstractBootstraper
 {
     /**
