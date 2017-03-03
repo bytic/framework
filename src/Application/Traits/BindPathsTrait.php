@@ -54,7 +54,7 @@ trait BindPathsTrait
      *
      * @return void
      */
-    protected function bindPathsInContainer()
+    public function bindPathsInContainer()
     {
         $this->share('path', $this->path());
         $this->share('path.base', $this->basePath());

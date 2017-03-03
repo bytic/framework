@@ -5,6 +5,10 @@ namespace Nip\Application\Bootstrap\Bootstrapers;
 use Nip\Application;
 use Nip\Logger\Manager;
 
+/**
+ * Class HandleExceptions
+ * @package Nip\Application\Bootstrap\Bootstrapers
+ */
 class HandleExceptions extends AbstractBootstraper
 {
     /**

@@ -34,7 +34,7 @@ class LoadConfiguration extends AbstractBootstraper
         // Next we will spin through all of the configuration files in the configuration
         // directory and load each one into the repository. This will make all of the
         // options available to the developer for use in various parts of this app.
-        $app->share('config', $config = new Config($items));
+        $app->share('config', $config = new Config($items, true));
 
 //        if (!isset($loadedFromCache)) {
         $this->loadConfigurationFiles($app, $config);
@@ -58,10 +58,7 @@ class LoadConfiguration extends AbstractBootstraper
      */
     protected function loadConfigurationFiles(Application $app, Config $repository)
     {
-        foreach ($this->getConfigurationFiles($app) as $key => $path) {
-            $data = Factory::fromFile($path, false);
-            $repository->set($key, $data);
-        }
+        Factory::fromFiles($repository, $this->getConfigurationFiles($app));
     }
 
     /**
@@ -74,8 +71,8 @@ class LoadConfiguration extends AbstractBootstraper
     {
         $files = [];
         $configPath = realpath($app->configPath());
-        foreach (Finder::create()->files()->name('*.ini')->in($configPath) as $file) {
-            $files[basename($file->getRealPath(), '.ini')] = $file->getRealPath();
+        foreach (Finder::create()->files()->name('*.php')->in($configPath) as $file) {
+            $files[basename($file->getRealPath(), '.php')] = $file->getRealPath();
         }
         return $files;
     }
