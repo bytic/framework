@@ -3,6 +3,7 @@
 namespace Nip\Application\Bootstrap;
 
 use Nip\Application\Bootstrap\Bootstrapers\AbstractBootstraper;
+use Nip\Container\ContainerInterface;
 
 /**
  * Class BootstrapAwareTrait
@@ -67,7 +68,10 @@ trait BootstrapAwareTrait
      */
     public function getBootstrap($bootstrapper)
     {
-        return $this->get($bootstrapper);
+        if ($this->getContainer() instanceof ContainerInterface) {
+            return $this->get($bootstrapper);
+        }
+        return new $bootstrapper;
     }
 
     /**
