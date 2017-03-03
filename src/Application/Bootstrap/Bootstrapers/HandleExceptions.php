@@ -3,8 +3,8 @@
 namespace Nip\Application\Bootstrap\Bootstrapers;
 
 use Nip\Application;
-use Nip\Debug\Debug;
-use Nip\Debug\ErrorHandler;
+use Symfony\Component\Debug\Debug;
+use Symfony\Component\Debug\ErrorHandler;
 
 /**
  * Class HandleExceptions
