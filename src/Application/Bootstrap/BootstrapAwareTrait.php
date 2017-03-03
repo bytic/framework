@@ -4,6 +4,10 @@ namespace Nip\Application\Bootstrap;
 
 use Nip\Application\Bootstrap\Bootstrapers\AbstractBootstraper;
 
+/**
+ * Class BootstrapAwareTrait
+ * @package Nip\Application\Bootstrap
+ */
 trait BootstrapAwareTrait
 {
 
@@ -17,9 +21,9 @@ trait BootstrapAwareTrait
     /**
      * The bootstrap classes for the application.
      *
-     * @var array
+     * @var null|AbstractBootstraper[]
      */
-    protected $bootstrappers = [];
+    protected $bootstrappers = null;
 
     /**
      * Bootstrap the application for HTTP requests.
@@ -73,6 +77,30 @@ trait BootstrapAwareTrait
      */
     protected function bootstrappers()
     {
+        if ($this->bootstrappers === null) {
+            $this->initBootstrappers();
+        }
         return $this->bootstrappers;
+    }
+
+    /**
+     * @param AbstractBootstraper $bootstrapper
+     */
+    protected function addBootstrapper($bootstrapper)
+    {
+        $this->bootstrappers[] = $bootstrapper;
+    }
+
+    protected function initBootstrappers()
+    {
+        $this->bootstrappers = $this->getDefaultBootstrappers();
+    }
+
+    /**
+     * @return AbstractBootstraper[]
+     */
+    protected function getDefaultBootstrappers()
+    {
+        return [];
     }
 }

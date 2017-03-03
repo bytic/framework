@@ -2,24 +2,31 @@
 
 namespace Nip\Application\Bootstrap;
 
+use Nip\Application\Bootstrap\Bootstrapers\AbstractBootstraper;
 use Nip\Application\Bootstrap\Bootstrapers\HandleExceptions;
 use Nip\Application\Bootstrap\Bootstrapers\LoadConfiguration;
 use Nip\Application\Bootstrap\Bootstrapers\RegisterContainer;
 use Nip\Application\Bootstrap\Bootstrapers\RegisterProviders;
 
+/**
+ * Class CoreBootstrapersTrait
+ * @package Nip\Application\Bootstrap
+ */
 trait CoreBootstrapersTrait
 {
     use BootstrapAwareTrait;
 
+
     /**
-     * The bootstrap classes for the application.
-     *
-     * @var array
+     * @return AbstractBootstraper[]
      */
-    protected $bootstrappers = [
-        RegisterContainer::class,
-        HandleExceptions::class,
-        LoadConfiguration::class,
-        RegisterProviders::class,
-    ];
+    protected function getDefaultBootstrappers()
+    {
+        return [
+            RegisterContainer::class,
+            HandleExceptions::class,
+            LoadConfiguration::class,
+            RegisterProviders::class,
+        ];
+    }
 }
