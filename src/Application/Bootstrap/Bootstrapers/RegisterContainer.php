@@ -3,8 +3,11 @@
 namespace Nip\Application\Bootstrap\Bootstrapers;
 
 use Nip\Application;
-use Nip\Container\Container;
 
+/**
+ * Class RegisterContainer
+ * @package Nip\Application\Bootstrap\Bootstrapers
+ */
 class RegisterContainer extends AbstractBootstraper
 {
     /**
@@ -15,11 +18,6 @@ class RegisterContainer extends AbstractBootstraper
      */
     public function bootstrap(Application $app)
     {
-
         $app->initContainer();
-
-        $app->share('app', $app);
-        $app->share(Container::class, $app);
-        $app->share('kernel', $app);
     }
 }
