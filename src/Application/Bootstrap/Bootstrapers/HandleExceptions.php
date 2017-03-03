@@ -24,7 +24,7 @@ class HandleExceptions extends AbstractBootstraper
 
         error_reporting(-1);
 
-        if ($app['config.debug']) {
+        if (config('app.debug')) {
             Debug::enable();
         } else {
             Debug::enable(-1, false);
@@ -38,5 +38,4 @@ class HandleExceptions extends AbstractBootstraper
             $app->getContainer()->share(ErrorHandler::class, $handler);
         }
     }
-
 }
