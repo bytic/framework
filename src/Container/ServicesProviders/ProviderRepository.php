@@ -52,7 +52,7 @@ class ProviderRepository implements ProviderRepositoryInterface
     public function add($provider)
     {
         if (is_string($provider) && class_exists($provider)) {
-            $provider = new $provider;
+            $provider = $this->resolveProvider($provider);
         }
 
         if ($provider instanceof ContainerAwareInterface) {
@@ -61,10 +61,9 @@ class ProviderRepository implements ProviderRepositoryInterface
 
         if ($provider instanceof ServiceProviderInterface) {
             foreach ($provider->provides() as $service) {
-                $this->services[$service] = $provider;
+                $this->services[$service] = get_class($provider);
             }
             $this->providers[] = $provider;
-
             return $this;
         }
 
@@ -74,13 +73,23 @@ class ProviderRepository implements ProviderRepositoryInterface
         );
     }
 
+    /**
+     * Resolve a service provider instance from the class name.
+     *
+     * @param  string $provider
+     * @return AbstractServiceProvider
+     */
+    public function resolveProvider($provider)
+    {
+        return new $provider($this);
+    }
+
     public function register()
     {
         foreach ($this->providers as $provider) {
             $this->registerProvider($provider);
         }
     }
-
 
     /**
      * Register a service provider with the application.
@@ -90,14 +99,13 @@ class ProviderRepository implements ProviderRepositoryInterface
      */
     public function registerProvider($provider)
     {
-        if (($registered = $this->getProvider($provider))) {
-            return $registered;
-        }
-        // If the given "provider" is a string, we will resolve it, passing in the
-        // application instance automatically for the developer. This is simply
-        // a more convenient way of specifying your service provider classes.
-        if (is_string($provider)) {
+        if (($provider = $this->getProvider($provider))) {
+        } elseif (is_string($provider)) {
             $provider = $this->resolveProvider($provider);
+        }
+
+        if ($this->registeredProvider($provider)) {
+            return $provider;
         }
 
         if (method_exists($provider, 'register')) {
@@ -130,14 +138,16 @@ class ProviderRepository implements ProviderRepositoryInterface
     }
 
     /**
-     * Resolve a service provider instance from the class name.
-     *
-     * @param  string $provider
-     * @return AbstractServiceProvider
+     * @param AbstractServiceProvider $provider
+     * @return bool
      */
-    public function resolveProvider($provider)
+    public function registeredProvider($provider)
     {
-        return new $provider($this);
+        $providerClass = get_class($provider);
+        if (isset($this->registeredProviders[$providerClass]) && $this->registeredProviders[$providerClass] === true) {
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -148,7 +158,6 @@ class ProviderRepository implements ProviderRepositoryInterface
      */
     protected function markAsRegistered($provider)
     {
-        $this->providers[] = $provider;
         $this->registeredProviders[get_class($provider)] = true;
     }
 
