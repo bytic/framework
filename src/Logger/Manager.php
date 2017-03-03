@@ -106,12 +106,12 @@ class Manager implements PsrLoggerInterface
 
     public function initErrorReporting()
     {
-        error_reporting(E_ALL ^ E_NOTICE);
+        error_reporting(-1);
     }
 
     public function initErrorDisplay()
     {
-        if ($this->getBootstrap()->getStaging()->getStage()->inTesting()) {
+        if (config('app.debug')) {
             ini_set('html_errors', 1);
             ini_set('display_errors', 1);
         } else {
