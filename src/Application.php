@@ -40,7 +40,6 @@ class Application implements HttpKernelInterface
     use CoreBootstrapersTrait;
     use ServiceProviderAwareTrait;
     use BindPathsTrait;
-    use ConfigAwareTrait;
     use AutoLoaderAwareTrait;
     use RouterAwareTrait;
     use DispatcherAwareTrait;
