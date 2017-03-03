@@ -2,6 +2,10 @@
 
 namespace Nip\Application\Traits;
 
+/**
+ * Class BindPathsTrait
+ * @package Nip\Application\Traits
+ */
 trait BindPathsTrait
 {
 
@@ -36,7 +40,7 @@ trait BindPathsTrait
     /**
      * Set the base path for the application.
      *
-     * @param  string  $basePath
+     * @param  string $basePath
      * @return $this
      */
     public function setBasePath($basePath)
@@ -53,15 +57,15 @@ trait BindPathsTrait
      */
     protected function bindPathsInContainer()
     {
-        $this->singleton('path', $this->path());
-        $this->singleton('path.base', $this->basePath());
-        $this->singleton('path.lang', $this->langPath());
-        $this->singleton('path.config', $this->configPath());
-        $this->singleton('path.public', $this->publicPath());
-        $this->singleton('path.storage', $this->storagePath());
-        $this->singleton('path.database', $this->databasePath());
-        $this->singleton('path.resources', $this->resourcePath());
-        $this->singleton('path.bootstrap', $this->bootstrapPath());
+        $this->share('path', $this->path());
+        $this->share('path.base', $this->basePath());
+        $this->share('path.lang', $this->langPath());
+        $this->share('path.config', $this->configPath());
+        $this->share('path.public', $this->publicPath());
+        $this->share('path.storage', $this->storagePath());
+        $this->share('path.database', $this->databasePath());
+        $this->share('path.resources', $this->resourcePath());
+        $this->share('path.bootstrap', $this->bootstrapPath());
     }
 
     /**
@@ -71,7 +75,7 @@ trait BindPathsTrait
      */
     public function path()
     {
-        return $this->basePath.DIRECTORY_SEPARATOR.'app';
+        return $this->basePath . DIRECTORY_SEPARATOR . 'app';
     }
 
     /**
@@ -91,7 +95,7 @@ trait BindPathsTrait
      */
     public function bootstrapPath()
     {
-        return $this->basePath.DIRECTORY_SEPARATOR.'bootstrap';
+        return $this->basePath . DIRECTORY_SEPARATOR . 'bootstrap';
     }
 
     /**
@@ -101,7 +105,7 @@ trait BindPathsTrait
      */
     public function configPath()
     {
-        return $this->basePath.DIRECTORY_SEPARATOR.'config';
+        return $this->basePath . DIRECTORY_SEPARATOR . 'config';
     }
 
     /**
@@ -111,7 +115,7 @@ trait BindPathsTrait
      */
     public function databasePath()
     {
-        return $this->databasePath ?: $this->basePath.DIRECTORY_SEPARATOR.'database';
+        return $this->databasePath ?: $this->basePath . DIRECTORY_SEPARATOR . 'database';
     }
 
     /**
@@ -121,7 +125,7 @@ trait BindPathsTrait
      */
     public function langPath()
     {
-        return $this->resourcePath().DIRECTORY_SEPARATOR.'lang';
+        return $this->resourcePath() . DIRECTORY_SEPARATOR . 'lang';
     }
 
     /**
@@ -131,7 +135,7 @@ trait BindPathsTrait
      */
     public function publicPath()
     {
-        return $this->basePath.DIRECTORY_SEPARATOR.'public';
+        return $this->basePath . DIRECTORY_SEPARATOR . 'public';
     }
 
     /**
@@ -141,7 +145,7 @@ trait BindPathsTrait
      */
     public function storagePath()
     {
-        return $this->storagePath ?: $this->basePath.DIRECTORY_SEPARATOR.'storage';
+        return $this->storagePath ?: $this->basePath . DIRECTORY_SEPARATOR . 'storage';
     }
 
     /**
@@ -151,6 +155,6 @@ trait BindPathsTrait
      */
     public function resourcePath()
     {
-        return $this->basePath.DIRECTORY_SEPARATOR.'resources';
+        return $this->basePath . DIRECTORY_SEPARATOR . 'resources';
     }
 }
