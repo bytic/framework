@@ -63,6 +63,7 @@ class ProviderRepository implements ProviderRepositoryInterface
             foreach ($provider->provides() as $service) {
                 $this->services[$service] = $provider;
             }
+            $this->providers[] = $provider;
             return $this;
         }
 

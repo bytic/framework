@@ -2,6 +2,10 @@
 
 namespace Nip\Container\ServiceProviders;
 
+/**
+ * Class ServiceProviderAwareTrait
+ * @package Nip\Container\ServiceProviders
+ */
 trait ServiceProviderAwareTrait
 {
     /**
@@ -21,14 +25,6 @@ trait ServiceProviderAwareTrait
     }
 
     /**
-     * @return array
-     */
-    public function getConfiguredProviders()
-    {
-        return [];
-    }
-
-    /**
      * @return ProviderRepository
      */
     public function getProviderRepository()
@@ -38,6 +34,14 @@ trait ServiceProviderAwareTrait
             $this->providerRepository->setContainer($this->getContainer());
         }
         return $this->providerRepository;
+    }
+
+    /**
+     * @return array
+     */
+    public function getConfiguredProviders()
+    {
+        return [];
     }
 
     public function bootProviders()
