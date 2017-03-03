@@ -46,7 +46,6 @@ trait BindPathsTrait
     public function setBasePath($basePath)
     {
         $this->basePath = rtrim($basePath, '\/');
-        $this->bindPathsInContainer();
         return $this;
     }
 
@@ -89,13 +88,23 @@ trait BindPathsTrait
     }
 
     /**
-     * Get the path to the bootstrap directory.
+     * Get the path to the language files.
      *
      * @return string
      */
-    public function bootstrapPath()
+    public function langPath()
     {
-        return $this->basePath . DIRECTORY_SEPARATOR . 'bootstrap';
+        return $this->resourcePath() . DIRECTORY_SEPARATOR . 'lang';
+    }
+
+    /**
+     * Get the path to the resources directory.
+     *
+     * @return string
+     */
+    public function resourcePath()
+    {
+        return $this->basePath . DIRECTORY_SEPARATOR . 'resources';
     }
 
     /**
@@ -106,26 +115,6 @@ trait BindPathsTrait
     public function configPath()
     {
         return $this->basePath . DIRECTORY_SEPARATOR . 'config';
-    }
-
-    /**
-     * Get the path to the database directory.
-     *
-     * @return string
-     */
-    public function databasePath()
-    {
-        return $this->databasePath ?: $this->basePath . DIRECTORY_SEPARATOR . 'database';
-    }
-
-    /**
-     * Get the path to the language files.
-     *
-     * @return string
-     */
-    public function langPath()
-    {
-        return $this->resourcePath() . DIRECTORY_SEPARATOR . 'lang';
     }
 
     /**
@@ -149,12 +138,22 @@ trait BindPathsTrait
     }
 
     /**
-     * Get the path to the resources directory.
+     * Get the path to the database directory.
      *
      * @return string
      */
-    public function resourcePath()
+    public function databasePath()
     {
-        return $this->basePath . DIRECTORY_SEPARATOR . 'resources';
+        return $this->databasePath ?: $this->basePath . DIRECTORY_SEPARATOR . 'database';
+    }
+
+    /**
+     * Get the path to the bootstrap directory.
+     *
+     * @return string
+     */
+    public function bootstrapPath()
+    {
+        return $this->basePath . DIRECTORY_SEPARATOR . 'bootstrap';
     }
 }
