@@ -24,6 +24,7 @@ trait CoreBootstrapersTrait
     {
         return [
             RegisterContainer::class,
+            LoadEnvironmentVariables::class,
             HandleExceptions::class,
             LoadConfiguration::class,
             RegisterProviders::class,

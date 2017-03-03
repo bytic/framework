@@ -153,13 +153,4 @@ trait BindPathsTrait
     {
         return $this->basePath.DIRECTORY_SEPARATOR.'resources';
     }
-    /**
-     * Get the path to the environment file directory.
-     *
-     * @return string
-     */
-    public function environmentPath()
-    {
-        return $this->environmentPath ?: $this->basePath;
-    }
 }

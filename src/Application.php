@@ -6,6 +6,7 @@ use Exception;
 use Nip\Application\ApplicationInterface;
 use Nip\Application\Bootstrap\CoreBootstrapersTrait;
 use Nip\Application\Traits\BindPathsTrait;
+use Nip\Application\Traits\EnviromentConfiguration;
 use Nip\AutoLoader\AutoLoader;
 use Nip\AutoLoader\AutoLoaderAwareTrait;
 use Nip\AutoLoader\AutoLoaderServiceProvider;
@@ -39,6 +40,7 @@ class Application implements ApplicationInterface
     use CoreBootstrapersTrait;
     use ServiceProviderAwareTrait;
     use BindPathsTrait;
+    use EnviromentConfiguration;
     use AutoLoaderAwareTrait;
     use RouterAwareTrait;
     use DispatcherAwareTrait;
@@ -270,6 +272,17 @@ class Application implements ApplicationInterface
 //            $routeCollector = $this->getDebugBar()->getCollector('route');
 //            $routeCollector->setRouter($router);
 //        }
+    }
+
+    /**
+     * Determine if the application configuration is cached.
+     *
+     * @return bool
+     */
+    public function configurationIsCached()
+    {
+        return false;
+//        return file_exists($this->getCachedConfigPath());
     }
 
     public function boot()
