@@ -2,6 +2,10 @@
 
 namespace Nip\Database\Adapters;
 
+/**
+ * Class MySQLi
+ * @package Nip\Database\Adapters
+ */
 class MySQLi extends AbstractAdapter implements AdapterInterface
 {
 

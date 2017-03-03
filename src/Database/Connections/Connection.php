@@ -1,22 +1,78 @@
 <?php
 
-namespace Nip\Database;
+namespace Nip\Database\Connections;
 
+use Exception;
 use Nip\Database\Adapters\AbstractAdapter;
 use Nip\Database\Query\AbstractQuery as AbstractQuery;
 use Nip\Database\Query\Select as SelectQuery;
 
+/**
+ * Class Connection
+ * @package Nip\Database
+ */
 class Connection
 {
+
+    /**
+     * The active PDO connection.
+     *
+     * @var PDO
+     */
+    protected $pdo;
+
+    /**
+     * The name of the connected database.
+     *
+     * @var string
+     */
+    protected $database;
+    /**
+     * The table prefix for the connection.
+     *
+     * @var string
+     */
+    protected $tablePrefix = '';
+    /**
+     * The database connection configuration options.
+     *
+     * @var array
+     */
+    protected $config = [];
 
     protected $_adapter = null;
 
     protected $_connection;
-    protected $_database;
     protected $metadata;
     protected $_query;
     protected $_queries = [];
 
+    /**
+     * Create a new database connection instance.
+     *
+     * @param  \PDO|\Closure $pdo
+     * @param  string $database
+     * @param  string $tablePrefix
+     * @param  array $config
+     */
+    public function __construct($pdo, $database = '', $tablePrefix = '', array $config = [])
+    {
+        $this->pdo = $pdo;
+
+        // First we will setup the default properties. We keep track of the DB
+        // name we are connected to since it is needed when some reflective
+        // type commands are run such as checking whether a table exists.
+        $this->database = $database;
+
+        $this->tablePrefix = $tablePrefix;
+        $this->config = $config;
+
+        // We need to initialize a query grammar and the query post processors
+        // which are both very important parts of the database abstractions
+        // so we initialize these to their default values while starting.
+//        $this->useDefaultQueryGrammar();
+//        $this->useDefaultPostProcessor();
+    }
 
     /**
      * Connects to SQL server
@@ -54,6 +110,9 @@ class Connection
         return $this->_adapter;
     }
 
+    /**
+     * @param $adapter
+     */
     public function setAdapter($adapter)
     {
         $this->_adapter = $adapter;
@@ -64,6 +123,9 @@ class Connection
         $this->setAdapterName('MySQLi');
     }
 
+    /**
+     * @param $name
+     */
     public function setAdapterName($name)
     {
         $this->setAdapter($this->newAdapter($name));
@@ -80,14 +142,21 @@ class Connection
         return new $class();
     }
 
+    /**
+     * @param $name
+     * @return string
+     */
     public static function getAdapterClass($name)
     {
-        return '\Nip\Database\Adapters\\'.$name;
+        return '\Nip\Database\Adapters\\' . $name;
     }
 
+    /**
+     * @return string
+     */
     public function getDatabase()
     {
-        return $this->_database;
+        return $this->database;
     }
 
     /**
@@ -95,7 +164,7 @@ class Connection
      */
     public function setDatabase($database)
     {
-        $this->_database = $database;
+        $this->database = $database;
     }
 
     /**
@@ -137,7 +206,7 @@ class Connection
      */
     public function newQuery($type = "select")
     {
-        $className = '\Nip\Database\Query\\'.inflector()->camelize($type);
+        $className = '\Nip\Database\Query\\' . inflector()->camelize($type);
         $query = new $className();
         /** @var AbstractQuery $query */
         $query->setManager($this);
@@ -209,12 +278,11 @@ class Connection
      */
     public function protect($input)
     {
-        return str_replace("`*`", "*", '`'.str_replace('.', '`.`', $input).'`');
+        return str_replace("`*`", "*", '`' . str_replace('.', '`.`', $input) . '`');
     }
 
     public function getQueries()
     {
         return $this->_queries;
     }
-
 }
