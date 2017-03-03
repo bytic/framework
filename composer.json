@@ -37,7 +37,8 @@
     "symfony/http-kernel": "^3.1",
     "monolog/monolog": "^1.20",
     "filp/whoops": "^2.1",
-    "vlucas/phpdotenv": "^2.4"
+    "vlucas/phpdotenv": "^2.4",
+    "symfony/debug": "^3.2"
   },
   "require-dev": {
     "codeception/codeception": "^2.2",

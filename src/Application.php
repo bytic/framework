@@ -10,7 +10,6 @@ use Nip\Application\Traits\EnviromentConfiguration;
 use Nip\AutoLoader\AutoLoader;
 use Nip\AutoLoader\AutoLoaderAwareTrait;
 use Nip\AutoLoader\AutoLoaderServiceProvider;
-use Nip\Config\ConfigAwareTrait;
 use Nip\Container\Container;
 use Nip\Container\ContainerAliasBindingsTrait;
 use Nip\Container\ServiceProviders\ServiceProviderAwareTrait;
@@ -100,20 +99,9 @@ class Application implements ApplicationInterface
 
     public function prepare()
     {
-        $this->registerServices();
         $this->setupRequest();
         $this->setupAutoLoader();
         $this->setupURLConstants();
-    }
-
-    public function registerServices()
-    {
-        $this->addServiceProvider(AutoLoaderServiceProvider::class);
-        $this->addServiceProvider(MailServiceProvider::class);
-        $this->addServiceProvider(MvcServiceProvider::class);
-        $this->addServiceProvider(DispatcherServiceProvider::class);
-        $this->addServiceProvider(StagingServiceProvider::class);
-        $this->addServiceProvider(RouterServiceProvider::class);
     }
 
     public function setupRequest()
@@ -274,17 +262,6 @@ class Application implements ApplicationInterface
 //        }
     }
 
-    /**
-     * Determine if the application configuration is cached.
-     *
-     * @return bool
-     */
-    public function configurationIsCached()
-    {
-        return false;
-//        return file_exists($this->getCachedConfigPath());
-    }
-
     public function boot()
     {
         if ($this->isBooted()) {
@@ -305,66 +282,6 @@ class Application implements ApplicationInterface
         return $this->booted;
     }
 
-    /**
-     * @param Request $request
-     * @return Response
-     */
-    protected function getResponseFromRequest($request)
-    {
-        if ($request->hasMCA()) {
-            $response = $this->dispatchRequest($request);
-            ob_get_clean();
-
-            return $response;
-        }
-
-        throw new NotFoundHttpException('No MCA in Request');
-    }
-
-    /**
-     * @param Exception $e
-     * @param Request $request
-     * @return Response
-     */
-    protected function handleException(Request $request, Exception $e)
-    {
-        $this->reportException($e);
-
-        return $this->renderException($request, $e);
-    }
-
-    /**
-     * Report the exception to the exception handler.
-     *
-     * @param  Exception $e
-     * @return void
-     */
-    protected function reportException(Exception $e)
-    {
-        $this->getLogger()->handleException($e);
-    }
-
-    /**
-     * @param Request $request
-     * @param Exception $e
-     * @return Response
-     */
-    protected function renderException(Request $request, Exception $e)
-    {
-        if ($this->getStaging()->getStage()->isPublic()) {
-            $this->getDispatcher()->setErrorController();
-
-            return $this->getResponseFromRequest($request);
-        } else {
-            $whoops = new WhoopsRun;
-            $whoops->allowQuit(false);
-            $whoops->writeToOutput(false);
-            $whoops->pushHandler(new PrettyPageHandler());
-
-            return ResponseFactory::make($whoops->handleException($e));
-        }
-    }
-
     /** @noinspection PhpUnusedParameterInspection
      *
      * @param Request $request
@@ -374,6 +291,36 @@ class Application implements ApplicationInterface
     public function filterResponse(Response $response, Request $request)
     {
         return $response;
+    }
+
+    public function terminate()
+    {
+    }
+
+    /**
+     * @return array
+     */
+    public function getConfiguredProviders()
+    {
+        return [
+            AutoLoaderServiceProvider::class,
+            MailServiceProvider::class,
+            MvcServiceProvider::class,
+            DispatcherServiceProvider::class,
+            StagingServiceProvider::class,
+            RouterServiceProvider::class,
+        ];
+    }
+
+    /**
+     * Determine if the application configuration is cached.
+     *
+     * @return bool
+     */
+    public function configurationIsCached()
+    {
+        return false;
+//        return file_exists($this->getCachedConfigPath());
     }
 
     /**
@@ -422,15 +369,71 @@ class Application implements ApplicationInterface
         return new I18n\Translator();
     }
 
-    public function terminate()
-    {
-    }
-
     /**
      * @return string
      */
     public function getRootNamespace()
     {
         return 'App\\';
+    }
+
+    /**
+     * @param Exception $e
+     * @param Request $request
+     * @return Response
+     */
+    protected function handleException(Request $request, Exception $e)
+    {
+        $this->reportException($e);
+
+        return $this->renderException($request, $e);
+    }
+
+    /**
+     * Report the exception to the exception handler.
+     *
+     * @param  Exception $e
+     * @return void
+     */
+    protected function reportException(Exception $e)
+    {
+        $this->getLogger()->handleException($e);
+    }
+
+    /**
+     * @param Request $request
+     * @param Exception $e
+     * @return Response
+     */
+    protected function renderException(Request $request, Exception $e)
+    {
+        if ($this->getStaging()->getStage()->isPublic()) {
+            $this->getDispatcher()->setErrorController();
+
+            return $this->getResponseFromRequest($request);
+        } else {
+            $whoops = new WhoopsRun;
+            $whoops->allowQuit(false);
+            $whoops->writeToOutput(false);
+            $whoops->pushHandler(new PrettyPageHandler());
+
+            return ResponseFactory::make($whoops->handleException($e));
+        }
+    }
+
+    /**
+     * @param Request $request
+     * @return Response
+     */
+    protected function getResponseFromRequest($request)
+    {
+        if ($request->hasMCA()) {
+            $response = $this->dispatchRequest($request);
+            ob_get_clean();
+
+            return $response;
+        }
+
+        throw new NotFoundHttpException('No MCA in Request');
     }
 }

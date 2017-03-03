@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "5410159c199934a2c76c5464cc91ab7e",
-    "content-hash": "8ec24395d73402ddfaad4618a478362a",
+    "hash": "24e9c48ee9067bbfa2ed4fe6c9eebaad",
+    "content-hash": "fc31969557364394ce46c0533a808ef8",
     "packages": [
         {
             "name": "ByTIC/RequestDetective",
