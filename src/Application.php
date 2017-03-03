@@ -3,6 +3,7 @@
 namespace Nip;
 
 use Exception;
+use Nip\Application\ApplicationInterface;
 use Nip\Application\Bootstrap\CoreBootstrapersTrait;
 use Nip\Application\Traits\BindPathsTrait;
 use Nip\AutoLoader\AutoLoader;
@@ -23,10 +24,8 @@ use Nip\Router\RouterAwareTrait;
 use Nip\Router\RouterServiceProvider;
 use Nip\Staging\StagingAwareTrait;
 use Nip\Staging\StagingServiceProvider;
-use Symfony\Component\HttpFoundation\Request as SymfonyRequest;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Whoops\Handler\PrettyPageHandler;
 use Whoops\Run as WhoopsRun;
 
@@ -34,7 +33,7 @@ use Whoops\Run as WhoopsRun;
  * Class Application
  * @package Nip
  */
-class Application implements HttpKernelInterface
+class Application implements ApplicationInterface
 {
     use ContainerAliasBindingsTrait;
     use CoreBootstrapersTrait;
@@ -294,59 +293,6 @@ class Application implements HttpKernelInterface
     }
 
     /**
-     * @param null|Request $request
-     * @return Response
-     */
-    public function handleRequest($request = null)
-    {
-        $request = $request ? $request : $this->getRequest();
-        try {
-            ob_start();
-            $this->preHandleRequest();
-
-            $this->preRouting();
-
-            // check is valid request
-            if ($this->isValidRequest($request)) {
-                $this->route($request);
-            } else {
-                die('');
-            }
-
-            $this->postRouting();
-
-            return $this->getResponseFromRequest($request);
-        } catch (Exception $e) {
-            return $this->handleException($request, $e);
-        }
-    }
-
-    public function preHandleRequest()
-    {
-    }
-
-    public function preRouting()
-    {
-    }
-
-    /**
-     * @param Request $request
-     * @return bool
-     */
-    protected function isValidRequest($request)
-    {
-        if ($request->isMalicious()) {
-            return false;
-        }
-
-        return true;
-    }
-
-    public function postRouting()
-    {
-    }
-
-    /**
      * @param Request $request
      * @return Response
      */
@@ -418,19 +364,6 @@ class Application implements HttpKernelInterface
     }
 
     /**
-     * @param Request $request
-     * @param Response $response
-     */
-    public function terminate(Request $request, Response $response)
-    {
-    }
-
-    public function handle(SymfonyRequest $request, $type = self::MASTER_REQUEST, $catch = true)
-    {
-        return $this->handleRequest($request);
-    }
-
-    /**
      * Throw an HttpException with the given data.
      *
      * @param  int $code
@@ -474,6 +407,10 @@ class Application implements HttpKernelInterface
     public function newTranslator()
     {
         return new I18n\Translator();
+    }
+
+    public function terminate()
+    {
     }
 
     /**
