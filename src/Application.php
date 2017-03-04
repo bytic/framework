@@ -16,6 +16,7 @@ use Nip\Database\Manager as DatabaseManager;
 use Nip\Dispatcher\DispatcherAwareTrait;
 use Nip\Dispatcher\DispatcherServiceProvider;
 use Nip\Http\Response\Response;
+use Nip\Logger\LoggerServiceProvider;
 use Nip\Mail\MailServiceProvider;
 use Nip\Mvc\MvcServiceProvider;
 use Nip\Router\RouterAwareTrait;
@@ -230,6 +231,7 @@ class Application implements ApplicationInterface
     {
         return [
             AutoLoaderServiceProvider::class,
+            LoggerServiceProvider::class,
             MailServiceProvider::class,
             MvcServiceProvider::class,
             DispatcherServiceProvider::class,
