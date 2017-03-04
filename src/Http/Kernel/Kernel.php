@@ -110,7 +110,17 @@ class Kernel implements KernelInterface
      */
     protected function handleRaw(SymfonyRequest $request, $type = self::MASTER_REQUEST)
     {
-        return (new Dispatcher($this->middleware))->dispatch($request);
+        return (new Dispatcher($this->middleware, $this->getApplication()->getContainer()))->dispatch($request);
+    }
+
+    /**
+     * Get the application instance.
+     *
+     * @return Application
+     */
+    public function getApplication()
+    {
+        return $this->app;
     }
 
     /**
@@ -164,16 +174,6 @@ class Kernel implements KernelInterface
      */
     protected function terminateMiddleware($request, $response)
     {
-    }
-
-    /**
-     * Get the application instance.
-     *
-     * @return Application
-     */
-    public function getApplication()
-    {
-        return $this->app;
     }
 
     /**
