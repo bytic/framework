@@ -5,13 +5,13 @@ namespace Nip;
 use ByTIC\RequestDetective\RequestDetective;
 use Nip\Http\Request\Http;
 use Nip\Http\Request\PsrBridgeTrait;
-use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\ServerRequestInterface;
 
 /**
  * Class Request
  * @package Nip
  */
-class Request extends \Symfony\Component\HttpFoundation\Request implements \ArrayAccess, RequestInterface
+class Request extends \Symfony\Component\HttpFoundation\Request implements \ArrayAccess, ServerRequestInterface
 {
     use PsrBridgeTrait;
     /**
