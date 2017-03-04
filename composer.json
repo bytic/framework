@@ -24,9 +24,10 @@
     ]
   },
   "require": {
-    "php": ">=5.5.0",
+    "php": "^7.0",
     "ByTIC/RequestDetective": "dev-develop",
     "psr/container": "^1.0",
+    "http-interop/http-middleware": "^0.4",
     "league/container": "^2.3",
     "nesbot/carbon": "^1.21",
     "maximebf/debugbar": "^1.13",
