@@ -4,8 +4,8 @@ namespace Nip\Logger;
 
 use Monolog\Logger as Monolog;
 use Nip\Container\ServiceProviders\Providers\AbstractSignatureServiceProvider;
-use Nip\Debug\ErrorHandler;
 use Psr\Log\LoggerInterface as PsrLoggerInterface;
+use Symfony\Component\Debug\ErrorHandler;
 
 /**
  * Class LoggerServiceProvider
