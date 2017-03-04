@@ -1,21 +1,23 @@
 <?php
 
-namespace Nip;
+namespace Nip\Session;
 
+use Nip\Application;
 use Nip\Database\Connection;
 use Nip\Database\Result;
 
-class Session
+/**
+ * Class SessionManager
+ * @package Nip\Session
+ */
+class SessionManager
 {
-
     protected $id;
-    protected $_lifetime;
-    protected $db;
-    protected $table = 'session';
 
-    public function __construct()
+    protected $_lifetime;
+
+    public function __construct(Application $app)
     {
-        $this->db = db();
         $this->_lifetime = get_cfg_var("session.gc_maxlifetime");
 
 //		ini_set('session.save_handler', 'user');
@@ -25,7 +27,6 @@ class Session
     public function init()
     {
         $id = $this->checkRequestId();
-//		$this->setHandlers();
         $this->start($id);
     }
 
@@ -67,7 +68,7 @@ class Session
 
     /**
      * Overrides default session handling functions
-     * @return Session
+     * @return SessionManager
      */
     protected function setHandlers()
     {
@@ -227,6 +228,9 @@ class Session
         return $this;
     }
 
+    /**
+     * @param $domain
+     */
     public function setRootDomain($domain)
     {
         if ($domain !== 'localhost') {
@@ -234,7 +238,7 @@ class Session
         }
 
         Cookie\Jar::instance()->setDefaults(
-            array('domain' => '.'.$domain)
+            ['domain' => '.' . $domain]
         );
     }
 

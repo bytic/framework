@@ -10,6 +10,7 @@ use Nip\Http\Response\ResponseFactory;
 use Nip\Http\ServerMiddleware\Dispatcher;
 use Nip\Request;
 use Nip\Router\Router;
+use Nip\Session\Middleware\StartSession;
 use Psr\Http\Message\ResponseInterface;
 use Symfony\Component\Debug\Exception\FatalThrowableError;
 use Symfony\Component\HttpFoundation\Request as SymfonyRequest;
@@ -37,18 +38,23 @@ class Kernel implements KernelInterface
      * @var Router
      */
     protected $router;
+
     /**
      * The application's middleware stack.
      *
      * @var array
      */
-    protected $middleware = [];
+    protected $middleware = [
+        StartSession::class
+    ];
+
     /**
      * The application's route middleware groups.
      *
      * @var array
      */
     protected $middlewareGroups = [];
+
     /**
      * The application's route middleware.
      *

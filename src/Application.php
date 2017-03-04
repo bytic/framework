@@ -164,52 +164,6 @@ class Application implements ApplicationInterface
 //        }
     }
 
-    public function setupSession()
-    {
-        if ($this->getRequest()->isCLI() == false) {
-            $requestHTTP = $this->getRequest()->getHttp();
-            $domain = $requestHTTP->getRootDomain();
-            $sessionManager = $this->getSession();
-
-            if (!$sessionManager->isAutoStart()) {
-                $sessionManager->setRootDomain($domain);
-                $sessionManager->setLifetime($this->get('config')->get('SESSION')->get('lifetime'));
-            }
-
-            if ($domain != 'localhost') {
-                Cookie\Jar::instance()->setDefaults(
-                    ['domain' => '.' . $domain]
-                );
-            }
-            $this->sessionManager->init();
-        }
-    }
-
-    /**
-     * @return Session
-     */
-    public function getSession()
-    {
-        if ($this->sessionManager === null) {
-            $this->initSession();
-        }
-
-        return $this->sessionManager;
-    }
-
-    public function initSession()
-    {
-        $this->sessionManager = $this->newSession();
-    }
-
-    /**
-     * @return Session
-     */
-    public function newSession()
-    {
-        return new Session();
-    }
-
     public function setupTranslation()
     {
         $this->initLanguages();
