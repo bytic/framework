@@ -2,7 +2,6 @@
 
 namespace Nip;
 
-use Exception;
 use Nip\Application\ApplicationInterface;
 use Nip\Application\Bootstrap\CoreBootstrapersTrait;
 use Nip\Application\Traits\BindPathsTrait;
@@ -17,7 +16,6 @@ use Nip\Database\Manager as DatabaseManager;
 use Nip\Dispatcher\DispatcherAwareTrait;
 use Nip\Dispatcher\DispatcherServiceProvider;
 use Nip\Http\Response\Response;
-use Nip\Http\Response\ResponseFactory;
 use Nip\Mail\MailServiceProvider;
 use Nip\Mvc\MvcServiceProvider;
 use Nip\Router\RouterAwareTrait;
@@ -26,8 +24,6 @@ use Nip\Staging\StagingAwareTrait;
 use Nip\Staging\StagingServiceProvider;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use Whoops\Handler\PrettyPageHandler;
-use Whoops\Run as WhoopsRun;
 
 /**
  * Class Application
@@ -141,30 +137,6 @@ class Application implements ApplicationInterface
 
         $baseURL = $stage->getHTTP() . $stage->getHost() . $pathInfo;
         define('BASE_URL', $baseURL);
-    }
-
-    /**
-     * @return Request|null
-     */
-    public function getRequest()
-    {
-        if ($this->request == null) {
-            $this->initRequest();
-        }
-
-        return $this->request;
-    }
-
-    /**
-     * @return $this
-     */
-    public function initRequest()
-    {
-        $request = Request::createFromGlobals();
-        Request::instance($request);
-        $this->request = $request;
-
-        return $this;
     }
 
     public function setup()
@@ -375,50 +347,6 @@ class Application implements ApplicationInterface
     public function getRootNamespace()
     {
         return 'App\\';
-    }
-
-    /**
-     * @param Exception $e
-     * @param Request $request
-     * @return Response
-     */
-    protected function handleException(Request $request, Exception $e)
-    {
-        $this->reportException($e);
-
-        return $this->renderException($request, $e);
-    }
-
-    /**
-     * Report the exception to the exception handler.
-     *
-     * @param  Exception $e
-     * @return void
-     */
-    protected function reportException(Exception $e)
-    {
-        $this->getLogger()->handleException($e);
-    }
-
-    /**
-     * @param Request $request
-     * @param Exception $e
-     * @return Response
-     */
-    protected function renderException(Request $request, Exception $e)
-    {
-        if ($this->getStaging()->getStage()->isPublic()) {
-            $this->getDispatcher()->setErrorController();
-
-            return $this->getResponseFromRequest($request);
-        } else {
-            $whoops = new WhoopsRun;
-            $whoops->allowQuit(false);
-            $whoops->writeToOutput(false);
-            $whoops->pushHandler(new PrettyPageHandler());
-
-            return ResponseFactory::make($whoops->handleException($e));
-        }
     }
 
     /**

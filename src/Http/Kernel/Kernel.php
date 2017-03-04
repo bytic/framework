@@ -7,9 +7,14 @@ use Nip\Application;
 use Nip\Application\ApplicationInterface;
 use Nip\Http\Response\Response;
 use Nip\Http\Response\ResponseFactory;
+use Nip\Http\ServerMiddleware\Dispatcher;
 use Nip\Request;
 use Nip\Router\Router;
+use Psr\Http\Message\ResponseInterface;
+use Symfony\Component\Debug\Exception\FatalThrowableError;
 use Symfony\Component\HttpFoundation\Request as SymfonyRequest;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Throwable;
 use Whoops\Handler\PrettyPageHandler;
 use Whoops\Run as WhoopsRun;
 
@@ -69,13 +74,12 @@ class Kernel implements KernelInterface
      * @param  SymfonyRequest $request
      * @param int $type
      * @param bool $catch
-     * @return Response
+     * @return ResponseInterface
      */
     public function handle(SymfonyRequest $request, $type = self::MASTER_REQUEST, $catch = true)
     {
         try {
-//            $request->enableHttpMethodParameterOverride();
-            $response = $this->sendRequestThroughRouter($request);
+            return $this->handleRaw($request, $type);
         } catch (Exception $e) {
             $this->reportException($e);
             $response = $this->renderException($request, $e);
@@ -83,65 +87,43 @@ class Kernel implements KernelInterface
             $this->reportException($e = new FatalThrowableError($e));
             $response = $this->renderException($request, $e);
         }
+//        event(new Events\RequestHandled($request, $response));
         return $response;
     }
 
     /**
-     * Send the given request through the middleware / router.
+     * Handles a request to convert it to a response.
      *
-     * @param  Request $request
-     * @return Response
+     * @param SymfonyRequest $request A Request instance
+     * @param int $type The type of the request
+     *
+     * @return ResponseInterface A Response instance
+     *
+     * @throws \LogicException       If one of the listener does not behave as expected
+     * @throws NotFoundHttpException When controller cannot be found
      */
-    protected function sendRequestThroughRouter($request)
+    protected function handleRaw(SymfonyRequest $request, $type = self::MASTER_REQUEST)
     {
-        $this->app->share('request', $request);
-
-//        Facade::clearResolvedInstance('request');
-
-        $this->preHandleRequest();
-        $this->preRouting();
-
-        // check is valid request
-        if ($this->isValidRequest($request)) {
-            $this->route($request);
-        } else {
-            die('');
-        }
-
-        $this->postRouting();
-    }
-
-    public function preHandleRequest()
-    {
-    }
-
-    public function preRouting()
-    {
+        return (new Dispatcher($this->middleware))->dispatch($request);
     }
 
     /**
-     * @param Request $request
-     * @return bool
+     * Report the exception to the exception handler.
+     *
+     * @param  Exception $e
+     * @return void
      */
-    protected function isValidRequest($request)
+    protected function reportException(Exception $e)
     {
-        if ($request->isMalicious()) {
-            return false;
-        }
-
-        return true;
-    }
-
-    public function postRouting()
-    {
+        $this->getLogger()->handleException($e);
     }
 
     /**
      * @param Request $request
      * @param Exception $e
-     * @return Response
+     * @return ResponseInterface
      */
-    protected function renderException(Request $request, Exception $e)
+    protected function renderException($request, Exception $e)
     {
         if ($this->getStaging()->getStage()->isPublic()) {
             $this->getDispatcher()->setErrorController();
@@ -170,14 +152,13 @@ class Kernel implements KernelInterface
     /**
      * Call the terminate method on any terminable middleware.
      *
-     * @param  Request  $request
-     * @param  Response  $response
+     * @param  Request $request
+     * @param  Response $response
      * @return void
      */
     protected function terminateMiddleware($request, $response)
     {
     }
-
 
     /**
      * Get the application instance.
@@ -187,5 +168,59 @@ class Kernel implements KernelInterface
     public function getApplication()
     {
         return $this->app;
+    }
+
+    /**
+     * Send the given request through the middleware / router.
+     *
+     * @param  SymfonyRequest $request
+     * @return Response
+     */
+    protected function sendRequestThroughRouter($request)
+    {
+        $this->app->share('request', $request);
+
+//        Facade::clearResolvedInstance('request');
+
+        $this->preHandleRequest();
+        $this->preRouting();
+
+        // check is valid request
+        if ($this->isValidRequest($request)) {
+            $this->route($request);
+        } else {
+            die('');
+        }
+
+        $this->postRouting();
+    }
+
+    /**
+     * @param Request $request
+     * @return bool
+     */
+    protected function isValidRequest($request)
+    {
+        if ($request->isMalicious()) {
+            return false;
+        }
+
+        return true;
+    }
+
+    public function postRouting()
+    {
+    }
+
+    /**
+     * @param Exception $e
+     * @param Request $request
+     * @return Response
+     */
+    protected function handleException($request, Exception $e)
+    {
+        $this->reportException($e);
+
+        return $this->renderException($request, $e);
     }
 }
