@@ -8,7 +8,6 @@ use Nip\Application\Traits\BindPathsTrait;
 use Nip\Application\Traits\EnviromentConfiguration;
 use Nip\AutoLoader\AutoLoaderAwareTrait;
 use Nip\AutoLoader\AutoLoaderServiceProvider;
-use Nip\Container\Container;
 use Nip\Container\ContainerAliasBindingsTrait;
 use Nip\Container\ServiceProviders\ServiceProviderAwareTrait;
 use Nip\Database\DatabaseManager;
@@ -16,6 +15,7 @@ use Nip\Database\DatabaseServiceProvider;
 use Nip\Dispatcher\DispatcherAwareTrait;
 use Nip\Dispatcher\DispatcherServiceProvider;
 use Nip\Http\Response\Response;
+use Nip\I18n\TranslatorServiceProvider;
 use Nip\Logger\LoggerServiceProvider;
 use Nip\Mail\MailServiceProvider;
 use Nip\Mvc\MvcServiceProvider;
@@ -187,6 +187,7 @@ class Application implements ApplicationInterface
             RouterServiceProvider::class,
             RoutesServiceProvider::class,
             DatabaseServiceProvider::class,
+            TranslatorServiceProvider::class,
         ];
     }
 
@@ -217,34 +218,6 @@ class Application implements ApplicationInterface
             throw new NotFoundHttpException($message);
         }
         throw new HttpException($code, $message, null, $headers);
-    }
-
-    /**
-     * @return I18n\Translator
-     */
-    public function getTranslator()
-    {
-        if (!$this->has('translator')) {
-            $this->initTranslator();
-        }
-
-        return $this->get('translator');
-    }
-
-    public function initTranslator()
-    {
-        $translator = $this->newTranslator();
-        $translator->setRequest($this->getRequest());
-
-        Container::getInstance()->set('translator', $translator);
-    }
-
-    /**
-     * @return I18n\Translator
-     */
-    public function newTranslator()
-    {
-        return new I18n\Translator();
     }
 
     /**
