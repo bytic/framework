@@ -21,6 +21,7 @@ use Nip\Mail\MailServiceProvider;
 use Nip\Mvc\MvcServiceProvider;
 use Nip\Router\RouterAwareTrait;
 use Nip\Router\RouterServiceProvider;
+use Nip\Router\RoutesServiceProvider;
 use Nip\Staging\StagingAwareTrait;
 use Nip\Staging\StagingServiceProvider;
 use Symfony\Component\HttpKernel\Exception\HttpException;
@@ -200,6 +201,7 @@ class Application implements ApplicationInterface
             DispatcherServiceProvider::class,
             StagingServiceProvider::class,
             RouterServiceProvider::class,
+            RoutesServiceProvider::class,
         ];
     }
 
