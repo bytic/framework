@@ -22,7 +22,8 @@ class SetupAutoloader extends AbstractBootstraper
         AutoLoader::registerHandler($app->getAutoLoader());
 
         $app->getAutoLoader()->setCachePath(
-            $app->storagePath() . 'cache' . DIRECTORY_SEPARATOR . "autoloader" . DIRECTORY_SEPARATOR
+            $app->storagePath() . DIRECTORY_SEPARATOR
+            . 'cache' . DIRECTORY_SEPARATOR . "autoloader" . DIRECTORY_SEPARATOR
         );
 
         $app->setupAutoLoaderPaths();
