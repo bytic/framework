@@ -32,10 +32,11 @@ interface ContainerInterface extends PsrInterface, ArrayAccess
     /**
      * Convenience method to add an item to the container as a shared item.
      *
+     * @param $abstract
      * @param  string $alias
-     * @param  mixed|null $concrete
+     * @return
      */
-    public function alias($alias, $concrete = null);
+    public function alias($abstract, $alias);
 
 
     /**
