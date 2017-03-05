@@ -9,7 +9,7 @@ use Nip\Container\Bridges\LeagueContainer;
  * Class Container
  * @package Nip\Container
  */
-class Container extends LeagueContainer
+class Container extends LeagueContainer implements ContainerInterface
 {
     use Traits\ContainerPersistenceTrait;
 

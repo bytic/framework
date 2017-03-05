@@ -17,6 +17,7 @@ class TranslatorServiceProvider extends AbstractSignatureServiceProvider
     public function register()
     {
         $this->registerTranslator();
+        $this->registerLoader();
     }
 
     /**
@@ -31,10 +32,31 @@ class TranslatorServiceProvider extends AbstractSignatureServiceProvider
     }
 
     /**
+     * Register the translation line loader.
+     *
+     * @return void
+     */
+    protected function registerLoader()
+    {
+        $this->getContainer()->share('translation.loader', function () {
+            $backend = new File();
+            $languages = config('app.locale.enabled');
+            $languages = is_array($languages) ? $languages : explode(',', $languages);
+
+            foreach ($languages as $lang) {
+                $backend->addLanguage($lang, app('path.lang') . DIRECTORY_SEPARATOR . $lang);
+            }
+            return $backend;
+        });
+
+        $this->getContainer()->alias('translation.loader', File::class);
+    }
+
+    /**
      * @inheritdoc
      */
     public function provides()
     {
-        return ['translator'];
+        return ['translator', 'translation.loader'];
     }
 }
