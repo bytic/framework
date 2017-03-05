@@ -30,6 +30,7 @@ trait CoreBootstrapersTrait
             RegisterCoreContainerAliases::class,
             RegisterPaths::class,
             LoadEnvironmentVariables::class,
+            SetupAutoloader::class,
             LoadConfiguration::class,
             HandleExceptions::class,
             RegisterProviders::class,

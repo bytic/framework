@@ -6,13 +6,12 @@ use Nip\Application\ApplicationInterface;
 use Nip\Application\Bootstrap\CoreBootstrapersTrait;
 use Nip\Application\Traits\BindPathsTrait;
 use Nip\Application\Traits\EnviromentConfiguration;
-use Nip\AutoLoader\AutoLoader;
 use Nip\AutoLoader\AutoLoaderAwareTrait;
 use Nip\AutoLoader\AutoLoaderServiceProvider;
 use Nip\Container\Container;
 use Nip\Container\ContainerAliasBindingsTrait;
 use Nip\Container\ServiceProviders\ServiceProviderAwareTrait;
-use Nip\Database\Manager as DatabaseManager;
+use Nip\Database\DatabaseManager;
 use Nip\Dispatcher\DispatcherAwareTrait;
 use Nip\Dispatcher\DispatcherServiceProvider;
 use Nip\Http\Response\Response;
@@ -79,22 +78,6 @@ class Application implements ApplicationInterface
         if ($basePath) {
             $this->setBasePath($basePath);
         }
-    }
-
-    public function setupAutoLoader()
-    {
-        AutoLoader::registerHandler($this->getAutoLoader());
-
-        $this->setupAutoLoaderCache();
-        $this->setupAutoLoaderPaths();
-
-        if ($this->getStaging()->getStage()->inTesting()) {
-            $this->getAutoLoader()->getClassMapLoader()->setRetry(true);
-        }
-    }
-
-    public function setupAutoLoaderCache()
-    {
     }
 
     public function setupAutoLoaderPaths()
