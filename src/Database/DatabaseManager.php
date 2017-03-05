@@ -152,7 +152,7 @@ class DatabaseManager
         // connection configurations and get the configurations for the given name.
         // If the configuration doesn't exist, we'll throw an exception and bail.
 
-        $connections = $this->application['config']['database.connections'];
+        $connections = config('database.connections');
         if (is_null($config = Nip_Helper_Arrays::get($connections, $name))) {
             throw new InvalidArgumentException("Database [$name] not configured.");
         }

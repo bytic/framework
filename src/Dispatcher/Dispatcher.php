@@ -159,6 +159,44 @@ class Dispatcher
     }
 
     /**
+     * @param $module
+     * @param $controller
+     * @return string
+     */
+    protected function generateFullControllerNameNamespace($module, $controller)
+    {
+        $name = app('app')->getRootNamespace() . 'Modules\\';
+        $module = $module == 'Default' ? 'Frontend' : $module;
+        $name .= $module . '\Controllers\\';
+        $name .= str_replace('_', '\\', $controller) . "Controller";
+
+        return $name;
+    }
+
+    /**
+     * @param $namespaceClass
+     * @return bool
+     */
+    protected function isValidControllerNamespace($namespaceClass)
+    {
+        $loader = $this->getAutoloader()->getPsr4ClassLoader();
+        $loader->load($namespaceClass);
+        if ($loader->isLoaded($namespaceClass)) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * @return AutoLoader
+     */
+    protected function getAutoloader()
+    {
+        return app('autoloader');
+    }
+
+    /**
      * @param $class
      * @return Controller
      */
@@ -169,6 +207,16 @@ class Dispatcher
         $controller->setDispatcher($this);
 
         return $controller;
+    }
+
+    /**
+     * @param $module
+     * @param $controller
+     * @return string
+     */
+    protected function generateFullControllerNameString($module, $controller)
+    {
+        return $module . "_" . $controller . "Controller";
     }
 
     /**
@@ -226,53 +274,5 @@ class Dispatcher
     public function getCurrentController()
     {
         return $this->currentController;
-    }
-
-    /**
-     * @param $module
-     * @param $controller
-     * @return string
-     */
-    protected function generateFullControllerNameNamespace($module, $controller)
-    {
-        $name = app()->get('kernel')->getRootNamespace().'Modules\\';
-        $module = $module == 'Default' ? 'Frontend' : $module;
-        $name .= $module.'\Controllers\\';
-        $name .= str_replace('_', '\\', $controller)."Controller";
-
-        return $name;
-    }
-
-    /**
-     * @param $namespaceClass
-     * @return bool
-     */
-    protected function isValidControllerNamespace($namespaceClass)
-    {
-        $loader = $this->getAutoloader()->getPsr4ClassLoader();
-        $loader->load($namespaceClass);
-        if ($loader->isLoaded($namespaceClass)) {
-            return true;
-        }
-
-        return false;
-    }
-
-    /**
-     * @return AutoLoader
-     */
-    protected function getAutoloader()
-    {
-        return app('autoloader');
-    }
-
-    /**
-     * @param $module
-     * @param $controller
-     * @return string
-     */
-    protected function generateFullControllerNameString($module, $controller)
-    {
-        return $module."_".$controller."Controller";
     }
 }

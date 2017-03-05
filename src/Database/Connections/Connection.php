@@ -4,8 +4,10 @@ namespace Nip\Database\Connections;
 
 use Exception;
 use Nip\Database\Adapters\AbstractAdapter;
+use Nip\Database\Metadata\Manager as MetadataManager;
 use Nip\Database\Query\AbstractQuery as AbstractQuery;
 use Nip\Database\Query\Select as SelectQuery;
+use Nip\Database\Result;
 
 /**
  * Class Connection
@@ -43,9 +45,10 @@ class Connection
 
     protected $_adapter = null;
 
-    protected $_connection;
     protected $metadata;
+
     protected $_query;
+
     protected $_queries = [];
 
     /**
@@ -87,9 +90,9 @@ class Connection
      */
     public function connect($host, $user, $password, $database, $newLink = false)
     {
-        if (!$this->_connection) {
+        if (!$this->pdo) {
             try {
-                $this->_connection = $this->getAdapter()->connect($host, $user, $password, $database, $newLink);
+                $this->pdo = $this->getAdapter()->connect($host, $user, $password, $database, $newLink);
                 $this->setDatabase($database);
             } catch (Exception $e) {
                 $e->log();
@@ -169,12 +172,12 @@ class Connection
     }
 
     /**
-     * @return Metadata\Manager
+     * @return MetadataManager
      */
     public function getMetadata()
     {
         if (!$this->metadata) {
-            $this->metadata = new Metadata\Manager();
+            $this->metadata = new MetadataManager();
             $this->metadata->setConnection($this);
         }
 
@@ -203,7 +206,7 @@ class Connection
 
     /**
      * @param string $type optional
-     * @return AbstractQuery
+     * @return AbstractQuery|SelectQuery
      */
     public function newQuery($type = "select")
     {
@@ -257,7 +260,7 @@ class Connection
      */
     public function disconnect()
     {
-        if ($this->_connection) {
+        if ($this->pdo) {
             try {
                 $this->getAdapter()->disconnect();
             } catch (Exception $e) {
@@ -266,6 +269,10 @@ class Connection
         }
     }
 
+    /**
+     * @param $table
+     * @return mixed
+     */
     public function describeTable($table)
     {
         return $this->getAdapter()->describeTable($this->protect($table));
@@ -282,6 +289,9 @@ class Connection
         return str_replace("`*`", "*", '`' . str_replace('.', '`.`', $input) . '`');
     }
 
+    /**
+     * @return array
+     */
     public function getQueries()
     {
         return $this->_queries;
