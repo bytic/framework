@@ -22,13 +22,13 @@ class SetupAutoloader extends AbstractBootstraper
         AutoLoader::registerHandler($app->getAutoLoader());
 
         $app->getAutoLoader()->setCachePath(
-            $app->storagePath() . "autoloader" . DS
+            $app->storagePath() . 'cache' . DIRECTORY_SEPARATOR . "autoloader" . DIRECTORY_SEPARATOR
         );
 
         $app->setupAutoLoaderPaths();
 
 //        if ($this->getStaging()->getStage()->inTesting()) {
-//            $this->getAutoLoader()->getClassMapLoader()->setRetry(true);
+        $app->getAutoLoader()->getClassMapLoader()->setRetry(true);
 //        }
     }
 }
