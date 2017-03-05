@@ -3,6 +3,7 @@
 namespace Nip\I18n;
 
 use Nip\Container\ServiceProviders\Providers\AbstractSignatureServiceProvider;
+use Nip\I18n\Translator\Backend\File;
 
 /**
  * Class MailServiceProvider
@@ -25,7 +26,8 @@ class TranslatorServiceProvider extends AbstractSignatureServiceProvider
      */
     protected function registerTranslator()
     {
-        $this->getContainer()->share('translator', Translator::class);
+        $this->getContainer()->share('translator', Translator::class)
+            ->withArgument(File::class);
     }
 
     /**

@@ -26,18 +26,12 @@ class Translator
     protected $request;
 
     /**
-     * Singleton pattern
-     *
-     * @return self
+     * Translator constructor.
+     * @param AbstractBackend $backend
      */
-    public static function instance()
+    public function __construct(AbstractBackend $backend)
     {
-        static $instance;
-        if (!($instance instanceof self)) {
-            $instance = new self();
-        }
-
-        return $instance;
+        $this->setBackend($backend);
     }
 
     /**
