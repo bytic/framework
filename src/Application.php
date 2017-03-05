@@ -80,31 +80,6 @@ class Application implements ApplicationInterface
         }
     }
 
-    public function run()
-    {
-        $this->bootstrap();
-        $this->prepare();
-        $this->setup();
-
-        $request = $this->getRequest();
-        $response = $this->handleRequest($request);
-
-        $response = $this->filterResponse($response, $request);
-        $response->send();
-        $this->terminate($request, $response);
-    }
-
-    public function prepare()
-    {
-        $this->setupRequest();
-        $this->setupAutoLoader();
-        $this->setupURLConstants();
-    }
-
-    public function setupRequest()
-    {
-    }
-
     public function setupAutoLoader()
     {
         AutoLoader::registerHandler($this->getAutoLoader());
@@ -146,7 +121,6 @@ class Application implements ApplicationInterface
         $this->setupSession();
         $this->setupTranslation();
         $this->setupLocale();
-        $this->setupRouting();
         $this->boot();
     }
 
@@ -176,17 +150,6 @@ class Application implements ApplicationInterface
 
     public function setupLocale()
     {
-    }
-
-    public function setupRouting()
-    {
-        $router = $this->getRouter();
-        $router->setRequest($this->getRequest());
-//        if ($this->getDebugBar()->isEnabled()) {
-//            /** @var RouteCollector $routeCollector */
-//            $routeCollector = $this->getDebugBar()->getCollector('route');
-//            $routeCollector->setRouter($router);
-//        }
     }
 
     public function boot()

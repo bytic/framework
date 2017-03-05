@@ -5,13 +5,16 @@ namespace Nip\Http\Kernel;
 use Exception;
 use Nip\Application;
 use Nip\Application\ApplicationInterface;
+use Nip\Dispatcher\ActionDispatcherMiddleware;
 use Nip\Http\Response\Response;
 use Nip\Http\Response\ResponseFactory;
 use Nip\Http\ServerMiddleware\Dispatcher;
 use Nip\Request;
+use Nip\Router\Middleware\RouteResolverMiddleware;
 use Nip\Router\Router;
 use Nip\Session\Middleware\StartSession;
 use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
 use Symfony\Component\Debug\Exception\FatalThrowableError;
 use Symfony\Component\HttpFoundation\Request as SymfonyRequest;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -45,7 +48,9 @@ class Kernel implements KernelInterface
      * @var array
      */
     protected $middleware = [
-        StartSession::class
+        StartSession::class,
+        RouteResolverMiddleware::class,
+        ActionDispatcherMiddleware::class,
     ];
 
     /**
@@ -77,7 +82,7 @@ class Kernel implements KernelInterface
     /**
      * Handle an incoming HTTP request.
      *
-     * @param  SymfonyRequest $request
+     * @param SymfonyRequest|ServerRequestInterface $request
      * @param int $type
      * @param bool $catch
      * @return ResponseInterface
@@ -100,7 +105,7 @@ class Kernel implements KernelInterface
     /**
      * Handles a request to convert it to a response.
      *
-     * @param SymfonyRequest $request A Request instance
+     * @param SymfonyRequest|ServerRequestInterface $request A Request instance
      * @param int $type The type of the request
      *
      * @return ResponseInterface A Response instance
@@ -108,9 +113,11 @@ class Kernel implements KernelInterface
      * @throws \LogicException       If one of the listener does not behave as expected
      * @throws NotFoundHttpException When controller cannot be found
      */
-    protected function handleRaw(SymfonyRequest $request, $type = self::MASTER_REQUEST)
+    protected function handleRaw(ServerRequestInterface $request, $type = self::MASTER_REQUEST)
     {
-        return (new Dispatcher($this->middleware, $this->getApplication()->getContainer()))->dispatch($request);
+        return (
+        new Dispatcher($this->middleware, $this->getApplication()->getContainer())
+        )->dispatch($request);
     }
 
     /**
@@ -135,9 +142,9 @@ class Kernel implements KernelInterface
     }
 
     /**
-     * @param Request $request
+     * @param Request|ServerRequestInterface $request
      * @param Exception $e
-     * @return ResponseInterface
+     * @return Response|ResponseInterface
      */
     protected function renderException($request, Exception $e)
     {
@@ -146,12 +153,12 @@ class Kernel implements KernelInterface
 //
 //            return $this->getResponseFromRequest($request);
 //        } else {
-            $whoops = new WhoopsRun;
-            $whoops->allowQuit(false);
-            $whoops->writeToOutput(false);
-            $whoops->pushHandler(new PrettyPageHandler());
+        $whoops = new WhoopsRun;
+        $whoops->allowQuit(false);
+        $whoops->writeToOutput(false);
+        $whoops->pushHandler(new PrettyPageHandler());
 
-            return ResponseFactory::make($whoops->handleException($e));
+        return ResponseFactory::make($whoops->handleException($e));
 //        }
     }
 
@@ -176,43 +183,18 @@ class Kernel implements KernelInterface
     {
     }
 
-    /**
-     * Send the given request through the middleware / router.
-     *
-     * @param  SymfonyRequest $request
-     * @return Response
-     */
-    protected function sendRequestThroughRouter($request)
-    {
-        $this->app->share('request', $request);
-
-//        Facade::clearResolvedInstance('request');
-
-        $this->preHandleRequest();
-        $this->preRouting();
-
-        // check is valid request
-        if ($this->isValidRequest($request)) {
-            $this->route($request);
-        } else {
-            die('');
-        }
-
-        $this->postRouting();
-    }
-
-    /**
-     * @param Request $request
-     * @return bool
-     */
-    protected function isValidRequest($request)
-    {
-        if ($request->isMalicious()) {
-            return false;
-        }
-
-        return true;
-    }
+//    /**
+//     * @param Request $request
+//     * @return bool
+//     */
+//    protected function isValidRequest($request)
+//    {
+//        if ($request->isMalicious()) {
+//            return false;
+//        }
+//
+//        return true;
+//    }
 
     public function postRouting()
     {
@@ -220,7 +202,7 @@ class Kernel implements KernelInterface
 
     /**
      * @param Exception $e
-     * @param Request $request
+     * @param Request|ServerRequestInterface $request
      * @return Response
      */
     protected function handleException($request, Exception $e)

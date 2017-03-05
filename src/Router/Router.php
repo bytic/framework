@@ -4,6 +4,7 @@ namespace Nip\Router;
 
 use Nip\Request;
 use Nip\Router\Route\AbstractRoute as Route;
+use Psr\Http\Message\ServerRequestInterface;
 
 /**
  * Class Router
@@ -58,8 +59,21 @@ class Router
         return $this->routes;
     }
 
+    protected function initRoutes()
+    {
+        $this->routes = $this->newRoutesCollection();
+    }
+
     /**
-     * @param Request $request
+     * @return RouteCollection
+     */
+    protected function newRoutesCollection()
+    {
+        return new RouteCollection();
+    }
+
+    /**
+     * @param Request|ServerRequestInterface $request
      * @return array
      */
     public function route($request)
@@ -186,18 +200,5 @@ class Router
     public function hasRoute($name)
     {
         return $this->getRoutes()->has($name);
-    }
-
-    protected function initRoutes()
-    {
-        $this->routes = $this->newRoutesCollection();
-    }
-
-    /**
-     * @return RouteCollection
-     */
-    protected function newRoutesCollection()
-    {
-        return new RouteCollection();
     }
 }

@@ -5,6 +5,7 @@ namespace Nip\Application\Bootstrap\Bootstrapers;
 use Nip\Application;
 use Nip\Application\ApplicationInterface;
 use Nip\Container\Container;
+use Nip\Dispatcher\Dispatcher;
 use Nip\Http\Kernel\Kernel;
 use Nip\Http\Kernel\KernelInterface;
 use Nip\Router\Router;
@@ -38,5 +39,6 @@ class RegisterCoreContainerAliases extends AbstractBootstraper
         $container->alias('kernel.http', KernelInterface::class);
 
         $container->alias('router', Router::class);
+        $container->alias('dispatcher', Dispatcher::class);
     }
 }

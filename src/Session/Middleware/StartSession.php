@@ -34,7 +34,6 @@ class StartSession implements ServerMiddlewareInterface
      * Create a new session middleware.
      *
      * @param  SessionManager $manager
-     * @return void
      */
     public function __construct(SessionManager $manager)
     {
@@ -49,6 +48,8 @@ class StartSession implements ServerMiddlewareInterface
     {
         $this->sessionHandled = true;
         $this->startSession($request);
+
+        return $delegate->process($request);
     }
 
     /**

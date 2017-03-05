@@ -2,6 +2,8 @@
 
 namespace Nip\Http\Response;
 
+use Psr\Http\Message\ResponseInterface;
+
 /**
  * Class ResponseFactory
  * @package Nip\Http\Response
