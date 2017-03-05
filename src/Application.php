@@ -12,6 +12,7 @@ use Nip\Container\Container;
 use Nip\Container\ContainerAliasBindingsTrait;
 use Nip\Container\ServiceProviders\ServiceProviderAwareTrait;
 use Nip\Database\DatabaseManager;
+use Nip\Database\DatabaseServiceProvider;
 use Nip\Dispatcher\DispatcherAwareTrait;
 use Nip\Dispatcher\DispatcherServiceProvider;
 use Nip\Http\Response\Response;
@@ -185,6 +186,7 @@ class Application implements ApplicationInterface
             StagingServiceProvider::class,
             RouterServiceProvider::class,
             RoutesServiceProvider::class,
+            DatabaseServiceProvider::class,
         ];
     }
 

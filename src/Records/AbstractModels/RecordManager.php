@@ -3,7 +3,7 @@
 namespace Nip\Records\AbstractModels;
 
 use Nip\AutoLoader\Loaders\Psr4Class;
-use Nip\Database\Connection;
+use Nip\Database\Connections\Connection;
 use Nip\Database\Query\AbstractQuery as Query;
 use Nip\Database\Query\Delete as DeleteQuery;
 use Nip\Database\Query\Insert as InsertQuery;
@@ -327,7 +327,7 @@ abstract class RecordManager
      */
     protected function newDbConnection()
     {
-        return db();
+        return app('db.connection');
     }
 
     public function checkDB()

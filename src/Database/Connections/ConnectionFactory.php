@@ -5,8 +5,6 @@ namespace Nip\Database\Connections;
 use InvalidArgumentException;
 use Nip\Container\Container;
 
-use Nip_Helper_Arrays as Arr;
-
 /**
  * Class ConnectionFactory
  * @package Nip\Database\Connectors
@@ -37,7 +35,7 @@ class ConnectionFactory
      * @param  string $name
      * @return Connection
      */
-    public function make(array $config, $name = null)
+    public function make($config, $name = null)
     {
         $config = $this->parseConfig($config, $name);
 
@@ -54,7 +52,7 @@ class ConnectionFactory
      * @param  string $name
      * @return array
      */
-    protected function parseConfig(array $config, $name)
+    protected function parseConfig($config, $name)
     {
         return $config;
 //        return Arr::add(Arr::add($config, 'prefix', ''), 'name', $name);
@@ -66,7 +64,7 @@ class ConnectionFactory
      * @param  array $config
      * @return Connection
      */
-    protected function createSingleConnection(array $config)
+    protected function createSingleConnection($config)
     {
         $pdo = false;
         $connection = $this->createConnection($config['driver'], $pdo, $config['database'], $config['prefix'], $config);
@@ -86,7 +84,7 @@ class ConnectionFactory
      *
      * @throws \InvalidArgumentException
      */
-    protected function createConnection($driver, $connection, $database, $prefix = '', array $config = [])
+    protected function createConnection($driver, $connection, $database, $prefix = '', $config = [])
     {
 //        if ($resolver = Connection::getResolver($driver)) {
 //            return $resolver($connection, $database, $prefix, $config);

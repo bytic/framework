@@ -33,6 +33,7 @@ class Connection
      * @var string
      */
     protected $tablePrefix = '';
+
     /**
      * The database connection configuration options.
      *
@@ -55,7 +56,7 @@ class Connection
      * @param  string $tablePrefix
      * @param  array $config
      */
-    public function __construct($pdo, $database = '', $tablePrefix = '', array $config = [])
+    public function __construct($pdo, $database = '', $tablePrefix = '', $config = [])
     {
         $this->pdo = $pdo;
 

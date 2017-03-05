@@ -75,6 +75,40 @@ class DatabaseManager
         return $name;
     }
 
+    /**
+     * Get the default connection name.
+     *
+     * @return string
+     */
+    public function getDefaultConnection()
+    {
+        return $this->application->get('config')->get('database.default');
+    }
+
+    /**
+     * Prepare the database connection instance.
+     *
+     * @param  Connection $connection
+     * @param  string $type
+     * @return Connection
+     */
+    protected function configure(Connection $connection, $type)
+    {
+//        $connection = $this->setPdoForType($connection, $type);
+        // First we'll set the fetch mode and a few other dependencies of the database
+        // connection. This method basically just configures and prepares it to get
+        // used by the application. Once we're finished we'll return it back out.
+//        if ($this->app->bound('events')) {
+//            $connection->setEventDispatcher($this->app['events']);
+//        }
+        // Here we'll set a reconnector callback. This reconnector can be any callable
+        // so we will set a Closure to reconnect from this manager with the name of
+        // the connection, which will allow us to reconnect from the connections.
+//        $connection->setReconnector(function ($connection) {
+//            $this->reconnect($connection->getName());
+//        });
+        return $connection;
+    }
 
     /**
      * Make the database connection instance.
@@ -103,16 +137,6 @@ class DatabaseManager
     }
 
     /**
-     * Get the default connection name.
-     *
-     * @return string
-     */
-    public function getDefaultConnection()
-    {
-        return $this->application->get('config')->get('database.default');
-    }
-
-    /**
      * Get the configuration for a connection.
      *
      * @param  string $name
@@ -133,31 +157,6 @@ class DatabaseManager
             throw new InvalidArgumentException("Database [$name] not configured.");
         }
         return $config;
-    }
-
-    /**
-     * Prepare the database connection instance.
-     *
-     * @param  Connection $connection
-     * @param  string $type
-     * @return Connection
-     */
-    protected function configure(Connection $connection, $type)
-    {
-        $connection = $this->setPdoForType($connection, $type);
-        // First we'll set the fetch mode and a few other dependencies of the database
-        // connection. This method basically just configures and prepares it to get
-        // used by the application. Once we're finished we'll return it back out.
-//        if ($this->app->bound('events')) {
-//            $connection->setEventDispatcher($this->app['events']);
-//        }
-        // Here we'll set a reconnector callback. This reconnector can be any callable
-        // so we will set a Closure to reconnect from this manager with the name of
-        // the connection, which will allow us to reconnect from the connections.
-//        $connection->setReconnector(function ($connection) {
-//            $this->reconnect($connection->getName());
-//        });
-        return $connection;
     }
 
     /**
