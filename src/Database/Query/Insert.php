@@ -3,10 +3,15 @@
 
 namespace Nip\Database\Query;
 
+/**
+ * Class Insert
+ * @package Nip\Database\Query
+ */
 class Insert extends AbstractQuery
 {
 
     protected $_cols;
+
     protected $_values;
 
     public function assemble()
@@ -32,23 +37,17 @@ class Insert extends AbstractQuery
         return $return;
     }
 
-    public function setCols($cols = array())
-    {
-        $this->_cols = $cols;
-        return $this;
-    }
-
     public function parseCols()
     {
-        if (is_array($this->_parts['data'][0])) {
-            $this->setCols(array_keys($this->_parts['data'][0]));
+        if (is_array($this->parts['data'][0])) {
+            $this->setCols(array_keys($this->parts['data'][0]));
         }
         return $this->_cols ? ' (' . implode(',', array_map(array($this, 'protect'), $this->_cols)) . ')' : '';
     }
 
-    public function setValues($values)
+    public function setCols($cols = array())
     {
-        $this->_values = $values;
+        $this->_cols = $cols;
         return $this;
     }
 
@@ -56,7 +55,7 @@ class Insert extends AbstractQuery
     {
         if ($this->_values instanceof AbstractQuery) {
             return ' ' . (string) $this->_values;
-        } elseif (is_array($this->_parts['data'])) {
+        } elseif (is_array($this->parts['data'])) {
             return $this->parseData();
         }
         return false;
@@ -69,8 +68,8 @@ class Insert extends AbstractQuery
      */
     protected function parseData()
     {
-        $values = array();
-        foreach ($this->_parts['data'] as $key => $data) {
+        $values = [];
+        foreach ($this->parts['data'] as $key => $data) {
             foreach ($data as $value) {
                 if (!is_array($value)) {
                     $value = array($value);
@@ -86,6 +85,13 @@ class Insert extends AbstractQuery
         }
 
         return ' VALUES ' . implode(', ', $values);
+    }
+
+    public function setValues($values)
+    {
+        $this->_values = $values;
+
+        return $this;
     }
     
     public function onDuplicate($value)

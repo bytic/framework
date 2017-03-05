@@ -1,6 +1,6 @@
 <?php
 
-namespace Nip\Tests\Router\Parsers;
+namespace Nip\Tests\Unit\Router\Parsers;
 
 use Nip\Router\Parser\Literal;
 
@@ -41,18 +41,18 @@ class LiteralTest extends  \Codeception\TestCase\Test
 //            'name' => 'ipsum',
 //            'company' => 'dolo&rem',
 //        );
-//		$this->assertEquals('?url=lorem&name=ipsum&company=dolo%26rem', $this->object->assemble($params));
+//		static::assertEquals('?url=lorem&name=ipsum&company=dolo%26rem', $this->object->assemble($params));
 //
 //        $this->object->setMap('shop/cart');
-//		$this->assertEquals('shop/cart?url=lorem&name=ipsum&company=dolo%26rem', $this->object->assemble($params));
+//		static::assertEquals('shop/cart?url=lorem&name=ipsum&company=dolo%26rem', $this->object->assemble($params));
 //    }
 //
 //    public function testMatch()
 //    {
 //        $map = 'shop/cart';
 //		$this->object->setMap($map);
-//		$this->assertFalse($this->object->match('shop/category_cast/'));
-//		$this->assertTrue($this->object->match('shop/cart'));
+//		static::assertFalse($this->object->match('shop/category_cast/'));
+//		static::assertTrue($this->object->match('shop/cart'));
 //    }
 
 }

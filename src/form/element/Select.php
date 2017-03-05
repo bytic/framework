@@ -4,8 +4,8 @@ class Nip_Form_Element_Select extends Nip_Form_Element_Abstract
 {
 
     protected $_type = 'select';
-    protected $_optionsElements = array();
-    protected $_values = array();
+    protected $_optionsElements = [];
+    protected $_values = [];
 
     /**
      * @return Nip_Form_Element_Select
@@ -35,18 +35,6 @@ class Nip_Form_Element_Select extends Nip_Form_Element_Abstract
     /**
      * @return Nip_Form_Element_Select
      */
-    public function addOptions(array $array)
-    {
-        foreach ($array as $value => $label) {
-            $this->addOption($value, $label);
-        }
-
-        return $this;
-    }
-
-    /**
-     * @return Nip_Form_Element_Select
-     */
     public function addOption($value, $label)
     {
         if (is_array($label)) {
@@ -57,6 +45,18 @@ class Nip_Form_Element_Select extends Nip_Form_Element_Abstract
 
         $this->_optionsElements[$value] = $option;
         $this->_values[] = $value;
+
+        return $this;
+    }
+
+    /**
+     * @return Nip_Form_Element_Select
+     */
+    public function addOptions(array $array)
+    {
+        foreach ($array as $value => $label) {
+            $this->addOption($value, $label);
+        }
 
         return $this;
     }

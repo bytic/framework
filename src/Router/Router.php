@@ -5,41 +5,57 @@ namespace Nip\Router;
 use Nip\Request;
 use Nip\Router\Route\AbstractRoute as Route;
 
-use Nip_Profiler as Profiler;
-
+/**
+ * Class Router
+ * @package Nip\Router
+ */
 class Router
 {
 
     /**
      * @var \Nip\Request
      */
-    protected $_request;
+    protected $request;
 
 
     /**
      * @var Route
      */
-    protected $_route;
+    protected $route;
 
     /**
-     * @var Route[]
+     * @var RouteCollection|Route[]
      */
-    protected $_routes = [];
+    protected $routes = null;
 
     /**
-     * @param Route $route
      * @param $name
+     * @return bool
      */
-    public function connect($route, $name)
-    {
-        $route->setRequest($this->getRequest());
-        $route->setName($name);
-        $this->_routes[$name] = $route;
-    }
-
     public function connected($name)
     {
         return ($this->getRoute($name) instanceof Route);
+    }
+
+    /**
+     * @param $name
+     * @return Route
+     */
+    public function getRoute($name)
+    {
+        return $this->getRoutes()->get($name);
+    }
+
+    /**
+     * @return RouteCollection
+     */
+    public function getRoutes()
+    {
+        if ($this->routes === null) {
+            $this->initRoutes();
+        }
+
+        return $this->routes;
     }
 
     /**
@@ -48,65 +64,77 @@ class Router
      */
     public function route($request)
     {
-        $this->_route = false;
-        $uri = $request->getHttp()->getPathInfo();
+        $current = false;
+        $uri = $request->path();
 
-        foreach ($this->_routes as $name => $route) {
+        foreach ($this->routes as $name => $route) {
             $route->setRequest($request);
-            Profiler::instance()->start('route [' . $name . '] [' . $uri . ']');
             if ($route->match($uri)) {
-                $this->_route = $route;
-                Profiler::instance()->end('route [' . $name . '] [' . $uri . ']');
+                $current = $route;
                 break;
             }
-
-            Profiler::instance()->end('route [' . $name . '] [' . $uri . ']');
         }
 
-        if ($this->_route) {
-            $this->_route->populateRequest();
-            return $this->_route->getParams() + $this->_route->getMatches();
+        if ($current instanceof Route) {
+            $this->setCurrent($current);
+            $current->populateRequest();
+
+            return $current->getParams() + $current->getMatches();
         } else {
-            return array();
+            return [];
         }
     }
 
-    public function assemble($name, $params = array())
+    /**
+     * @param Route $route
+     * @return $this
+     */
+    public function setCurrent($route)
+    {
+        $this->route = $route;
+
+        return $this;
+    }
+
+    /**
+     * @param $name
+     * @param array $params
+     * @return string
+     */
+    public function assembleFull($name, $params = [])
+    {
+        $route = $this->getDefaultRoute($name, $params);
+        if ($route) {
+            $route->setRequest($this->getRequest());
+            return $route->assembleFull($params);
+        }
+
+        trigger_error("Route \"$name\" not connected", E_USER_ERROR);
+
+        return null;
+    }
+
+    /**
+     * @param $name
+     * @param array $params
+     * @return Route
+     */
+    public function getDefaultRoute($name, &$params = [])
     {
         $route = $this->getRoute($name);
         if (!$route) {
             $parts = explode(".", $name);
-            if (count($parts) <= 2) {
-                list($params['controller'], $params['action']) = $parts;
-                $route = $this->getRoute('default');
+            $count = count($parts);
+            if ($count <= 3) {
+                if (in_array(reset($parts), app('mvc.modules')->getNames())) {
+                    $module = array_shift($parts);
+                    list($params['controller'], $params['action']) = $parts;
+                    $route = $this->getRoute($module.'.default');
+                }
             }
         }
 
-        if ($route) {
-            return $route->assemble($params);
-        }
-
-        trigger_error("Route \"$name\" not connected", E_USER_ERROR);
-    }
-
-    public function getCurrent()
-    {
-        return $this->_route;
-    }
-
-    public function getRoute($name)
-    {
-        return $this->_routes[$name];
-    }
-
-    public function hasRoute($name)
-    {
-        return array_key_exists($name, $this->_routes);
-    }
-
-    public function getAll()
-    {
-        return $this->_routes;
+        return $route;
     }
 
     /**
@@ -114,7 +142,7 @@ class Router
      */
     public function getRequest()
     {
-        return $this->_request;
+        return $this->request;
     }
 
     /**
@@ -122,6 +150,54 @@ class Router
      */
     public function setRequest($request)
     {
-        $this->_request = $request;
+        $this->request = $request;
+    }
+
+    /**
+     * @param $name
+     * @param array $params
+     * @return mixed|string
+     */
+    public function assemble($name, $params = [])
+    {
+        $route = $this->getDefaultRoute($name, $params);
+
+        if ($route) {
+            $route->setRequest($this->getRequest());
+            return $route->assemble($params);
+        }
+
+        trigger_error("Route \"$name\" not connected", E_USER_ERROR);
+        return null;
+    }
+
+    /**
+     * @return Route
+     */
+    public function getCurrent()
+    {
+        return $this->route;
+    }
+
+    /**
+     * @param $name
+     * @return bool
+     */
+    public function hasRoute($name)
+    {
+        return $this->getRoutes()->has($name);
+    }
+
+    protected function initRoutes()
+    {
+        $this->routes = $this->newRoutesCollection();
+    }
+
+    /**
+     * @return RouteCollection
+     */
+    protected function newRoutesCollection()
+    {
+        return new RouteCollection();
     }
 }

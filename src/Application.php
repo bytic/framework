@@ -2,49 +2,81 @@
 
 namespace Nip;
 
+use Exception;
+use Nip\AutoLoader\AutoLoader;
+use Nip\AutoLoader\AutoLoaderAwareTrait;
+use Nip\AutoLoader\AutoLoaderServiceProvider;
+use Nip\Config\ConfigAwareTrait;
 use Nip\Container\Container;
+use Nip\Container\ContainerAwareTrait;
+use Nip\Database\Manager as DatabaseManager;
+use Nip\DebugBar\DataCollector\RouteCollector;
 use Nip\DebugBar\StandardDebugBar;
+use Nip\Dispatcher\DispatcherAwareTrait;
+use Nip\Dispatcher\DispatcherServiceProvider;
+use Nip\Http\Response\Response;
+use Nip\Http\Response\ResponseFactory;
 use Nip\Logger\Manager as LoggerManager;
-use Nip\Profiler\Adapters\DebugBar as ProfilerDebugBar;
-use Nip\Staging\Stage;
+use Nip\Mail\MailServiceProvider;
+use Nip\Mvc\MvcServiceProvider;
+use Nip\Router\RouterAwareTrait;
+use Nip\Router\RouterServiceProvider;
+use Nip\Staging\StagingAwareTrait;
+use Nip\Staging\StagingServiceProvider;
+use Symfony\Component\HttpKernel\Exception\HttpException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Whoops\Handler\PrettyPageHandler;
+use Whoops\Run as WhoopsRun;
 
+/**
+ * Class Application
+ * @package Nip
+ */
 class Application
 {
+    use ContainerAwareTrait;
+    use ConfigAwareTrait;
+    use AutoLoaderAwareTrait;
+    use RouterAwareTrait;
+    use DispatcherAwareTrait;
+    use StagingAwareTrait;
+
     /**
-     * @var AutoLoader
+     * Indicates if the application has "booted".
+     *
+     * @var bool
      */
-    protected $_autoloader = null;
+    protected $booted = false;
 
-    protected $_frontController = null;
+    /**
+     * @var null|Request
+     */
+    protected $request = null;
 
-    protected $_container = null;
-
-    protected $_request = null;
     /**
      * @var null|LoggerManager
      */
-    protected $_logger = null;
-
-    protected $_sessionManager = null;
-
-    protected $_debugBar = null;
+    protected $logger = null;
 
     /**
-     * @var Staging
+     * @var null|Session
      */
-    protected $_staging;
+    protected $sessionManager = null;
 
-    /**
-     * @var Stage
-     */
-    protected $_stage;
+    protected $debugBar = null;
 
     public function run()
     {
         $this->loadFiles();
         $this->prepare();
         $this->setup();
-        $this->dispatch();
+
+        $request = $this->getRequest();
+        $response = $this->handleRequest($request);
+
+        $response = $this->filterResponse($response, $request);
+        $response->send();
+        $this->terminate($request, $response);
     }
 
     public function loadFiles()
@@ -54,136 +86,56 @@ class Application
     public function prepare()
     {
         $this->includeVendorAutoload();
-        $this->setupContainer();
+        $this->registerContainer();
+        $this->registerServices();
         $this->setupRequest();
-        $this->setupStaging();
-        $this->setupAutoloader();
+        $this->setupAutoLoader();
         $this->setupErrorHandling();
         $this->setupURLConstants();
-    }
-
-    public function setup()
-    {
-        $this->setupConfig();
-        $this->setupDatabase();
-        $this->setupSession();
-        $this->setupTranslation();
-        $this->setupLocale();
-        $this->setupRouting();
-    }
-
-    public function setupConfig()
-    {
-
-    }
-
-    public function setupStaging()
-    {
-        $this->getFrontController()->setStaging($this->getStaging());
-        $this->getFrontController()->setStage($this->getStage());
-    }
-
-    /**
-     * @return Staging
-     */
-    public function getStaging()
-    {
-        if ($this->_staging == null) {
-            $this->initStaging();
-        }
-        return $this->_staging;
-    }
-
-    public function initStaging()
-    {
-        $this->_staging = $this->newStaging();
-    }
-
-    public function newStaging()
-    {
-        return Staging::instance();
-    }
-
-    public function getStage()
-    {
-        if ($this->_staging == null) {
-            $this->initStage();
-        }
-        return $this->_stage;
-    }
-
-    public function initStage()
-    {
-        $this->_stage = $this->getStaging()->getStage();
-    }
-
-    public function getAutoloader()
-    {
-        if ($this->_autoloader == null) {
-            $this->initAutoloader();
-        }
-        return $this->_autoloader;
-    }
-
-    public function initAutoloader()
-    {
-        $this->_autoloader = AutoLoader::instance();
-    }
-
-    public function setupAutoloader()
-    {
-        $this->setupAutoloaderCache();
-        $this->setupAutoloaderPaths();
-
-        if ($this->getStage()->inTesting()) {
-            $this->getAutoloader()->setRetry(true);
-        }
-    }
-
-    public function setupContainer()
-    {
-        $this->getContainer()->add('mvc.modules','Nip\Mvc\Modules',true);
-    }
-
-    /**
-     * @return Container
-     */
-    public function getContainer()
-    {
-        if ($this->_container == null) {
-            $this->initContainer();
-        }
-        return $this->_container;
-    }
-
-    public function initContainer()
-    {
-        $this->_container = $this->newContainer();
-        Container::setInstance($this->_container);
-    }
-
-    public function newContainer()
-    {
-        return new Container();
-    }
-
-    public function setContainer($container)
-    {
-        $this->_container = $container;
-    }
-
-    public function setupAutoloaderCache()
-    {
-    }
-
-    public function setupAutoloaderPaths()
-    {
     }
 
     public function includeVendorAutoload()
     {
     }
 
+    public function registerContainer()
+    {
+        $this->getContainer()->singleton('kernel', $this);
+    }
+
+    public function registerServices()
+    {
+        $this->getContainer()->addServiceProvider(AutoLoaderServiceProvider::class);
+        $this->getContainer()->addServiceProvider(MailServiceProvider::class);
+        $this->getContainer()->addServiceProvider(MvcServiceProvider::class);
+        $this->getContainer()->addServiceProvider(DispatcherServiceProvider::class);
+        $this->getContainer()->addServiceProvider(StagingServiceProvider::class);
+        $this->getContainer()->addServiceProvider(RouterServiceProvider::class);
+    }
+
+    public function setupRequest()
+    {
+    }
+
+    public function setupAutoLoader()
+    {
+        AutoLoader::registerHandler($this->getAutoLoader());
+
+        $this->setupAutoLoaderCache();
+        $this->setupAutoLoaderPaths();
+
+        if ($this->getStaging()->getStage()->inTesting()) {
+            $this->getAutoLoader()->getClassMapLoader()->setRetry(true);
+        }
+    }
+
+    public function setupAutoLoaderCache()
+    {
+    }
+
+    public function setupAutoLoaderPaths()
+    {
+    }
 
     public function setupErrorHandling()
     {
@@ -191,192 +143,10 @@ class Application
 
         $this->getLogger()->init();
 
-        if ($this->getStage()->inTesting()) {
+        if ($this->getStaging()->getStage()->inTesting()) {
             $this->getDebugBar()->enable();
             $this->getDebugBar()->addMonolog($this->getLogger()->getMonolog());
         }
-    }
-
-    protected function determineBaseURL()
-    {
-        $stage = $this->getStage();
-        $pathInfo = $this->getFrontController()->getRequest()->getHttp()->getBaseUrl();
-
-        $baseURL = $stage->getHTTP() . $stage->getHost() . $pathInfo;
-        define('BASE_URL', $baseURL);
-    }
-
-    public function setupRequest()
-    {
-        $request = $this->getRequest();
-        $this->getFrontController()->setRequest($request);
-    }
-
-    public function getRequest()
-    {
-        if ($this->_request == null) {
-            $this->initRequest();
-        }
-        return $this->_request;
-    }
-
-    public function initRequest()
-    {
-        $request = Request::createFromGlobals();
-        Request::instance($request);
-        $this->_request = $request;
-        return $this;
-    }
-
-    public function setupDatabase()
-    {
-        $stageConfig = $this->getStage()->getConfig();
-
-        $connection = new Database\Connection();
-
-        $adapter = $connection->newAdapter($stageConfig->DB->adapter);
-        $connection->setAdapter($adapter);
-
-        if ($this->getDebugBar()->isEnabled()) {
-            $this->getDebugBar()->initDatabaseAdapter($adapter);
-        }
-        $connection->connect(
-            $stageConfig->DB->host,
-            $stageConfig->DB->user,
-            $stageConfig->DB->password,
-            $stageConfig->DB->name);
-        Container::getInstance()->set('database', $connection);
-    }
-
-    public function setupSession()
-    {
-        $this->_sessionManager = $this->initSession();
-        $requestHTTP = $this->getFrontController()->getRequest()->getHttp();
-        $domain = $requestHTTP->getRootDomain();
-
-
-        if (!ini_get('session.auto_start') || (strtolower(ini_get('session.auto_start'))
-                == 'off')
-        ) {
-            if ($domain !== 'localhost') {
-                ini_set('session.cookie_domain',
-                    '.' . $requestHTTP->getRootDomain());
-            }
-            $this->_sessionManager->setLifetime(\Nip_Config::instance()->SESSION->lifetime);
-        } else {
-
-        }
-
-        if ($domain != 'localhost') {
-            Cookie\Jar::instance()->setDefaults(
-                array('domain' => '.' . $domain)
-            );
-        }
-        if ($this->getFrontController()->getRequest()->isCLI() == false) {
-            $this->_sessionManager->init();
-        }
-    }
-
-    public function initSession()
-    {
-        return new Session();
-    }
-
-    public function setupTranslation()
-    {
-        $translation = $this->initTranslation();
-        $this->initLanguages($translation);
-    }
-
-    public function initTranslation()
-    {
-        $i18n = \Nip_I18n::instance();
-        $i18n->setRequest($this->getFrontController()->getRequest());
-        return $i18n;
-    }
-
-    public function initLanguages($translation)
-    {
-        return $translation;
-    }
-
-    public function setupLocale()
-    {
-
-    }
-
-    public function setupRouting()
-    {
-        $router = $this->newRouter();
-        $router->setRequest($this->getFrontController()->getRequest());
-        $this->getFrontController()->setRouter($router);
-        if ($this->getDebugBar()->isEnabled()) {
-            $this->getDebugBar()->getCollector('route')->setRouter($router);
-        }
-    }
-
-    /**
-     * @return Router\Router
-     */
-    public function newRouter()
-    {
-        return new Router\Router();
-    }
-
-    protected function getFrontController()
-    {
-        if ($this->_frontController === null) {
-            $this->_frontController = $this->initFrontController();
-        }
-        return $this->_frontController;
-    }
-
-    protected function initFrontController()
-    {
-        $fc = FrontController::instance();
-        $fc->setBootstrap($this);
-        return $fc;
-    }
-
-    public function dispatch()
-    {
-        try {
-            ob_start();
-            $this->preDispatch();
-
-            $this->preRouting();
-            $this->getFrontController()->route();
-            $this->postRouting();
-
-            $this->getFrontController()->dispatch();
-            ob_end_flush();
-        } catch (\Exception $e) {
-            $this->_logger->handleException($e);
-        }
-        $this->postDispatch();
-    }
-
-    public function preDispatch()
-    {
-    }
-
-    public function postDispatch()
-    {
-
-    }
-
-    public function preRouting()
-    {
-    }
-
-    public function postRouting()
-    {
-    }
-
-    public function setupURLConstants()
-    {
-        $this->determineBaseURL();
-        define('CURRENT_URL', $this->getFrontController()->getRequest()->getHttp()->getUri());
     }
 
     /**
@@ -384,11 +154,11 @@ class Application
      */
     public function getLogger()
     {
-        if ($this->_logger == null) {
+        if ($this->logger == null) {
             $this->initLogger();
         }
 
-        return $this->_logger;
+        return $this->logger;
     }
 
     /**
@@ -397,13 +167,11 @@ class Application
      */
     public function setLogger($logger)
     {
-        $this->_logger = $logger;
+        $this->logger = $logger;
+
         return $this;
     }
 
-    /**
-     * @return null
-     */
     public function initLogger()
     {
         $logger = $this->newLogger();
@@ -417,6 +185,7 @@ class Application
     public function newLogger()
     {
         $logger = new LoggerManager();
+
         return $logger;
     }
 
@@ -425,28 +194,11 @@ class Application
      */
     public function getDebugBar()
     {
-        if ($this->_debugBar == null) {
+        if ($this->debugBar == null) {
             $this->initDebugBar();
         }
 
-        return $this->_debugBar;
-    }
-
-    /**
-     * @return null
-     */
-    public function initDebugBar()
-    {
-        $this->setDebugBar($this->newDebugBar());
-    }
-
-    /**
-     * @return null
-     */
-    public function newDebugBar()
-    {
-        $debugBar = new StandardDebugBar();
-        return $debugBar;
+        return $this->debugBar;
     }
 
     /**
@@ -454,7 +206,366 @@ class Application
      */
     public function setDebugBar($debugBar)
     {
-        $this->_debugBar = $debugBar;
+        $this->debugBar = $debugBar;
     }
 
+    public function initDebugBar()
+    {
+        $this->setDebugBar($this->newDebugBar());
+    }
+
+    /**
+     * @return StandardDebugBar
+     */
+    public function newDebugBar()
+    {
+        $debugBar = new StandardDebugBar();
+
+        return $debugBar;
+    }
+
+    public function setupURLConstants()
+    {
+        $this->determineBaseURL();
+        define('CURRENT_URL', $this->getRequest()->getHttp()->getUri());
+    }
+
+    protected function determineBaseURL()
+    {
+        $stage = $this->getStaging()->getStage();
+        $pathInfo = $this->getRequest()->getHttp()->getBaseUrl();
+
+        $baseURL = $stage->getHTTP() . $stage->getHost() . $pathInfo;
+        define('BASE_URL', $baseURL);
+    }
+
+    /**
+     * @return Request|null
+     */
+    public function getRequest()
+    {
+        if ($this->request == null) {
+            $this->initRequest();
+        }
+
+        return $this->request;
+    }
+
+    /**
+     * @return $this
+     */
+    public function initRequest()
+    {
+        $request = Request::createFromGlobals();
+        Request::instance($request);
+        $this->request = $request;
+
+        return $this;
+    }
+
+    public function setup()
+    {
+        $this->setupConfig();
+        $this->setupDatabase();
+        $this->setupSession();
+        $this->setupTranslation();
+        $this->setupLocale();
+        $this->setupRouting();
+        $this->boot();
+    }
+
+    public function setupConfig()
+    {
+        $this->registerContainerConfig();
+    }
+
+    public function setupDatabase()
+    {
+        $stageConfig = $this->getStaging()->getStage()->getConfig();
+        $dbManager = new DatabaseManager();
+        $dbManager->setBootstrap($this);
+
+        $connection = $dbManager->newConnectionFromConfig($stageConfig->get('DB'));
+        $this->getContainer()->set('database', $connection);
+
+        if ($this->getDebugBar()->isEnabled()) {
+            $adapter = $connection->getAdapter();
+            $this->getDebugBar()->initDatabaseAdapter($adapter);
+        }
+    }
+
+    public function setupSession()
+    {
+        if ($this->getRequest()->isCLI() == false) {
+            $requestHTTP = $this->getRequest()->getHttp();
+            $domain = $requestHTTP->getRootDomain();
+            $sessionManager = $this->getSession();
+
+            if (!$sessionManager->isAutoStart()) {
+                $sessionManager->setRootDomain($domain);
+                $sessionManager->setLifetime($this->getContainer()->get('config')->get('SESSION')->get('lifetime'));
+            }
+
+            if ($domain != 'localhost') {
+                Cookie\Jar::instance()->setDefaults(
+                    ['domain' => '.' . $domain]
+                );
+            }
+            $this->sessionManager->init();
+        }
+    }
+
+    /**
+     * @return Session
+     */
+    public function getSession()
+    {
+        if ($this->sessionManager === null) {
+            $this->initSession();
+        }
+
+        return $this->sessionManager;
+    }
+
+    public function initSession()
+    {
+        $this->sessionManager = $this->newSession();
+    }
+
+    /**
+     * @return Session
+     */
+    public function newSession()
+    {
+        return new Session();
+    }
+
+    public function setupTranslation()
+    {
+        $this->initLanguages();
+    }
+
+    public function initLanguages()
+    {
+    }
+
+    public function setupLocale()
+    {
+    }
+
+    public function setupRouting()
+    {
+        $router = $this->getRouter();
+        $router->setRequest($this->getRequest());
+        if ($this->getDebugBar()->isEnabled()) {
+            /** @var RouteCollector $routeCollector */
+            $routeCollector = $this->getDebugBar()->getCollector('route');
+            $routeCollector->setRouter($router);
+        }
+    }
+
+    public function boot()
+    {
+        if ($this->isBooted()) {
+            return;
+        }
+
+        $this->getContainer()->getProviders()->boot();
+    }
+
+    /**
+     * Determine if the application has booted.
+     *
+     * @return bool
+     */
+    public function isBooted()
+    {
+        return $this->booted;
+    }
+
+    /**
+     * @param null|Request $request
+     * @return Response
+     */
+    public function handleRequest($request = null)
+    {
+        $request = $request ? $request : $this->getRequest();
+        try {
+            ob_start();
+            $this->preHandleRequest();
+
+            $this->preRouting();
+
+            // check is valid request
+            if ($this->isValidRequest($request)) {
+                $this->route($request);
+            } else {
+                die('');
+            }
+
+            $this->postRouting();
+
+            return $this->getResponseFromRequest($request);
+        } catch (Exception $e) {
+            return $this->handleException($request, $e);
+        }
+    }
+
+    public function preHandleRequest()
+    {
+    }
+
+    public function preRouting()
+    {
+    }
+
+    /**
+     * @param Request $request
+     * @return bool
+     */
+    protected function isValidRequest($request)
+    {
+        if ($request->isMalicious()) {
+            return false;
+        }
+
+        return true;
+    }
+
+    public function postRouting()
+    {
+    }
+
+    /**
+     * @param Request $request
+     * @return Response
+     */
+    protected function getResponseFromRequest($request)
+    {
+        if ($request->hasMCA()) {
+            $response = $this->dispatchRequest($request);
+            ob_get_clean();
+
+            return $response;
+        }
+
+        throw new NotFoundHttpException('No MCA in Request');
+    }
+
+    /**
+     * @param Exception $e
+     * @param Request $request
+     * @return Response
+     */
+    protected function handleException(Request $request, Exception $e)
+    {
+        $this->reportException($e);
+
+        return $this->renderException($request, $e);
+    }
+
+    /**
+     * Report the exception to the exception handler.
+     *
+     * @param  Exception $e
+     * @return void
+     */
+    protected function reportException(Exception $e)
+    {
+        $this->getLogger()->handleException($e);
+    }
+
+    /**
+     * @param Request $request
+     * @param Exception $e
+     * @return Response
+     */
+    protected function renderException(Request $request, Exception $e)
+    {
+        if ($this->getStaging()->getStage()->isPublic()) {
+            $this->getDispatcher()->setErrorController();
+
+            return $this->getResponseFromRequest($request);
+        } else {
+            $whoops = new WhoopsRun;
+            $whoops->allowQuit(false);
+            $whoops->writeToOutput(false);
+            $whoops->pushHandler(new PrettyPageHandler());
+
+            return ResponseFactory::make($whoops->handleException($e));
+        }
+    }
+
+    /** @noinspection PhpUnusedParameterInspection
+     *
+     * @param Request $request
+     * @param Response $response
+     * @return Response
+     */
+    public function filterResponse(Response $response, Request $request)
+    {
+        return $response;
+    }
+
+    /**
+     * @param Request $request
+     * @param Response $response
+     */
+    public function terminate(Request $request, Response $response)
+    {
+    }
+
+    /**
+     * Throw an HttpException with the given data.
+     *
+     * @param  int $code
+     * @param  string $message
+     * @param  array $headers
+     * @return void
+     *
+     * @throws HttpException
+     */
+    public function abort($code, $message = '', array $headers = [])
+    {
+        if ($code == 404) {
+            throw new NotFoundHttpException($message);
+        }
+        throw new HttpException($code, $message, null, $headers);
+    }
+
+    /**
+     * @return I18n\Translator
+     */
+    public function getTranslator()
+    {
+        if (!$this->getContainer()->has('translator')) {
+            $this->initTranslator();
+        }
+
+        return $this->getContainer()->get('translator');
+    }
+
+    public function initTranslator()
+    {
+        $translator = $this->newTranslator();
+        $translator->setRequest($this->getRequest());
+
+        Container::getInstance()->set('translator', $translator);
+    }
+
+    /**
+     * @return I18n\Translator
+     */
+    public function newTranslator()
+    {
+        return new I18n\Translator();
+    }
+
+    /**
+     * @return string
+     */
+    public function getRootNamespace()
+    {
+        return 'App\\';
+    }
 }

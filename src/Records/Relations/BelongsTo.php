@@ -4,15 +4,24 @@ namespace Nip\Records\Relations;
 
 use Nip\Records\Collections\Collection as RecordCollection;
 
+/**
+ * Class BelongsTo
+ * @package Nip\Records\Relations
+ */
 class BelongsTo extends Relation
 {
 
-    protected $_type = 'belongsTo';
+    /**
+     * @var string
+     */
+    protected $type = 'belongsTo';
 
-    public function initFK()
+    /** @noinspection PhpMissingParentCallCommonInspection
+     * @return string
+     */
+    public function generateFK()
     {
-        $name = $this->getWith()->getPrimaryFK();
-        $this->setFK($name);
+        return $this->getWith()->getPrimaryFK();
     }
 
     public function initResults()
@@ -22,12 +31,19 @@ class BelongsTo extends Relation
         $this->setResults($manager->findOne($fk));
     }
 
-    function getResultsFromCollectionDictionary($dictionary, $collection, $record)
+    /**
+     * @param $dictionary
+     * @param $collection
+     * @param $record
+     * @return mixed
+     */
+    public function getResultsFromCollectionDictionary($dictionary, $collection, $record)
     {
         $pk = $record->{$this->getFK()};
         if ($dictionary[$pk]) {
             return $dictionary[$pk];
         }
+
         return false;
     }
 
@@ -44,6 +60,7 @@ class BelongsTo extends Relation
         foreach ($collection as $record) {
             $dictionary[$record->{$withPK}] = $record;
         }
+
         return $dictionary;
     }
 }

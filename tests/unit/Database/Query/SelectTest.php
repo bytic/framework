@@ -1,6 +1,6 @@
 <?php
 
-namespace Nip\Tests\Database\Query;
+namespace Nip\Tests\Unit\Database\Query;
 
 use Mockery as m;
 use Nip\Database\Connection;
@@ -23,27 +23,13 @@ class SelectTest extends \Codeception\TestCase\Test
 	 */
 	protected $_object;
 
-	protected function setUp()
-	{
-		parent::setUp();
-		$this->_object = new Select();
-
-        $adapterMock = m::mock('Nip\Database\Adapters\MySQLi')->shouldDeferMissing();
-        $adapterMock->shouldReceive('cleanData')->andReturnUsing(function ($data) {
-            return $data;
-        });
-        $this->_db = new Connection();
-        $this->_db->setAdapter($adapterMock);
-		$this->_object->setManager($this->_db);
-	}
-
 	public function testSelectSimple()
 	{
 		$array = array('id, name as new_name', 'table2.test', 'MAX(pos) as pos');
 		call_user_func_array(array($this->_object, 'cols'), $array);
 		$this->_object->from('table x')->where('id = 5');
 
-		$this->assertEquals(
+        static::assertEquals(
 			'SELECT id, name as new_name, table2.test, MAX(pos) as pos FROM table x WHERE id = 5',
 			$this->_object->assemble());
 	}
@@ -51,7 +37,7 @@ class SelectTest extends \Codeception\TestCase\Test
 	public function testSimpleSelectDistinct()
 	{
 		$this->_object->cols('id, name')->options('distinct')->from('table x')->where('id = 5');
-		$this->assertEquals(
+        static::assertEquals(
 			"SELECT DISTINCT id, name FROM table x WHERE id = 5",
 			$this->_object->assemble());
 	}
@@ -60,7 +46,7 @@ class SelectTest extends \Codeception\TestCase\Test
 	{
 		$this->_object->cols('id, name')->from('table x');
 		$this->_object->where('id = 5')->where("active = 'yes'");
-		$this->assertEquals(
+        static::assertEquals(
 			"SELECT id, name FROM table x WHERE id = 5 AND active = 'yes'",
 			$this->_object->assemble());
 	}
@@ -69,7 +55,7 @@ class SelectTest extends \Codeception\TestCase\Test
 	{
 		$this->_object->cols('id, name')->from('table x');
 		$this->_object->where('id = 5')->orWhere('id = 7');
-		$this->assertEquals(
+        static::assertEquals(
 			"SELECT id, name FROM table x WHERE id = 5 OR id = 7",
 			$this->_object->assemble());
 	}
@@ -77,7 +63,7 @@ class SelectTest extends \Codeception\TestCase\Test
 	public function testInitializeCondition()
 	{
 		$condition = $this->_object->getCondition("lorem ipsum");
-		$this->assertThat($condition, $this->isInstanceOf("Nip\Database\Query\Condition\Condition"));
+        static::assertThat($condition, $this->isInstanceOf("Nip\Database\Query\Condition\Condition"));
 	}
 
 	public function testNested()
@@ -90,7 +76,8 @@ class SelectTest extends \Codeception\TestCase\Test
 
 		$this->_object->where("id NOT IN ?", $query);
 
-		$this->assertEquals("SELECT * FROM `table1` WHERE id NOT IN (SELECT * FROM `table2` WHERE id != 5)", $this->_object->assemble());
+        static::assertEquals("SELECT * FROM `table1` WHERE id NOT IN (SELECT * FROM `table2` WHERE id != 5)",
+            $this->_object->assemble());
 	}
 
 	public function testUnion()
@@ -102,7 +89,21 @@ class SelectTest extends \Codeception\TestCase\Test
 //
 //		$union = $this->_object->union($query);
 //
-//		$this->assertEquals("SELECT * FROM `table1` UNION SELECT * FROM `table2`", $union->assemble());
+//		static::assertEquals("SELECT * FROM `table1` UNION SELECT * FROM `table2`", $union->assemble());
+    }
+
+    protected function setUp()
+    {
+        parent::setUp();
+        $this->_object = new Select();
+
+        $adapterMock = m::mock('Nip\Database\Adapters\MySQLi')->shouldDeferMissing();
+        $adapterMock->shouldReceive('cleanData')->andReturnUsing(function ($data) {
+            return $data;
+        });
+        $this->_db = new Connection();
+        $this->_db->setAdapter($adapterMock);
+        $this->_object->setManager($this->_db);
 	}
 
 }

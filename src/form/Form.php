@@ -1,15 +1,10 @@
 <?php
 
-class Nip_Form extends Nip_Form_Abstract
+use Nip\Form\AbstractForm;
+
+/**
+ * Class Nip_Form
+ */
+class Nip_Form extends AbstractForm
 {
-
-    public function init()
-    {
-        parent::init();
-    }
-
-    public function postInit()
-    {
-    }
-
 }

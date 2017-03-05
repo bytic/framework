@@ -1,5 +1,6 @@
 <?php
 
+namespace Nip\Tests;
 
 /**
  * Inherited Methods
@@ -18,7 +19,7 @@
 */
 class AcceptanceTester extends \Codeception\Actor
 {
-    use _generated\AcceptanceTesterActions;
+    use \Nip\Tests\_generated\AcceptanceTesterActions;
 
    /**
     * Define custom actions here

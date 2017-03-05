@@ -5,22 +5,16 @@ namespace Nip\Logger;
 use ErrorException;
 use Monolog\Logger as MonologLogger;
 use Nip\Application;
-use Nip\Bootstrap;
 use Psr\Log\LoggerInterface as PsrLoggerInterface;
 
+/**
+ * Class Manager
+ *
+ * @package Nip\Logger
+ *
+ */
 class Manager implements PsrLoggerInterface
 {
-    /**
-     * container for the Monolog instance
-     * @var \Monolog\Logger
-     */
-    protected $monolog = null;
-
-    /**
-     * @var Application
-     */
-    protected $bootstrap;
-
     /**
      * The Log levels.
      *
@@ -35,7 +29,6 @@ class Manager implements PsrLoggerInterface
     const NOTICE = MonologLogger::NOTICE;
     const INFO = MonologLogger::INFO;
     const DEBUG = MonologLogger::DEBUG;
-
     /**
      * Map native PHP errors to level
      *
@@ -59,7 +52,6 @@ class Manager implements PsrLoggerInterface
         E_USER_DEPRECATED => self::DEBUG,
     ];
 
-
     /**
      * Registered error handler
      *
@@ -73,6 +65,36 @@ class Manager implements PsrLoggerInterface
      * @var bool
      */
     protected static $registeredExceptionHandler = false;
+
+    /**
+     * container for the Monolog instance
+     * @var \Monolog\Logger
+     */
+    protected $monolog = null;
+
+    /**
+     * @var Application
+     */
+    protected $bootstrap;
+
+    /**
+     * Unregister error handler
+     *
+     */
+    public static function unregisterErrorHandler()
+    {
+        restore_error_handler();
+        static::$registeredErrorHandler = false;
+    }
+
+    /**
+     * Unregister exception handler
+     */
+    public static function unregisterExceptionHandler()
+    {
+        restore_exception_handler();
+        static::$registeredExceptionHandler = false;
+    }
 
     public function init()
     {
@@ -89,7 +111,7 @@ class Manager implements PsrLoggerInterface
 
     public function initErrorDisplay()
     {
-        if ($this->getBootstrap()->getStage()->inTesting()) {
+        if ($this->getBootstrap()->getStaging()->getStage()->inTesting()) {
             ini_set('html_errors', 1);
             ini_set('display_errors', 1);
         } else {
@@ -97,149 +119,26 @@ class Manager implements PsrLoggerInterface
         }
     }
 
+    /**
+     * @return Application
+     */
+    public function getBootstrap()
+    {
+        return $this->bootstrap;
+    }
+
+    /**
+     * @param Application $bootstrap
+     */
+    public function setBootstrap($bootstrap)
+    {
+        $this->bootstrap = $bootstrap;
+    }
+
     public function registerHandler()
     {
         self::registerErrorHandler($this);
         self::registerExceptionHandler($this);
-    }
-
-    public function initStreams()
-    {
-        $streams = $this->getStreams();
-        foreach ($streams as $stream) {
-            $this->getMonolog()->pushHandler($stream);
-        }
-
-    }
-
-    public function getStreams()
-    {
-        return array();
-    }
-
-    /**
-     * System is unusable.
-     *
-     * @param string $message
-     * @param array $context
-     * @return null
-     */
-    public function emergency($message, array $context = array())
-    {
-        return $this->log(self::EMERGENCY, $message, $context);
-    }
-
-    /**
-     * Action must be taken immediately.
-     *
-     * Example: Entire website down, database unavailable, etc. This should
-     * trigger the SMS alerts and wake you up.
-     *
-     * @param string $message
-     * @param array $context
-     * @return null
-     */
-    public function alert($message, array $context = array())
-    {
-        return $this->log(self::ALERT, $message, $context);
-    }
-
-    /**
-     * Critical conditions.
-     *
-     * Example: Application component unavailable, unexpected exception.
-     *
-     * @param string $message
-     * @param array $context
-     * @return null
-     */
-    public function critical($message, array $context = array())
-    {
-        return $this->log(self::CRITICAL, $message, $context);
-    }
-
-    /**
-     * Runtime errors that do not require immediate action but should typically
-     * be logged and monitored.
-     *
-     * @param string $message
-     * @param array $context
-     * @return null
-     */
-    public function error($message, array $context = array())
-    {
-        return $this->log(self::ERROR, $message, $context);
-    }
-
-    /**
-     * Exceptional occurrences that are not errors.
-     *
-     * Example: Use of deprecated APIs, poor use of an API, undesirable things
-     * that are not necessarily wrong.
-     *
-     * @param string $message
-     * @param array $context
-     * @return null
-     */
-    public function warning($message, array $context = array())
-    {
-        return $this->log(self::WARNING, $message, $context);
-    }
-
-    /**
-     * Normal but significant events.
-     *
-     * @param string $message
-     * @param array $context
-     * @return null
-     */
-    public function notice($message, array $context = array())
-    {
-        return $this->log(self::NOTICE, $message, $context);
-    }
-
-    /**
-     * Interesting events.
-     *
-     * Example: User logs in, SQL logs.
-     *
-     * @param string $message
-     * @param array $context
-     * @return null
-     */
-    public function info($message, array $context = array())
-    {
-        return $this->log(self::INFO, $message, $context);
-    }
-
-    /**
-     * Detailed debug information.
-     *
-     * @param string $message
-     * @param array $context
-     * @return null
-     */
-    public function debug($message, array $context = array())
-    {
-        return $this->log(self::DEBUG, $message, $context);
-    }
-
-    public function log($level, $message, array $context = array())
-    {
-        return $this->writeLog($level, $message, $context);
-    }
-
-    /**
-     * Write a message to Monolog.
-     *
-     * @param  string $level
-     * @param  string $message
-     * @param  array $context
-     * @return void
-     */
-    protected function writeLog($level, $message, $context)
-    {
-        $this->getMonolog()->addRecord($level, $message, $context);
     }
 
     /**
@@ -263,7 +162,205 @@ class Manager implements PsrLoggerInterface
 
         $previous = set_error_handler([$logger, 'handleError']);
         static::$registeredErrorHandler = true;
+
         return $previous;
+    }
+
+    /**
+     * Register logging system as an exception handler to log PHP exceptions
+     * Based on Zend Logger
+     *
+     * @param Manager $logger
+     * @return bool
+     * @throws Exception if logger is null
+     */
+    public static function registerExceptionHandler(Manager $logger)
+    {
+        // Only register once per instance
+        if (static::$registeredExceptionHandler) {
+            return false;
+        }
+        if ($logger === null) {
+            throw new Exception('Invalid Logger specified');
+        }
+        set_exception_handler([$logger, 'handleException']);
+
+        static::$registeredExceptionHandler = true;
+
+        return true;
+    }
+
+    public function initStreams()
+    {
+        $streams = $this->getStreams();
+        foreach ($streams as $stream) {
+            $this->getMonolog()->pushHandler($stream);
+        }
+    }
+
+    /**
+     * @return array
+     */
+    public function getStreams()
+    {
+        return [];
+    }
+
+    /**
+     * @return MonologLogger
+     */
+    public function getMonolog()
+    {
+        if ($this->monolog == null) {
+            $this->initMonolog();
+        }
+
+        return $this->monolog;
+    }
+
+    /**
+     * @param MonologLogger $monolog
+     */
+    public function setMonolog($monolog)
+    {
+        $this->monolog = $monolog;
+    }
+
+    public function initMonolog()
+    {
+        $monolog = new MonologLogger('Nip');
+        $this->setMonolog($monolog);
+    }
+
+    /**
+     * System is unusable.
+     *
+     * @param string $message
+     * @param array $context
+     * @return null
+     */
+    public function emergency($message, array $context = [])
+    {
+        return $this->log(self::EMERGENCY, $message, $context);
+    }
+
+    /**
+     * @param mixed $level
+     * @param string $message
+     * @param array $context
+     * @return bool|void
+     */
+    public function log($level, $message, array $context = [])
+    {
+        return $this->writeLog($level, $message, $context);
+    }
+
+    /**
+     * Write a message to Monolog.
+     *
+     * @param  string $level
+     * @param  string $message
+     * @param  array $context
+     * @return bool
+     */
+    protected function writeLog($level, $message, $context)
+    {
+        return $this->getMonolog()->addRecord($level, $message, $context);
+    }
+
+    /**
+     * Action must be taken immediately.
+     *
+     * Example: Entire website down, database unavailable, etc. This should
+     * trigger the SMS alerts and wake you up.
+     *
+     * @param string $message
+     * @param array $context
+     * @return null
+     */
+    public function alert($message, array $context = [])
+    {
+        return $this->log(self::ALERT, $message, $context);
+    }
+
+    /**
+     * Critical conditions.
+     *
+     * Example: Application component unavailable, unexpected exception.
+     *
+     * @param string $message
+     * @param array $context
+     * @return null
+     */
+    public function critical($message, array $context = [])
+    {
+        return $this->log(self::CRITICAL, $message, $context);
+    }
+
+    /**
+     * Runtime errors that do not require immediate action but should typically
+     * be logged and monitored.
+     *
+     * @param string $message
+     * @param array $context
+     * @return null
+     */
+    public function error($message, array $context = [])
+    {
+        return $this->log(self::ERROR, $message, $context);
+    }
+
+    /**
+     * Exceptional occurrences that are not errors.
+     *
+     * Example: Use of deprecated APIs, poor use of an API, undesirable things
+     * that are not necessarily wrong.
+     *
+     * @param string $message
+     * @param array $context
+     * @return null
+     */
+    public function warning($message, array $context = [])
+    {
+        return $this->log(self::WARNING, $message, $context);
+    }
+
+    /**
+     * Normal but significant events.
+     *
+     * @param string $message
+     * @param array $context
+     * @return null
+     */
+    public function notice($message, array $context = [])
+    {
+        return $this->log(self::NOTICE, $message, $context);
+    }
+
+    /**
+     * Interesting events.
+     *
+     * Example: User logs in, SQL logs.
+     *
+     * @param string $message
+     * @param array $context
+     * @return null
+     */
+    public function info($message, array $context = [])
+    {
+        return $this->log(self::INFO, $message, $context);
+    }
+
+    /**
+     * Detailed debug information.
+     *
+     * @param string $message
+     * @param array $context
+     * @return null
+     */
+    public function debug($message, array $context = [])
+    {
+        return $this->log(self::DEBUG, $message, $context);
     }
 
     /**
@@ -293,47 +390,15 @@ class Manager implements PsrLoggerInterface
                 'trace' => $trace,
             ]);
         }
-        return true;
-    }
 
-    /**
-     * Unregister error handler
-     *
-     */
-    public static function unregisterErrorHandler()
-    {
-        restore_error_handler();
-        static::$registeredErrorHandler = false;
-    }
-
-    /**
-     * Register logging system as an exception handler to log PHP exceptions
-     * Based on Zend Logger
-     *
-     * @param Manager $logger
-     * @return bool
-     * @throws Exception if logger is null
-     */
-    public static function registerExceptionHandler(Manager $logger)
-    {
-        // Only register once per instance
-        if (static::$registeredExceptionHandler) {
-            return false;
-        }
-        if ($logger === null) {
-            throw new Exception('Invalid Logger specified');
-        }
-        set_exception_handler([$logger, 'handleException']);
-
-        static::$registeredExceptionHandler = true;
         return true;
     }
 
     /**
      * @private
-     * @param \Exception $e
+     * @param \Throwable $e
      */
-    public function handleException(\Exception $e)
+    public function handleException(\Throwable $e)
     {
         $errorLevelMap = static::$errorLevelMap;
         $logMessages = [];
@@ -361,55 +426,5 @@ class Manager implements PsrLoggerInterface
         foreach (array_reverse($logMessages) as $logMessage) {
             $this->log($logMessage['level'], $logMessage['message'], $logMessage['extra']);
         }
-    }
-
-    /**
-     * Unregister exception handler
-     */
-    public static function unregisterExceptionHandler()
-    {
-        restore_exception_handler();
-        static::$registeredExceptionHandler = false;
-    }
-
-    /**
-     * @return MonologLogger
-     */
-    public function getMonolog()
-    {
-        if ($this->monolog == null) {
-            $this->initMonolog();
-        }
-        return $this->monolog;
-    }
-
-    public function initMonolog()
-    {
-        $monolog = new MonologLogger('Nip');
-        $this->setMonolog($monolog);
-    }
-
-    /**
-     * @param MonologLogger $monolog
-     */
-    public function setMonolog($monolog)
-    {
-        $this->monolog = $monolog;
-    }
-
-    /**
-     * @return Application
-     */
-    public function getBootstrap()
-    {
-        return $this->bootstrap;
-    }
-
-    /**
-     * @param Application $bootstrap
-     */
-    public function setBootstrap($bootstrap)
-    {
-        $this->bootstrap = $bootstrap;
     }
 }

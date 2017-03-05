@@ -2,27 +2,39 @@
 
 namespace Nip\Database\Query;
 
+/**
+ * Class Update
+ * @package Nip\Database\Query
+ */
 class Update extends AbstractQuery
 {
 
+    /**
+     * @return string
+     */
     public function assemble()
     {
-        $query = "UPDATE " . $this->protect($this->getTable()) . " SET " . $this->parseUpdate() .
-            ($this->_parts['where'] ? ' WHERE ' . $this->parseWhere() : '') .
-            ($this->_parts['limit'] ? ' LIMIT ' . $this->limit : '');
+        $query = "UPDATE ".$this->protect($this->getTable())." SET ".$this->parseUpdate();
+
+        $query .= $this->assembleWhere();
+        $query .= $this->assembleLimit();
+
         return $query;
     }
 
+    /**
+     * @return bool|string
+     */
     public function parseUpdate()
     {
-        if (!$this->_parts['data']) {
+        if (!$this->parts['data']) {
             return false;
         }
-
-        foreach ($this->_parts['data'] as $data) {
+        $fields = [];
+        foreach ($this->parts['data'] as $data) {
             foreach ($data as $key => $value) {
                 if (!is_array($value)) {
-                    $value = array($value);
+                    $value = [$value];
                 }
                 list($value, $quote) = $value;
 
@@ -38,7 +50,7 @@ class Update extends AbstractQuery
                 $fields[] = "{$this->protect($key)} = $value";
             }
         }
+
         return implode(", ", $fields);
     }
-
 }

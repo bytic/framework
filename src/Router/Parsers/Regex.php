@@ -1,18 +1,25 @@
 <?php
 
-namespace Nip\Router\Parser;
+namespace Nip\Router\Parsers;
 
+/**
+ * Class Regex
+ * @package Nip\Router\Parsers
+ */
 class Regex extends AbstractParser
 {
-    protected $_regex;
-    protected $_variables = array();
+    protected $regex;
 
     public function parseMap()
     {
         parent::parseMap();
-        $this->_regex = false;
+        $this->regex = false;
     }
 
+    /**
+     * @param $uri
+     * @return bool
+     */
     public function match($uri)
     {
         $return = parent::match($uri);
@@ -21,9 +28,10 @@ class Regex extends AbstractParser
             $match = preg_match_all("`^" . $this->getRegex() . "$`i", $uri, $matches);
 
             if ($match > 0) {
-                if ($this->_variables) {
-                    foreach ($this->_variables as $key => $variable) {
-                        $this->_matches[$variable] = $matches[$key + 1][0];
+                $variables = $this->getVariables();
+                if (count($variables)) {
+                    foreach ($variables as $key => $variable) {
+                        $this->matches[$variable] = $matches[$key + 1][0];
                     }
                 }
                 return true;
@@ -33,20 +41,23 @@ class Regex extends AbstractParser
         return false;
     }
 
+    /**
+     * @return mixed|string
+     */
     public function getRegex()
     {
-        if (!$this->_regex) {
-            $map = $this->_map;
-            foreach ($this->_params as $key => $value) {
+        if (!$this->regex) {
+            $map = $this->map;
+            foreach ($this->params as $key => $value) {
                 if (stristr($map, ":" . $key) !== false) {
                     $map = str_replace(":" . $key, "(" . $value . ")", $map);
-                    unset($params[$key]);
-                    $this->_variables[] = $key;
+//                    unset($params[$key]);
+                    $this->variables[] = $key;
                 }
             }
-            $this->_regex = $map;
+            $this->regex = $map;
         }
 
-        return $this->_regex;
+        return $this->regex;
     }
 }

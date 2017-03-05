@@ -2,7 +2,7 @@
 class Nip_Form_Element_MultiElement extends Nip_Form_Element_Abstract {
 
     protected $_type = 'multiElement';
-    protected $_elements = array();
+    protected $_elements = [];
 
     public function addElement(Nip_Form_Element_Abstract $element) {
         $key = $element->getName();

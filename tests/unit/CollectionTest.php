@@ -1,64 +1,77 @@
 <?php
 
-class CollectionTest extends  \Codeception\TestCase\Test
+namespace Nip\Tests\Unit;
+
+use Nip\Collection as Collection;
+use stdClass;
+
+/**
+ * Class CollectionTest
+ * @package Nip\Tests\Unit
+ */
+class CollectionTest extends \Codeception\TestCase\Test
 {
 
-	public function setUp()
-	{
-		$this->_collection = new Nip_Collection();
-	}
+    /**
+     * @var Collection
+     */
+    protected $collection;
 
-	public function testAdd()
-	{
-		$this->assertEquals(0, count($this->_collection));
+    public function testAdd()
+    {
+        static::assertEquals(0, count($this->collection));
 
-		$this->_collection['first'] = new stdClass();
-		$this->assertEquals(1, count($this->_collection));
+        $this->collection['first'] = new stdClass();
+        static::assertEquals(1, count($this->collection));
 
-		$this->_collection['luke'] = "Luke Skywalker";
-		$this->assertEquals("Luke Skywalker", $this->_collection["luke"]);
+        $this->collection['luke'] = "Luke Skywalker";
+        static::assertEquals("Luke Skywalker", $this->collection["luke"]);
 
-		$this->_collection['third'] = new stdClass();
-		$this->assertEquals(3, count($this->_collection));
-	}
+        $this->collection['third'] = new stdClass();
+        static::assertEquals(3, count($this->collection));
+    }
 
-	public function testRemove()
-	{
-		$this->_collection[] = "Darth Vader";
-		$this->_collection[] = "Luke Skywalker";
-		$this->_collection[] = "Han Solo";
+    public function testRemove()
+    {
+        $this->collection[] = "Darth Vader";
+        $this->collection[] = "Luke Skywalker";
+        $this->collection[] = "Han Solo";
 
-		$this->assertEquals(3, count($this->_collection));
+        static::assertEquals(3, count($this->collection));
 
-		unset($this->_collection[1]);
-		$this->assertEquals(2, count($this->_collection));
-	}
+        unset($this->collection[1]);
+        static::assertEquals(2, count($this->collection));
+    }
 
-	public function testIterate()
-	{
-		$items = array(
-			"darth" => "Darth Vader",
-			"luke" => "Luke Skywalker",
-			"han" => "Han Solo"
-		);
-		foreach ($items as $key => $value) {
-			$this->_collection[$key] = $value;
-		}
+    public function testIterate()
+    {
+        $items = [
+            "darth" => "Darth Vader",
+            "luke" => "Luke Skywalker",
+            "han" => "Han Solo"
+        ];
+        foreach ($items as $key => $value) {
+            $this->collection[$key] = $value;
+        }
 
-		foreach ($this->_collection as $key => $item) {
-			$this->assertEquals($items[$key], $item);
-		}
-	}
+        foreach ($this->collection as $key => $item) {
+            static::assertEquals($items[$key], $item);
+        }
+    }
 
-	public function testArrayAccess()
-	{
-		$this->_collection[] = "Darth Vader";
-		$this->_collection[] = "Luke Skywalker";
-		$this->_collection[] = "Han Solo";
+    public function testArrayAccess()
+    {
+        $this->collection[] = "Darth Vader";
+        $this->collection[] = "Luke Skywalker";
+        $this->collection[] = "Han Solo";
 
-		$this->assertEquals("Darth Vader", $this->_collection->rewind());
-		$this->assertEquals("Luke Skywalker", $this->_collection->next());
-		$this->assertEquals("Han Solo", $this->_collection->end());
-	}
+        static::assertEquals("Darth Vader", $this->collection->rewind());
+        static::assertEquals("Luke Skywalker", $this->collection->next());
+        static::assertEquals("Han Solo", $this->collection->end());
+    }
 
+    protected function _before()
+    {
+        $this->collection = new Collection();
+    }
 }

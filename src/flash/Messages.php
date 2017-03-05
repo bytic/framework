@@ -22,7 +22,7 @@ class Nip_Flash_Messages extends Nip_Flash {
 	/**
 	 * Returns static instance
 	 *
-	 * @return Nip_Flash_Messages
+	 * @return self
 	 */
 	static public function &instance() {
 		static $instance;

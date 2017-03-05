@@ -1,28 +1,23 @@
 <?php
 
-class Nip_Form_DisplayGroup extends Nip_Collection
+use Nip\Collection;
+use Nip\Form\AbstractForm;
+
+/**
+ * Class Nip_Form_DisplayGroup
+ */
+class Nip_Form_DisplayGroup extends Collection
 {
     /**
      * Group attributes
      * @var array
      */
-    protected $_attribs = array();
-    
+    protected $_attribs = [];
+
     /**
      * @var Nip_Form
      */
     protected $_form;
-
-
-    /**
-     * @param  Nip_Form $form
-     * @return Nip_Form_DisplayGroup
-     */
-    public function setForm(Nip_Form $form)
-    {
-        $this->_form = $form;
-        return $this;
-    }
 
     /**
      * @return Nip_Form|null
@@ -32,46 +27,65 @@ class Nip_Form_DisplayGroup extends Nip_Collection
         return $this->_form;
     }
 
-    public function addElement(Nip_Form_Element_Abstract $element)
+    /**
+     * @param  AbstractForm $form
+     * @return Nip_Form_DisplayGroup
+     */
+    public function setForm(AbstractForm $form)
     {
-        $this[$element->getUniqueId()] = $element;
+        $this->_form = $form;
+
         return $this;
     }
 
-    public function setLegend($legend)
+    /**
+     * @param Nip_Form_Element_Abstract $element
+     * @return $this
+     */
+    public function addElement(Nip_Form_Element_Abstract $element)
     {
-        return $this->setAttrib('legend', (string) $legend);
+        $this[$element->getUniqueId()] = $element;
+
+        return $this;
     }
 
+    /**
+     * @param $legend
+     * @return Nip_Form_DisplayGroup
+     */
+    public function setLegend($legend)
+    {
+        return $this->setAttrib('legend', (string)$legend);
+    }
+
+    /**
+     * @param $key
+     * @param $value
+     * @return $this
+     */
+    public function setAttrib($key, $value)
+    {
+        $key = (string)$key;
+        $this->_attribs[$key] = $value;
+
+        return $this;
+    }
+
+    /**
+     * @return mixed|null
+     */
     public function getLegend()
     {
         return $this->getAttrib('legend');
     }
 
-    public function setAttrib($key, $value)
-    {
-        $key = (string) $key;
-        $this->_attribs[$key] = $value;
-        return $this;
-    }
-
-    public function addAttribs(array $attribs)
-    {
-        foreach ($attribs as $key => $value) {
-            $this->setAttrib($key, $value);
-        }
-        return $this;
-    }
-
-    public function setAttribs(array $attribs)
-    {
-        $this->clearAttribs();
-        return $this->addAttribs($attribs);
-    }
-
+    /**
+     * @param $key
+     * @return mixed|null
+     */
     public function getAttrib($key)
     {
-        $key = (string) $key;
+        $key = (string)$key;
         if (!isset($this->_attribs[$key])) {
             return null;
         }
@@ -79,50 +93,92 @@ class Nip_Form_DisplayGroup extends Nip_Collection
         return $this->_attribs[$key];
     }
 
+    /**
+     * @return array
+     */
     public function getAttribs()
     {
         return $this->_attribs;
     }
 
+    /**
+     * @param array $attribs
+     * @return Nip_Form_DisplayGroup
+     */
+    public function setAttribs(array $attribs)
+    {
+        $this->clearAttribs();
+
+        return $this->addAttribs($attribs);
+    }
+
+    /**
+     * @return $this
+     */
+    public function clearAttribs()
+    {
+        $this->_attribs = [];
+
+        return $this;
+    }
+
+    /**
+     * @param array $attribs
+     * @return $this
+     */
+    public function addAttribs(array $attribs)
+    {
+        foreach ($attribs as $key => $value) {
+            $this->setAttrib($key, $value);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param $key
+     * @return bool
+     */
     public function removeAttrib($key)
     {
         if (array_key_exists($key, $this->_attribs)) {
             unset($this->_attribs[$key]);
+
             return true;
         }
 
         return false;
     }
 
-    public function clearAttribs()
+    /**
+     * @return mixed
+     */
+    public function render()
     {
-        $this->_attribs = array();
-        return $this;
-    }
-
-    public function render() {
         return $this->getRenderer()->render();
     }
 
     /**
      * @return Nip_Form_Renderer
      */
-    public function getRenderer() {
+    public function getRenderer()
+    {
         if (!$this->_renderer) {
             $this->_renderer = $this->getNewRenderer();
         }
+
         return $this->_renderer;
     }
 
     /**
      * @return Nip_Form_Renderer_DisplayGroup
      */
-    public function getNewRenderer($type = 'basic') {
+    public function getNewRenderer($type = 'basic')
+    {
         $name = 'Nip_Form_Renderer_DisplayGroup';
         $renderer = new $name();
         $renderer->setGroup($this);
+
         return $renderer;
     }
-
-
 }

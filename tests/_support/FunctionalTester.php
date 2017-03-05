@@ -1,6 +1,8 @@
 <?php
 
 
+namespace Nip\Tests;
+
 /**
  * Inherited Methods
  * @method void wantToTest($text)
@@ -18,7 +20,7 @@
 */
 class FunctionalTester extends \Codeception\Actor
 {
-    use _generated\FunctionalTesterActions;
+    use \Nip\Tests\_generated\FunctionalTesterActions;
 
    /**
     * Define custom actions here

@@ -1,6 +1,6 @@
 <?php
 
-use Nip\Records\_Abstract\Row as Record;
+use Nip\Records\AbstractModels\Record as Record;
 
 /**
  * Class Nip_Form_Model
@@ -13,11 +13,18 @@ class Nip_Form_Model extends Nip_Form
      */
     protected $_model;
 
-    public function setModel(Record $model)
+    /**
+     * @param $name
+     * @return $this
+     */
+    public function addModelError($name)
     {
-        $this->_model = $model;
-        $this->getDataFromModel();
-        return $this;
+        return $this->addError($this->getModelMessage($name));
+    }
+
+    public function getModelMessage($name, $variables = array())
+    {
+        return $this->getModel()->getManager()->getMessage('form.'.$name, $variables);
     }
 
     /**
@@ -26,6 +33,18 @@ class Nip_Form_Model extends Nip_Form
     public function getModel()
     {
         return $this->_model;
+    }
+
+    /**
+     * @param Record $model
+     * @return $this
+     */
+    public function setModel(Record $model)
+    {
+        $this->_model = $model;
+        $this->getDataFromModel();
+
+        return $this;
     }
 
     protected function getDataFromModel()
@@ -40,32 +59,31 @@ class Nip_Form_Model extends Nip_Form
         }
     }
 
-    protected function _addModelFormMessage($form, $model)
-    {
-        $this->_messageTemplates[$form] = $this->getModelMessage($model);
-        return $this;
-    }
-
-    public function addModelError($name)
-    {
-        return $this->addError($this->getModelMessage($name));
-    }
-
+    /**
+     * @param $input
+     * @param $name
+     * @param array $variables
+     * @return $this
+     */
     public function addInputModelError($input, $name, $variables = array())
     {
         return $this->$input->addError($this->getModelMessage($name, $variables));
     }
 
-    public function getModelMessage($name, $variables = array())
-    {
-        return $this->getModel()->getManager()->getMessage('form.' . $name, $variables);
-    }
-
+    /**
+     * @param $name
+     * @return mixed
+     */
     public function getModelLabel($name)
     {
         return $this->getModel()->getManager()->getLabel($name);
     }
 
+    public function process()
+    {
+        $this->saveToModel();
+        $this->saveModel();
+    }
 
     public function saveToModel()
     {
@@ -77,15 +95,15 @@ class Nip_Form_Model extends Nip_Form
         }
     }
 
-    public function process()
-    {
-        $this->saveToModel();
-        $this->saveModel();
-    }
-
     public function saveModel()
     {
         $this->getModel()->save();
     }
 
+    protected function _addModelFormMessage($form, $model)
+    {
+        $this->_messageTemplates[$form] = $this->getModelMessage($model);
+
+        return $this;
+    }
 }

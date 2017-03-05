@@ -1,140 +1,261 @@
 <?php
 
-class Nip_Collection implements Countable, IteratorAggregate, ArrayAccess
-{
-    protected $_items = array();
-    protected $_index = 0;
+namespace Nip;
 
-    public function __construct($items = array())
+use ArrayAccess;
+use ArrayIterator;
+use Countable;
+use IteratorAggregate;
+
+/**
+ * Class Collection
+ * @package Nip
+ */
+class Collection implements Countable, IteratorAggregate, ArrayAccess
+{
+    protected $items = [];
+    protected $index = 0;
+
+    /**
+     * Collection constructor.
+     * @param array $items
+     */
+    public function __construct($items = [])
     {
         if (is_array($items)) {
-            $this->_items = $items;
-        } elseif ($items instanceof Nip_Collection) {
-            $this->_items = $items->toArray();
+            $this->items = $items;
+        } elseif ($items instanceof Collection) {
+            $this->items = $items->toArray();
         }
     }
 
+    /**
+     * @return array
+     */
+    public function toArray()
+    {
+        $return = $this->items;
+        reset($return);
+
+        return $return;
+    }
+
+    /**
+     * @return int
+     */
     public function count()
     {
-        return count($this->_items);
+        return count($this->items);
     }
 
+    /**
+     * @return ArrayIterator
+     */
     public function getIterator()
     {
-        return new ArrayIterator($this->_items);
+        return new ArrayIterator($this->items);
     }
 
-    public function offsetExists($index)
-    {
-        return in_array($index, array_keys($this->_items));
-    }
-
+    /**
+     * @param $index
+     * @return bool
+     */
     public function exists($index)
     {
         return $this->offsetExists($index);
     }
 
-    public function offsetGet($index)
+    /**
+     * @param mixed $index
+     * @return bool
+     */
+    public function offsetExists($index)
     {
-        return $this->offsetExists($index) ? $this->_items[$index] : null;
+        return in_array($index, array_keys($this->items));
     }
 
+    /**
+     * @param mixed $index
+     * @param mixed $value
+     */
     public function offsetSet($index, $value)
     {
         if (is_null($index)) {
-            $index = $this->_index++;
+            $index = $this->index++;
         }
-        $this->_items[$index] = $value;
+        $this->items[$index] = $value;
     }
 
+    /**
+     * @param mixed $index
+     */
     public function offsetUnset($index)
     {
         if ($this->offsetExists($index)) {
-            unset($this->_items[$index]);
+            unset($this->items[$index]);
         }
     }
 
-    public function rewind()
-    {
-        $this->_index = 0;
-        return reset($this->_items);
-    }
-
+    /**
+     * @return mixed
+     */
     public function end()
     {
-        $this->_index = count($this->_items);
-        return end($this->_items);
+        $this->index = count($this->items);
+        return end($this->items);
     }
 
+    /**
+     * @return mixed
+     */
     public function current()
     {
-        return current($this->_items);
+        return current($this->items);
     }
 
+    /**
+     * @return mixed
+     */
     public function next()
     {
-        $this->_index++;
-        return next($this->_items);
+        $this->index++;
+        return next($this->items);
     }
 
+    /**
+     * @param $value
+     * @param bool $index
+     * @return $this
+     */
     public function unshift($value, $index = false)
     {
         if (is_null($index)) {
-            $index = $this->_index++;
+            $index = $this->index++;
         }
 
-        $this->_items = array_reverse($this->_items, true);
-        $this->_items[$index] = $value;
-        $this->_items = array_reverse($this->_items, true);
+        $this->items = array_reverse($this->items, true);
+        $this->items[$index] = $value;
+        $this->items = array_reverse($this->items, true);
 
         return $this;
     }
 
-    public function toArray()
-    {
-        $return = $this->_items;
-        reset($return);
-        return $return;
-    }
-
+    /**
+     * @return $this
+     */
     public function clear()
     {
         $this->rewind();
-        $this->_items = array();
+        $this->items = [];
 
         return $this;
     }
 
-    public function keys()
+    /**
+     * @return mixed
+     */
+    public function rewind()
     {
-        return array_keys($this->_items);
+        $this->index = 0;
+
+        return reset($this->items);
     }
 
+    /**
+     * @return $this
+     */
     public function ksort()
     {
-        ksort($this->_items);
+        ksort($this->items);
         $this->rewind();
         return $this;
     }
 
+    /**
+     * @param $callback
+     * @return $this
+     */
     public function usort($callback)
     {
-        usort($this->_items, $callback);
+        usort($this->items, $callback);
         $this->rewind();
         return $this;
     }
 
+    /**
+     * @param $callback
+     * @return $this
+     */
     public function uasort($callback)
     {
-        uasort($this->_items, $callback);
+        uasort($this->items, $callback);
         $this->rewind();
         return $this;
     }
 
+    /**
+     * @return $this
+     */
     public function shuffle()
     {
-        shuffle($this->_items);
+        shuffle($this->items);
         $this->rewind();
         return $this;
+    }
+
+    /**
+     * @param $key
+     * @return $this
+     */
+    public function keyBy($key)
+    {
+        $oldItems = $this->toArray();
+        $newItems = [];
+        foreach ($oldItems as $item) {
+            $aKey = $item->{$key};
+            $newItems[$aKey] = $item;
+        }
+        $this->setItems($newItems);
+        return $this;
+    }
+
+    /**
+     * @param array $items
+     */
+    public function setItems($items)
+    {
+        $this->items = $items;
+    }
+
+    /**
+     * @param $index
+     * @return mixed|null
+     */
+    public function getNth($index)
+    {
+        $keys = $this->keys();
+        $index = $index - 1;
+        if (isset($keys[$index])) {
+            $key = $keys[$index];
+            return $this->offsetGet($key);
+        }
+        return null;
+    }
+
+    /**
+     * @return array
+     */
+    public function keys()
+    {
+        return array_keys($this->items);
+    }
+
+    /**
+     * @param mixed $index
+     * @return mixed|null
+     */
+    public function offsetGet($index)
+    {
+        return $this->offsetExists($index) ? $this->items[$index] : null;
     }
 }

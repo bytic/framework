@@ -7,6 +7,12 @@
       "email": "hello@gabrielsolomon.ro"
     }
   ],
+  "repositories": [
+    {
+      "type": "git",
+      "url": "https://github.com/ByTIC/RequestDetective.git"
+    }
+  ],
   "autoload": {
     "classmap": [
       "src"
@@ -19,13 +25,20 @@
   },
   "require": {
     "php": ">=5.5.0",
-    "container-interop/container-interop": "1.1.*",
+    "ByTIC/RequestDetective": "dev-develop",
+    "container-interop/container-interop": "^1.1",
     "nesbot/carbon": "^1.21",
-    "maximebf/debugbar": "1.*",
-    "monolog/monolog": "1.20.*"
+    "maximebf/debugbar": "^1.13",
+    "html2text/html2text": "^4.0",
+    "sendgrid/sendgrid": "^5.0",
+    "swiftmailer/swiftmailer": "^5.4",
+    "symfony/http-foundation": "^3.1",
+    "symfony/http-kernel": "^3.1",
+    "monolog/monolog": "^1.20",
+    "filp/whoops": "^2.1"
   },
   "require-dev": {
-    "codeception/codeception": "2.2.*",
-    "codeception/mockery-module": "0.2.*"
+    "codeception/codeception": "^2.2",
+    "codeception/mockery-module": "^0.2"
   }
 }

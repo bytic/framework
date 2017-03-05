@@ -2,28 +2,49 @@
 
 namespace Nip\Database\Metadata;
 
-class Cache extends \Nip\Cache\Manager
+use Nip\Cache\Manager as CacheManager;
+use Nip\Database\Connection;
+
+class Cache extends CacheManager
 {
 
-    protected $_ttl = 10*24*60*60;
+    protected $_ttl = 10 * 24 * 60 * 60;
     protected $_active = true;
     protected $_metadata;
 
     public function describeTable($table)
     {
-        return $this->get($table);
+        $cacheId = $this->getCacheId($table);
+
+        return $this->get($cacheId);
     }
 
-    public function reload($cacheId)
+    public function getCacheId($table)
     {
-        return $this->saveData($cacheId, $this->generate($cacheId));
+        return $this->getConnection()->getDatabase().'.'.$table;
     }
 
-    public function generate($cacheId)
+    /**
+     * @return Connection
+     */
+    public function getConnection()
     {
-        $data = $this->getMetadata()->getConnection()->describeTable($cacheId);
-        $this->_data[$cacheId] = $data;
-        return $data;
+        return $this->getMetadata()->getConnection();
+    }
+
+    /**
+     * @return Manager
+     */
+    public function getMetadata()
+    {
+        return $this->_metadata;
+    }
+
+    public function setMetadata($metadata)
+    {
+        $this->_metadata = $metadata;
+
+        return $this;
     }
 
     public function get($cacheId)
@@ -35,23 +56,22 @@ class Cache extends \Nip\Cache\Manager
         return $this->getData($cacheId);
     }
 
+    public function reload($cacheId)
+    {
+        return $this->saveData($cacheId, $this->generate($cacheId));
+    }
+
+    public function generate($cacheId)
+    {
+        $data = $this->getConnection()->describeTable($cacheId);
+        $this->_data[$cacheId] = $data;
+
+        return $data;
+    }
+
     public function cachePath()
     {
-        return parent::cachePath() . '/db-metadata/';
-    }
-
-    public function setMetadata($metadata)
-    {
-        $this->_metadata = $metadata;
-        return $this;
-    }
-
-    /**
-     * @return Data
-     */
-    public function getMetadata()
-    {
-        return $this->_metadata;
+        return parent::cachePath().'/db-metadata/';
     }
 
 }

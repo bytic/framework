@@ -2,6 +2,15 @@
 
 namespace Nip;
 
+use Nip\Config\ConfigAwareTrait;
+use Nip\Dispatcher\Dispatcher;
+use Nip\Dispatcher\DispatcherAwareTrait;
+use Nip\Http\Response\Response;
+use Nip\Http\Response\ResponseAwareTrait;
+use Nip\Utility\Traits\NameWorksTrait;
+use Nip_Flash_Messages as FlashMessages;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+
 /**
  * Class Controller
  * @package Nip
@@ -12,68 +21,116 @@ namespace Nip;
  */
 class Controller
 {
+    use NameWorksTrait;
+    use ConfigAwareTrait;
+    use DispatcherAwareTrait;
+    use ResponseAwareTrait;
 
-    protected $_dispatcher;
-    protected $_frontController;
+    protected $fullName = null;
 
-    protected $_fullName = null;
-    protected $_name = null;
-    protected $_action = null;
+    protected $name = null;
 
-    protected $_request;
-    protected $_config;
-    protected $_helpers = array();
+    protected $action = null;
 
+    /**
+     * @var Request
+     */
+    protected $request;
+
+    /**
+     * @var Helpers\AbstractHelper[]
+     */
+    protected $helpers = [];
+
+    /**
+     * Controller constructor.
+     */
     public function __construct()
     {
         $name = str_replace("Controller", "", get_class($this));
-        $this->_name = inflector()->unclassify($name);
+        $this->name = inflector()->unclassify($name);
     }
 
-    public function getFullName()
-    {
-        if ($this->_fullName === null) {
-            $this->_fullName = inflector()->unclassify($this->getClassName());
-
-        }
-        return $this->_fullName;
-    }
-
-    public function getClassName()
-    {
-        return str_replace("Controller", "", get_class($this));
-    }
-
-    public function getName()
-    {
-        if ($this->_name === null) {
-            $this->_name = $this->getFullName();
-
-        }
-        return $this->_name;
-    }
-
+    /**
+     * @param $name
+     * @param $arguments
+     * @return bool|mixed
+     */
     public function __call($name, $arguments)
     {
         if ($name === ucfirst($name)) {
             return $this->getHelper($name);
         }
 
-        return trigger_error("Call to undefined method $name", E_USER_ERROR);
+        return trigger_error("Call to undefined method [$name] in controller [{$this->getClassName()}]", E_USER_ERROR);
     }
 
+    /**
+     * @param $name
+     * @return Helpers\AbstractHelper
+     */
     public function getHelper($name)
     {
         return HelperBroker::get($name);
     }
 
+    /**
+     * @return string
+     */
+    public function getClassName()
+    {
+        return str_replace("Controller", "", get_class($this));
+    }
+
+    /**
+     * @param null|Request $request
+     * @return Response
+     */
     public function dispatch($request = null)
     {
         $request = $request ? $request : $this->getRequest();
         $this->populateFromRequest($request);
+
         return $this->dispatchAction($request->getActionName());
     }
 
+    /**
+     * Returns the request Object
+     * @return Request
+     */
+    public function getRequest()
+    {
+        if (!$this->request instanceof Request) {
+            $this->request = new Request();
+        }
+
+        return $this->request;
+    }
+
+    /**
+     * @param Request $request
+     * @return self
+     */
+    public function setRequest(Request $request)
+    {
+        $this->request = $request;
+
+        return $this;
+    }
+
+    /**
+     * @param Request $request
+     */
+    public function populateFromRequest(Request $request)
+    {
+        $this->name = $request->getControllerName();
+        $this->action = $request->getActionName();
+    }
+
+    /**
+     * @param bool $action
+     * @return Response
+     */
     public function dispatchAction($action = false)
     {
         $action = Dispatcher::formatActionName($action);
@@ -84,116 +141,26 @@ class Controller
 
                 $this->parseRequest();
                 $this->beforeAction();
-                $this->{$this->_action}();
+                $this->{$action}();
                 $this->afterAction();
-                return true;
+
+                return $this->getResponse();
             } else {
-                $this->getDispatcher()->throwError('Action [' . $action . '] is not valid for ' . get_class($this));
+                throw new NotFoundHttpException('Controller method [' . $action . '] not found for ' . get_class($this));
             }
-        } else {
-            trigger_error('No action specified', E_USER_ERROR);
         }
-        return false;
-    }
 
-    public function call($action = false, $controller = false, $module = false, $params = array())
-    {
-        $newRequest = $this->getRequest()->duplicateWithParams($action, $controller, $module, $params);
-
-        $controller = $this->getDispatcher()->generateController($newRequest);
-        $controller->setView($this->getView());
-        $controller->setRequest($newRequest);
-        $controller->populateFromRequest($newRequest);
-        return call_user_func_array(array($controller, $action), $params);
+        throw new NotFoundHttpException('No action specified for ' . get_class($this));
     }
 
     /**
-     * Returns the config Object
-     * @return \Nip_Config
+     * @param $action
+     * @return bool
      */
-    public function getConfig()
+    protected function validAction($action)
     {
-        if (!$this->_config instanceof \Nip_Config) {
-            $this->_config = \Nip_Config::instance();
-        }
-        return $this->_config;
+        return in_array($action, get_class_methods(get_class($this)));
     }
-
-    /**
-     * Returns the request Object
-     * @return Request
-     */
-    public function getRequest()
-    {
-        if (!$this->_request instanceof Request) {
-            $this->_request = new Request();
-        }
-        return $this->_request;
-    }
-
-    /**
-     * @param Request $request
-     * @return self
-     */
-    public function setRequest(Request $request)
-    {
-        $this->_request = $request;
-        return $this;
-    }
-
-    public function populateFromRequest(Request $request)
-    {
-        $this->_name = $request->getControllerName();
-        $this->_action = $request->getActionName();
-    }
-
-    /**
-     * Returns the dispatcher Object
-     * @return Dispatcher
-     */
-    public function getDispatcher()
-    {
-        return $this->_dispatcher;
-    }
-
-    /**
-     * @param Dispatcher $dispatcher
-     * @return self
-     */
-    public function setDispatcher(Dispatcher $dispatcher)
-    {
-        $this->_dispatcher = $dispatcher;
-        $this->_frontController = $dispatcher->getFrontController();
-        return $this;
-    }
-
-    /**
-     * Returns the dispatcher Object
-     * @return FrontController
-     */
-    public function getFrontController()
-    {
-        return $this->_frontController;
-    }
-
-    /**
-     * @param string $action
-     * @return self
-     */
-    public function setAction($action)
-    {
-        $this->_action = $action;
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getAction()
-    {
-        return $this->_action;
-    }
-
 
     /**
      * Called before action
@@ -219,8 +186,144 @@ class Controller
         return true;
     }
 
-    protected function validAction($action)
+    /**
+     * @param bool $action
+     * @param bool $controller
+     * @param bool $module
+     * @param array $params
+     * @return mixed
+     */
+    public function call($action = false, $controller = false, $module = false, $params = [])
     {
-        return in_array($action, get_class_methods(get_class($this)));
+        $newRequest = $this->getRequest()->duplicateWithParams($action, $controller, $module, $params);
+
+        $controller = $this->getDispatcher()->generateController($newRequest);
+        $controller = $this->prepareCallController($controller, $newRequest);
+
+        return call_user_func_array([$controller, $action], $params);
+    }
+
+    /**
+     * @param self $controller
+     * @param Request $newRequest
+     * @return Controller
+     */
+    protected function prepareCallController($controller, $newRequest)
+    {
+        $controller->setRequest($newRequest);
+        $controller->populateFromRequest($newRequest);
+
+        return $controller;
+    }
+
+    /**
+     * @return string
+     */
+    public function getAction()
+    {
+        return $this->action;
+    }
+
+    /**
+     * @param string $action
+     * @return self
+     */
+    public function setAction($action)
+    {
+        $this->action = $action;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getRootNamespace()
+    {
+        return $this->getApplication()->getRootNamespace();
+    }
+
+    /**
+     * @return Application
+     */
+    public function getApplication()
+    {
+        return app('kernel');
+    }
+
+    /**
+     * @param bool $action
+     * @param bool $controller
+     * @param bool $module
+     * @param array $params
+     */
+    protected function forward($action = false, $controller = false, $module = false, $params = [])
+    {
+        $this->getDispatcher()->forward($action, $controller, $module, $params);
+    }
+
+    /**
+     * @param $message
+     * @param $url
+     * @param string $type
+     * @param bool $name
+     */
+    protected function flashRedirect($message, $url, $type = 'success', $name = false)
+    {
+        $name = $name ? $name : $this->getName();
+        FlashMessages::instance()->add($name, $type, $message);
+        $this->redirect($url);
+    }
+
+    /**
+     * @return string
+     */
+    public function getName()
+    {
+        if ($this->name === null) {
+            $this->initName();
+        }
+
+        return $this->name;
+    }
+
+    /**
+     * @param string $name
+     */
+    public function setName($name)
+    {
+        $this->name = $name;
+    }
+
+    public function initName()
+    {
+        $this->setName($this->getFullName());
+    }
+
+    /**
+     * @return string
+     */
+    public function getFullName()
+    {
+        if ($this->fullName === null) {
+            $this->fullName = inflector()->unclassify($this->getClassName());
+        }
+
+        return $this->fullName;
+    }
+
+    /**
+     * @param $url
+     * @param null $code
+     */
+    protected function redirect($url, $code = null)
+    {
+        switch ($code) {
+            case '301':
+                header("HTTP/1.1 301 Moved Permanently");
+                break;
+        }
+        header("Location: ".$url);
+        exit();
     }
 }

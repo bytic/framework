@@ -1,6 +1,6 @@
 <?php
 
-namespace Nip\Tests\Records\Collections;
+namespace Nip\Tests\Unit\Records\Collections;
 
 use Nip\Records\Collections\Collection as RecordCollection;
 use Nip_Records;
@@ -42,10 +42,10 @@ class RecordCollectionTest extends \Codeception\TestCase\Test
 //		$this->_collection[] = $this->_joe;
 //		$this->_collection[] = $this->_mac;
 //		
-//		$this->assertEquals(2, count($this->_collection));
+//		static::assertEquals(2, count($this->_collection));
 //
 //		$this->_collection->delete();
-//		$this->assertEquals(0, count($this->_collection));
+//		static::assertEquals(0, count($this->_collection));
 //	}
 //
 //	public function testRemove()
@@ -56,12 +56,12 @@ class RecordCollectionTest extends \Codeception\TestCase\Test
 //		$this->_collection[] = $this->_joe;
 //		$this->_collection[] = $this->_mac;
 //
-//		$this->assertEquals(2, count($this->_collection));
+//		static::assertEquals(2, count($this->_collection));
 //
 //		$this->_collection->remove($this->_joe);
 //
-//		$this->assertEquals(1, count($this->_collection));
-//		$this->assertSame($this->_mac, $this->_collection->rewind());
+//		static::assertEquals(1, count($this->_collection));
+//		static::assertSame($this->_mac, $this->_collection->rewind());
 //	}
 //
 //	public function tearDown()

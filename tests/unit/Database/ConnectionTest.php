@@ -1,6 +1,6 @@
 <?php
 
-namespace Nip\Tests\Database;
+namespace Nip\Tests\Unit\Database;
 
 use Nip\Database\Connection;
 
@@ -16,28 +16,23 @@ class ConnectionTest extends \Codeception\TestCase\Test
      */
     protected $_object;
 
-    protected function _before()
-    {
-        $this->_object = new Connection();
-    }
-
     public function testNewAdapter()
     {
-        $this->assertInstanceOf('Nip\Database\Adapters\MySQLi', $this->_object->newAdapter('MySQLi'));
+        static::assertInstanceOf('Nip\Database\Adapters\MySQLi', $this->_object->newAdapter('MySQLi'));
     }
 
     public function testGetAdapterClass()
     {
-        $this->assertEquals('\Nip\Database\Adapters\MySQL', $this->_object->getAdapterClass('MySQL'));
-        $this->assertEquals('\Nip\Database\Adapters\MySQLi', $this->_object->getAdapterClass('MySQLi'));
+        static::assertEquals('\Nip\Database\Adapters\MySQL', $this->_object->getAdapterClass('MySQL'));
+        static::assertEquals('\Nip\Database\Adapters\MySQLi', $this->_object->getAdapterClass('MySQLi'));
     }
 
     public function testNewQueryProvider()
     {
-        $types = array('select', 'insert', 'delete');
-        $return = array();
+        $types = ['select', 'insert', 'delete'];
+        $return = [];
         foreach ($types as $type) {
-            $return[] = array($type, 'Nip\Database\Query\\'.ucfirst($type));
+            $return[] = [$type, 'Nip\Database\Query\\'.ucfirst($type)];
         }
         return $return;
     }
@@ -50,6 +45,11 @@ class ConnectionTest extends \Codeception\TestCase\Test
     public function testNewQuery($type, $class)
     {
         $query = $this->_object->newQuery($type);
-        $this->assertInstanceOf($class, $query);
+        static::assertInstanceOf($class, $query);
+    }
+
+    protected function _before()
+    {
+        $this->_object = new Connection();
     }
 }

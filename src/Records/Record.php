@@ -2,7 +2,11 @@
 
 namespace Nip\Records;
 
-class Record extends _Abstract\Row
+/**
+ * Class Record
+ * @package Nip\Records
+ */
+class Record extends AbstractModels\Record
 {
 
 }

@@ -2,11 +2,11 @@
 
 namespace Nip\DebugBar;
 
-use DebugBar\DebugBar as DebugBarGeneric;
 use DebugBar\Bridge\MonologCollector;
-
-use Nip\DebugBar\Formatter\MonologFormatter;
+use DebugBar\DebugBar as DebugBarGeneric;
 use Monolog\Logger as MonologLogger;
+use Nip\DebugBar\Formatter\MonologFormatter;
+use Nip\Http\Response\Response;
 
 abstract class DebugBar extends DebugBarGeneric
 {
@@ -37,6 +37,19 @@ abstract class DebugBar extends DebugBarGeneric
         }
     }
 
+    public function boot()
+    {
+        if ($this->booted) {
+            return;
+        }
+
+        $this->doBoot();
+    }
+
+    public function doBoot()
+    {
+    }
+
     /**
      * Disable the DebugBar
      */
@@ -57,33 +70,55 @@ abstract class DebugBar extends DebugBarGeneric
         return $this->enabled;
     }
 
-    public function boot()
-    {
-        if ($this->booted) {
-            return;
-        }
-
-        $this->doBoot();
-    }
-
-    public function doBoot()
-    {
-    }
-
+    /**
+     * @param MonologLogger $monolog
+     */
     public function addMonolog(MonologLogger $monolog)
     {
-        $colector = new MonologCollector($monolog);
-        $colector->setFormatter(new MonologFormatter());
-        $this->addCollector($colector);
+        $collector = new MonologCollector($monolog);
+        $collector->setFormatter(new MonologFormatter());
+        $this->addCollector($collector);
     }
 
     /**
      * Injects the web debug toolbar
+     * @param Response $response
      */
-    public function injectDebugBar()
+    public function injectDebugBar(Response $response)
+    {
+        $content = $response->getContent();
+
+        $renderer = $this->getJavascriptRenderer();
+        $renderedContent = $this->generateAssetsContent() . $renderer->render();
+
+        $pos = strripos($content, '</body>');
+        if (false !== $pos) {
+            $content = substr($content, 0, $pos) . $renderedContent . substr($content, $pos);
+        } else {
+            $content = $content . $renderedContent;
+        }
+        // Update the new content and reset the content length
+        $response->setContent($content);
+        $response->headers->remove('Content-Length');
+    }
+
+    protected function generateAssetsContent()
     {
         $renderer = $this->getJavascriptRenderer();
-        $renderedContent = $renderer->renderHead() . $renderer->render();
-        echo $renderedContent;
+        ob_start();
+        echo '<style>';
+        echo $renderer->dumpCssAssets();
+        echo '</style>';
+        echo '<script type="text/javascript">';
+        echo $renderer->dumpJsAssets();
+        echo '</script>';
+        echo '<script type="text/javascript">jQuery.noConflict(true);</script>';
+        $content = ob_get_clean();
+
+        if (defined('FONTS_URL')) {
+            $content = str_replace('../fonts/', FONTS_URL, $content);
+        }
+        return $content;
     }
+
 }

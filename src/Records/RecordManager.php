@@ -2,7 +2,10 @@
 
 namespace Nip\Records;
 
-class RecordManager extends _Abstract\Table
+/**
+ * Class RecordManager
+ * @package Nip\Records
+ */
+class RecordManager extends AbstractModels\RecordManager
 {
-
 }

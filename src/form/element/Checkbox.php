@@ -1,31 +1,32 @@
 <?php
-class Nip_Form_Element_Checkbox extends Nip_Form_Element_Input_Abstract {
+
+class Nip_Form_Element_Checkbox extends Nip_Form_Element_Input_Abstract
+{
 
     protected $_type = 'checkbox';
 
-    public function init() {
+    public function init()
+    {
         parent::init();
         $this->setAttrib('type', 'checkbox');
     }
 
-    public function getDataFromRequest($request) {
+    /**
+     * @param $request
+     * @return $this
+     */
+    public function getDataFromRequest($request)
+    {
         $this->setChecked($request != null);
         return parent::getDataFromRequest($request);
     }
 
-    public function getDataFromModel($value) {
-        $inputValue = $this->getValue();
-        if ($inputValue == null && $value) {
-            $this->setChecked(true);
-        }
-        return parent::getDataFromModel($data);
-    }
-
-    public function isChecked() {
-        return $this->getAttrib('checked') == 'checked';
-    }
-
-    public function setChecked($checked) {
+    /**
+     * @param $checked
+     * @return $this
+     */
+    public function setChecked($checked)
+    {
         if ($checked === true) {
             $this->setAttrib('checked', 'checked');
         } else {
@@ -34,4 +35,24 @@ class Nip_Form_Element_Checkbox extends Nip_Form_Element_Input_Abstract {
         return $this;
     }
 
+    /**
+     * @param $data
+     * @return $this
+     */
+    public function getDataFromModel($value)
+    {
+        $inputValue = $this->getValue();
+        if ($inputValue == null && $value) {
+            $this->setChecked(true);
+        }
+        return parent::getDataFromModel($value);
+    }
+
+    /**
+     * @return bool
+     */
+    public function isChecked()
+    {
+        return $this->getAttrib('checked') == 'checked';
+    }
 }

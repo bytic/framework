@@ -2,29 +2,48 @@
 
 namespace Nip\Records;
 
-use Nip\Records\_Abstract\Table as Records;
+use Nip\Records\AbstractModels\RecordManager as Records;
 
-class CacheManager extends \Nip\Cache\Manager {
+/**
+ * Class CacheManager
+ * @package Nip\Records
+ */
+class CacheManager extends \Nip\Cache\Manager
+{
 
     /**
      * @var Records
      */
     protected $_manager;
 
-    public function  __construct()
+    /**
+     * CacheManager constructor.
+     */
+    public function __construct()
     {
-        $this->_active = (\Nip\FrontController::instance()->getRequest()->getModuleName() == 'default');
+        $this->_active = (app('kernel')->getRequest()->getModuleName() == 'default');
     }
 
+    /**
+     * @param $cacheId
+     * @return string
+     */
+    public function filePath($cacheId)
+    {
+        $cacheId = $this->getCacheId($cacheId);
+
+        return $this->cachePath().$cacheId.'.php';
+    }
 
     /**
-     * @param Records $manager
-     * @return $this
+     * @param bool $type
+     * @return string
      */
-    public function setManager($manager)
+    public function getCacheId($type = false)
     {
-        $this->_manager = $manager;
-        return $this;
+        $cacheId = $this->getManager()->getController().'-'.$type;
+
+        return $cacheId;
     }
 
     /**
@@ -35,19 +54,22 @@ class CacheManager extends \Nip\Cache\Manager {
         return $this->_manager;
     }
 
-    public function getCacheId($type = false)
+    /**
+     * @param Records $manager
+     * @return $this
+     */
+    public function setManager($manager)
     {
-        $cacheId = $this->getManager()->getController() . '-' . $type;
-        return $cacheId;
+        $this->_manager = $manager;
+
+        return $this;
     }
 
-    public function filePath($cacheId) {
-        $cacheId = $this->getCacheId($cacheId);
-        return $this->cachePath() . $cacheId . '.php';
+    /**
+     * @return string
+     */
+    public function cachePath()
+    {
+        return parent::cachePath().'/records/';
     }
-
-    public function cachePath() {
-        return parent::cachePath() . '/records/';
-    }
-
 }

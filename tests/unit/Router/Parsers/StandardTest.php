@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Nip\Tests\Router\Parsers;
+namespace Nip\Tests\Unit\Router\Parsers;
 
 use Nip\Router\Parser\Standard;
 
@@ -42,47 +42,47 @@ class StandardTest extends  \Codeception\TestCase\Test
 //            'action' => 'ipsum',
 //            'company' => 'dolo&rem',
 //        );
-//		$this->assertEquals('lorem/ipsum?company=dolo%26rem', $this->object->assemble($params));
+//		static::assertEquals('lorem/ipsum?company=dolo%26rem', $this->object->assemble($params));
 //
 //        $this->object->setMap('admin/:controller/:action');
-//		$this->assertEquals('admin/lorem/ipsum?company=dolo%26rem', $this->object->assemble($params));
+//		static::assertEquals('admin/lorem/ipsum?company=dolo%26rem', $this->object->assemble($params));
 //
 //        unset ($params['action']);
-//		$this->assertEquals('admin/lorem/?company=dolo%26rem', $this->object->assemble($params));
+//		static::assertEquals('admin/lorem/?company=dolo%26rem', $this->object->assemble($params));
 //    }
 //
 //    public function testMatch()
 //    {
-//		$this->assertFalse($this->object->match('shop/category_cast/asdasd'));
-//		$this->assertTrue($this->object->match('shop/category_cast/'));
+//		static::assertFalse($this->object->match('shop/category_cast/asdasd'));
+//		static::assertTrue($this->object->match('shop/category_cast/'));
 //
-//		$this->assertTrue($this->object->match('shop/cart'));
-//		$this->assertEquals(array('controller' => 'shop', 'action' => 'cart'), $this->object->getParams());
+//		static::assertTrue($this->object->match('shop/cart'));
+//		static::assertEquals(array('controller' => 'shop', 'action' => 'cart'), $this->object->getParams());
 //
-//		$this->assertTrue($this->object->match('shop/'));
-//		$this->assertEquals(array('controller' => 'shop', 'action' => ''), $this->object->getParams());
+//		static::assertTrue($this->object->match('shop/'));
+//		static::assertEquals(array('controller' => 'shop', 'action' => ''), $this->object->getParams());
 //
-//		$this->assertTrue($this->object->match('shop'));
-//		$this->assertEquals(array('controller' => 'shop', 'action' => ''), $this->object->getParams());
+//		static::assertTrue($this->object->match('shop'));
+//		static::assertEquals(array('controller' => 'shop', 'action' => ''), $this->object->getParams());
 //    }
 //
 //    public function testMatchCustom()
 //    {
 //        $this->object->setMap('admin/:controller/:action');
 //        
-//		$this->assertFalse($this->object->match('shop/category_cast/asdasd'));
-//		$this->assertFalse($this->object->match('shop/category_cast/'));
+//		static::assertFalse($this->object->match('shop/category_cast/asdasd'));
+//		static::assertFalse($this->object->match('shop/category_cast/'));
 //
-//		$this->assertFalse($this->object->match('admin/test/asd/category_cast/'));
+//		static::assertFalse($this->object->match('admin/test/asd/category_cast/'));
 //
-//		$this->assertTrue($this->object->match('admin/shop/cart'));
-//		$this->assertEquals(array('controller' => 'shop', 'action' => 'cart'), $this->object->getParams());
+//		static::assertTrue($this->object->match('admin/shop/cart'));
+//		static::assertEquals(array('controller' => 'shop', 'action' => 'cart'), $this->object->getParams());
 //
-//		$this->assertTrue($this->object->match('admin/shop/'));
-//		$this->assertEquals(array('controller' => 'shop', 'action' => ''), $this->object->getParams());
+//		static::assertTrue($this->object->match('admin/shop/'));
+//		static::assertEquals(array('controller' => 'shop', 'action' => ''), $this->object->getParams());
 //
-//		$this->assertTrue($this->object->match('admin/shop'));
-//		$this->assertEquals(array('controller' => 'shop', 'action' => ''), $this->object->getParams());
+//		static::assertTrue($this->object->match('admin/shop'));
+//		static::assertEquals(array('controller' => 'shop', 'action' => ''), $this->object->getParams());
 //    }
 
 

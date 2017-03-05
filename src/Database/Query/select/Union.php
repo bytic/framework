@@ -28,8 +28,8 @@ class Union extends Select
             $query .= " ORDER BY $order";
         }
 
-        if (!empty($this->_parts['limit'])) {
-            $query .= " LIMIT {$this->_parts['limit']}";
+        if (!empty($this->parts['limit'])) {
+            $query .= " LIMIT {$this->parts['limit']}";
         }
 
         return $query;

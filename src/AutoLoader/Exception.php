@@ -2,7 +2,7 @@
 
 namespace Nip\AutoLoader;
 
-use Exception as ExceptionRoot;
+use Nip\Logger\Exception as ExceptionRoot;
 
 class Exception extends ExceptionRoot
 {

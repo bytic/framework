@@ -1,11 +1,10 @@
 <?php
 
-namespace Nip\Tests\Records\Relations;
+namespace Nip\Tests\Unit\Records\Relations;
 
-use Nip\Records\Relations\BelongsTo;
 use Mockery as m;
-use Nip\Records\RecordManager as Records;
 use Nip\Records\Record;
+use Nip\Records\Relations\BelongsTo;
 
 class BelongsToTest extends \Codeception\TestCase\Test
 {
@@ -18,6 +17,11 @@ class BelongsToTest extends \Codeception\TestCase\Test
      * @var BelongsTo
      */
     protected $_object;
+
+    public function testInitResults()
+    {
+        static::assertSame($this->_user, $this->_object->getResults());
+    }
 
     protected function _before()
     {
@@ -38,16 +42,10 @@ class BelongsToTest extends \Codeception\TestCase\Test
         $this->_object->setItem($article);
     }
 
-    protected function _after()
-    {
-    }
-
     // tests
 
-
-    public function testInitResults()
+    protected function _after()
     {
-        $this->assertSame($this->_user, $this->_object->getResults());
     }
 
 }

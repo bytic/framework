@@ -2,34 +2,26 @@
 
 namespace Nip\Database;
 
-use Nip\Bootstrap as Bootstrap;
+use Nip\Application as Bootstrap;
 
+/**
+ * Class Manager
+ * @package Nip\Database
+ */
 class Manager
 {
 
     /**
      * @var Bootstrap
      */
-    protected $_bootstrap;
+    protected $bootstrap;
+
+    protected $connections = [];
 
     /**
-     * @return Bootstrap
+     * @param $config
+     * @return Connection
      */
-    public function getBootstrap()
-    {
-        return $this->_bootstrap;
-    }
-
-    /**
-     * @param Bootstrap $bootstrap
-     */
-    public function setBootstrap($bootstrap)
-    {
-        $this->_bootstrap = $bootstrap;
-    }
-
-    protected $_connections = array();
-
     public function newConnectionFromConfig($config)
     {
         $connection = $this->createNewConnection(
@@ -41,6 +33,14 @@ class Manager
         return $connection;
     }
 
+    /**
+     * @param $adapter
+     * @param $host
+     * @param $user
+     * @param $password
+     * @param $database
+     * @return Connection
+     */
     public function createNewConnection($adapter, $host, $user, $password, $database)
     {
 
@@ -53,9 +53,9 @@ class Manager
             $connection->connect($host, $user, $password, $database);
             $this->initNewConnection($connection);
 
-        } catch (Nip_DB_Exception $e) {
+        } catch (Exception $e) {
             echo '<h1>Error connecting to database</h1>';
-            if (Nip_Staging::instance()->getStage()->inTesting()) {
+            if (app()->get('staging')->getStage()->inTesting()) {
                 echo '<h4>' . $e->getMessage() . '</h4>';
                 $e->log();
             }
@@ -65,6 +65,17 @@ class Manager
         return $connection;
     }
 
+    /**
+     * @return Connection
+     */
+    public function newConnection()
+    {
+        return new \Nip\Database\Connection();
+    }
+
+    /**
+     * @param $connection
+     */
     public function initNewConnection($connection)
     {
         if ($this->getBootstrap()->getDebugBar()->isEnabled()) {
@@ -72,9 +83,19 @@ class Manager
         }
     }
 
-    public function newConnection()
+    /**
+     * @return Bootstrap
+     */
+    public function getBootstrap()
     {
-        return new \Nip\Database\Connection();
+        return $this->bootstrap;
     }
 
+    /**
+     * @param Bootstrap $bootstrap
+     */
+    public function setBootstrap($bootstrap)
+    {
+        $this->bootstrap = $bootstrap;
+    }
 }
