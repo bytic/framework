@@ -29,6 +29,8 @@ class RoutesServiceProvider extends AbstractSignatureServiceProvider implements 
 
     public function loadRoutes()
     {
+        $folder = app('app')->basePath() . DIRECTORY_SEPARATOR . 'routes';
+        require $folder . DIRECTORY_SEPARATOR . 'routes.php';
     }
 
     /**

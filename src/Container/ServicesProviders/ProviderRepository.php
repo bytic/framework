@@ -2,10 +2,10 @@
 
 namespace Nip\Container\ServiceProviders;
 
-use League\Container\ServiceProvider\BootableServiceProviderInterface;
 use Nip\Container\ContainerAwareInterface;
 use Nip\Container\ContainerAwareTrait;
 use Nip\Container\ServiceProviders\Providers\AbstractServiceProvider;
+use Nip\Container\ServiceProviders\Providers\BootableServiceProviderInterface;
 use Nip\Container\ServiceProviders\Providers\ServiceProviderInterface;
 
 /**

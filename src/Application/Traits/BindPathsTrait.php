@@ -74,7 +74,7 @@ trait BindPathsTrait
      */
     public function path()
     {
-        return $this->basePath . DIRECTORY_SEPARATOR . 'app';
+        return $this->basePath . DIRECTORY_SEPARATOR . 'application';
     }
 
     /**
