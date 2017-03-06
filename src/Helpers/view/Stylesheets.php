@@ -94,7 +94,7 @@ class StyleSheets extends AbstractHelper
         if (preg_match('/https?:\/\//', $source)) {
             return $source;
         } else {
-            return asset('/stylesheets' . $source . '.css');
+            return asset('/stylesheets/' . $source . '.css');
         }
     }
 }

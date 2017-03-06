@@ -128,6 +128,6 @@ class Scripts extends AbstractHelper
      */
     public function buildURL($source)
     {
-        return asset('/scripts' . $source . '.js');
+        return asset('/scripts/' . $source . '.js');
     }
 }
