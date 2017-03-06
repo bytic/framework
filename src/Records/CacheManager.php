@@ -21,7 +21,7 @@ class CacheManager extends \Nip\Cache\Manager
      */
     public function __construct()
     {
-        $this->_active = (app('kernel')->getRequest()->getModuleName() == 'default');
+        $this->_active = (request()->getModuleName() == 'default');
     }
 
     /**

@@ -5,6 +5,10 @@ namespace Nip\Cache;
 use Nip\Filesystem\Exception\IOException;
 use Nip_File_System as FileSystem;
 
+/**
+ * Class Manager
+ * @package Nip\Cache
+ */
 class Manager
 {
 
@@ -52,7 +56,7 @@ class Manager
 
     public function filePath($cacheId)
     {
-        return $this->cachePath().$cacheId.'.php';
+        return $this->cachePath() . $cacheId . '.php';
     }
 
     public function cachePath()

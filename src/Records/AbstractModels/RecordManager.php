@@ -840,7 +840,7 @@ abstract class RecordManager
      */
     public function getRequest()
     {
-        return app('kernel')->getRequest();
+        return request();
     }
 
     /**

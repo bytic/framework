@@ -248,7 +248,7 @@ class Controller
      */
     public function getApplication()
     {
-        return app('kernel');
+        return app('app');
     }
 
     /**
