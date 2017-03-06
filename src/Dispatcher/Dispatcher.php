@@ -179,6 +179,7 @@ class Dispatcher
      */
     protected function isValidControllerNamespace($namespaceClass)
     {
+        return class_exists($namespaceClass);
         $loader = $this->getAutoloader()->getPsr4ClassLoader();
         $loader->load($namespaceClass);
         if ($loader->isLoaded($namespaceClass)) {
