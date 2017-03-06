@@ -20,12 +20,12 @@ if (!function_exists('app')) {
     }
 }
 
-if (! function_exists('env')) {
+if (!function_exists('env')) {
     /**
      * Gets the value of an environment variable.
      *
-     * @param  string  $key
-     * @param  mixed   $default
+     * @param  string $key
+     * @param  mixed $default
      * @return mixed
      */
     function env($key, $default = null)
@@ -54,14 +54,14 @@ if (! function_exists('env')) {
         return $value;
     }
 }
-if (! function_exists('config')) {
+if (!function_exists('config')) {
     /**
      * Get / set the specified configuration value.
      *
      * If an array is passed as the key, we will assume you want to set an array of values.
      *
-     * @param  array|string  $key
-     * @param  mixed  $default
+     * @param  array|string $key
+     * @param  mixed $default
      * @return mixed
      */
     function config($key = null, $default = null)
@@ -75,6 +75,27 @@ if (! function_exists('config')) {
         return app('config')->get($key, $default);
     }
 }
+
+if (!function_exists('request')) {
+    /**
+     * Get an instance of the current request or an input item from the request.
+     *
+     * @param  array|string $key
+     * @param  mixed $default
+     * @return Nip\Request|string|array
+     */
+    function request($key = null, $default = null)
+    {
+        $request = app('request');
+        if (is_null($key)) {
+            return $request;
+        }
+        $value = $request->get($key);
+        return $value ? $value : $default;
+    }
+}
+
+
 if (!function_exists("pr")) {
 
     function pr($mixed)
@@ -229,7 +250,7 @@ function max_upload()
     $multiplier = ($unit == 'M' ? 1048576 : ($unit == 'K' ? 1024 : ($unit == 'G' ? 1073741824 : 1)));
     $upload_max_filesize = ((int)$upload_max_filesize) * $multiplier;
 
-    return round((min($post_max_size, $upload_max_filesize) / 1048576), 2).'MB';
+    return round((min($post_max_size, $upload_max_filesize) / 1048576), 2) . 'MB';
 }
 
 function valid_url($input)
@@ -389,7 +410,7 @@ function valid_cnp($cnp)
 if (!function_exists("money_format")) {
     function money_format($format, $number)
     {
-        $regex = '/%((?:[\^!\-]|\+|\(|\=.)*)([0-9]+)?'.
+        $regex = '/%((?:[\^!\-]|\+|\(|\=.)*)([0-9]+)?' .
             '(?:#([0-9]+))?(?:\.([0-9]+))?([in%])/';
         if (setlocale(LC_MONETARY, 0) == 'C') {
             setlocale(LC_MONETARY, '');
@@ -442,8 +463,8 @@ if (!function_exists("money_format")) {
                     break;
             }
             if (!$flags['nosimbol']) {
-                $currency = $cprefix.
-                    ($conversion == 'i' ? $locale['int_curr_symbol'] : $locale['currency_symbol']).
+                $currency = $cprefix .
+                    ($conversion == 'i' ? $locale['int_curr_symbol'] : $locale['currency_symbol']) .
                     $csuffix;
             } else {
                 $currency = '';
@@ -456,13 +477,13 @@ if (!function_exists("money_format")) {
 
             $n = strlen($prefix) + strlen($currency) + strlen($value[0]);
             if ($left > 0 && $left > $n) {
-                $value[0] = str_repeat($flags['fillchar'], $left - $n).$value[0];
+                $value[0] = str_repeat($flags['fillchar'], $left - $n) . $value[0];
             }
             $value = implode($locale['mon_decimal_point'], $value);
             if ($locale["{$letter}_cs_precedes"]) {
-                $value = $prefix.$currency.$space.$value.$suffix;
+                $value = $prefix . $currency . $space . $value . $suffix;
             } else {
-                $value = $prefix.$value.$space.$currency.$suffix;
+                $value = $prefix . $value . $space . $currency . $suffix;
             }
             if ($width > 0) {
                 $value = str_pad($value, $width, $flags['fillchar'], $flags['isleft'] ?
@@ -484,7 +505,8 @@ if (!function_exists("json_decode")) {
         $n = 0,
         $state = 0,
         $waitfor = 0
-    ) {
+    )
+    {
 
         #-- result var
         $val = null;
@@ -521,9 +543,9 @@ if (!function_exists("json_decode")) {
                         if ($hex < 0x80) { // plain ASCII character
                             $val .= chr($hex);
                         } elseif ($hex < 0x800) {   // 110xxxxx 10xxxxxx
-                            $val .= chr(0xC0 + $hex >> 6).chr(0x80 + $hex & 63);
+                            $val .= chr(0xC0 + $hex >> 6) . chr(0x80 + $hex & 63);
                         } elseif ($hex <= 0xFFFF) { // 1110xxxx 10xxxxxx 10xxxxxx
-                            $val .= chr(0xE0 + $hex >> 12).chr(0x80 + ($hex >> 6) & 63).chr(0x80 + $hex & 63);
+                            $val .= chr(0xE0 + $hex >> 12) . chr(0x80 + ($hex >> 6) & 63) . chr(0x80 + $hex & 63);
                         }
                         // other ranges, like 0x1FFFFF=0xF0, 0x3FFFFFF=0xF8 and 0x7FFFFFFF=0xFC do not apply
                     }
@@ -531,7 +553,7 @@ if (!function_exists("json_decode")) {
                     // no escape, just a redundant backslash
                     //@COMPAT: we could throw an exception here
                     else {
-                        $val .= "\\".$c;
+                        $val .= "\\" . $c;
                     }
                 } // end of string
                 elseif ($c == '"') {
@@ -630,5 +652,5 @@ function _htmlDistance($distance)
     $decimalPosition = strrpos($distance, '.');
     $decimal = $decimalPosition === false ? false : substr($distance, $decimalPosition);
 
-    return intval($distance).($decimal ? '<small>'.$decimal.'</small>' : '');
+    return intval($distance) . ($decimal ? '<small>' . $decimal . '</small>' : '');
 }

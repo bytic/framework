@@ -737,7 +737,7 @@ abstract class RecordManager
         $params['action'] = ($params['action'] == 'index') ? false : $params['action'];
 
         $params['controller'] = $controller ? $controller : $this->getController();
-        $params['module'] = $module ? $module : Request::instance()->getModuleName();
+        $params['module'] = $module ? $module : request()->getModuleName();
 
         $routeName = $params['module'] . '.' . $params['controller'] . '.' . $params['action'];
         if ($this->Url()->getRouter()->hasRoute($routeName)) {

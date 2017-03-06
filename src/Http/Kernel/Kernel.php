@@ -90,6 +90,7 @@ class Kernel implements KernelInterface
     public function handle(SymfonyRequest $request, $type = self::MASTER_REQUEST, $catch = true)
     {
         try {
+            $this->getApplication()->share('request', $request);
             return $this->handleRaw($request, $type);
         } catch (Exception $e) {
             $this->reportException($e);
@@ -100,6 +101,16 @@ class Kernel implements KernelInterface
         }
 //        event(new Events\RequestHandled($request, $response));
         return $response;
+    }
+
+    /**
+     * Get the application instance.
+     *
+     * @return Application
+     */
+    public function getApplication()
+    {
+        return $this->app;
     }
 
     /**
@@ -118,16 +129,6 @@ class Kernel implements KernelInterface
         return (
         new Dispatcher($this->middleware, $this->getApplication()->getContainer())
         )->dispatch($request);
-    }
-
-    /**
-     * Get the application instance.
-     *
-     * @return Application
-     */
-    public function getApplication()
-    {
-        return $this->app;
     }
 
     /**
