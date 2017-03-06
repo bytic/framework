@@ -20,10 +20,13 @@ class LoggerServiceProvider extends AbstractSignatureServiceProvider
     {
         $this->getContainer()->share('log', function () {
             $logger = $this->createLogger();
+            $logger->init();
             $this->getContainer()->get(ErrorHandler::class)->setDefaultLogger($logger);
 
-            return $this->createLogger();
+            return $logger;
         });
+
+        $this->getContainer()->share(Monolog::class, $this->createMonolog());
     }
 
     /**
@@ -33,15 +36,24 @@ class LoggerServiceProvider extends AbstractSignatureServiceProvider
      */
     public function createLogger()
     {
-        $log = new Writer(
-            new Monolog($this->channel())
-        );
+        $log = $this->getContainer()->get(Writer::class);
+
 //        if ($this->app->hasMonologConfigurator()) {
 //            call_user_func($this->app->getMonologConfigurator(), $log->getMonolog());
 //        } else {
 //            $this->configureHandler($log);
 //        }
         return $log;
+    }
+
+    /**
+     * Create the Monolog.
+     *
+     * @return Monolog
+     */
+    protected function createMonolog()
+    {
+        return new Monolog($this->channel());
     }
 
     /**
