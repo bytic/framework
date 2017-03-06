@@ -10,12 +10,23 @@ use Nip\Mvc\Modules;
  */
 trait ModuleView
 {
+
+    /**
+     * @return string
+     */
+    protected function generateBasePath()
+    {
+        return $this->generateModuleBasePath();
+    }
+
+    /**
+     * @return string
+     */
     public function generateModuleBasePath()
     {
         /** @var Modules $modules */
         $modules = app('mvc.modules');
-        $path = $modules->getViewPath($this->getModuleName());
-        $this->setBasePath($path);
+        return $modules->getViewPath($this->getModuleName());
     }
 
     /**

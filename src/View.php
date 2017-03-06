@@ -31,21 +31,6 @@ class View
     protected $basePath = null;
 
     /**
-     * Singleton
-     *
-     * @return self
-     */
-    public static function instance()
-    {
-        static $instance;
-        if (!($instance instanceof self)) {
-            $instance = new self();
-        }
-
-        return $instance;
-    }
-
-    /**
      * @param $name
      * @param $arguments
      * @return mixed|null
