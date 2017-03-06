@@ -1,6 +1,6 @@
 <?php
 
-namespace Nip\View;
+namespace Nip\View\Traits;
 
 use Nip\Mvc\Modules;
 
