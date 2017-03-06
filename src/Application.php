@@ -10,7 +10,6 @@ use Nip\AutoLoader\AutoLoaderAwareTrait;
 use Nip\AutoLoader\AutoLoaderServiceProvider;
 use Nip\Container\ContainerAliasBindingsTrait;
 use Nip\Container\ServiceProviders\ServiceProviderAwareTrait;
-use Nip\Database\DatabaseManager;
 use Nip\Database\DatabaseServiceProvider;
 use Nip\Dispatcher\DispatcherAwareTrait;
 use Nip\Dispatcher\DispatcherServiceProvider;
@@ -63,11 +62,6 @@ class Application implements ApplicationInterface
     protected $request = null;
 
     /**
-     * @var null|Session
-     */
-    protected $sessionManager = null;
-
-    /**
      * Create a new Illuminate application instance.
      *
      * @param  string|null $basePath
@@ -82,58 +76,6 @@ class Application implements ApplicationInterface
     }
 
     public function setupAutoLoaderPaths()
-    {
-    }
-
-    public function setupURLConstants()
-    {
-        $this->determineBaseURL();
-        define('CURRENT_URL', $this->getRequest()->getHttp()->getUri());
-    }
-
-    protected function determineBaseURL()
-    {
-        $stage = $this->getStaging()->getStage();
-        $pathInfo = $this->getRequest()->getHttp()->getBaseUrl();
-
-        $baseURL = $stage->getHTTP() . $stage->getHost() . $pathInfo;
-        define('BASE_URL', $baseURL);
-    }
-
-    public function setup()
-    {
-        $this->setupDatabase();
-        $this->setupSession();
-        $this->setupTranslation();
-        $this->setupLocale();
-        $this->boot();
-    }
-
-    public function setupDatabase()
-    {
-        $stageConfig = $this->getStaging()->getStage()->getConfig();
-        $dbManager = new DatabaseManager();
-        $dbManager->setBootstrap($this);
-
-        $connection = $dbManager->newConnectionFromConfig($stageConfig->get('DB'));
-        $this->share('database', $connection);
-
-//        if ($this->getDebugBar()->isEnabled()) {
-//            $adapter = $connection->getAdapter();
-//            $this->getDebugBar()->initDatabaseAdapter($adapter);
-//        }
-    }
-
-    public function setupTranslation()
-    {
-        $this->initLanguages();
-    }
-
-    public function initLanguages()
-    {
-    }
-
-    public function setupLocale()
     {
     }
 

@@ -18,6 +18,7 @@
       "src"
     ],
     "files": [
+      "src/functions/application.php",
       "src/functions/common.php",
       "src/functions/input.php",
       "src/functions/flash.php"

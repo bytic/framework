@@ -42,19 +42,17 @@ class RouterServiceProvider extends AbstractSignatureServiceProvider
      */
     protected function registerUrlGenerator()
     {
-        $this->getContainer()->share('url', function ($app) {
-
-            $routes = $app['router']->getRoutes();
+        $this->getContainer()->share('url', function () {
+            $routes = app('router')->getRoutes();
 
             // The URL generator needs the route collection that exists on the router.
             // Keep in mind this is an object, so we're passing by references here
             // and all the registered routes will be available to the generator.
-            $app->instance('routes', $routes);
+            app()->share('routes', $routes);
 
             $url = new UrlGenerator(
-                $routes, $app->rebinding(
-                'request', $this->requestRebinder()
-            )
+                $routes,
+                request()
             );
 
             // If the route collection is "rebound", for example, when the routes stay

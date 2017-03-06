@@ -2,10 +2,20 @@
 
 namespace Nip\Utility;
 
+/**
+ * Class Text
+ * @package Nip\Utility
+ */
 class Text
 {
 
-    public static function toAscii($str, $replace = array(), $delimiter = '-')
+    /**
+     * @param $str
+     * @param array $replace
+     * @param string $delimiter
+     * @return mixed|string
+     */
+    public static function toAscii($str, $replace = [], $delimiter = '-')
     {
         if (!empty($replace)) {
             $str = str_replace((array)$replace, ' ', $str);
