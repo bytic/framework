@@ -3,6 +3,7 @@
 namespace Nip\I18n;
 
 use Nip\I18n\Translator\Backend\AbstractBackend;
+use Nip\Request;
 
 /**
  * Class Translator
@@ -10,10 +11,19 @@ use Nip\I18n\Translator\Backend\AbstractBackend;
  */
 class Translator
 {
-
+    /**
+     * @var bool
+     */
     public $defaultLanguage = false;
+
+    /**
+     * @var bool|string
+     */
     public $selectedLanguage = false;
 
+    /**
+     * @var array
+     */
     protected $languageCodes = [
         'en' => 'en_US',
     ];
@@ -23,6 +33,9 @@ class Translator
      */
     protected $backend;
 
+    /**
+     * @var Request
+     */
     protected $request;
 
     /**
@@ -55,11 +68,6 @@ class Translator
         return $this;
     }
 
-    public function getLanguages()
-    {
-        return $this->backend->getLanguages();
-    }
-
     /**
      * @param $lang
      * @return mixed|string
@@ -83,15 +91,11 @@ class Translator
         if (!$this->selectedLanguage) {
             $language = false;
 
-            if (isset($_SESSION['language'])) {
+            if (isset($_SESSION['language']) && $this->isValidLanguage($_SESSION['language'])) {
                 $language = $_SESSION['language'];
             }
 
-            if (isset($_GET['language'])) {
-                $language = $_GET['language'];
-            }
-
-            if ($this->getRequest()->language) {
+            if ($this->getRequest()->language && $this->isValidLanguage($this->getRequest()->language)) {
                 $language = $this->getRequest()->language;
             }
 
@@ -104,6 +108,23 @@ class Translator
         }
 
         return $this->selectedLanguage;
+    }
+
+    /**
+     * @param $lang
+     * @return bool
+     */
+    public function isValidLanguage($lang)
+    {
+        return in_array($lang, $this->getLanguages());
+    }
+
+    /**
+     * @return array
+     */
+    public function getLanguages()
+    {
+        return $this->backend->getLanguages();
     }
 
     /**

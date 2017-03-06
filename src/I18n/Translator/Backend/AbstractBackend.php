@@ -16,7 +16,10 @@ abstract class AbstractBackend
      */
     protected $translator = null;
 
-    protected $languages;
+    /**
+     * @var array
+     */
+    protected $languages = [];
 
     /**
      * @return Translator
@@ -38,11 +41,18 @@ abstract class AbstractBackend
         $this->translator = $translator;
     }
 
+    protected function initTranslator()
+    {
+    }
+
     public function initI18n()
     {
         $this->setTranslator(Translator::instance());
     }
 
+    /**
+     * @return array
+     */
     public function getLanguages()
     {
         return $this->languages;
