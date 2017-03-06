@@ -6,7 +6,6 @@ use Nip\Dispatcher\Dispatcher;
  */
 class Nip_Helper_Url extends Nip\Helpers\AbstractHelper
 {
-
     use \Nip\Router\RouterAwareTrait;
 
     protected $_pieces = [];
@@ -76,7 +75,7 @@ class Nip_Helper_Url extends Nip\Helpers\AbstractHelper
     public function base($params = [])
     {
         $currentRoute = $this->getRouter()->getCurrent();
-        $base = $currentRoute ? $currentRoute->getBase($params) : BASE_URL;
+        $base = $currentRoute ? $currentRoute->getBase($params) : request()->root();
 
         return $base.($params ? "?".http_build_query($params) : '');
     }
