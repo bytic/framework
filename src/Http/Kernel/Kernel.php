@@ -9,6 +9,7 @@ use Nip\Dispatcher\ActionDispatcherMiddleware;
 use Nip\Http\Response\Response;
 use Nip\Http\Response\ResponseFactory;
 use Nip\Http\ServerMiddleware\Dispatcher;
+use Nip\Http\ServerMiddleware\Traits\HasServerMiddleware;
 use Nip\Request;
 use Nip\Router\Middleware\RouteResolverMiddleware;
 use Nip\Router\Router;
@@ -28,6 +29,8 @@ use Whoops\Run as WhoopsRun;
  */
 class Kernel implements KernelInterface
 {
+    use HasServerMiddleware;
+
     /**
      * The application implementation.
      *
@@ -41,17 +44,6 @@ class Kernel implements KernelInterface
      * @var Router
      */
     protected $router;
-
-    /**
-     * The application's middleware stack.
-     *
-     * @var array
-     */
-    protected $middleware = [
-        StartSession::class,
-        RouteResolverMiddleware::class,
-        ActionDispatcherMiddleware::class,
-    ];
 
     /**
      * The application's route middleware groups.
@@ -77,6 +69,10 @@ class Kernel implements KernelInterface
     {
         $this->app = $app;
         $this->router = $router;
+
+        $this->pushMiddleware(StartSession::class);
+        $this->pushMiddleware(RouteResolverMiddleware::class);
+        $this->pushMiddleware(ActionDispatcherMiddleware::class);
     }
 
     /**
@@ -171,17 +167,6 @@ class Kernel implements KernelInterface
     {
         $this->terminateMiddleware($request, $response);
         $this->getApplication()->terminate();
-    }
-
-    /**
-     * Call the terminate method on any terminable middleware.
-     *
-     * @param  Request $request
-     * @param  Response $response
-     * @return void
-     */
-    protected function terminateMiddleware($request, $response)
-    {
     }
 
 //    /**
