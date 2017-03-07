@@ -13,6 +13,10 @@ use Nip\DebugBar\DataCollector\RouteCollector;
 
 //use DebugBar\DataCollector\ConfigCollector;
 
+/**
+ * Class StandardDebugBar
+ * @package Nip\DebugBar
+ */
 class StandardDebugBar extends DebugBar
 {
 
@@ -29,6 +33,9 @@ class StandardDebugBar extends DebugBar
         $this->addCollector(new RouteCollector());
     }
 
+    /**
+     * @param $adapter
+     */
     public function initDatabaseAdapter($adapter)
     {
         $profiler = $adapter->newProfiler()->setEnabled(true);
