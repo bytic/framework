@@ -52,6 +52,8 @@ abstract class DebugBar extends DebugBarGeneric
         }
 
         $this->doBoot();
+
+        $this->booted = true;
     }
 
     public function doBoot()
