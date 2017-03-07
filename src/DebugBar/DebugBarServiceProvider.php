@@ -53,7 +53,7 @@ class DebugBarServiceProvider extends AbstractSignatureServiceProvider implement
     {
         /** @var Kernel $kernel */
         $kernel = $this->getContainer()->get(KernelInterface::class);
-        $kernel->pushMiddleware($middleware);
+        $kernel->prependMiddleware($middleware);
     }
 
     /**
