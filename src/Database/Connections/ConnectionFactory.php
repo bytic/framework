@@ -68,7 +68,7 @@ class ConnectionFactory
     {
         $pdo = false;
         $connection = $this->createConnection($config['driver'], $pdo, $config['database'], $config['prefix'], $config);
-        $connection->connect($config['host'], $config['user'], $config['password'], $config['database']);
+        $connection->connect($config['host'], $config['username'], $config['password'], $config['database']);
         return $connection;
     }
 

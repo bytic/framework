@@ -109,7 +109,7 @@ abstract class RecordManager
      */
     public function getRootNamespace()
     {
-        return 'App\Models\\';
+        return app('app')->getRootNamespace() . 'Models\\';
     }
 
     /**
