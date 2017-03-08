@@ -11,14 +11,6 @@ if (!function_exists("pr")) {
 
 }
 
-/**
- * @return Nip\Inflector\Inflector
- */
-function inflector()
-{
-    return Nip\Inflector\Inflector::instance();
-}
-
 function encode_url($input)
 {
     $chars = array(

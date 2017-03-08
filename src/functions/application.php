@@ -116,3 +116,11 @@ function translator()
 {
     return app('translator');
 }
+
+/**
+ * @return Nip\Inflector\Inflector
+ */
+function inflector()
+{
+    return app('inflector');
+}

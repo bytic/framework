@@ -2,8 +2,6 @@
 
 namespace Nip\Inflector;
 
-use Nip\Utility\Traits\SingletonTrait;
-
 /**
  * Class Inflector
  * @package Nip\Inflector
@@ -11,7 +9,6 @@ use Nip\Utility\Traits\SingletonTrait;
  */
 class Inflector
 {
-    use SingletonTrait;
 
     protected $plural = [
         '/(s)tatus$/i' => '\1tatuses',
@@ -160,10 +157,25 @@ class Inflector
      */
     public function __construct()
     {
-        if (defined('CACHE_PATH')) {
-            $this->cacheFile = CACHE_PATH . 'inflector.php';
-        }
-        $this->readCache();
+        $path = app('path.storage') . DIRECTORY_SEPARATOR . 'cache';
+        $this->setCachePath($path);
+    }
+
+    /**
+     * @param $directory
+     */
+    public function setCachePath($directory)
+    {
+        $file = $directory . DIRECTORY_SEPARATOR . 'inflector.php';
+        $this->setCacheFile($file);
+    }
+
+    /**
+     * @param null|string $cacheFile
+     */
+    public function setCacheFile($cacheFile)
+    {
+        $this->cacheFile = $cacheFile;
     }
 
     public function readCache()
