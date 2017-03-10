@@ -2,17 +2,19 @@
 
 namespace Nip\Helpers\View;
 
+use Nip\Utility\Str;
+
 /**
  * Nip Framework
  *
  * @category   Nip
- * @copyright  2009 Nip Framework
  * @license    http://www.opensource.org/licenses/mit-license.php The MIT License
- * @version    SVN: $Id: Stylesheets.php 138 2009-05-27 17:05:36Z victor.stanciu $
  */
 class StyleSheets extends AbstractHelper
 {
-
+    /**
+     * @var array
+     */
     protected $files = [];
 
     /**
@@ -33,7 +35,7 @@ class StyleSheets extends AbstractHelper
      */
     public function prepend($file, $condition = false)
     {
-        if (!is_array($this->files[$condition])) {
+        if (isset($this->files[$condition]) && !is_array($this->files[$condition])) {
             $this->files[$condition] = [];
         }
         array_unshift($this->files[$condition], $file);
@@ -58,7 +60,7 @@ class StyleSheets extends AbstractHelper
     {
         $return = '';
 
-        if ($this->files) {
+        if (count($this->files)) {
             foreach ($this->files as $condition => $files) {
                 foreach ($files as $file) {
                     $return .= $this->buildTag($file, $condition);
@@ -74,10 +76,10 @@ class StyleSheets extends AbstractHelper
      * @param $condition
      * @return string
      */
-    public function buildTag($path, $condition)
+    public function buildTag($path, $condition = null)
     {
         $return = '<link rel="stylesheet" type="text/css" media="screen" href="' . $this->buildURL($path) . '" />';
-        if ($condition) {
+        if ($condition != null && !empty($condition)) {
             $return = '<!--[if ' . $condition . ']>' . $return . '<![endif]-->';
         }
         $return .= "\r\n";
@@ -91,7 +93,7 @@ class StyleSheets extends AbstractHelper
      */
     public function buildURL($source)
     {
-        if (preg_match('/https?:\/\//', $source)) {
+        if (Str::startsWith($source, ['http', 'https'])) {
             return $source;
         } else {
             return asset('/stylesheets/' . $source . '.css');
