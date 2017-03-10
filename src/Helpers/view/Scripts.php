@@ -9,9 +9,12 @@ namespace Nip\Helpers\View;
 class Scripts extends AbstractHelper
 {
 
+    /**
+     * @var array
+     */
     protected $files = [];
 
-    protected $_defaultPlaceholder = "head";
+    protected $defaultPlaceholder = "head";
 
     /**
      * @param $file
@@ -31,11 +34,11 @@ class Scripts extends AbstractHelper
      */
     public function addFile($file, $direction = 'add', $placeholder = false)
     {
-        if (!$placeholder) {
-            $placeholder = $this->_defaultPlaceholder;
+        if ($placeholder !== false && !empty($placeholder)) {
+            $placeholder = $this->defaultPlaceholder;
         }
 
-        if (!is_array($this->files[$placeholder])) {
+        if (isset($this->files[$placeholder]) && !is_array($this->files[$placeholder])) {
             $this->files[$placeholder] = [];
         }
 
@@ -63,7 +66,7 @@ class Scripts extends AbstractHelper
      */
     public function __toString()
     {
-        return $this->render($this->_defaultPlaceholder);
+        return $this->render($this->defaultPlaceholder);
     }
 
     /**
@@ -72,8 +75,8 @@ class Scripts extends AbstractHelper
      */
     public function render($placeholder = false)
     {
-        if (!$placeholder) {
-            $placeholder = $this->_defaultPlaceholder;
+        if ($placeholder == false && empty($placeholder)) {
+            $placeholder = $this->defaultPlaceholder;
         }
 
         return $this->renderHMTL($this->files[$placeholder]);
@@ -99,7 +102,7 @@ class Scripts extends AbstractHelper
             }
 
 
-            if ($external) {
+            if (count($external)) {
                 foreach ($external as $file) {
                     $return .= $this->buildTag($file);
                 }
