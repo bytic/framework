@@ -972,7 +972,7 @@ abstract class RecordManager
      */
     public function getAll()
     {
-        if (!$this->getRegistry()->exists("all")) {
+        if (!$this->getRegistry()->has("all")) {
             $this->getRegistry()->set("all", $this->findAll());
         }
 
