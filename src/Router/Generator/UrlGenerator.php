@@ -57,6 +57,20 @@ class UrlGenerator
     protected $forceScheme;
 
     /**
+     * The callback to use to format hosts.
+     *
+     * @var \Closure
+     */
+    protected $formatHostUsing;
+
+    /**
+     * The callback to use to format paths.
+     *
+     * @var \Closure
+     */
+    protected $formatPathUsing;
+
+    /**
      * Create a new URL Generator instance.
      *
      * @param  RouteCollection $routes
@@ -66,6 +80,21 @@ class UrlGenerator
     {
         $this->routes = $routes;
         $this->setRequest($request);
+    }
+
+    /**
+     * Set the current request instance.
+     *
+     * @param  Request $request
+     * @return void
+     */
+    public function setRequest(Request $request)
+    {
+        $this->request = $request;
+
+        $this->cachedRoot = null;
+        $this->cachedSchema = null;
+//        $this->routeGenerator = null;
     }
 
     /**
@@ -86,37 +115,6 @@ class UrlGenerator
     public function current()
     {
         return $this->to($this->request->getPathInfo());
-    }
-
-    /**
-     * Get the URL for the previous request.
-     *
-     * @param  mixed  $fallback
-     * @return string
-     */
-    public function previous($fallback = false)
-    {
-        $referrer = $this->request->headers->get('referer');
-        $url = $referrer ? $this->to($referrer) : $this->getPreviousUrlFromSession();
-        if ($url) {
-            return $url;
-        } elseif ($fallback) {
-            return $this->to($fallback);
-        } else {
-            return $this->to('/');
-        }
-    }
-
-    /**
-     * Get the previous URL from the session if possible.
-     *
-     * @return string|null
-     */
-    protected function getPreviousUrlFromSession()
-    {
-        return null;
-//        $session = $this->getSession();
-//        return $session ? $session->previousUrl() : null;
     }
 
     /**
@@ -148,6 +146,19 @@ class UrlGenerator
             ).$query;
     }
 
+    /**
+     * Determine if the given path is a valid URL.
+     *
+     * @param  string $path
+     * @return bool
+     */
+    public function isValidUrl($path)
+    {
+        if (!Str::startsWith($path, ['#', '//', 'mailto:', 'tel:', 'http://', 'https://'])) {
+            return filter_var($path, FILTER_VALIDATE_URL) !== false;
+        }
+        return true;
+    }
 
     /**
      * Format the array of URL parameters.
@@ -164,72 +175,6 @@ class UrlGenerator
 //            }
         }
         return $parameters;
-    }
-
-
-    /**
-     * Extract the query string from the given path.
-     *
-     * @param  string  $path
-     * @return array
-     */
-    protected function extractQueryString($path)
-    {
-        if (($queryPosition = strpos($path, '?')) !== false) {
-            return [
-                substr($path, 0, $queryPosition),
-                substr($path, $queryPosition),
-            ];
-        }
-        return [$path, ''];
-    }
-
-    /**
-     * Set the current request instance.
-     *
-     * @param  Request $request
-     * @return void
-     */
-    public function setRequest(Request $request)
-    {
-        $this->request = $request;
-
-        $this->cachedRoot = null;
-        $this->cachedSchema = null;
-//        $this->routeGenerator = null;
-    }
-
-    /**
-     * Generate the URL to an application asset.
-     *
-     * @param  string $path
-     * @param  bool|null $secure
-     * @return string
-     */
-    public function asset($path, $secure = null)
-    {
-        if ($this->isValidUrl($path)) {
-            return $path;
-        }
-        // Once we get the root URL, we will check to see if it contains an index.php
-        // file in the paths. If it does, we will remove it since it is not needed
-        // for asset paths, but only for routes to endpoints in the application.
-        $root = $this->formatRoot($this->formatScheme($secure));
-        return $this->removeIndex($root) . '/assets/' . trim($path, '/');
-    }
-
-    /**
-     * Determine if the given path is a valid URL.
-     *
-     * @param  string $path
-     * @return bool
-     */
-    public function isValidUrl($path)
-    {
-        if (!Str::startsWith($path, ['#', '//', 'mailto:', 'tel:', 'http://', 'https://'])) {
-            return filter_var($path, FILTER_VALIDATE_URL) !== false;
-        }
-        return true;
     }
 
     /**
@@ -266,6 +211,92 @@ class UrlGenerator
             $this->cachedSchema = $this->forceScheme ?: $this->request->getScheme() . '://';
         }
         return $this->cachedSchema;
+    }
+
+    /**
+     * Extract the query string from the given path.
+     *
+     * @param  string  $path
+     * @return array
+     */
+    protected function extractQueryString($path)
+    {
+        if (($queryPosition = strpos($path, '?')) !== false) {
+            return [
+                substr($path, 0, $queryPosition),
+                substr($path, $queryPosition),
+            ];
+        }
+        return [$path, ''];
+    }
+
+    /**
+     * Format the given URL segments into a single URL.
+     *
+     * @param  string $root
+     * @param  string $path
+     * @return string
+     */
+    public function format($root, $path)
+    {
+        $path = '/' . trim($path, '/');
+        if ($this->formatHostUsing) {
+            $root = call_user_func($this->formatHostUsing, $root);
+        }
+        if ($this->formatPathUsing) {
+            $path = call_user_func($this->formatPathUsing, $path);
+        }
+        return trim($root . $path, '/');
+    }
+
+    /**
+     * Get the URL for the previous request.
+     *
+     * @param  mixed $fallback
+     * @return string
+     */
+    public function previous($fallback = false)
+    {
+        $referrer = $this->request->headers->get('referer');
+        $url = $referrer ? $this->to($referrer) : $this->getPreviousUrlFromSession();
+        if ($url) {
+            return $url;
+        } elseif ($fallback) {
+            return $this->to($fallback);
+        } else {
+            return $this->to('/');
+        }
+    }
+
+    /**
+     * Get the previous URL from the session if possible.
+     *
+     * @return string|null
+     */
+    protected function getPreviousUrlFromSession()
+    {
+        return null;
+//        $session = $this->getSession();
+//        return $session ? $session->previousUrl() : null;
+    }
+
+    /**
+     * Generate the URL to an application asset.
+     *
+     * @param  string $path
+     * @param  bool|null $secure
+     * @return string
+     */
+    public function asset($path, $secure = null)
+    {
+        if ($this->isValidUrl($path)) {
+            return $path;
+        }
+        // Once we get the root URL, we will check to see if it contains an index.php
+        // file in the paths. If it does, we will remove it since it is not needed
+        // for asset paths, but only for routes to endpoints in the application.
+        $root = $this->formatRoot($this->formatScheme($secure));
+        return $this->removeIndex($root) . '/assets/' . trim($path, '/');
     }
 
     /**
