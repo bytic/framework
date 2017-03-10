@@ -3,6 +3,7 @@
 namespace Nip\Records\AbstractModels;
 
 use Nip\AutoLoader\Loaders\Psr4Class;
+use Nip\Collections\Registry;
 use Nip\Database\Connections\Connection;
 use Nip\Database\Query\AbstractQuery as Query;
 use Nip\Database\Query\Delete as DeleteQuery;
@@ -504,12 +505,12 @@ abstract class RecordManager
     }
 
     /**
-     * @return \Nip_Registry
+     * @return \Nip\Collections\Registry
      */
     public function getRegistry()
     {
         if (!$this->registry) {
-            $this->registry = new \Nip_Registry();
+            $this->registry = new Registry();
         }
 
         return $this->registry;
@@ -600,7 +601,7 @@ abstract class RecordManager
     {
 
         $pk = $this->getPrimaryKey();
-        if (is_string($pk) && $this->getRegistry()->get($data[$pk])) {
+        if (is_string($pk) && $this->getRegistry()->has($data[$pk])) {
             $return = $this->getRegistry()->get($data[$pk]);
             $return->writeData($data);
             $return->writeDBData($data);
