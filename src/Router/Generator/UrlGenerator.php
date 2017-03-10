@@ -4,6 +4,7 @@ namespace Nip\Router\Generator;
 
 use Nip\Request;
 use Nip\Router\RouteCollection;
+use Nip\Utility\Arr;
 use Nip\Utility\Str;
 
 /**
@@ -67,6 +68,121 @@ class UrlGenerator
         $this->setRequest($request);
     }
 
+    /**
+     * Get the full URL for the current request.
+     *
+     * @return string
+     */
+    public function full()
+    {
+        return $this->request->fullUrl();
+    }
+
+    /**
+     * Get the current URL for the request.
+     *
+     * @return string
+     */
+    public function current()
+    {
+        return $this->to($this->request->getPathInfo());
+    }
+
+    /**
+     * Get the URL for the previous request.
+     *
+     * @param  mixed  $fallback
+     * @return string
+     */
+    public function previous($fallback = false)
+    {
+        $referrer = $this->request->headers->get('referer');
+        $url = $referrer ? $this->to($referrer) : $this->getPreviousUrlFromSession();
+        if ($url) {
+            return $url;
+        } elseif ($fallback) {
+            return $this->to($fallback);
+        } else {
+            return $this->to('/');
+        }
+    }
+
+    /**
+     * Get the previous URL from the session if possible.
+     *
+     * @return string|null
+     */
+    protected function getPreviousUrlFromSession()
+    {
+        return null;
+//        $session = $this->getSession();
+//        return $session ? $session->previousUrl() : null;
+    }
+
+    /**
+     * Generate an absolute URL to the given path.
+     *
+     * @param  string  $path
+     * @param  mixed  $extra
+     * @param  bool|null  $secure
+     * @return string
+     */
+    public function to($path, $extra = [], $secure = null)
+    {
+        // First we will check if the URL is already a valid URL. If it is we will not
+        // try to generate a new one but will simply return the URL as is, which is
+        // convenient since developers do not always have to check if it's valid.
+        if ($this->isValidUrl($path)) {
+            return $path;
+        }
+        $tail = implode('/', array_map(
+                'rawurlencode', (array) $this->formatParameters($extra))
+        );
+        // Once we have the scheme we will compile the "tail" by collapsing the values
+        // into a single string delimited by slashes. This just makes it convenient
+        // for passing the array of parameters to this URL as a list of segments.
+        $root = $this->formatRoot($this->formatScheme($secure));
+        list($path, $query) = $this->extractQueryString($path);
+        return $this->format(
+                $root, '/'.trim($path.'/'.$tail, '/')
+            ).$query;
+    }
+
+
+    /**
+     * Format the array of URL parameters.
+     *
+     * @param  mixed|array  $parameters
+     * @return array
+     */
+    public function formatParameters($parameters)
+    {
+        $parameters = Arr::wrap($parameters);
+        foreach ($parameters as $key => $parameter) {
+//            if ($parameter instanceof UrlRoutable) {
+//                $parameters[$key] = $parameter->getRouteKey();
+//            }
+        }
+        return $parameters;
+    }
+
+
+    /**
+     * Extract the query string from the given path.
+     *
+     * @param  string  $path
+     * @return array
+     */
+    protected function extractQueryString($path)
+    {
+        if (($queryPosition = strpos($path, '?')) !== false) {
+            return [
+                substr($path, 0, $queryPosition),
+                substr($path, $queryPosition),
+            ];
+        }
+        return [$path, ''];
+    }
 
     /**
      * Set the current request instance.
