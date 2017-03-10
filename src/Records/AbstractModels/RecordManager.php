@@ -580,7 +580,7 @@ abstract class RecordManager
                 if (is_string($pk)) {
                     $this->getRegistry()->set($item->getPrimaryKey(), $item);
                 }
-                if ($params['indexKey']) {
+                if (isset($params['indexKey']) && !empty($params['indexKey'])) {
                     $return->add($item, $params['indexKey']);
                 } else {
                     $return->add($item);
