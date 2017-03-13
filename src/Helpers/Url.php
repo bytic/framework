@@ -8,7 +8,7 @@ class Nip_Helper_Url extends Nip\Helpers\AbstractHelper
 {
     use \Nip\Router\RouterAwareTrait;
 
-    protected $_pieces = [];
+    protected $pieces = [];
 
     /**
      * Singleton
@@ -24,18 +24,23 @@ class Nip_Helper_Url extends Nip\Helpers\AbstractHelper
         return $instance;
     }
 
+    /**
+     * @param $name
+     * @param $arguments
+     * @return $this|mixed
+     */
     public function __call($name, $arguments)
     {
         if ($name == ucfirst($name)) {
-            $this->_pieces[] = Dispatcher::reverseControllerName($name);
+            $this->pieces[] = Dispatcher::reverseControllerName($name);
             return $this;
         } else {
-            $this->_pieces[] = $name;
+            $this->pieces[] = $name;
         }
 
-        $name = $this->_pieces ? implode(".", $this->_pieces) : '';
-        $this->_pieces = [];
-        return $this->assemble($name, $arguments[0]);
+        $name = $this->pieces ? implode(".", $this->pieces) : '';
+        $this->pieces = [];
+        return $this->assemble($name, isset($arguments[0]) ? $arguments[0] : null);
     }
 
     /**
@@ -78,24 +83,6 @@ class Nip_Helper_Url extends Nip\Helpers\AbstractHelper
         $base = $currentRoute ? $currentRoute->getBase($params) : request()->root();
 
         return $base.($params ? "?".http_build_query($params) : '');
-    }
-
-    /**
-     * @param bool $url
-     * @return string
-     */
-    public function image($url = false)
-    {
-        return IMAGES_URL . $url;
-    }
-
-    /**
-     * @param bool $url
-     * @return string
-     */
-    public function flash($url = false)
-    {
-        return FLASH_URL . $url;
     }
 
     /**
