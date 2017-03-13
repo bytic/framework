@@ -154,7 +154,7 @@ class Translator
         $this->selectedLanguage = $language;
         $_SESSION['language'] = $language;
 
-        $code = $this->languageCodes[$language] ? $this->languageCodes[$language] : $language."_".strtoupper($language);
+        $code = isset($this->languageCodes[$language]) ? $this->languageCodes[$language] : $language . "_" . strtoupper($language);
 
         putenv('LC_ALL='.$code);
         setlocale(LC_ALL, $code);

@@ -4,14 +4,15 @@ namespace Nip\Logger;
 
 use Monolog\Logger as Monolog;
 use Nip\Container\ServiceProviders\Providers\AbstractSignatureServiceProvider;
+use Nip\Container\ServiceProviders\Providers\BootableServiceProviderInterface;
+use Nip\Debug\ErrorHandler;
 use Psr\Log\LoggerInterface as PsrLoggerInterface;
-use Symfony\Component\Debug\ErrorHandler;
 
 /**
  * Class LoggerServiceProvider
  * @package Nip\Logger
  */
-class LoggerServiceProvider extends AbstractSignatureServiceProvider
+class LoggerServiceProvider extends AbstractSignatureServiceProvider implements BootableServiceProviderInterface
 {
     /**
      * @inheritdoc
@@ -19,11 +20,7 @@ class LoggerServiceProvider extends AbstractSignatureServiceProvider
     public function register()
     {
         $this->getContainer()->share('log', function () {
-            $logger = $this->createLogger();
-            $logger->init();
-            $this->getContainer()->get(ErrorHandler::class)->setDefaultLogger($logger);
-
-            return $logger;
+            return $this->createLogger();
         });
 
         $this->getContainer()->share(Monolog::class, $this->createMonolog());
@@ -64,6 +61,13 @@ class LoggerServiceProvider extends AbstractSignatureServiceProvider
     protected function channel()
     {
         return 'production';
+    }
+
+    public function boot()
+    {
+        $logger = $this->getContainer()->get('log');
+        $logger->init();
+        $this->getContainer()->get(ErrorHandler::class)->setDefaultLogger($logger);
     }
 
     /**

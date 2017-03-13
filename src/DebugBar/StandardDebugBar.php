@@ -8,6 +8,7 @@ use DebugBar\DataCollector\MessagesCollector;
 use DebugBar\DataCollector\PhpInfoCollector;
 use DebugBar\DataCollector\RequestDataCollector;
 use DebugBar\DataCollector\TimeDataCollector;
+use Monolog\Logger as Monolog;
 use Nip\DebugBar\DataCollector\QueryCollector;
 use Nip\DebugBar\DataCollector\RouteCollector;
 
@@ -28,9 +29,15 @@ class StandardDebugBar extends DebugBar
         $this->addCollector(new RequestDataCollector());
         $this->addCollector(new TimeDataCollector());
         $this->addCollector(new MemoryCollector());
-        $this->addCollector(new ExceptionsCollector());
         $this->addCollector(new QueryCollector());
         $this->addCollector(new RouteCollector());
+
+        if (app()->has(Monolog::class)) {
+            $monolog = app(Monolog::class);
+            $this->addCollector(new \DebugBar\Bridge\MonologCollector($monolog));
+        } else {
+            $this->addCollector(new ExceptionsCollector());
+        }
     }
 
     /**

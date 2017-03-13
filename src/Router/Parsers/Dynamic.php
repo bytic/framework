@@ -64,7 +64,7 @@ class Dynamic extends AbstractParser
                 }
             }
         }
-        if (!empty ($variable)) {
+        if (!empty($variable)) {
             $variables[] = $variable;
         }
 
@@ -156,13 +156,13 @@ class Dynamic extends AbstractParser
         foreach ($this->parts as $key => $part) {
             if (strstr($part, ":") === false) {
                 // part is static - no named params
-                if ($uriParts[$key] != $part) {
+                if (!isset($uriParts[$key]) || $uriParts[$key] != $part) {
                     // corresponding part in URI does not match
                     return false;
                 }
             } else {
                 $var = str_replace(":", "", $part);
-                $this->setParam($var, $uriParts[$key]);
+                $this->setParam($var, isset($uriParts[$key]) ? $uriParts[$key] : null);
             }
         }
 

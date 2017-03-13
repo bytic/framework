@@ -38,7 +38,7 @@ class Scripts extends AbstractHelper
             $placeholder = $this->defaultPlaceholder;
         }
 
-        if (isset($this->files[$placeholder]) && !is_array($this->files[$placeholder])) {
+        if (!isset($this->files[$placeholder]) || !is_array($this->files[$placeholder])) {
             $this->files[$placeholder] = [];
         }
 

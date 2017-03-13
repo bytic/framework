@@ -3,8 +3,7 @@
 namespace Nip\Application\Bootstrap\Bootstrapers;
 
 use Nip\Application;
-use Symfony\Component\Debug\Debug;
-use Symfony\Component\Debug\ErrorHandler;
+use Nip\Debug\Debug;
 
 /**
  * Class HandleExceptions
@@ -25,17 +24,17 @@ class HandleExceptions extends AbstractBootstraper
         error_reporting(-1);
 
         if (config('app.debug')) {
-            Debug::enable();
+            Debug::enable(E_ALL, false);
         } else {
             Debug::enable(-1, false);
         }
 
-        $handler = set_error_handler('var_dump');
-        $handler = is_array($handler) ? $handler[0] : null;
-        restore_error_handler();
-
-        if ($handler instanceof ErrorHandler) {
-            $app->getContainer()->share(ErrorHandler::class, $handler);
-        }
+//        $handler = set_error_handler('var_dump');
+//        $handler = is_array($handler) ? $handler[0] : null;
+//        restore_error_handler();
+//
+//        if ($handler instanceof ErrorHandler) {
+//            $app->getContainer()->share(ErrorHandler::class, $handler);
+//        }
     }
 }
