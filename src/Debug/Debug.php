@@ -49,7 +49,8 @@ class Debug extends SymfonyDebug
         if ($displayErrors) {
             $handler = ErrorHandler::register(new ErrorHandler(new BufferingLogger()));
         } else {
-            $handler = ErrorHandler::register()->throwAt(0, true);
+            $handler = ErrorHandler::register();
+            $handler->throwAt(0, true);
         }
 
         app('container')->share(ErrorHandler::class, $handler);
