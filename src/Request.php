@@ -202,6 +202,6 @@ class Request extends \Symfony\Component\HttpFoundation\Request implements \Arra
     public function path()
     {
         $pattern = trim($this->getPathInfo(), '/');
-        return $pattern == '' ? '/' : $pattern;
+        return $pattern == '' ? '/' : '/' . $pattern;
     }
 }
