@@ -36,7 +36,8 @@ class Update extends AbstractQuery
                 if (!is_array($value)) {
                     $value = [$value];
                 }
-                list($value, $quote) = $value;
+                $value = $value[0];
+                $quote = isset($value[1]) ? $value[1] : null;
 
                 if (!is_numeric($value)) {
                     if (is_null($quote)) {
