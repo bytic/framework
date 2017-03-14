@@ -46,6 +46,7 @@ class Translator
     public function __construct(AbstractBackend $backend)
     {
         $this->setBackend($backend);
+        $this->setRequest(app('request'));
     }
 
     /**

@@ -97,7 +97,7 @@ class Manager
      */
     public function getData($cacheId)
     {
-        if (!$this->data[$cacheId]) {
+        if (!isset($this->data[$cacheId])) {
             $this->data[$cacheId] = $this->loadData($cacheId);
         }
 
@@ -200,5 +200,4 @@ class Manager
             unlink($file);
         }
     }
-
 }
