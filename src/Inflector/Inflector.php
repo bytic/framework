@@ -149,7 +149,9 @@ class Inflector
     ];
 
     protected $dictionary;
+
     protected $cacheFile = null;
+
     protected $toCache = false;
 
     /**
@@ -157,8 +159,6 @@ class Inflector
      */
     public function __construct()
     {
-        $path = app('path.storage') . DIRECTORY_SEPARATOR . 'cache';
-        $this->setCachePath($path);
     }
 
     /**
