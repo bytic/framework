@@ -35,7 +35,7 @@ class StyleSheets extends AbstractHelper
      */
     public function prepend($file, $condition = false)
     {
-        if (isset($this->files[$condition]) && !is_array($this->files[$condition])) {
+        if (!isset($this->files[$condition]) || !is_array($this->files[$condition])) {
             $this->files[$condition] = [];
         }
         array_unshift($this->files[$condition], $file);
