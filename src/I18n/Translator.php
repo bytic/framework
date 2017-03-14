@@ -4,6 +4,7 @@ namespace Nip\I18n;
 
 use Nip\I18n\Translator\Backend\AbstractBackend;
 use Nip\Request;
+use function Nip\url;
 
 /**
  * Class Translator
@@ -74,8 +75,8 @@ class Translator
      */
     public function changeLangURL($lang)
     {
-        $newURL = str_replace('language='.$this->getLanguage(), '', CURRENT_URL);
-        $newURL = $newURL.(strpos($newURL, '?') == false ? '?' : '&').'language='.$lang;
+        $newURL = str_replace('language=' . $this->getLanguage(), '', url()->current());
+        $newURL = $newURL . (strpos($newURL, '?') == false ? '?' : '&') . 'language=' . $lang;
 
         return $newURL;
     }
@@ -95,10 +96,10 @@ class Translator
                 $language = $_SESSION['language'];
             }
 
-            if ($this->getRequest()->language && $this->isValidLanguage($this->getRequest()->language)) {
-                $language = $this->getRequest()->language;
+            $requestLanguage = $this->getRequest()->get('language');
+            if ($requestLanguage && $this->isValidLanguage($requestLanguage)) {
+                $language = $requestLanguage;
             }
-
 
             if ($language) {
                 $this->setLanguage($language);
@@ -128,7 +129,7 @@ class Translator
     }
 
     /**
-     * @return mixed
+     * @return Request
      */
     public function getRequest()
     {
@@ -154,13 +155,26 @@ class Translator
         $this->selectedLanguage = $language;
         $_SESSION['language'] = $language;
 
-        $code = isset($this->languageCodes[$language]) ? $this->languageCodes[$language] : $language . "_" . strtoupper($language);
+        $code = $this->getLanguageCode($language);
 
-        putenv('LC_ALL='.$code);
+        putenv('LC_ALL=' . $code);
         setlocale(LC_ALL, $code);
         setlocale(LC_NUMERIC, 'en_US');
 
         return $this;
+    }
+
+    /**
+     * @param $lang
+     * @return mixed|string
+     */
+    public function getLanguageCode($lang)
+    {
+        if (isset($this->languageCodes[$lang])) {
+            return $this->languageCodes[$lang];
+        }
+
+        return $lang . "_" . strtoupper($lang);
     }
 
     /**
@@ -211,7 +225,7 @@ class Translator
         if ($return) {
             if ($params) {
                 foreach ($params as $key => $value) {
-                    $return = str_replace("#{".$key."}", $value, $return);
+                    $return = str_replace("#{" . $key . "}", $value, $return);
                 }
             }
         }
