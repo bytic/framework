@@ -94,6 +94,6 @@ class InflectorTest extends \Codeception\TestCase\Test
 
     protected function setUp()
     {
-        $this->inflector = Inflector::instance();
+        $this->inflector = new Inflector();
     }
 }
