@@ -3,181 +3,64 @@
 namespace Nip\Router\Parsers;
 
 /**
- * Class Dynamic
+ * Class Standard
  * @package Nip\Router\Parsers
  */
-class Dynamic extends AbstractParser
+class Standard extends Dynamic
 {
+
+    protected $map = ':controller/:action';
+
     /**
-     * @var array
+     * @param array $params
+     * @return mixed|string
      */
-    protected $uriParts = [];
-
-    public function parseMap()
+    public function assemble($params = [])
     {
-        parent::parseMap();
-        $this->parseMapForVariables();
-    }
-
-    protected function parseMapForVariables()
-    {
-        $parts = $this->getParts();
-        foreach ($parts as &$part) {
-            $variablesCount = substr_count($part, ":");
-            if ($variablesCount >= 1) {
-                if ($variablesCount == 1 && strpos($part, ':') === 0) {
-                    $this->variables[] = str_replace(":", "", $part);
-                } else {
-                    $variables = $this->getVariableFromPart($part);
-                    $variables = array_merge($this->variables, $variables);
-                    $this->setVariables($variables);
-                }
-            }
-        }
-    }
-
-    /**
-     * @param $part
-     * @return array
-     */
-    public function getVariableFromPart($part)
-    {
-        $len = strlen($part);
-        $variables = [];
-        $variable = false;
-        $letters = array_merge(range('A', 'Z'), range('a', 'z'));
-        for ($i = 0; $i < $len; $i++) {
-            $char = $part[$i];
-            if ($char == ':') {
-                if ($variable) {
-                    $variables[] = $variable;
-                }
-                $variable = '';
-            } else {
-                $isLetter = in_array($char, $letters);
-                $isAllowed = in_array($char, ['_']);
-                if (($isLetter || $isAllowed) && $variable !== false) {
-                    $variable .= $char;
-                } elseif ($variable !== false) {
-                    $variables[] = $variable;
-                    $variable = false;
-                }
-            }
-        }
-        if (!empty($variable)) {
-            $variables[] = $variable;
+        if (!$params['action']) {
+            $params['action'] = '';
         }
 
-        return $variables;
+        return parent::assemble($params);
     }
 
-    /**
-     * @param $uri
+    /** @noinspection PhpMissingParentCallCommonInspection
      * @return bool
      */
-    public function match($uri)
+    protected function preMatch()
     {
-        $return = parent::match($uri);
-
-        if ($return) {
-//            if ($this->uri[strlen($this->uri) - 1] == '/') {
-//                $this->uri = substr($this->uri, 0, -1);
-//            }
-            $this->parseUriParts($uri);
-            if ($this->getVariableParts()) {
-                if ($this->preMatch() === true) {
-                    $this->parseParams();
-                    if ($this->postMatch() == true) {
-                        return true;
-                    }
-                }
-            }
+        $mapCount = count($this->getParts());
+        $uriCount = substr_count($this->uri, '/') + 1;
+        $difference = $mapCount - $uriCount;
+        if ($difference == 0 || $difference == 1) {
+            return true;
         }
 
         return false;
     }
 
     /**
-     * @param $uri
-     */
-    public function parseUriParts($uri)
-    {
-        $this->uriParts = explode("/", trim($uri, '/'));
-    }
-
-    /**
-     * @return bool
-     */
-    public function getVariableParts()
-    {
-        foreach ($this->parts as $key => $part) {
-            if (strpos($part, ':') !== false) {
-                break;
-            }
-            if ($this->uriParts[$key] != $part) {
-                return false;
-            }
-//            unset($this->uriParts[$key]);
-        }
-
-        return true;
-    }
-
-    /**
-     * @return bool
-     */
-    protected function preMatch()
-    {
-        if (count($this->getParts()) != (substr_count($this->uri, '/') + 1)) {
-            return false;
-        }
-
-        return true;
-    }
-
-    /**
-     * @return bool
-     */
-    protected function parseParams()
-    {
-        $uriParts = $this->getUriParts();
-        foreach ($this->parts as $key => $part) {
-            if (strstr($part, ":") === false) {
-                // part is static - no named params
-                if (!isset($uriParts[$key]) || $uriParts[$key] != $part) {
-                    // corresponding part in URI does not match
-                    return false;
-                }
-            } else {
-                $var = str_replace(":", "", $part);
-                $this->setParam($var, isset($uriParts[$key]) ? $uriParts[$key] : null);
-            }
-        }
-
-        return true;
-    }
-
-    /**
-     * @return array
-     */
-    public function getUriParts()
-    {
-        return $this->uriParts;
-    }
-
-    /**
-     * @param array $uriParts
-     */
-    public function setUriParts($uriParts)
-    {
-        $this->uriParts = $uriParts;
-    }
-
-    /**
-     * @return bool
+     * @inheritdoc
      */
     protected function postMatch()
     {
-        return true;
+        if (parent::postMatch()) {
+            return $this->validateController();
+        }
+
+        return false;
+    }
+
+    /**
+     * @return bool
+     */
+    protected function validateController()
+    {
+        $controller = $this->getParam('controller');
+        if (!empty($controller)) {
+            return true;
+        }
+
+        return false;
     }
 }

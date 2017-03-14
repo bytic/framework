@@ -72,22 +72,6 @@ class Dynamic extends AbstractParser
     }
 
     /**
-     * @return array
-     */
-    public function getUriParts()
-    {
-        return $this->uriParts;
-    }
-
-    /**
-     * @param array $uriParts
-     */
-    public function setUriParts($uriParts)
-    {
-        $this->uriParts = $uriParts;
-    }
-
-    /**
      * @param $uri
      * @return bool
      */
@@ -96,12 +80,11 @@ class Dynamic extends AbstractParser
         $return = parent::match($uri);
 
         if ($return) {
-            if ($this->uri[strlen($this->uri) - 1] == '/') {
-                $this->uri = substr($this->uri, 0, -1);
-            }
-
-
-            if ($this->getVariableParts($uri)) {
+//            if ($this->uri[strlen($this->uri) - 1] == '/') {
+//                $this->uri = substr($this->uri, 0, -1);
+//            }
+            $this->parseUriParts($uri);
+            if ($this->getVariableParts()) {
                 if ($this->preMatch() === true) {
                     $this->parseParams();
                     if ($this->postMatch() == true) {
@@ -115,13 +98,18 @@ class Dynamic extends AbstractParser
     }
 
     /**
-     * @param $url
+     * @param $uri
+     */
+    public function parseUriParts($uri)
+    {
+        $this->uriParts = explode("/", trim($uri, '/'));
+    }
+
+    /**
      * @return bool
      */
-    public function getVariableParts($url)
+    public function getVariableParts()
     {
-        $this->uriParts = explode("/", $url);
-
         foreach ($this->parts as $key => $part) {
             if (strpos($part, ':') !== false) {
                 break;
@@ -129,7 +117,7 @@ class Dynamic extends AbstractParser
             if ($this->uriParts[$key] != $part) {
                 return false;
             }
-            unset($this->uriParts[$key]);
+//            unset($this->uriParts[$key]);
         }
 
         return true;
@@ -152,7 +140,7 @@ class Dynamic extends AbstractParser
      */
     protected function parseParams()
     {
-        $uriParts = explode("/", $this->uri);
+        $uriParts = $this->getUriParts();
         foreach ($this->parts as $key => $part) {
             if (strstr($part, ":") === false) {
                 // part is static - no named params
@@ -167,6 +155,22 @@ class Dynamic extends AbstractParser
         }
 
         return true;
+    }
+
+    /**
+     * @return array
+     */
+    public function getUriParts()
+    {
+        return $this->uriParts;
+    }
+
+    /**
+     * @param array $uriParts
+     */
+    public function setUriParts($uriParts)
+    {
+        $this->uriParts = $uriParts;
     }
 
     /**
