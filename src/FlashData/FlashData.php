@@ -33,8 +33,8 @@ class FlashData
 
     public function read()
     {
-        $data = $_SESSION[$this->session_var];
-        if (!is_null($data)) {
+        if (isset($_SESSION[$this->session_var])) {
+            $data = $_SESSION[$this->session_var];
             if (is_array($data)) {
                 $this->previous = $data;
             }

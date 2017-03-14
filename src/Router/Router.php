@@ -142,7 +142,8 @@ class Router
             if ($count <= 3) {
                 if (in_array(reset($parts), app('mvc.modules')->getNames())) {
                     $module = array_shift($parts);
-                    list($params['controller'], $params['action']) = $parts;
+                    $params['controller'] = isset($parts[0]) ? $parts[0] : null;
+                    $params['action'] = isset($parts[1]) ? $parts[1] : null;
                     $route = $this->getRoute($module.'.default');
                 }
             }

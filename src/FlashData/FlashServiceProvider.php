@@ -24,7 +24,7 @@ class FlashServiceProvider extends AbstractSignatureServiceProvider
      */
     public function register()
     {
-        $this->getContainer()->share('flash', FlashData::class);
+        $this->getContainer()->share('flash.data', FlashData::class);
         $this->getContainer()->share('flash.messages', FlashMessages::class);
     }
 }
