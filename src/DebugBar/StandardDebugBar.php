@@ -11,6 +11,7 @@ use DebugBar\DataCollector\RequestDataCollector;
 use DebugBar\DataCollector\TimeDataCollector;
 use Monolog\Logger as Monolog;
 use Nip\Database\Connections\Connection;
+use Nip\Database\DatabaseManager;
 use Nip\DebugBar\DataCollector\QueryCollector;
 use Nip\DebugBar\DataCollector\RouteCollector;
 use Nip\Profiler\Adapters\DebugBar as ProfilerDebugBar;
@@ -48,7 +49,17 @@ class StandardDebugBar extends DebugBar
         $this->addCollector(new QueryCollector());
 
         $databaseManager = app('db');
+        $databaseManager->connection();
+
+        $this->populateQueryCollector();
+    }
+
+    public function populateQueryCollector()
+    {
+        /** @var DatabaseManager $databaseManager */
+        $databaseManager = app('db');
         $connections = $databaseManager->getConnections();
+
         foreach ($connections as $connection) {
             $this->initDatabaseConnection($connection);
         }
