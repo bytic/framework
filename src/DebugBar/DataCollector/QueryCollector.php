@@ -140,7 +140,7 @@ class QueryCollector extends PDOCollector
                 'memory_str' => $query['memory_str'],
                 'duration_str' => $this->formatDuration($query['time']),
                 'stmt_id' => $query['source'],
-                'connection' => $query['connection'],
+//                'connection' => $query['connection'],
             ];
 
             //Add the results from the explain as new rows
