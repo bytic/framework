@@ -79,7 +79,10 @@ class Scripts extends AbstractHelper
             $placeholder = $this->defaultPlaceholder;
         }
 
-        return $this->renderHMTL($this->files[$placeholder]);
+        if (isset($this->files[$placeholder])) {
+            return $this->renderHMTL($this->files[$placeholder]);
+        }
+        return '';
     }
 
     /**
