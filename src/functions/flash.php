@@ -1,26 +1,46 @@
 <?php
 
+/**
+ * @param $name
+ * @return mixed|object
+ */
 function flash_get($name)
 {
-	return Nip_Flash::instance()->get($name);
+    return app('flash.data')->get($name);
 }
 
+/**
+ * @param $name
+ * @param $value
+ */
 function flash_add($name, $value)
 {
-	Nip_Flash::instance()->add($name, $value);
+    app('flash.data')->add($name, $value);
 }
 
+/**
+ * @param $name
+ * @param $message
+ */
 function flash_success($name, $message)
 {
-	Nip_Flash_Messages::instance()->add($name, 'success', $message);
+    app('flash.messages')->add($name, 'success', $message);
 }
 
+/**
+ * @param $name
+ * @param $message
+ */
 function flash_error($name, $message)
 {
-	Nip_Flash_Messages::instance()->add($name, 'error', $message);
+    app('flash.messages')->add($name, 'error', $message);
 }
 
+/**
+ * @param $name
+ * @param $message
+ */
 function flash_info($name, $message)
 {
-	Nip_Flash_Messages::instance()->add($name, 'info', $message);
+    app('flash.messages')->add($name, 'info', $message);
 }

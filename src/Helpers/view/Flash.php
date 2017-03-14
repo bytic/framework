@@ -2,16 +2,26 @@
 
 namespace Nip\Helpers\View;
 
-use Nip_Flash_Messages;
-
+/**
+ * Class Flash
+ * @package Nip\Helpers\View
+ */
 class Flash extends AbstractHelper
 {
 
+    /**
+     * @param $key
+     * @return bool
+     */
     public function hasKey($key)
     {
-        return Nip_Flash_Messages::instance()->has($key);
+        return app('flash.messages')->has($key);
     }
 
+    /**
+     * @param $key
+     * @return string
+     */
     public function render($key)
     {
         $return = '';
@@ -27,10 +37,13 @@ class Flash extends AbstractHelper
         return $return;
     }
 
+    /**
+     * @param $key
+     * @return mixed|object
+     */
     public function getData($key)
     {
-        $this->data = Nip_Flash_Messages::instance()->get($key);
+        $this->data = app('flash.messages')->get($key);
         return $this->data;
     }
-
 }

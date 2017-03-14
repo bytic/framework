@@ -3,6 +3,7 @@
 namespace Nip\Helpers\View;
 
 use Nip\Config\ConfigAwareTrait;
+use Nip\FlashData\FlashData;
 
 /**
  * Class GoogleAnalytics
@@ -43,7 +44,7 @@ class GoogleAnalytics extends AbstractHelper
     }
 
     /**
-     * @return \Nip_Flash
+     * @return FlashData
      */
     public function getFlashMemory()
     {
@@ -55,7 +56,7 @@ class GoogleAnalytics extends AbstractHelper
     }
 
     /**
-     * @param \Nip_Flash $flashMemory
+     * @param FlashData $flashMemory
      */
     public function setFlashMemory($flashMemory)
     {
@@ -64,7 +65,7 @@ class GoogleAnalytics extends AbstractHelper
 
     public function initFlashMemory()
     {
-        $this->flashMemory = \Nip_Flash::instance();
+        $this->flashMemory = app('flash.data');
     }
 
     /**
