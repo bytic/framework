@@ -176,16 +176,11 @@ class DatabaseManager
     }
 
     /**
-     * @param $adapter
-     * @param $host
-     * @param $user
-     * @param $password
-     * @param $database
-     * @return Connection
+     * @return array
      */
-    public function createNewConnection($adapter, $host, $user, $password, $database)
+    public function getConnections(): array
     {
-
+        return $this->connections;
     }
 
     /**

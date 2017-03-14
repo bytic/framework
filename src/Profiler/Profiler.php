@@ -240,6 +240,10 @@ class Nip_Profiler
         return $writer;
     }
 
+    /**
+     * @param $name
+     * @return string
+     */
     public function newWriterClass($name)
     {
         return 'Nip\Profiler\Adapters\\' . ucfirst($name);

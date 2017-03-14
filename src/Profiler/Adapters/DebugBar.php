@@ -2,17 +2,25 @@
 
 namespace Nip\Profiler\Adapters;
 
+use DebugBar\DataCollector\DataCollectorInterface;
 use Nip\DebugBar\DataCollector\QueryCollector;
 use Nip\Profiler\Profile;
 
+/**
+ * Class DebugBar
+ * @package Nip\Profiler\Adapters
+ */
 class DebugBar extends AbstractAdapter
 {
 
     /**
-     * @var QueryCollector
+     * @var QueryCollector|DataCollectorInterface
      */
     protected $collector = null;
 
+    /**
+     * @param Profile $profile
+     */
     public function write(Profile $profile)
     {
         $this->getCollector()->addQuery($profile);
@@ -20,7 +28,7 @@ class DebugBar extends AbstractAdapter
 
 
     /**
-     * @return QueryCollector
+     * @return QueryCollector|DataCollectorInterface
      */
     public function getCollector()
     {
@@ -28,11 +36,10 @@ class DebugBar extends AbstractAdapter
     }
 
     /**
-     * @param QueryCollector $colector
+     * @param QueryCollector|DataCollectorInterface $collector
      */
-    public function setCollector(QueryCollector $colector)
+    public function setCollector(QueryCollector $collector)
     {
-        $this->collector = $colector;
+        $this->collector = $collector;
     }
-
 }

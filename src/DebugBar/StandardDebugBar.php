@@ -2,6 +2,7 @@
 
 namespace Nip\DebugBar;
 
+use DebugBar\Bridge\MonologCollector;
 use DebugBar\DataCollector\ExceptionsCollector;
 use DebugBar\DataCollector\MemoryCollector;
 use DebugBar\DataCollector\MessagesCollector;
@@ -9,10 +10,10 @@ use DebugBar\DataCollector\PhpInfoCollector;
 use DebugBar\DataCollector\RequestDataCollector;
 use DebugBar\DataCollector\TimeDataCollector;
 use Monolog\Logger as Monolog;
+use Nip\Database\Connections\Connection;
 use Nip\DebugBar\DataCollector\QueryCollector;
 use Nip\DebugBar\DataCollector\RouteCollector;
-
-//use DebugBar\DataCollector\ConfigCollector;
+use Nip\Profiler\Adapters\DebugBar as ProfilerDebugBar;
 
 /**
  * Class StandardDebugBar
@@ -21,7 +22,6 @@ use Nip\DebugBar\DataCollector\RouteCollector;
 class StandardDebugBar extends DebugBar
 {
 
-
     public function doBoot()
     {
         $this->addCollector(new PhpInfoCollector());
@@ -29,28 +29,42 @@ class StandardDebugBar extends DebugBar
         $this->addCollector(new RequestDataCollector());
         $this->addCollector(new TimeDataCollector());
         $this->addCollector(new MemoryCollector());
-        $this->addCollector(new QueryCollector());
         $this->addCollector(new RouteCollector());
+
+        if (app()->has('db')) {
+            $this->addQueryCollector();
+        }
 
         if (app()->has(Monolog::class)) {
             $monolog = app(Monolog::class);
-            $this->addCollector(new \DebugBar\Bridge\MonologCollector($monolog));
+            $this->addCollector(new MonologCollector($monolog));
         } else {
             $this->addCollector(new ExceptionsCollector());
         }
     }
 
-    /**
-     * @param $adapter
-     */
-    public function initDatabaseAdapter($adapter)
+    public function addQueryCollector()
     {
-        $profiler = $adapter->newProfiler()->setEnabled(true);
+        $this->addCollector(new QueryCollector());
+
+        $databaseManager = app('db');
+        $connections = $databaseManager->getConnections();
+        foreach ($connections as $connection) {
+            $this->initDatabaseConnection($connection);
+        }
+    }
+
+    /**
+     * @param Connection $connection
+     */
+    public function initDatabaseConnection($connection)
+    {
+        $profiler = $connection->getAdapter()->newProfiler()->setEnabled(true);
         $writer = $profiler->newWriter('DebugBar');
 
         /** @var ProfilerDebugBar $writer */
         $writer->setCollector($this->getCollector('queries'));
         $profiler->addWriter($writer);
-        $adapter->setProfiler($profiler);
+        $connection->getAdapter()->setProfiler($profiler);
     }
 }
