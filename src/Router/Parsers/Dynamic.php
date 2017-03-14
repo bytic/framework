@@ -128,11 +128,29 @@ class Dynamic extends AbstractParser
      */
     protected function preMatch()
     {
-        if (count($this->getParts()) != (substr_count($this->uri, '/') + 1)) {
+        $mapCount = count($this->getParts());
+        $uriCount = count($this->getUriParts());
+        if ($mapCount != $uriCount) {
             return false;
         }
 
         return true;
+    }
+
+    /**
+     * @return array
+     */
+    public function getUriParts()
+    {
+        return $this->uriParts;
+    }
+
+    /**
+     * @param array $uriParts
+     */
+    public function setUriParts($uriParts)
+    {
+        $this->uriParts = $uriParts;
     }
 
     /**
@@ -155,22 +173,6 @@ class Dynamic extends AbstractParser
         }
 
         return true;
-    }
-
-    /**
-     * @return array
-     */
-    public function getUriParts()
-    {
-        return $this->uriParts;
-    }
-
-    /**
-     * @param array $uriParts
-     */
-    public function setUriParts($uriParts)
-    {
-        $this->uriParts = $uriParts;
     }
 
     /**
