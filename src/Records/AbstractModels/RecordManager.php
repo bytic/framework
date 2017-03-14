@@ -599,9 +599,8 @@ abstract class RecordManager
      */
     public function getNew($data = [])
     {
-
         $pk = $this->getPrimaryKey();
-        if (is_string($pk) && $this->getRegistry()->has($data[$pk])) {
+        if (is_string($pk) && isset($data[$pk]) && $this->getRegistry()->has($data[$pk])) {
             $return = $this->getRegistry()->get($data[$pk]);
             $return->writeData($data);
             $return->writeDBData($data);
