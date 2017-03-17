@@ -27,7 +27,6 @@ use Nip\Utility\Traits\NameWorksTrait;
  */
 abstract class RecordManager
 {
-
     use NameWorksTrait;
 
     /**
@@ -260,9 +259,12 @@ abstract class RecordManager
     public function generatePrimaryKey()
     {
         $structure = $this->getTableStructure();
-        $primaryKey = $structure['indexes']['PRIMARY']['fields'];
-        if (count($primaryKey) == 1) {
-            $primaryKey = reset($primaryKey);
+        $primaryKey = false;
+        if (is_array($structure) && isset($structure['indexes']['PRIMARY']['fields'])) {
+            $primaryKey = $structure['indexes']['PRIMARY']['fields'];
+            if (count($primaryKey) == 1) {
+                $primaryKey = reset($primaryKey);
+            }
         }
 
         return $primaryKey;
