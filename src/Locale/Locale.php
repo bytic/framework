@@ -1,45 +1,53 @@
 <?php
 
-use Locale as PhpLocale;
+namespace Nip\Locale;
 
-class Nip_Locale
+use Locale as PhpLocale;
+use Nip_File_System;
+
+/**
+ * Class Locale
+ * @package Nip\Locale
+ */
+class Locale
 {
 
-    protected $_supported;
-    protected $_data = [];
-    protected $_default = 'en_US';
-    protected $_current;
+    protected $supported;
 
-    /**
-     * Singleton pattern
-     *
-     * @return self
-     */
-    static public function instance()
-    {
-        static $instance;
-        if (!($instance instanceof self)) {
-            $instance = new self();
-        }
+    protected $data = [];
 
-        return $instance;
-    }
+    protected $default = 'en_US';
+
+    protected $current;
 
     public function getSupported()
     {
-        if (!$this->_supported) {
+        if (!$this->supported) {
             $files = Nip_File_System::instance()->scanDirectory($this->getDataFolder());
             foreach ($files as $file) {
                 if (substr($file, 0, 1) != '_') {
                     $name = str_replace('.php', '', $file);
-                    $this->_supported[] = $name;
+                    $this->supported[] = $name;
                 }
             }
         }
-        return $this->_supported;
+        return $this->supported;
     }
 
-    public function getOption($path = array(), $locale = false)
+    /**
+     * @return string
+     */
+    protected function getDataFolder()
+    {
+        return dirname(__FILE__) . '/data/';
+    }
+
+    /**
+     * @param array $path
+     * @param bool $locale
+     * @return bool|mixed
+     */
+    public function getOption($path = [], $locale = false)
     {
         $data = $this->getData($locale);
         $value = $data;
@@ -57,32 +65,39 @@ class Nip_Locale
         return $value;
     }
 
+    /**
+     * @param bool $locale
+     * @return mixed
+     */
     public function getData($locale = false)
     {
         $locale = $locale ? $locale : $this->getCurrent();
-        if (!$this->_data[$locale]) {
-            $data = $this->_getDataFromFile($locale);
-            $this->_data[$locale] = $data;
+        if (!isset($this->data[$locale])) {
+            $data = $this->getDataFromFile($locale);
+            $this->data[$locale] = $data;
         }
 
-        return $this->_data[$locale];
+        return $this->data[$locale];
     }
 
     public function getCurrent()
     {
-        if (!$this->_current) {
+        if (!$this->current) {
             $this->initCurrent();
         }
 
-        return $this->_current;
+        return $this->current;
     }
 
+    /**
+     * @param $locale
+     */
     public function setCurrent($locale)
     {
         if ($this->isSupported($locale)) {
-            $this->_current = $locale;
+            $this->current = $locale;
         } else {
-            $this->_current = $this->_default;
+            $this->current = $this->default;
         }
     }
 
@@ -92,7 +107,7 @@ class Nip_Locale
         if ($this->isSupported($locale)) {
             $this->setCurrent($locale);
         } else {
-            $this->setCurrent($this->_default);
+            $this->setCurrent($this->default);
         }
     }
 
@@ -108,34 +123,46 @@ class Nip_Locale
         return setlocale(LC_TIME, 0);
     }
 
+    /**
+     * @param $name
+     * @return bool
+     */
     public function isSupported($name)
     {
         return $this->hasDataFile($name);
     }
 
+    /**
+     * @param $name
+     * @return bool
+     */
     protected function hasDataFile($name)
     {
-        return is_file($this->_getDataFile($name));
+        return is_file($this->getDataFile($name));
     }
 
-    protected function _getDataFile($name)
+    /**
+     * @param $name
+     * @return string
+     */
+    protected function getDataFile($name)
     {
         return $this->getDataFolder() . $name . '.php';
     }
 
-    protected function getDataFolder()
+    /**
+     * @param $name
+     * @param array $data
+     * @return array
+     */
+    protected function getDataFromFile($name, $data = [])
     {
-        return dirname(__FILE__) . '/locale/data/';
-    }
-
-    protected function _getDataFromFile($name, $data = array())
-    {
-        $file = $this->_getDataFile($name);
+        $file = $this->getDataFile($name);
 
         if (is_file($file)) {
             include $file;
             if (isset ($_import)) {
-                $data = $this->_getDataFromFile($_import);
+                $data = $this->getDataFromFile($_import);
             }
             if (isset ($_data)) {
                 $data = \Nip\HelperBroker::get('Arrays')->merge_distinct($data, $_data);
@@ -146,5 +173,4 @@ class Nip_Locale
 
         return $data;
     }
-
 }
