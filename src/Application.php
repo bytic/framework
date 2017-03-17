@@ -17,6 +17,7 @@ use Nip\FlashData\FlashServiceProvider;
 use Nip\Http\Response\Response;
 use Nip\I18n\TranslatorServiceProvider;
 use Nip\Inflector\InflectorServiceProvider;
+use Nip\Locale\LocaleServiceProvider;
 use Nip\Logger\LoggerServiceProvider;
 use Nip\Mail\MailServiceProvider;
 use Nip\Mvc\MvcServiceProvider;
@@ -125,6 +126,7 @@ class Application implements ApplicationInterface
             AutoLoaderServiceProvider::class,
             LoggerServiceProvider::class,
             InflectorServiceProvider::class,
+            LocaleServiceProvider::class,
             MailServiceProvider::class,
             MvcServiceProvider::class,
             DispatcherServiceProvider::class,

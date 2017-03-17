@@ -1,6 +1,12 @@
 # Changelog
 All notable changes to this project will be documented in this file, in reverse chronological order by release.
 
+
+## 0.9.3 
+
+### Deprecated
+- rename all Nip_Locale -> Nip\locale()
+
 ## 0.0.3 
 
 ### Changed

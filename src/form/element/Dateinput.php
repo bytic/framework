@@ -1,5 +1,7 @@
 <?php
 
+use function Nip\locale;
+
 class Nip_Form_Element_Dateinput extends Nip_Form_Element_Input
 {
 
@@ -11,9 +13,8 @@ class Nip_Form_Element_Dateinput extends Nip_Form_Element_Input
     public function init()
     {
         parent::init();
-        $localeObj = Nip_Locale::instance();
-        $this->setLocale($localeObj->getCurrent());
-        $this->setFormat($localeObj->getOption(array('time', 'dateFormat')));
+        $this->setLocale(locale()->getCurrent());
+        $this->setFormat(locale()->getOption(['time', 'dateFormat']));
     }
 
     public function getLocale()
@@ -26,14 +27,14 @@ class Nip_Form_Element_Dateinput extends Nip_Form_Element_Input
         $this->_locale = $format;
     }
 
-    public function setFormat($format)
-    {
-        $this->_format = $format;
-    }
-
     public function getFormat()
     {
         return $this->_format;
+    }
+
+    public function setFormat($format)
+    {
+        $this->_format = $format;
     }
 
     public function setTime($time)
@@ -44,18 +45,6 @@ class Nip_Form_Element_Dateinput extends Nip_Form_Element_Input
     public function hasTime()
     {
         return $this->_hasTime;
-    }
-
-    public function getValue($requester = 'abstract')
-    {
-        $value = parent::getValue($requester);
-        if ($requester == 'model') {
-            if ($value) {
-                $unixTime = $this->getUnix();
-                $value = date('Y-m-d', $unixTime);
-            }
-        }
-        return $value;
     }
 
     public function getData($data, $source = 'abstract')
@@ -82,6 +71,29 @@ class Nip_Form_Element_Dateinput extends Nip_Form_Element_Input
         }
     }
 
+    public function getValue($requester = 'abstract')
+    {
+        $value = parent::getValue($requester);
+        if ($requester == 'model') {
+            if ($value) {
+                $unixTime = $this->getUnix();
+                $value = date('Y-m-d', $unixTime);
+            }
+        }
+        return $value;
+    }
+
+    public function getUnix($format = false)
+    {
+        $format = $format ? $format : $this->_format;
+        $value = $this->getValue();
+        if ($value) {
+            $date = date_create_from_format($format, $this->getValue());
+        }
+
+        return $date ? $date->getTimestamp() : false;
+    }
+
     public function validateFormat($format = false)
     {
         $format = $format ? $format : $this->_format;
@@ -97,16 +109,5 @@ class Nip_Form_Element_Dateinput extends Nip_Form_Element_Input
             $message = $message ? $message : 'I couldn\'t parse the ' . strtolower($this->getLabel()) . ' you entered';
             $this->addError($message);
         }
-    }
-
-    public function getUnix($format = false)
-    {
-        $format = $format ? $format : $this->_format;
-        $value = $this->getValue();
-        if ($value) {
-            $date = date_create_from_format($format, $this->getValue());
-        }
-
-        return $date ? $date->getTimestamp() : false;
     }
 }

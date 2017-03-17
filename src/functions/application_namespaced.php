@@ -12,3 +12,14 @@ if (!function_exists('url')) {
         return app('url');
     }
 }
+
+if (!function_exists('locale')) {
+    /**
+     * Get Locale
+     * @return \Nip\Locale\Locale
+     */
+    function locale()
+    {
+        return app('locale');
+    }
+}

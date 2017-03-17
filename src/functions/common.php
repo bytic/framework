@@ -60,7 +60,7 @@ function current_url()
  */
 function _date($datetime, $format = false)
 {
-    $format = $format ? $format : Nip_Locale::instance()->getOption(['time', 'dateFormat']);
+    $format = $format ? $format : Nip\locale()->getOption(['time', 'dateFormat']);
     $time = is_numeric($datetime) ? $datetime : strtotime($datetime);
 
     return $time ? date($format, $time) : false;
@@ -75,7 +75,7 @@ function _date($datetime, $format = false)
  */
 function _strtotime($date, $format = false)
 {
-    $format = $format ? $format : Nip_Locale::instance()->getOption(array('time', 'dateStringFormat'));
+    $format = $format ? $format : Nip\locale()->getOption(['time', 'dateStringFormat']);
     $dateArray = strptime($date, $format);
 
     return mktime($dateArray['tm_hour'], $dateArray['tm_min'], $dateArray['tm_sec'], 1 + $dateArray['tm_mon'],
@@ -92,7 +92,7 @@ function _strtotime($date, $format = false)
 function _strftime($datetime, $format = false)
 {
     if ($datetime && strpos($datetime, '0000-00-00') === false) {
-        $format = $format ? $format : Nip_Locale::instance()->getOption(array('time', 'dateStringFormat'));
+        $format = $format ? $format : Nip\locale()->getOption(['time', 'dateStringFormat']);
         if (is_numeric($datetime)) {
             $time = $datetime;
         } else {
