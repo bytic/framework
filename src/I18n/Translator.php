@@ -186,7 +186,8 @@ class Translator
     {
         if (!$this->defaultLanguage) {
             $language = substr(setlocale(LC_ALL, 0), 0, 2);
-            $language = $this->isValidLanguage($language) ? $language : reset($this->getLanguages());
+            $languageDefault = reset($this->getLanguages());
+            $language = $this->isValidLanguage($language) ? $language : $languageDefault;
             $this->setDefaultLanguage($language);
         }
 
