@@ -2,12 +2,15 @@
 
 namespace Nip\Mvc\Sections;
 
+use Nip\Utility\Traits\DynamicPropertiesTrait;
+
 /**
  * Class Section
  * @package Nip\Mvc\Sections
  */
 class Section
 {
+    use DynamicPropertiesTrait;
 
     /**
      * @var string
