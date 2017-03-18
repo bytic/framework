@@ -3,6 +3,7 @@
 namespace Nip\Mvc;
 
 use Nip\Container\ServiceProviders\Providers\AbstractSignatureServiceProvider;
+use Nip\Mvc\Sections\SectionsManager;
 
 /**
  * Class MailServiceProvider
@@ -17,6 +18,7 @@ class MvcServiceProvider extends AbstractSignatureServiceProvider
     public function register()
     {
         $this->registerModules();
+        $this->registerSections();
     }
 
     protected function registerModules()
@@ -35,11 +37,28 @@ class MvcServiceProvider extends AbstractSignatureServiceProvider
         return $modules;
     }
 
+    protected function registerSections()
+    {
+        $this->getContainer()->share('mvc.sections', function () {
+            return $this->createSectionsManager();
+        });
+    }
+
+    /**
+     * @return Modules
+     */
+    protected function createSectionsManager()
+    {
+        $sections = $this->getContainer()->get(SectionsManager::class);
+        $sections->init();
+        return $sections;
+    }
+
     /**
      * @inheritdoc
      */
     public function provides()
     {
-        return ['mvc.modules'];
+        return ['mvc.modules', 'mvc.sections'];
     }
 }
