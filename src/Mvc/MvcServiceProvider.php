@@ -21,8 +21,18 @@ class MvcServiceProvider extends AbstractSignatureServiceProvider
 
     protected function registerModules()
     {
-        $modules = new Modules();
-        $this->getContainer()->share('mvc.modules', $modules);
+        $this->getContainer()->share('mvc.modules', function () {
+            return $this->createModulesProvider();
+        });
+    }
+
+    /**
+     * @return Modules
+     */
+    protected function createModulesProvider()
+    {
+        $modules = $this->getContainer()->get(Modules::class);
+        return $modules;
     }
 
     /**
