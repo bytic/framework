@@ -2,6 +2,8 @@
 
 namespace Nip;
 
+use Nip\Mvc\Sections\SectionsManager;
+
 if (!function_exists('url')) {
     /**
      * Get Url Generator
@@ -21,5 +23,16 @@ if (!function_exists('locale')) {
     function locale()
     {
         return app('locale');
+    }
+}
+
+if (!function_exists('sections')) {
+    /**
+     * Get SectionsManager
+     * @return SectionsManager
+     */
+    function sections()
+    {
+        return app('mvc.sections');
     }
 }

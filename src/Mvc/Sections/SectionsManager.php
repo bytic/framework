@@ -73,15 +73,13 @@ class SectionsManager extends AbstractCollection
     }
 
     /**
-     * @return array
+     * @return void
      */
     public function init()
     {
         $data = config('sections.sections');
-        $collection = [];
         foreach ($data as $key => $row) {
-            $collection[$key] = new Section($row);
+            $this->set($key, new Section($row->toArray()));
         }
-        return $collection;
     }
 }

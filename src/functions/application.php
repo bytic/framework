@@ -62,7 +62,7 @@ if (!function_exists('config')) {
      *
      * @param  array|string $key
      * @param  mixed $default
-     * @return mixed
+     * @return \Nip\Config\Config|mixed
      */
     function config($key = null, $default = null)
     {
