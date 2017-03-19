@@ -5,6 +5,10 @@ namespace Nip\Tests\Unit\Records\Filters\Column;
 use Nip\Records\Filters\Column\BasicFilter;
 use Nip\Request;
 
+/**
+ * Class BasicFilterTest
+ * @package Nip\Tests\Unit\Records\Filters\Column
+ */
 class BasicFilterTest extends \Codeception\TestCase\Test
 {
     /**
@@ -37,6 +41,9 @@ class BasicFilterTest extends \Codeception\TestCase\Test
 
     /**
      * @dataProvider getValueFromRequestProvider
+     * @param $requestField
+     * @param $requestValue
+     * @param $filterValue
      */
     public function testGetValueFromRequest($requestField, $requestValue, $filterValue)
     {
@@ -51,15 +58,18 @@ class BasicFilterTest extends \Codeception\TestCase\Test
 
     public function getValueFromRequestProvider()
     {
-        return array(
-            array('title', 'value', 'value'),
-            array('title', 'value', 'value'),
-            array('title2', 'value', false),
-        );
+        return [
+            ['title', 'value', 'value'],
+            ['title', 'value', 'value'],
+            ['title2', 'value', false],
+        ];
     }
 
     /**
      * @dataProvider testHasGetValueProvider
+     * @param $requestValue
+     * @param $filterValue
+     * @param $hasValue
      */
     public function testHasGetValue($requestValue, $filterValue, $hasValue)
     {
@@ -73,20 +83,21 @@ class BasicFilterTest extends \Codeception\TestCase\Test
         static::assertSame($hasValue, $this->_object->hasValue());
     }
 
+    /**
+     * @return array
+     */
     public function testHasGetValueProvider()
     {
-        return array(
-            array('value', 'value', true),
-            array('value ', 'value', true),
-            array(' value ', 'value', true),
-            array('  ', false, false),
-        );
+        return [
+            ['value', 'value', true],
+            ['value ', 'value', true],
+            [' value ', 'value', true],
+            ['  ', false, false],
+        ];
     }
 
     protected function _before()
     {
         $this->_object = new BasicFilter();
     }
-
-
 }
