@@ -2,6 +2,8 @@
 
 namespace Nip\Records\Filters;
 
+use Nip\Collections\AbstractCollection;
+use Nip\Collections\ArrayAccessTrait;
 use Nip\Database\Query\Select as SelectQuery;
 use Nip\Records\AbstractModels\RecordManager;
 use Nip\Records\Filters\Column\AbstractFilter as AbstractColumnFilter;
@@ -11,15 +13,18 @@ use Nip\Utility\Traits\HasRequestTrait;
 /**
  * Class FilterManager
  * @package Nip\Records\Filters
+ *
+ * @method AbstractFilter[]|AbstractColumnFilter[] all()
  */
-class FilterManager
+class FilterManager extends AbstractCollection
 {
     use HasRequestTrait;
+    use ArrayAccessTrait;
 
     /**
      * @var AbstractFilter[]|AbstractColumnFilter[]
      */
-    protected $filters = [];
+    protected $items = [];
 
     protected $filtersArray = null;
 
@@ -67,7 +72,7 @@ class FilterManager
     public function generateFiltersArray()
     {
         $filtersArray = [];
-        $filters = $this->getFilters();
+        $filters = $this->all();
         $request = $this->getRequest();
         foreach ($filters as $filter) {
             $filter->setRequest($request);
@@ -80,20 +85,12 @@ class FilterManager
     }
 
     /**
-     * @return AbstractFilter[]|AbstractColumnFilter[]
-     */
-    public function getFilters()
-    {
-        return $this->filters;
-    }
-
-    /**
      * @param SelectQuery $query
      * @return SelectQuery
      */
     public function filterQuery($query)
     {
-        $filters = $this->getFilters();
+        $filters = $this->all();
         foreach ($filters as $filter) {
             if ($filter->isActive()) {
                 $filter->filterQuery($query);
@@ -121,7 +118,7 @@ class FilterManager
      */
     public function getFilterClass($type)
     {
-        return '\Nip\Records\Filters\\'.$type;
+        return '\Nip\Records\Filters\\' . $type;
     }
 
     /**
@@ -130,7 +127,7 @@ class FilterManager
     public function addFilter($filter)
     {
         $this->prepareFilter($filter);
-        $this->filters[] = $filter;
+        $this->items[] = $filter;
     }
 
     /**
