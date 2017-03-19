@@ -8,7 +8,6 @@ namespace Nip\Html\Head\Tags;
  */
 class Meta extends AbstractTag
 {
-
     protected $element = 'meta';
 
     /**

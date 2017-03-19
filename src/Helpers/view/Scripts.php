@@ -34,7 +34,7 @@ class Scripts extends AbstractHelper
      */
     public function addFile($file, $direction = 'add', $placeholder = false)
     {
-        if ($placeholder !== false && !empty($placeholder)) {
+        if ($placeholder === false || empty($placeholder)) {
             $placeholder = $this->defaultPlaceholder;
         }
 
