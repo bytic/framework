@@ -14,10 +14,12 @@ class MySQLi extends AbstractAdapter implements AdapterInterface
     /**
      * Connects to MySQL server
      *
-     * @param string $host
-     * @param string $user
-     * @param string $password
-     * @param string $database
+     * @param string|boolean $host
+     * @param string|boolean $user
+     * @param string|boolean $password
+     * @param string|boolean $database
+     * @param bool $newLink
+     *
      * @return resource
      */
     public function connect($host = false, $user = false, $password = false, $database = false, $newLink = false)
@@ -131,7 +133,10 @@ class MySQLi extends AbstractAdapter implements AdapterInterface
                 $return['fields'][$row['Field']] = [
                     'field' => $row['Field'],
                     'type' => $row['Type'],
-                    'primary' => ($return['indexes']['PRIMARY']['fields'][0] == $row['Field']),
+                    'primary' => (
+                        isset($return['indexes']['PRIMARY']['fields'][0])
+                        && $return['indexes']['PRIMARY']['fields'][0] == $row['Field']
+                    ),
                     'default' => $row['Default'],
                     'auto_increment' => ($row['Extra'] === 'auto_increment')
                 ];
