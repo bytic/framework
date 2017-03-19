@@ -15,12 +15,4 @@ class WildcardFilter extends BasicFilter implements FilterInterface
      * @var string
      */
     protected $databaseOperation = 'LIKE%%';
-
-    /**
-     * @param SelectQuery $query
-     */
-    public function filterQuery($query)
-    {
-        $query->where("{$this->getDbName()} = ?", $this->getValue());
-    }
 }

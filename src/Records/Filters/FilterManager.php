@@ -127,7 +127,7 @@ class FilterManager extends AbstractCollection
     public function addFilter($filter)
     {
         $this->prepareFilter($filter);
-        $this->items[] = $filter;
+        $this->set($filter->getName(), $filter);
     }
 
     /**
