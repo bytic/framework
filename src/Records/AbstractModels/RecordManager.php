@@ -2,7 +2,6 @@
 
 namespace Nip\Records\AbstractModels;
 
-use Nip\AutoLoader\Loaders\Psr4Class;
 use Nip\Collections\Registry;
 use Nip\Database\Connections\Connection;
 use Nip\Database\Query\AbstractQuery as Query;
@@ -14,9 +13,7 @@ use Nip\Database\Result;
 use Nip\HelperBroker;
 use Nip\Paginator;
 use Nip\Records\Collections\Collection as RecordCollection;
-use Nip\Records\Filters\FilterManager;
 use Nip\Records\Relations\Relation;
-use Nip\Request;
 use Nip\Utility\Traits\NameWorksTrait;
 
 /**
@@ -84,8 +81,6 @@ abstract class RecordManager
     protected $modelNamespacePath = null;
 
     protected $registry = null;
-
-    protected $filterManager = null;
 
 
     /**
@@ -769,109 +764,11 @@ abstract class RecordManager
     }
 
     /**
-     * @param Request|array $request
-     * @return mixed
-     */
-    public function requestFilters($request)
-    {
-        $this->getFilterManager()->setRequest($request);
-
-        return $this->getFilterManager()->getFiltersArray();
-    }
-
-    /**
-     * @return FilterManager
-     */
-    public function getFilterManager()
-    {
-        if ($this->filterManager === null) {
-            $this->initFilterManager();
-        }
-
-        return $this->filterManager;
-    }
-
-    /**
-     * @param FilterManager $filterManager
-     */
-    public function setFilterManager($filterManager)
-    {
-        $this->filterManager = $filterManager;
-    }
-
-    public function initFilterManager()
-    {
-        $class = $this->getFilterManagerClass();
-        /** @var FilterManager $manager */
-        $manager = new $class();
-        $manager->setRecordManager($this);
-        $manager->setRequest($this->getRequest());
-        $this->setFilterManager($manager);
-        $this->initFilters();
-    }
-
-    /**
-     * @return string
-     */
-    public function getFilterManagerClass()
-    {
-        return $this->generateFilterManagerClass();
-    }
-
-    /**
-     * @return mixed
-     */
-    protected function generateFilterManagerClass()
-    {
-        if ($this->isNamespaced()) {
-            $base = $this->getNamespacePath();
-            $namespaceClass = $base . '\Filters\FilterManager';
-            /** @var Psr4Class $loader */
-            $loader = app('autoloader')->getPsr4ClassLoader();
-            $loader->load($namespaceClass);
-            if ($loader->isLoaded($namespaceClass)) {
-                return $namespaceClass;
-            }
-        }
-
-        return FilterManager::class;
-    }
-
-    /**
      * @return \Nip\Request
      */
     public function getRequest()
     {
         return request();
-    }
-
-    /**
-     *
-     */
-    public function initFilters()
-    {
-        $this->getFilterManager()->init();
-    }
-
-    /**
-     * @param $query
-     * @return mixed
-     * @internal param array $filters
-     */
-    public function filter($query)
-    {
-        $query = $this->filterQuery($query);
-
-        return $query;
-    }
-
-    /**
-     * @param SelectQuery $query
-     * @return SelectQuery
-     */
-    public function filterQuery($query)
-    {
-        return $this->getFilterManager()->filterQuery($query);
     }
 
     public function __wakeup()

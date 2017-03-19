@@ -5,6 +5,7 @@ namespace Nip\Records\Filters;
 use Nip\Database\Query\Select as SelectQuery;
 use Nip\Records\AbstractModels\RecordManager;
 use Nip\Records\Filters\Column\AbstractFilter as AbstractColumnFilter;
+use Nip\Records\Traits\HasFilters\RecordsTrait;
 use Nip\Utility\Traits\HasRequestTrait;
 
 /**
@@ -114,6 +115,10 @@ class FilterManager
         return $filter;
     }
 
+    /**
+     * @param string $type
+     * @return string
+     */
     public function getFilterClass($type)
     {
         return '\Nip\Records\Filters\\'.$type;
@@ -138,7 +143,7 @@ class FilterManager
     }
 
     /**
-     * @return null|RecordManager
+     * @return null|RecordManager|RecordsTrait
      */
     public function getRecordManager()
     {
@@ -146,11 +151,10 @@ class FilterManager
     }
 
     /**
-     * @param RecordManager $recordManager
+     * @param RecordManager|RecordsTrait $recordManager
      */
     public function setRecordManager($recordManager)
     {
         $this->recordManager = $recordManager;
     }
-
 }
