@@ -197,7 +197,7 @@ abstract class AbstractRoute
      */
     public function initBase($params = [])
     {
-        $this->setBase('');
+        $this->setBase(\Nip\url()->to('/'));
     }
 
     /**
