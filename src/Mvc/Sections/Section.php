@@ -49,10 +49,19 @@ class Section
         return $this->subdomain;
     }
 
+    /**
+     * @param bool $url
+     * @return mixed
+     */
     public function getURL($url = false)
     {
-        $url = $url ? $url : BASE_URL;
-        return str_replace('://' . \Nip\Request::instance()->getHttp()->getSubdomain() . '.42km', '://' . $this->subdomain . '.42km', $url);
+        $url = $url ? $url : \Nip\url()->to('/');
+        $http = request()->getHttp();
+        return str_replace(
+            '://' . $http->getSubdomain() . '.' . $http->getRootDomain(),
+            '://' . $this->subdomain . '.' . $http->getRootDomain(),
+            $url
+        );
     }
 
     /**
@@ -63,9 +72,9 @@ class Section
     {
         $curentSubdomain = request()->getHttp()->getSubdomain();
         if (request()->getHttp()->getSubdomain() == 'www') {
-            $path = str_replace(ROOT_PATH, ROOT_PATH . $this->subdomain . DS, $path);
+            $path = str_replace(ROOT_PATH, ROOT_PATH . $this->subdomain . DIRECTORY_SEPARATOR, $path);
         } elseif ($this->subdomain == 'www') {
-            $path = str_replace($curentSubdomain . DS, '', $path);
+            $path = str_replace($curentSubdomain . DIRECTORY_SEPARATOR, '', $path);
         }
         return $path;
     }
