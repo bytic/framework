@@ -1,4 +1,5 @@
 <?php
+
 namespace Nip\Mvc\Sections;
 
 use Nip\Collections\AbstractCollection;
@@ -69,7 +70,13 @@ class SectionsManager extends AbstractCollection
      */
     public function detectFromSubdomain()
     {
-        return request()->getHttp()->getSubdomain();
+        $subDomain = request()->getHttp()->getSubdomain();
+        foreach ($this->all() as $key => $section) {
+            if ($subDomain == $section->getSubdomain()) {
+                return $key;
+            }
+        }
+        return $subDomain;
     }
 
     /**
