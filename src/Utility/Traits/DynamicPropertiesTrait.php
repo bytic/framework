@@ -8,7 +8,10 @@ namespace Nip\Utility\Traits;
  */
 trait DynamicPropertiesTrait
 {
-    protected $properties;
+    /**
+     * @var array
+     */
+    protected $properties = [];
 
     /**
      * @param $name
