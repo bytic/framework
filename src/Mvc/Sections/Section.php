@@ -7,6 +7,9 @@ use Nip\Utility\Traits\DynamicPropertiesTrait;
 /**
  * Class Section
  * @package Nip\Mvc\Sections
+ *
+ * @property $menu
+ * @property $folder
  */
 class Section
 {
@@ -23,6 +26,11 @@ class Section
     protected $subdomain;
 
     /**
+     * @var string
+     */
+    protected $path = null;
+
+    /**
      * Section constructor.
      * @param array $data
      */
@@ -31,14 +39,6 @@ class Section
         foreach ($data as $key => $value) {
             $this->{$key} = $value;
         }
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getName()
-    {
-        return $this->name;
     }
 
     /**
@@ -65,16 +65,48 @@ class Section
     }
 
     /**
+     * Compile path for this section from a given path of current section
+     *
      * @param bool $path
      * @return bool|mixed
      */
-    public function getPath($path = false)
+    public function compilePath($path = false)
     {
-        $curentSubdomain = request()->getHttp()->getSubdomain();
-        if (request()->getHttp()->getSubdomain() == 'www') {
-            $path = str_replace(ROOT_PATH, ROOT_PATH . $this->subdomain . DIRECTORY_SEPARATOR, $path);
-        } elseif ($this->subdomain == 'www') {
-            $path = str_replace($curentSubdomain . DIRECTORY_SEPARATOR, '', $path);
+        $currentBasePath = $this->getManager()->getCurrent()->getPath();
+        $path = str_replace($currentBasePath, $this->getPath(), $path);
+        return $path;
+    }
+
+    /**
+     * Return the path for section
+     *
+     * @return null|string
+     */
+    public function getPath()
+    {
+        if ($this->path === null) {
+            $this->initPath();
+        }
+        return $this->path;
+    }
+
+    protected function initPath()
+    {
+        $this->path = $this->generatePath();
+    }
+
+    /**
+     * @return string
+     */
+    protected function generatePath()
+    {
+        $path = app('path.base');
+        if (!$this->isCurrent()) {
+            $path = str_replace(
+                DIRECTORY_SEPARATOR . $this->getManager()->getCurrent()->getFolder() . '',
+                DIRECTORY_SEPARATOR . $this->getFolder() . '',
+                $path
+            );
         }
         return $path;
     }
@@ -84,7 +116,31 @@ class Section
      */
     public function isCurrent()
     {
-        return $this->subdomain == request()->getHttp()->getSubdomain();
+        return $this->getName() == $this->getManager()->getCurrent()->getName();
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    /**
+     * @return SectionsManager
+     */
+    protected function getManager()
+    {
+        return app('mvc.sections');
+    }
+
+    /**
+     * @return string
+     */
+    public function getFolder()
+    {
+        return $this->folder;
     }
 
     /**
