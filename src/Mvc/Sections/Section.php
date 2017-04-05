@@ -9,6 +9,7 @@ use Nip\Utility\Traits\DynamicPropertiesTrait;
  * @package Nip\Mvc\Sections
  *
  * @property $menu
+ * @property $folder
  */
 class Section
 {
@@ -72,7 +73,6 @@ class Section
     public function compilePath($path = false)
     {
         $currentBasePath = $this->getManager()->getCurrent()->getPath();
-
         $path = str_replace($currentBasePath, $this->getPath(), $path);
         return $path;
     }
@@ -102,7 +102,11 @@ class Section
     {
         $path = app('path.base');
         if (!$this->isCurrent()) {
-            $path = str_replace('' . $this->getName() . '', '', $path);
+            $path = str_replace(
+                DIRECTORY_SEPARATOR . $this->getManager()->getCurrent()->getFolder() . '',
+                DIRECTORY_SEPARATOR . $this->getFolder() . '',
+                $path
+            );
         }
         return $path;
     }
@@ -129,6 +133,14 @@ class Section
     protected function getManager()
     {
         return app('mvc.sections');
+    }
+
+    /**
+     * @return string
+     */
+    public function getFolder()
+    {
+        return $this->folder;
     }
 
     /**
