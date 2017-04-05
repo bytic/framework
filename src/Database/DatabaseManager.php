@@ -56,7 +56,7 @@ class DatabaseManager
         // set the "fetch mode" for PDO which determines the query return types.
         if (!isset($this->connections[$name])) {
             $this->connections[$name] = $this->configure(
-                $connection = $this->makeConnection($database),
+                $connection = $this->makeConnection($name),
                 $type
             );
         }
