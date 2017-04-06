@@ -14,6 +14,15 @@ use Nip\Http\Kernel\KernelInterface;
  */
 class DebugBarServiceProvider extends AbstractSignatureServiceProvider implements BootableServiceProviderInterface
 {
+
+    /**
+     * @inheritdoc
+     */
+    public function provides()
+    {
+        return ['debugbar'];
+    }
+
     /**
      * @inheritdoc
      */
@@ -36,12 +45,31 @@ class DebugBarServiceProvider extends AbstractSignatureServiceProvider implement
     {
         $app = $this->getContainer()->get('app');
 
-        /** @var DebugBar $debugbar */
-        $debugbar = $app->get('debugbar');
-        $debugbar->enable();
-        $debugbar->boot();
+        // If enabled is null, set from the app.debug value
+//        $enabled = $this->app['config']->get('debugbar.enabled');
+
+//        if (is_null($enabled)) {
+        $enabled = $this->checkAppDebug();
+//        }
+
+        if (!$enabled) {
+            return;
+        }
+
+        /** @var DebugBar $debugBar */
+        $debugBar = $app->get('debugbar');
+        $debugBar->enable();
+        $debugBar->boot();
 
         $this->registerMiddleware(DebugbarMiddleware::class);
+    }
+
+    /**
+     * Check the App Debug status
+     */
+    protected function checkAppDebug()
+    {
+        return $this->getContainer()->get('config')->get('app.debug');
     }
 
     /**
@@ -54,13 +82,5 @@ class DebugBarServiceProvider extends AbstractSignatureServiceProvider implement
         /** @var Kernel $kernel */
         $kernel = $this->getContainer()->get(KernelInterface::class);
         $kernel->prependMiddleware($middleware);
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function provides()
-    {
-        return ['debugbar'];
     }
 }
