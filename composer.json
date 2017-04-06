@@ -1,16 +1,13 @@
 {
-  "name": "ByTIC/Framework",
+  "name": "bytic/framework",
+  "type": "library",
   "description": "Php Framework",
+  "homepage": "https://github.com/ByTIC/request-detective",
+  "license": "MIT",
   "authors": [
     {
       "name": "Gabriel Solomon",
       "email": "hello@gabrielsolomon.ro"
-    }
-  ],
-  "repositories": [
-    {
-      "type": "git",
-      "url": "https://github.com/ByTIC/RequestDetective.git"
     }
   ],
   "autoload": {
@@ -30,7 +27,7 @@
   },
   "require": {
     "php": "^7.0",
-    "ByTIC/RequestDetective": "dev-develop",
+    "bytic/request-detective": "dev-develop",
     "psr/container": "^1.0",
     "http-interop/http-middleware": "^0.4",
     "league/container": "^2.3",
