@@ -3,7 +3,7 @@
 namespace Nip\Tests\Unit\Records;
 
 use Mockery as m;
-use Nip\Database\Connection;
+use Nip\Database\Connections\Connection;
 use Nip\Records\Collections\Collection;
 use Nip\Records\RecordManager as Records;
 use Nip\Request;
@@ -131,6 +131,15 @@ class RecordsTest extends AbstractTest
         self::assertSame($users, $this->_object->getRelation('User')->getWith());
     }
 
+    protected function _testInitRelationsFromArrayBelongsToUser($name)
+    {
+        self::assertTrue($this->_object->hasRelation($name));
+        self::assertInstanceOf('Nip\Records\Relations\BelongsTo', $this->_object->getRelation($name));
+        self::assertInstanceOf('Nip\Records\RecordManager', $this->_object->getRelation($name)->getWith());
+        self::assertEquals($this->_object->getRelation($name)->getWith()->getPrimaryFK(),
+            $this->_object->getRelation($name)->getFK());
+    }
+
     public function testNewCollection()
     {
         $collection = $this->_object->newCollection();
@@ -209,20 +218,11 @@ class RecordsTest extends AbstractTest
         self::assertEquals(Collection::class, $this->_object->getCollectionClass());
     }
 
-    protected function _testInitRelationsFromArrayBelongsToUser($name)
-    {
-        self::assertTrue($this->_object->hasRelation($name));
-        self::assertInstanceOf('Nip\Records\Relations\BelongsTo', $this->_object->getRelation($name));
-        self::assertInstanceOf('Nip\Records\RecordManager', $this->_object->getRelation($name)->getWith());
-        self::assertEquals($this->_object->getRelation($name)->getWith()->getPrimaryFK(),
-            $this->_object->getRelation($name)->getFK());
-    }
-
     protected function setUp()
     {
         parent::setUp();
 
-        $wrapper = new Connection();
+        $wrapper = new Connection(null);
 
         $this->_object = m::mock(Records::class)->shouldDeferMissing()
             ->shouldReceive('getRequest')->andReturn(Request::create('/'))

@@ -1,6 +1,6 @@
 <?php
 
-namespace Nip\Records\Traits\ActiveRecords;
+namespace Nip\Records\Traits\ActiveRecord;
 
 use Nip\Database\Connections\Connection;
 use Nip\Database\Query\AbstractQuery as Query;
@@ -14,8 +14,8 @@ use Nip\Records\AbstractModels\Record;
 use Nip\Records\Collections\Collection as RecordCollection;
 
 /**
- * Class RecordsTrait
- * @package Nip\Records\Traits\ActiveRecords
+ * Class ActiveRecordsTrait
+ * @package Nip\Records\Traits\ActiveRecord
  */
 trait ActiveRecordsTrait
 {
@@ -68,6 +68,92 @@ trait ActiveRecordsTrait
     }
 
     /**
+     * @return Connection
+     */
+    public function getDB()
+    {
+        if ($this->connection == null) {
+            $this->initDB();
+        }
+
+        $this->checkDB();
+
+        return $this->connection;
+    }
+
+    protected function initDB()
+    {
+        $this->setDB($this->newDbConnection());
+    }
+
+    /**
+     * @param Connection $connection
+     * @return $this
+     */
+    public function setDB($connection)
+    {
+        $this->connection = $connection;
+
+        return $this;
+    }
+
+    /**
+     * @return Connection
+     */
+    protected function newDbConnection()
+    {
+        return app('db.connection');
+    }
+
+    public function checkDB()
+    {
+        if (!$this->hasDB()) {
+            trigger_error("Database connection missing for [" . get_class($this) . "]", E_USER_ERROR);
+        }
+    }
+
+    /**
+     * @return bool
+     */
+    public function hasDB()
+    {
+        return $this->connection instanceof Connection;
+    }
+
+    /**
+     * @return string
+     */
+    public function getTable()
+    {
+        if ($this->table === null) {
+            $this->initTable();
+        }
+
+        return $this->table;
+    }
+
+    /**
+     * @param null $table
+     */
+    public function setTable($table)
+    {
+        $this->table = $table;
+    }
+
+    protected function initTable()
+    {
+        $this->setTable($this->generateTable());
+    }
+
+    /**
+     * @return string
+     */
+    protected function generateTable()
+    {
+        return str_replace('-', '_', $this->getController());
+    }
+
+    /**
      * @return string
      */
     public function getFullNameTable()
@@ -93,6 +179,31 @@ trait ActiveRecordsTrait
     {
         $structure = $this->getTableStructure();
         $this->fields = array_keys($structure['fields']);
+    }
+
+    /**
+     * @return mixed
+     */
+    protected function getTableStructure()
+    {
+        if ($this->tableStructure == null) {
+            $this->initTableStructure();
+        }
+
+        return $this->tableStructure;
+    }
+
+    /**
+     * @param null $tableStructure
+     */
+    public function setTableStructure($tableStructure)
+    {
+        $this->tableStructure = $tableStructure;
+    }
+
+    protected function initTableStructure()
+    {
+        $this->setTableStructure($this->getDB()->getMetadata()->describeTable($this->getTable()));
     }
 
     /**
@@ -144,6 +255,48 @@ trait ActiveRecordsTrait
         }
 
         return false;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPrimaryKey()
+    {
+        if ($this->primaryKey === null) {
+            $this->initPrimaryKey();
+        }
+
+        return $this->primaryKey;
+    }
+
+    /**
+     * @param null|string $primaryKey
+     */
+    public function setPrimaryKey($primaryKey)
+    {
+        $this->primaryKey = $primaryKey;
+    }
+
+    protected function initPrimaryKey()
+    {
+        $this->setPrimaryKey($this->generatePrimaryKey());
+    }
+
+    /**
+     * @return string
+     */
+    public function generatePrimaryKey()
+    {
+        $structure = $this->getTableStructure();
+        $primaryKey = false;
+        if (is_array($structure) && isset($structure['indexes']['PRIMARY']['fields'])) {
+            $primaryKey = $structure['indexes']['PRIMARY']['fields'];
+            if (count($primaryKey) == 1) {
+                $primaryKey = reset($primaryKey);
+            }
+        }
+
+        return $primaryKey;
     }
 
     /**
@@ -454,158 +607,5 @@ trait ActiveRecordsTrait
         }
 
         return null;
-    }
-
-    /**
-     * @return string
-     */
-    public function getPrimaryKey()
-    {
-        if ($this->primaryKey === null) {
-            $this->initPrimaryKey();
-        }
-
-        return $this->primaryKey;
-    }
-
-    /**
-     * @param null|string $primaryKey
-     */
-    public function setPrimaryKey($primaryKey)
-    {
-        $this->primaryKey = $primaryKey;
-    }
-
-    protected function initPrimaryKey()
-    {
-        $this->setPrimaryKey($this->generatePrimaryKey());
-    }
-
-    /**
-     * @return string
-     */
-    public function generatePrimaryKey()
-    {
-        $structure = $this->getTableStructure();
-        $primaryKey = false;
-        if (is_array($structure) && isset($structure['indexes']['PRIMARY']['fields'])) {
-            $primaryKey = $structure['indexes']['PRIMARY']['fields'];
-            if (count($primaryKey) == 1) {
-                $primaryKey = reset($primaryKey);
-            }
-        }
-
-        return $primaryKey;
-    }
-
-    /**
-     * @return mixed
-     */
-    protected function getTableStructure()
-    {
-        if ($this->tableStructure == null) {
-            $this->initTableStructure();
-        }
-
-        return $this->tableStructure;
-    }
-
-    /**
-     * @param null $tableStructure
-     */
-    public function setTableStructure($tableStructure)
-    {
-        $this->tableStructure = $tableStructure;
-    }
-
-    protected function initTableStructure()
-    {
-        $this->setTableStructure($this->getDB()->getMetadata()->describeTable($this->getTable()));
-    }
-
-    /**
-     * @return Connection
-     */
-    public function getDB()
-    {
-        if ($this->connection == null) {
-            $this->initDB();
-        }
-
-        $this->checkDB();
-
-        return $this->connection;
-    }
-
-    protected function initDB()
-    {
-        $this->setDB($this->newDbConnection());
-    }
-
-    /**
-     * @param Connection $connection
-     * @return $this
-     */
-    public function setDB($connection)
-    {
-        $this->connection = $connection;
-
-        return $this;
-    }
-
-    /**
-     * @return Connection
-     */
-    protected function newDbConnection()
-    {
-        return app('db.connection');
-    }
-
-    public function checkDB()
-    {
-        if (!$this->hasDB()) {
-            trigger_error("Database connection missing for [" . get_class($this) . "]", E_USER_ERROR);
-        }
-    }
-
-    /**
-     * @return bool
-     */
-    public function hasDB()
-    {
-        return $this->connection instanceof Connection;
-    }
-
-    /**
-     * @return string
-     */
-    public function getTable()
-    {
-        if ($this->table === null) {
-            $this->initTable();
-        }
-
-        return $this->table;
-    }
-
-    /**
-     * @param null $table
-     */
-    public function setTable($table)
-    {
-        $this->table = $table;
-    }
-
-    protected function initTable()
-    {
-        $this->setTable($this->generateTable());
-    }
-
-    /**
-     * @return string
-     */
-    protected function generateTable()
-    {
-        return str_replace('-', '_', $this->getController());
     }
 }

@@ -7,7 +7,7 @@ use Nip\Database\Query\Insert as InsertQuery;
 use Nip\HelperBroker;
 use Nip\Records\Collections\Collection as RecordCollection;
 use Nip\Records\Relations\Relation;
-use Nip\Records\Traits\ActiveRecords\ActiveRecordsTrait;
+use Nip\Records\Traits\ActiveRecord\ActiveRecordsTrait;
 use Nip\Utility\Traits\NameWorksTrait;
 
 /**
@@ -60,70 +60,6 @@ abstract class RecordManager
     protected $relations = null;
 
     protected $relationTypes = ['belongsTo', 'hasMany', 'hasAndBelongsToMany'];
-
-    /**
-     * @return string
-     */
-    public function getModelNamespace()
-    {
-        return $this->getRootNamespace().$this->getModelNamespacePath();
-    }
-
-    /**
-     * @return string
-     */
-    public function getRootNamespace()
-    {
-        return app('app')->getRootNamespace() . 'Models\\';
-    }
-
-    /**
-     * @return string
-     */
-    public function getModelNamespacePath()
-    {
-        if ($this->modelNamespacePath == null) {
-            $this->initModelNamespacePath();
-        }
-
-        return $this->modelNamespacePath;
-    }
-
-    public function initModelNamespacePath()
-    {
-        if ($this->isNamespaced()) {
-            $path = $this->generateModelNamespacePathFromClassName().'\\';
-        } else {
-            $controller = $this->generateControllerGeneric();
-            $path = inflector()->classify($controller).'\\';
-        }
-        $this->modelNamespacePath = $path;
-    }
-
-    /**
-     * @return string
-     */
-    protected function generateModelNamespacePathFromClassName()
-    {
-        $className = $this->getClassName();
-        $rootNamespace = $this->getRootNamespace();
-        $path = str_replace($rootNamespace, '', $className);
-
-        $nsParts = explode('\\', $path);
-        array_pop($nsParts);
-
-        return implode($nsParts, '\\');
-    }
-
-    /**
-     * @return string
-     */
-    protected function generateControllerGeneric()
-    {
-        $class = $this->getClassName();
-
-        return inflector()->unclassify($class);
-    }
 
     /**
      * Overloads findByRecord, findByField, deleteByRecord, deleteByField, countByRecord, countByField
@@ -259,12 +195,76 @@ abstract class RecordManager
     }
 
     /**
+     * @return string
+     */
+    public function getModelNamespacePath()
+    {
+        if ($this->modelNamespacePath == null) {
+            $this->initModelNamespacePath();
+        }
+
+        return $this->modelNamespacePath;
+    }
+
+    public function initModelNamespacePath()
+    {
+        if ($this->isNamespaced()) {
+            $path = $this->generateModelNamespacePathFromClassName() . '\\';
+        } else {
+            $controller = $this->generateControllerGeneric();
+            $path = inflector()->classify($controller) . '\\';
+        }
+        $this->modelNamespacePath = $path;
+    }
+
+    /**
+     * @return string
+     */
+    protected function generateModelNamespacePathFromClassName()
+    {
+        $className = $this->getClassName();
+        $rootNamespace = $this->getRootNamespace();
+        $path = str_replace($rootNamespace, '', $className);
+
+        $nsParts = explode('\\', $path);
+        array_pop($nsParts);
+
+        return implode($nsParts, '\\');
+    }
+
+    /**
+     * @return string
+     */
+    public function getRootNamespace()
+    {
+        return app('app')->getRootNamespace() . 'Models\\';
+    }
+
+    /**
+     * @return string
+     */
+    protected function generateControllerGeneric()
+    {
+        $class = $this->getClassName();
+
+        return inflector()->unclassify($class);
+    }
+
+    /**
      * @param $name
      * @return mixed
      */
     public function getHelper($name)
     {
         return HelperBroker::get($name);
+    }
+
+    /**
+     * @return string
+     */
+    public function getModelNamespace()
+    {
+        return $this->getRootNamespace() . $this->getModelNamespacePath();
     }
 
     /**

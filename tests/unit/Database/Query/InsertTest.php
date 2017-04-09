@@ -3,7 +3,7 @@
 namespace Nip\Tests\Unit\Database\Query;
 
 use Mockery as m;
-use Nip\Database\Connection;
+use Nip\Database\Connections\Connection;
 use Nip\Database\Query\Insert;
 
 /**
@@ -65,7 +65,7 @@ class InsertTest extends \Codeception\TestCase\Test
         $adapterMock->shouldReceive('cleanData')->andReturnUsing(function ($data) {
             return $data;
         });
-        $manager = new Connection();
+        $manager = new Connection(false);
         $manager->setAdapter($adapterMock);
         $this->object->setManager($manager);
     }

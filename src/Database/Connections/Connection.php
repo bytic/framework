@@ -7,6 +7,7 @@ use Nip\Database\Adapters\AbstractAdapter;
 use Nip\Database\Metadata\Manager as MetadataManager;
 use Nip\Database\Query\AbstractQuery as AbstractQuery;
 use Nip\Database\Query\Select as SelectQuery;
+use Nip\Database\Query\Update as UpdateQuery;
 use Nip\Database\Result;
 
 /**
@@ -196,7 +197,6 @@ class Connection
     }
 
     /**
-     * @param string $type optional
      * @return SelectQuery
      */
     public function newSelect()
@@ -206,7 +206,7 @@ class Connection
 
     /**
      * @param string $type optional
-     * @return AbstractQuery|SelectQuery
+     * @return AbstractQuery|SelectQuery|UpdateQuery
      */
     public function newQuery($type = "select")
     {
@@ -216,6 +216,14 @@ class Connection
         $query->setManager($this);
 
         return $query;
+    }
+
+    /**
+     * @return UpdateQuery
+     */
+    public function newUpdate()
+    {
+        return $this->newQuery('update');
     }
 
     /**
