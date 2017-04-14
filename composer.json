@@ -42,7 +42,9 @@
     "filp/whoops": "^2.1",
     "vlucas/phpdotenv": "^2.4",
     "symfony/finder": "^3.2",
-    "symfony/debug": "^3.2"
+    "symfony/debug": "^3.2",
+    "symfony/filesystem": "^3.2",
+    "league/flysystem": "^1.0"
   },
   "require-dev": {
     "codeception/codeception": "^2.2",
