@@ -2,7 +2,6 @@
 
 class Nip_File_Exception extends Exception
 {
-
 }
 
 class Nip_File extends Nip_Object
@@ -19,6 +18,11 @@ class Nip_File extends Nip_Object
         }
     }
 
+    /**
+     * @param $target
+     * @return $this
+     * @throws Nip_File_Exception
+     */
     public function move($target)
     {
         $dir = dirname($target);
@@ -34,6 +38,24 @@ class Nip_File extends Nip_Object
         return $this;
     }
 
+    public function getPath()
+    {
+        return $this->_path;
+    }
+
+    public function setPath($path)
+    {
+        $this->_name = basename($path);
+        $this->_extension = pathinfo($path, PATHINFO_EXTENSION);
+        $this->_path = $path;
+        return $this;
+    }
+
+    /**
+     * @param $target
+     * @return $this
+     * @throws Nip_File_Exception
+     */
     public function copy($target)
     {
         $dir = dirname($target);
@@ -87,27 +109,9 @@ class Nip_File extends Nip_Object
         exit();
     }
 
-    public function delete()
-    {
-        unlink($this->getPath());
-    }
-
-    public function setPath($path)
-    {
-        $this->_name = basename($path);
-        $this->_extension = pathinfo($path, PATHINFO_EXTENSION);
-        $this->_path = $path;
-        return $this;
-    }
-
     public function getName()
     {
         return $this->_name;
-    }
-
-    public function getExtension()
-    {
-        return $this->_extension;
     }
 
     public function getSize()
@@ -115,14 +119,19 @@ class Nip_File extends Nip_Object
         return filesize($this->getPath());
     }
 
+    public function delete()
+    {
+        unlink($this->getPath());
+    }
+
+    public function getExtension()
+    {
+        return $this->_extension;
+    }
+
     public function getTime()
     {
         return filemtime($this->getPath());
-    }
-
-    public function getPath()
-    {
-        return $this->_path;
     }
 
     public function getMimeType()
