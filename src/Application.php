@@ -13,6 +13,7 @@ use Nip\Container\ServiceProviders\ServiceProviderAwareTrait;
 use Nip\Database\DatabaseServiceProvider;
 use Nip\Dispatcher\DispatcherAwareTrait;
 use Nip\Dispatcher\DispatcherServiceProvider;
+use Nip\Filesystem\FilesystemServiceProvider;
 use Nip\FlashData\FlashServiceProvider;
 use Nip\Http\Response\Response;
 use Nip\I18n\TranslatorServiceProvider;
@@ -136,6 +137,7 @@ class Application implements ApplicationInterface
             DatabaseServiceProvider::class,
             TranslatorServiceProvider::class,
             FlashServiceProvider::class,
+            FilesystemServiceProvider::class,
         ];
     }
 
