@@ -1,6 +1,9 @@
 # Changelog
 All notable changes to this project will be documented in this file, in reverse chronological order by release.
 
+## 1.0.0
+### Deprecated
+- rename all occurrences of DATE_DB
 
 ## 0.9.3 
 
