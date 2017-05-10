@@ -10,17 +10,17 @@ use Nip\Database\Result;
  * Class AbstractQuery
  * @package Nip\Database\Query
  *
- * @method $this setCols() setCols(array|string $cols = null)
- * @method $this setWhere() setWhere(array|string $cols = null)
+ * @method $this setCols() setCols(array | string $cols = null)
+ * @method $this setWhere() setWhere(array | string $cols = null)
  *
- * @method $this cols() cols(array|string $cols)
+ * @method $this cols() cols(array | string $cols)
  * @method $this count() count(string $col, string $alias = null)
- * @method $this sum() sum(array|string $cols)
- * @method $this from() from(array|string $from)
+ * @method $this sum() sum(array | string $cols)
+ * @method $this from() from(array | string $from)
  * @method $this data() data(array $data)
- * @method $this table() table(array|string $table)
- * @method $this order() order(array|string $order)\
- * @method $this group() group(array|string $group)\
+ * @method $this table() table(array | string $table)
+ * @method $this order() order(array | string $order)\
+ * @method $this group() group(array | string $group)\
  */
 abstract class AbstractQuery
 {
@@ -151,7 +151,10 @@ abstract class AbstractQuery
         if (isset($params['where']) && is_array($params['where'])) {
             foreach ($params['where'] as $condition) {
                 $condition = (array)$condition;
-                $this->where($condition[0], $condition[1]);
+                $this->where(
+                    $condition[0],
+                    isset($condition[1]) ? $condition[1] : null
+                );
             }
         }
     }
@@ -241,7 +244,7 @@ abstract class AbstractQuery
     {
         $this->parts['limit'] = $start;
         if ($offset) {
-            $this->parts['limit'] .= ','.$offset;
+            $this->parts['limit'] .= ',' . $offset;
         }
 
         return $this;
@@ -458,7 +461,7 @@ abstract class AbstractQuery
                 $type = isset($itemOrder[1]) ? $itemOrder[1] : '';
                 $protected = isset($itemOrder[2]) ? $itemOrder[2] : true;
 
-                $column = ($protected ? $this->protect($column) : $column).' '.strtoupper($type);
+                $column = ($protected ? $this->protect($column) : $column) . ' ' . strtoupper($type);
 
                 $orderParts[] = trim($column);
             }
@@ -476,7 +479,7 @@ abstract class AbstractQuery
     protected function protect($input)
     {
         return strpos($input, '(') !== false ? $input : str_replace("`*`", "*",
-            '`'.str_replace('.', '`.`', $input).'`');
+            '`' . str_replace('.', '`.`', $input) . '`');
     }
 
     /**
