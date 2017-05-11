@@ -2,9 +2,13 @@
 
 namespace Nip\Filesystem;
 
+use League\Flysystem\FilesystemInterface;
+
 /**
  * Class File
  * @package Nip\Filesystem
+ *
+ * @method FilesystemInterface|FileDisk getFilesystem
  */
 class File extends \League\Flysystem\File
 {
@@ -49,7 +53,7 @@ class File extends \League\Flysystem\File
     }
 
     /**
-     * @return string
+     * @return void
      */
     protected function initPath()
     {
@@ -121,6 +125,6 @@ class File extends \League\Flysystem\File
 
     protected function initUrl()
     {
-        $this->url = $this->getPath();
+        $this->url = $this->getFilesystem()->getUrl($this->getPath());
     }
 }
