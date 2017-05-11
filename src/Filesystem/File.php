@@ -109,10 +109,18 @@ class File extends \League\Flysystem\File
     }
 
     /**
-     * @return string
+     * @return mixed
      */
     public function getUrl()
     {
-        return $this->url ? $this->url : $this->getUrlPath() . $this->name;
+        if (!$this->url) {
+            $this->initUrl();
+        }
+        return $this->url;
+    }
+
+    protected function initUrl()
+    {
+        $this->url = $this->getPath();
     }
 }
