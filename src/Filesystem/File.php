@@ -17,11 +17,28 @@ class File extends \League\Flysystem\File
      * @var
      */
     protected $name;
-
     /**
      * @var
      */
     protected $url;
+
+    /**
+     * @inheritdoc
+     */
+    public function __construct(FilesystemInterface $filesystem = null, $path = null)
+    {
+        $this->parseNameFromPath($path);
+        return parent::__construct($filesystem, $path);
+    }
+
+    /**
+     * @param $path
+     */
+    protected function parseNameFromPath($path)
+    {
+        $name = pathinfo($path, PATHINFO_BASENAME);
+        $this->setName($name);
+    }
 
     /**
      * @param string $name
@@ -65,8 +82,7 @@ class File extends \League\Flysystem\File
      */
     public function setPath($path)
     {
-        $name = pathinfo($path, PATHINFO_BASENAME);
-        $this->setName($name);
+        $this->parseNameFromPath($path);
         return parent::setPath($path);
     }
 
