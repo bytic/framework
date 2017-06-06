@@ -2,7 +2,6 @@
 
 namespace Nip\DebugBar;
 
-use DebugBar\Bridge\MonologCollector;
 use DebugBar\DataCollector\ExceptionsCollector;
 use DebugBar\DataCollector\MemoryCollector;
 use DebugBar\DataCollector\MessagesCollector;
@@ -38,7 +37,7 @@ class StandardDebugBar extends DebugBar
 
         if (app()->has(Monolog::class)) {
             $monolog = app(Monolog::class);
-            $this->addCollector(new MonologCollector($monolog));
+            $this->addMonolog($monolog);
         } else {
             $this->addCollector(new ExceptionsCollector());
         }

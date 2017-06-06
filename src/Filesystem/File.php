@@ -2,9 +2,13 @@
 
 namespace Nip\Filesystem;
 
+use League\Flysystem\FilesystemInterface;
+
 /**
  * Class File
  * @package Nip\Filesystem
+ *
+ * @method FilesystemInterface|FileDisk getFilesystem
  */
 class File extends \League\Flysystem\File
 {
@@ -13,11 +17,28 @@ class File extends \League\Flysystem\File
      * @var
      */
     protected $name;
-
     /**
      * @var
      */
     protected $url;
+
+    /**
+     * @inheritdoc
+     */
+    public function __construct(FilesystemInterface $filesystem = null, $path = null)
+    {
+        $this->parseNameFromPath($path);
+        return parent::__construct($filesystem, $path);
+    }
+
+    /**
+     * @param $path
+     */
+    protected function parseNameFromPath($path)
+    {
+        $name = pathinfo($path, PATHINFO_BASENAME);
+        $this->setName($name);
+    }
 
     /**
      * @param string $name
@@ -49,7 +70,7 @@ class File extends \League\Flysystem\File
     }
 
     /**
-     * @return string
+     * @return void
      */
     protected function initPath()
     {
@@ -61,8 +82,7 @@ class File extends \League\Flysystem\File
      */
     public function setPath($path)
     {
-        $name = pathinfo($path, PATHINFO_BASENAME);
-        $this->setName($name);
+        $this->parseNameFromPath($path);
         return parent::setPath($path);
     }
 
@@ -109,10 +129,18 @@ class File extends \League\Flysystem\File
     }
 
     /**
-     * @return string
+     * @return mixed
      */
     public function getUrl()
     {
-        return $this->url ? $this->url : $this->getUrlPath() . $this->name;
+        if (!$this->url) {
+            $this->initUrl();
+        }
+        return $this->url;
+    }
+
+    protected function initUrl()
+    {
+        $this->url = $this->getFilesystem()->getUrl($this->getPath());
     }
 }
