@@ -340,7 +340,7 @@ abstract class Record extends \Nip_Object
     public function getCloneWithRelations()
     {
         $item = $this->getClone();
-        $this->cloneRelations($item);
+        $item->cloneRelations($this);
 
         return $item;
     }
@@ -380,6 +380,7 @@ abstract class Record extends \Nip_Object
     }
 
     /**
+     * Clone the relations records from a sibling
      * @param self $from
      * @return self
      */
