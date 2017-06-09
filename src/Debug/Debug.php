@@ -40,7 +40,7 @@ class Debug extends SymfonyDebug
 
         if ('cli' !== PHP_SAPI) {
             ini_set('display_errors', 0);
-            ExceptionHandler::register();
+            ExceptionHandler::register($displayErrors);
         } elseif ($displayErrors && (!ini_get('log_errors') || ini_get('error_log'))) {
             // CLI - display errors only if they're not already logged to STDERR
             ini_set('display_errors', 1);
