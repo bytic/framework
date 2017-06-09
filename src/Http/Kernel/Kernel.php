@@ -145,18 +145,25 @@ class Kernel implements KernelInterface
      */
     protected function renderException($request, Exception $e)
     {
-//        if ($this->getStaging()->getStage()->isPublic()) {
-//            $this->getDispatcher()->setErrorController();
-//
-//            return $this->getResponseFromRequest($request);
-//        } else {
-        $whoops = new WhoopsRun;
-        $whoops->allowQuit(false);
-        $whoops->writeToOutput(false);
-        $whoops->pushHandler(new PrettyPageHandler());
+        if (config('app.debug') === false) {
+            $request->setControllerName('error')->setActionName('index');
 
-        return ResponseFactory::make($whoops->handleException($e));
-//        }
+            return (
+            new Dispatcher(
+                [
+                    \Nip\Dispatcher\ActionDispatcherMiddleware::class
+                ],
+                $this->getApplication()->getContainer()
+            )
+            )->dispatch($request);
+        } else {
+            $whoops = new WhoopsRun;
+            $whoops->allowQuit(false);
+            $whoops->writeToOutput(false);
+            $whoops->pushHandler(new PrettyPageHandler());
+
+            return ResponseFactory::make($whoops->handleException($e));
+        }
     }
 
     /**
