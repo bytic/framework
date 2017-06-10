@@ -212,7 +212,7 @@ class HasAndBelongsToMany extends HasOneOrMany
     {
         $data = [
             $this->getManager()->getPrimaryFK() => $this->getItem()->{$this->getManager()->getPrimaryKey()},
-            $this->getWith()->getPrimaryFK() => $record->{$this->getWith()->getPrimaryKey()},
+            $this->getPivotFK() => $record->{$this->getWith()->getPrimaryKey()},
         ];
         return $data;
     }
