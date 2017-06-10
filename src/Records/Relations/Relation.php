@@ -11,6 +11,7 @@ use Nip\Records\AbstractModels\Record as Record;
 use Nip\Records\AbstractModels\RecordManager;
 use Nip\Records\Collections\Collection;
 use Nip\Records\Collections\Collection as RecordCollection;
+use Nip\Records\Traits\Relations\HasRelationsRecordsTrait;
 use Nip_Helper_Arrays as ArraysHelper;
 
 /**
@@ -197,7 +198,7 @@ abstract class Relation
     }
 
     /**
-     * @param RecordManager $manager
+     * @param RecordManager|HasRelationsRecordsTrait $manager
      */
     public function setManager($manager)
     {

@@ -4,8 +4,6 @@ namespace Nip\Records\AbstractModels;
 
 use Nip\HelperBroker;
 use Nip\Logger\Exception;
-use Nip\Records\Relations\HasMany;
-use Nip\Records\Relations\Relation;
 use Nip\Utility\Traits\NameWorksTrait;
 
 /**
@@ -28,13 +26,6 @@ abstract class Record extends \Nip_Object
 
     protected $_dbData = [];
     protected $_helpers = [];
-
-
-    /**
-     * The loaded relationships for the model.
-     * @var array
-     */
-    protected $relations = [];
 
 
     /**
@@ -63,36 +54,59 @@ abstract class Record extends \Nip_Object
     }
 
     /**
-     * @param $relationName
-     * @return Relation|HasMany|null
+     * @param $name
+     * @return \Nip\Helpers\AbstractHelper
      */
-    public function getRelation($relationName)
+    public function getHelper($name)
     {
-        if (!$this->hasRelation($relationName)) {
-            $this->initRelation($relationName);
-        }
-
-        return $this->relations[$relationName];
+        return HelperBroker::get($name);
     }
 
     /**
-     * @param $key
-     * @return bool
+     * @return mixed
      */
-    public function hasRelation($key)
+    public function getName()
     {
-        return array_key_exists($key, $this->relations);
+        if ($this->_name == null) {
+            $this->_name = inflector()->unclassify(get_class($this));
+        }
+        return $this->_name;
     }
 
     /**
-     * @param $relationName
+     * @param mixed $name
      */
-    public function initRelation($relationName)
+    public function setName($name)
     {
-        if (!$this->getManager()->hasRelation($relationName)) {
-            return;
+        $this->_name = $name;
+    }
+
+    /**
+     * @param bool|array $data
+     */
+    public function writeDBData($data = false)
+    {
+        foreach ($data as $key => $value) {
+            $this->_dbData[$key] = $value;
         }
-        $this->relations[$relationName] = $this->newRelation($relationName);
+    }
+
+    /**
+     * @return array
+     */
+    public function getDBData()
+    {
+        return $this->_dbData;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getPrimaryKey()
+    {
+        $pk = $this->getManager()->getPrimaryKey();
+
+        return $this->{$pk};
     }
 
     /**
@@ -169,74 +183,6 @@ abstract class Record extends \Nip_Object
     }
 
     /**
-     * @param string $relationName
-     * @return Relation|null
-     */
-    public function newRelation($relationName)
-    {
-        $relation = clone $this->getManager()->getRelation($relationName);
-        $relation->setItem($this);
-
-        return $relation;
-    }
-
-    /**
-     * @param $name
-     * @return \Nip\Helpers\AbstractHelper
-     */
-    public function getHelper($name)
-    {
-        return HelperBroker::get($name);
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getName()
-    {
-        if ($this->_name == null) {
-            $this->_name = inflector()->unclassify(get_class($this));
-        }
-        return $this->_name;
-    }
-
-    /**
-     * @param mixed $name
-     */
-    public function setName($name)
-    {
-        $this->_name = $name;
-    }
-
-    /**
-     * @param bool|array $data
-     */
-    public function writeDBData($data = false)
-    {
-        foreach ($data as $key => $value) {
-            $this->_dbData[$key] = $value;
-        }
-    }
-
-    /**
-     * @return array
-     */
-    public function getDBData()
-    {
-        return $this->_dbData;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getPrimaryKey()
-    {
-        $pk = $this->getManager()->getPrimaryKey();
-
-        return $this->{$pk};
-    }
-
-    /**
      * @return bool
      */
     public function insert()
@@ -267,23 +213,6 @@ abstract class Record extends \Nip_Object
     public function saveRecord()
     {
         $this->getManager()->save($this);
-    }
-
-    public function saveRelations()
-    {
-        $relations = $this->getRelations();
-        foreach ($relations as $relation) {
-            /** @var Relation $relation */
-            $relation->save();
-        }
-    }
-
-    /**
-     * @return array
-     */
-    public function getRelations()
-    {
-        return $this->relations;
     }
 
     public function delete()
