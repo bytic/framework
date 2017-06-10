@@ -67,15 +67,13 @@ class MorphToMany extends HasAndBelongsToMany
     }
 
     /**
-     * @param SelectQuery $query
+     * @inheritdoc
      */
-    protected function hydrateQueryWithPivotConstraints($query)
+    protected function formatAttachData($record)
     {
-        parent::hydrateQueryWithPivotConstraints($query);
-        $query->where(
-            "`{$this->getTable()}`.`{$this->getMorphKey()}` = ?",
-            $this->getMorphType()
-        );
+        $data = parent::formatAttachData($record);
+        $data[$this->getMorphKey()] = $this->getMorphType();
+        return $data;
     }
 
     /**
@@ -120,6 +118,18 @@ class MorphToMany extends HasAndBelongsToMany
     protected function generateMorphType()
     {
         return $this->getWith()->getTable();
+    }
+
+    /**
+     * @param SelectQuery $query
+     */
+    protected function hydrateQueryWithPivotConstraints($query)
+    {
+        parent::hydrateQueryWithPivotConstraints($query);
+        $query->where(
+            "`{$this->getTable()}`.`{$this->getMorphKey()}` = ?",
+            $this->getMorphType()
+        );
     }
 
     /**

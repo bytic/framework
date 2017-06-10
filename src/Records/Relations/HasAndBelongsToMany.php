@@ -191,20 +191,30 @@ class HasAndBelongsToMany extends HasOneOrMany
      */
     protected function queryAttachRecords($query, $records)
     {
-        foreach ($records as $item) {
-            $data = [
-                $this->getManager()->getPrimaryFK() => $this->getItem()->{$this->getManager()->getPrimaryKey()},
-                $this->getWith()->getPrimaryFK() => $item->{$this->getWith()->getPrimaryKey()},
-            ];
+        foreach ($records as $record) {
+            $data = $this->formatAttachData($record);
             foreach ($this->getJoinFields() as $field) {
-                if ($item->{"__$field"}) {
-                    $data[$field] = $item->{"__$field"};
+                if ($record->{"__$field"}) {
+                    $data[$field] = $record->{"__$field"};
                 } else {
                     $data[$field] = $data[$field] ? $data[$field] : false;
                 }
             }
             $query->data($data);
         }
+    }
+
+    /**
+     * @param $record
+     * @return array
+     */
+    protected function formatAttachData($record)
+    {
+        $data = [
+            $this->getManager()->getPrimaryFK() => $this->getItem()->{$this->getManager()->getPrimaryKey()},
+            $this->getWith()->getPrimaryFK() => $record->{$this->getWith()->getPrimaryKey()},
+        ];
+        return $data;
     }
 
     /**
