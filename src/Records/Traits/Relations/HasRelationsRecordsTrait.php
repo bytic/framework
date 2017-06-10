@@ -3,6 +3,7 @@
 namespace Nip\Records\Traits\Relations;
 
 use Nip\Records\Record;
+use Nip\Records\Relations\MorphToMany;
 use Nip\Records\Relations\Relation;
 use Nip\Records\Traits\AbstractTrait\RecordsTrait;
 
@@ -82,13 +83,17 @@ trait HasRelationsRecordsTrait
      * @param string $type
      * @param string $name
      * @param array $params
-     * @return void
+     * @return Relation
      */
     protected function initRelation($type, $name, $params)
     {
-        $this->relations[$name] = $this->newRelation($type);
-        $this->relations[$name]->setName($name);
-        $this->relations[$name]->addParams($params);
+        $relation = $this->newRelation($type);
+        $relation->setName($name);
+        $relation->addParams($params);
+
+        $this->relations[$name] = $relation;
+
+        return $relation;
     }
 
     /**
@@ -119,37 +124,54 @@ trait HasRelationsRecordsTrait
     /**
      * @param $name
      * @param array $params
+     * @return Relation
      */
     public function belongsTo($name, $params = [])
     {
-        $this->initRelation('belongsTo', $name, $params);
+        return $this->initRelation('belongsTo', $name, $params);
     }
 
     /**
      * @param $name
      * @param array $params
+     * @return Relation
      */
     public function hasMany($name, $params = [])
     {
-        $this->initRelation('hasMany', $name, $params);
+        return $this->initRelation('hasMany', $name, $params);
     }
 
-    /**
+    /** @noinspection PhpMethodNamingConventionInspection
      * @param $name
      * @param array $params
+     * @return Relation
      */
     public function HABTM($name, $params = [])
     {
-        $this->initRelation('hasAndBelongsToMany', $name, $params);
+        return $this->initRelation('hasAndBelongsToMany', $name, $params);
     }
 
     /**
      * @param $name
      * @param array $params
+     * @return Relation
      */
     public function morphToMany($name, $params = [])
     {
-        $this->initRelation('morphToMany', $name, $params);
+        return $this->initRelation('morphToMany', $name, $params);
+    }
+
+    /**
+     * @param $name
+     * @param array $params
+     * @return MorphToMany
+     */
+    public function morphedByMany($name, $params = [])
+    {
+        /** @var MorphToMany $relation */
+        $relation = $this->initRelation('morphToMany', $name, $params);
+        $relation->setInverse(true);
+        return $relation;
     }
 
     /**

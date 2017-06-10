@@ -44,9 +44,7 @@ class HasAndBelongsToMany extends HasOneOrMany
             $query->cols(["{$this->getTable()}.$field", "__$field"]);
         }
 
-        $pk = $this->getWith()->getPrimaryKey();
-        $fk = $this->getWith()->getPrimaryFK();
-        $query->where("`{$this->getTable()}`.`$fk` = `{$this->getWith()->getTable()}`.`$pk`");
+        $this->hydrateQueryWithPivotConstraints($query);
 
         $order = $this->getParam('order');
         if ($order) {

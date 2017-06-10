@@ -22,6 +22,38 @@ trait HasRelationsRecordTrait
      */
     protected $relations = [];
 
+    public function saveRelations()
+    {
+        $relations = $this->getRelations();
+        foreach ($relations as $relation) {
+            /** @var Relation $relation */
+            $relation->save();
+        }
+    }
+
+    /**
+     * @return array
+     */
+    public function getRelations()
+    {
+        return $this->relations;
+    }
+
+    /**
+     * @param $name
+     * @param $arguments
+     * @return \Nip\Records\AbstractModels\Record|\Nip\Records\Collections\Collection
+     */
+    protected function isCallRelationOperation($name, $arguments = [])
+    {
+        if (substr($name, 0, 3) == "get") {
+            $relation = $this->getRelation(substr($name, 3));
+            if ($relation) {
+                return $relation->getResults();
+            }
+        }
+        return null;
+    }
 
     /**
      * @param $relationName
@@ -66,22 +98,5 @@ trait HasRelationsRecordTrait
         $relation->setItem($this);
 
         return $relation;
-    }
-
-    public function saveRelations()
-    {
-        $relations = $this->getRelations();
-        foreach ($relations as $relation) {
-            /** @var Relation $relation */
-            $relation->save();
-        }
-    }
-
-    /**
-     * @return array
-     */
-    public function getRelations()
-    {
-        return $this->relations;
     }
 }

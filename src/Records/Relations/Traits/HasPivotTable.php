@@ -3,6 +3,7 @@
 namespace Nip\Records\Relations\Traits;
 
 use Nip\Database\Connections\Connection;
+use Nip\Database\Query\Select as SelectQuery;
 
 /**
  * Trait HasPivotTable
@@ -19,20 +20,19 @@ trait HasPivotTable
         return $this->getParam("link-db") == 'with' ? $this->getWith()->getDB() : parent::getDB();
     }
 
-
     /** @noinspection PhpMissingParentCallCommonInspection
      * @return string
      */
     public function generateTable()
     {
-        return $this->getPivotTable();
+        return $this->generatePivotTable();
     }
 
     /**
      * Builds the name of a has-and-belongs-to-many association table
      * @return string
      */
-    public function getPivotTable()
+    public function generatePivotTable()
     {
         $tables = [
             $this->getManager()->getTable(),
@@ -41,5 +41,23 @@ trait HasPivotTable
         sort($tables);
 
         return implode("-", $tables);
+    }
+
+    /**
+     * @param SelectQuery $query
+     */
+    protected function hydrateQueryWithPivotConstraints($query)
+    {
+        $pk = $this->getWith()->getPrimaryKey();
+        $fk = $this->getPivotFK();
+        $query->where("`{$this->getTable()}`.`$fk` = `{$this->getWith()->getTable()}`.`$pk`");
+    }
+
+    /**
+     * @return mixed
+     */
+    protected function getPivotFK()
+    {
+        return $this->getWith()->getPrimaryFK();
     }
 }

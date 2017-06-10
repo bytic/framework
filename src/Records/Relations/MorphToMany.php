@@ -2,11 +2,6 @@
 
 namespace Nip\Records\Relations;
 
-use Nip\Database\Query\Select as SelectQuery;
-use Nip\Records\Collections\Associated as AssociatedCollection;
-use Nip\Records\Collections\Collection;
-use Nip\Records\Collections\Collection as RecordCollection;
-use Nip\Records\Record;
 use Nip\Records\Relations\Traits\HasCollectionResults;
 use Nip\Records\Relations\Traits\HasPivotTable;
 
@@ -14,17 +9,19 @@ use Nip\Records\Relations\Traits\HasPivotTable;
  * Class HasOneOrMany
  * @package Nip\Records\Relations
  */
-class MorphToMany extends Relation
+class MorphToMany extends HasAndBelongsToMany
 {
     use HasCollectionResults;
     use HasPivotTable;
+
+    protected $type = 'morphToMany';
 
     /**
      * The type of the polymorphic relation.
      *
      * @var string
      */
-    protected $morphType;
+    protected $morphType = null;
 
     /**
      * The class name of the morph type constraint.
@@ -43,6 +40,70 @@ class MorphToMany extends Relation
     protected $inverse = false;
 
     /**
+     * Get the foreign key "type" name.
+     *
+     * @return string
+     */
+    public function getMorphType()
+    {
+        if ($this->morphType == null) {
+            $this->initMorphType();
+        }
+        return $this->morphType;
+    }
+
+    /**
+     * @param string $morphType
+     */
+    public function setMorphType(string $morphType)
+    {
+        $this->morphType = $morphType;
+    }
+
+    protected function initMorphType()
+    {
+        $this->setMorphType($this->generateMorphType());
+    }
+
+    /**
+     * @return string
+     */
+    protected function generateMorphType()
+    {
+        return $this->getWith()->getTable();
+    }
+
+    public function initResults()
+    {
+        $query = $this->getQuery();
+        echo $query;
+        die();
+//        $items = $this->getWith()->findByQuery($query);
+        $collection = $this->newCollection();
+//        $this->populateCollection($collection, $items);
+        $this->setResults($collection);
+    }
+
+    /**
+     * Builds the name of a has-and-belongs-to-many association table
+     * @return string
+     */
+    public function generatePivotTable()
+    {
+        $pivotManager = $this->getPivotManager();
+
+        return $pivotManager->getTable() . '_pivot';
+    }
+
+    /**
+     * @return \Nip\Records\AbstractModels\RecordManager
+     */
+    protected function getPivotManager()
+    {
+        return $this->isInverse() ? $this->getManager() : $this->getWith();
+    }
+
+    /**
      * @return bool
      */
     public function isInverse(): bool
@@ -58,77 +119,11 @@ class MorphToMany extends Relation
         $this->inverse = $inverse;
     }
 
-    /** @noinspection PhpMissingParentCallCommonInspection
-     * @return SelectQuery
-     */
-    public function newQuery()
-    {
-        $query = $this->getDB()->newSelect();
-
-        $query->from($this->getWith()->getFullNameTable());
-        $query->from($this->getDB()->getDatabase() . '.' . $this->getTable());
-
-//        foreach ($this->getWith()->getFields() as $field) {
-//            $query->cols(["{$this->getWith()->getTable()}.$field", $field]);
-//        }
-
-        $pk = $this->getWith()->getPrimaryKey();
-        $fk = $this->getWith()->getPrimaryFK();
-        $query->where("`{$this->getTable()}`.`$fk` = `{$this->getWith()->getTable()}`.`$pk`");
-
-        $order = $this->getParam('order');
-        if ($order) {
-            foreach ($order as $item) {
-                $query->order([$item[0], $item[1]]);
-            }
-        }
-
-        return $query;
-    }
-
-
     /**
-     * @param array $dictionary
-     * @param Collection $collection
-     * @param Record $record
-     * @return AssociatedCollection
+     * @return mixed
      */
-    public function getResultsFromCollectionDictionary($dictionary, $collection, $record)
+    protected function getPivotFK()
     {
-        $fk = $record->getManager()->getPrimaryKey();
-        $pk = $record->{$fk};
-        $collection = $this->newCollection();
-
-        if ($dictionary[$pk]) {
-            foreach ($dictionary[$pk] as $record) {
-                $collection->add($record);
-            }
-        }
-        return $collection;
-    }
-
-    public function initResults()
-    {
-//        $query = $this->getQuery();
-//        $items = $this->getWith()->findByQuery($query);
-        $collection = $this->newCollection();
-//        $this->populateCollection($collection, $items);
-        $this->setResults($collection);
-    }
-
-    /**
-     * Build model dictionary keyed by the relation's foreign key.
-     *
-     * @param RecordCollection $collection
-     * @return array
-     */
-    protected function buildDictionary(RecordCollection $collection)
-    {
-        $dictionary = [];
-//        $pk = $this->getDictionaryKey();
-//        foreach ($collection as $record) {
-//            $dictionary[$record->{$pk}][] = $record;
-//        }
-        return $dictionary;
+        return 'pivotal_id';
     }
 }
