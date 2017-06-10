@@ -3,9 +3,12 @@
 namespace Nip\Records\Relations;
 
 use Nip\Database\Query\AbstractQuery;
+use Nip\Database\Query\Delete as DeleteQuery;
 use Nip\Database\Query\Insert as InsertQuery;
 use Nip\Database\Query\Select as SelectQuery;
+use Nip\HelperBroker;
 use Nip\Records\Collections\Collection as RecordCollection;
+use Nip\Records\Record;
 use Nip\Records\Relations\Traits\HasPivotTable;
 
 /**
@@ -35,7 +38,7 @@ class HasAndBelongsToMany extends HasOneOrMany
         $query = $this->getDB()->newSelect();
 
         $query->from($this->getWith()->getFullNameTable());
-        $query->from($this->getDB()->getDatabase().'.'.$this->getTable());
+        $query->from($this->getDB()->getDatabase() . '.' . $this->getTable());
 
         foreach ($this->getWith()->getFields() as $field) {
             $query->cols(["{$this->getWith()->getTable()}.$field", $field]);
@@ -155,14 +158,23 @@ class HasAndBelongsToMany extends HasOneOrMany
 
     protected function deleteConnections()
     {
-        $query = $this->getDB()->newQuery('delete');
-        $query->table($this->getTable());
+        $query = $this->newDeleteQuery();
         $query->where(
             "{$this->getManager()->getPrimaryFK()} = ?",
             $this->getItem()->{$this->getManager()->getPrimaryKey()}
         );
 //        echo $query;
         $query->execute();
+    }
+
+    /**
+     * @return DeleteQuery
+     */
+    protected function newDeleteQuery()
+    {
+        $query = $this->getDB()->newDelete();
+        $query->table($this->getTable());
+        return $query;
     }
 
     protected function saveConnections()
@@ -228,6 +240,31 @@ class HasAndBelongsToMany extends HasOneOrMany
         $query->execute();
     }
 
+    /**
+     * @param Record $model
+     */
+    public function detach($model)
+    {
+        $query = $this->newDeleteQuery();
+        $this->queryDetachRecords($query, [$model]);
+//        echo $query;
+        $query->execute();
+    }
+
+    /**
+     * @param InsertQuery $query
+     * @param $records
+     */
+    protected function queryDetachRecords($query, $records)
+    {
+        $ids = HelperBroker::get('Arrays')->pluck($records, $this->getWith()->getPrimaryKey());
+        $query->where(
+            "{$this->getPivotFK()} IN ?",
+            $ids
+        );
+    }
+
+
     /** @noinspection PhpMissingParentCallCommonInspection
      * @return mixed
      */
@@ -241,6 +278,6 @@ class HasAndBelongsToMany extends HasOneOrMany
      */
     protected function getDictionaryKey()
     {
-        return '__'.$this->getFK();
+        return '__' . $this->getFK();
     }
 }
