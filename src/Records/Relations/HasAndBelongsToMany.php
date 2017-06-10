@@ -252,7 +252,7 @@ class HasAndBelongsToMany extends HasOneOrMany
     }
 
     /**
-     * @param InsertQuery $query
+     * @param DeleteQuery $query
      * @param $records
      */
     protected function queryDetachRecords($query, $records)
@@ -261,6 +261,11 @@ class HasAndBelongsToMany extends HasOneOrMany
         $query->where(
             "{$this->getPivotFK()} IN ?",
             $ids
+        );
+
+        $query->where(
+            "{$this->getManager()->getPrimaryFK()} = ?",
+            $this->getItem()->{$this->getManager()->getPrimaryKey()}
         );
     }
 

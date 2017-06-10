@@ -2,6 +2,7 @@
 
 namespace Nip\Records\Relations;
 
+use Nip\Database\Query\Delete as DeleteQuery;
 use Nip\Database\Query\Select as SelectQuery;
 use Nip\Records\Relations\Traits\HasCollectionResults;
 
@@ -118,6 +119,16 @@ class MorphToMany extends HasAndBelongsToMany
     protected function generateMorphType()
     {
         return $this->getWith()->getTable();
+    }
+
+    /**
+     * @param DeleteQuery $query
+     * @param $records
+     */
+    protected function queryDetachRecords($query, $records)
+    {
+        parent::queryDetachRecords($query, $records);
+        $query->where("`{$this->getMorphKey()}` = ?", $this->getMorphType());
     }
 
     /**
