@@ -2,10 +2,10 @@
 
 namespace Nip\Records\Relations;
 
-use Nip\Database\Connection;
 use Nip\Database\Query\AbstractQuery;
 use Nip\Database\Query\Select as SelectQuery;
 use Nip\Records\Collections\Collection as RecordCollection;
+use Nip\Records\Relations\Traits\HasPivotTable;
 
 /**
  * Class HasAndBelongsToMany
@@ -13,6 +13,7 @@ use Nip\Records\Collections\Collection as RecordCollection;
  */
 class HasAndBelongsToMany extends HasOneOrMany
 {
+    use HasPivotTable;
 
     /**
      * @var string
@@ -58,11 +59,15 @@ class HasAndBelongsToMany extends HasOneOrMany
     }
 
     /**
-     * @return Connection
+     * @return null|array
      */
-    public function getDB()
+    protected function getJoinFields()
     {
-        return $this->getParam("link-db") == 'with' ? $this->getWith()->getDB() : parent::getDB();
+        if ($this->joinFields == null) {
+            $this->initJoinFields();
+        }
+
+        return $this->joinFields;
     }
 
     /**
@@ -71,6 +76,12 @@ class HasAndBelongsToMany extends HasOneOrMany
     public function setJoinFields($joinFields)
     {
         $this->joinFields = $joinFields;
+    }
+
+    protected function initJoinFields()
+    {
+        $structure = $this->getDB()->describeTable($this->getTable());
+        $this->setJoinFields(array_keys($structure["fields"]));
     }
 
     /**
@@ -143,52 +154,6 @@ class HasAndBelongsToMany extends HasOneOrMany
         return $this;
     }
 
-    /** @noinspection PhpMissingParentCallCommonInspection
-     * @return mixed
-     */
-    public function getWithClass()
-    {
-        return $this->getName();
-    }
-
-    /** @noinspection PhpMissingParentCallCommonInspection
-     * @return string
-     */
-    public function generateTable()
-    {
-        return $this->getCrossTable();
-    }
-
-    /**
-     * Builds the name of a has-and-belongs-to-many association table
-     * @return string
-     */
-    public function getCrossTable()
-    {
-        $tables = [$this->getManager()->getTable(), $this->getWith()->getTable()];
-        sort($tables);
-
-        return implode("-", $tables);
-    }
-
-    /**
-     * @return null|array
-     */
-    protected function getJoinFields()
-    {
-        if ($this->joinFields == null) {
-            $this->initJoinFields();
-        }
-
-        return $this->joinFields;
-    }
-
-    protected function initJoinFields()
-    {
-        $structure = $this->getDB()->describeTable($this->getTable());
-        $this->setJoinFields(array_keys($structure["fields"]));
-    }
-
     protected function deleteConnections()
     {
         $query = $this->getDB()->newQuery('delete');
@@ -226,6 +191,14 @@ class HasAndBelongsToMany extends HasOneOrMany
 //            echo $query;
             $query->execute();
         }
+    }
+
+    /** @noinspection PhpMissingParentCallCommonInspection
+     * @return mixed
+     */
+    public function getWithClass()
+    {
+        return $this->getName();
     }
 
     /** @noinspection PhpMissingParentCallCommonInspection

@@ -144,6 +144,15 @@ trait HasRelationsRecordsTrait
     }
 
     /**
+     * @param $name
+     * @param array $params
+     */
+    public function morphToMany($name, $params = [])
+    {
+        $this->initRelation('morphToMany', $name, $params);
+    }
+
+    /**
      * Determine if the given relation is loaded.
      * @param  string $key
      * @return bool

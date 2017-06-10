@@ -129,10 +129,10 @@ abstract class Relation
     }
 
     /**
-     * @param RecordManager $object
+     * @param RecordManager|HasRelationsRecordsTrait $object
      * @return $this
      */
-    public function setWith(RecordManager $object)
+    public function setWith($object)
     {
         $this->with = $object;
 
