@@ -3,6 +3,7 @@
 namespace Nip\Records\Relations;
 
 use Nip\Database\Query\AbstractQuery;
+use Nip\Database\Query\Insert as InsertQuery;
 use Nip\Database\Query\Select as SelectQuery;
 use Nip\Records\Collections\Collection as RecordCollection;
 use Nip\Records\Relations\Traits\HasPivotTable;
@@ -167,28 +168,54 @@ class HasAndBelongsToMany extends HasOneOrMany
     protected function saveConnections()
     {
         if ($this->hasResults()) {
-            $query = $this->getDB()->newQuery("insert");
-            $query->table($this->getTable());
-            $results = $this->getResults();
-
-            foreach ($results as $item) {
-                $data = [
-                    $this->getManager()->getPrimaryFK() => $this->getItem()->{$this->getManager()->getPrimaryKey()},
-                    $this->getWith()->getPrimaryFK() => $item->{$this->getWith()->getPrimaryKey()},
-                ];
-                foreach ($this->getJoinFields() as $field) {
-                    if ($item->{"__$field"}) {
-                        $data[$field] = $item->{"__$field"};
-                    } else {
-                        $data[$field] = $data[$field] ? $data[$field] : false;
-                    }
-                }
-                $query->data($data);
-            }
-
+            $query = $this->newInsertQuery();
+            $this->queryAttachRecords($query, $this->getResults());
 //            echo $query;
             $query->execute();
         }
+    }
+
+    /**
+     * @return InsertQuery
+     */
+    protected function newInsertQuery()
+    {
+        $query = $this->getDB()->newInsert();
+        $query->table($this->getTable());
+        return $query;
+    }
+
+    /**
+     * @param InsertQuery $query
+     * @param $records
+     */
+    protected function queryAttachRecords($query, $records)
+    {
+        foreach ($records as $item) {
+            $data = [
+                $this->getManager()->getPrimaryFK() => $this->getItem()->{$this->getManager()->getPrimaryKey()},
+                $this->getWith()->getPrimaryFK() => $item->{$this->getWith()->getPrimaryKey()},
+            ];
+            foreach ($this->getJoinFields() as $field) {
+                if ($item->{"__$field"}) {
+                    $data[$field] = $item->{"__$field"};
+                } else {
+                    $data[$field] = $data[$field] ? $data[$field] : false;
+                }
+            }
+            $query->data($data);
+        }
+    }
+
+    /**
+     * @param $model
+     */
+    public function attach($model)
+    {
+        $query = $this->newInsertQuery();
+        $this->queryAttachRecords($query, [$model]);
+//            echo $query;
+        $query->execute();
     }
 
     /** @noinspection PhpMissingParentCallCommonInspection

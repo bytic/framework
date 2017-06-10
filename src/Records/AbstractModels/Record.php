@@ -37,11 +37,6 @@ abstract class Record extends \Nip_Object
      */
     public function __call($name, $arguments)
     {
-        $return = $this->isCallRelationOperation($name, $arguments);
-        if ($return !== null) {
-            return $return;
-        }
-
         if ($name === ucfirst($name)) {
             return $this->getHelper($name);
         }

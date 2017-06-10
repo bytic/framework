@@ -2,8 +2,8 @@
 
 namespace Nip\Records\Relations;
 
+use Nip\Database\Query\Select as SelectQuery;
 use Nip\Records\Relations\Traits\HasCollectionResults;
-use Nip\Records\Relations\Traits\HasPivotTable;
 
 /**
  * Class HasOneOrMany
@@ -12,7 +12,6 @@ use Nip\Records\Relations\Traits\HasPivotTable;
 class MorphToMany extends HasAndBelongsToMany
 {
     use HasCollectionResults;
-    use HasPivotTable;
 
     protected $type = 'morphToMany';
 
@@ -24,13 +23,6 @@ class MorphToMany extends HasAndBelongsToMany
     protected $morphType = null;
 
     /**
-     * The class name of the morph type constraint.
-     *
-     * @var string
-     */
-    protected $morphClass;
-
-    /**
      * Indicates if we are connecting the inverse of the relation.
      *
      * This primarily affects the morphClass constraint.
@@ -38,51 +30,6 @@ class MorphToMany extends HasAndBelongsToMany
      * @var bool
      */
     protected $inverse = false;
-
-    /**
-     * Get the foreign key "type" name.
-     *
-     * @return string
-     */
-    public function getMorphType()
-    {
-        if ($this->morphType == null) {
-            $this->initMorphType();
-        }
-        return $this->morphType;
-    }
-
-    /**
-     * @param string $morphType
-     */
-    public function setMorphType(string $morphType)
-    {
-        $this->morphType = $morphType;
-    }
-
-    protected function initMorphType()
-    {
-        $this->setMorphType($this->generateMorphType());
-    }
-
-    /**
-     * @return string
-     */
-    protected function generateMorphType()
-    {
-        return $this->getWith()->getTable();
-    }
-
-    public function initResults()
-    {
-        $query = $this->getQuery();
-        echo $query;
-        die();
-//        $items = $this->getWith()->findByQuery($query);
-        $collection = $this->newCollection();
-//        $this->populateCollection($collection, $items);
-        $this->setResults($collection);
-    }
 
     /**
      * Builds the name of a has-and-belongs-to-many association table
@@ -117,6 +64,62 @@ class MorphToMany extends HasAndBelongsToMany
     public function setInverse(bool $inverse)
     {
         $this->inverse = $inverse;
+    }
+
+    /**
+     * @param SelectQuery $query
+     */
+    protected function hydrateQueryWithPivotConstraints($query)
+    {
+        parent::hydrateQueryWithPivotConstraints($query);
+        $query->where(
+            "`{$this->getTable()}`.`{$this->getMorphKey()}` = ?",
+            $this->getMorphType()
+        );
+    }
+
+    /**
+     * Get the foreign key "type" name.
+     *
+     * @return string
+     */
+    public function getMorphKey()
+    {
+        return 'pivotal_type';
+    }
+
+    /**
+     * Get the foreign key "type" name.
+     *
+     * @return string
+     */
+    public function getMorphType()
+    {
+        if ($this->morphType == null) {
+            $this->initMorphType();
+        }
+        return $this->morphType;
+    }
+
+    /**
+     * @param string $morphType
+     */
+    public function setMorphType(string $morphType)
+    {
+        $this->morphType = $morphType;
+    }
+
+    protected function initMorphType()
+    {
+        $this->setMorphType($this->generateMorphType());
+    }
+
+    /**
+     * @return string
+     */
+    protected function generateMorphType()
+    {
+        return $this->getWith()->getTable();
     }
 
     /**
