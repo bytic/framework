@@ -180,21 +180,13 @@ class Dispatcher
     protected function isValidControllerNamespace($namespaceClass)
     {
         return class_exists($namespaceClass);
-        $loader = $this->getAutoloader()->getPsr4ClassLoader();
-        $loader->load($namespaceClass);
-        if ($loader->isLoaded($namespaceClass)) {
-            return true;
-        }
-
-        return false;
-    }
-
-    /**
-     * @return AutoLoader
-     */
-    protected function getAutoloader()
-    {
-        return app('autoloader');
+//        $loader = $this->getAutoloader()->getPsr4ClassLoader();
+//        $loader->load($namespaceClass);
+//        if ($loader->isLoaded($namespaceClass)) {
+//            return true;
+//        }
+//
+//        return false;
     }
 
     /**
@@ -218,6 +210,14 @@ class Dispatcher
     protected function generateFullControllerNameString($module, $controller)
     {
         return $module . "_" . $controller . "Controller";
+    }
+
+    /**
+     * @return AutoLoader
+     */
+    protected function getAutoloader()
+    {
+        return app('autoloader');
     }
 
     /**
