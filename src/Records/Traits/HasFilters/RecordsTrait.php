@@ -2,7 +2,6 @@
 
 namespace Nip\Records\Traits\HasFilters;
 
-use Nip\AutoLoader\Loaders\Psr4Class;
 use Nip\Database\Query\Select as SelectQuery;
 use Nip\Records\Filters\FilterManager;
 use Nip\Request;
@@ -70,15 +69,10 @@ trait RecordsTrait
      */
     protected function generateFilterManagerClass()
     {
-        if ($this->isNamespaced()) {
-            $base = $this->getNamespacePath();
-            $namespaceClass = $base . '\Filters\FilterManager';
-            /** @var Psr4Class $loader */
-            $loader = app('autoloader')->getPsr4ClassLoader();
-            $loader->load($namespaceClass);
-            if ($loader->isLoaded($namespaceClass)) {
-                return $namespaceClass;
-            }
+        $base = $this->getNamespacePath();
+        $namespaceClass = $base . '\Filters\FilterManager';
+        if (class_exists($namespaceClass)) {
+            return $namespaceClass;
         }
 
         return $this->generateFilterManagerDefaultClass();
