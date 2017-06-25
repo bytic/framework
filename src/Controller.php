@@ -8,7 +8,6 @@ use Nip\Dispatcher\DispatcherAwareTrait;
 use Nip\Http\Response\Response;
 use Nip\Http\Response\ResponseAwareTrait;
 use Nip\Utility\Traits\NameWorksTrait;
-use Nip_Flash_Messages as FlashMessages;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
@@ -146,7 +145,9 @@ class Controller
 
                 return $this->getResponse();
             } else {
-                throw new NotFoundHttpException('Controller method [' . $action . '] not found for ' . get_class($this));
+                throw new NotFoundHttpException(
+                    'Controller method [' . $action . '] not found for ' . get_class($this)
+                );
             }
         }
 
@@ -248,7 +249,7 @@ class Controller
      */
     public function getApplication()
     {
-        return app('kernel');
+        return app('app');
     }
 
     /**
@@ -271,7 +272,7 @@ class Controller
     protected function flashRedirect($message, $url, $type = 'success', $name = false)
     {
         $name = $name ? $name : $this->getName();
-        FlashMessages::instance()->add($name, $type, $message);
+        app('flash.messages')->add($name, $type, $message);
         $this->redirect($url);
     }
 
@@ -323,7 +324,7 @@ class Controller
                 header("HTTP/1.1 301 Moved Permanently");
                 break;
         }
-        header("Location: ".$url);
+        header("Location: " . $url);
         exit();
     }
 }

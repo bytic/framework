@@ -8,6 +8,7 @@ use Nip\Records\AbstractModels\Record as Record;
 use Nip\Records\Collections\Associated as AssociatedCollection;
 use Nip\Records\Collections\Collection;
 use Nip\Records\Collections\Collection as RecordCollection;
+use Nip\Records\Relations\Traits\HasCollectionResults;
 
 /**
  * Class HasOneOrMany
@@ -15,6 +16,7 @@ use Nip\Records\Collections\Collection as RecordCollection;
  */
 abstract class HasOneOrMany extends Relation
 {
+    use HasCollectionResults;
 
     /**
      * @var string
@@ -61,32 +63,6 @@ abstract class HasOneOrMany extends Relation
         $collection = $this->newCollection();
         $this->populateCollection($collection, $items);
         $this->setResults($collection);
-    }
-
-    /**
-     * @return AssociatedCollection
-     */
-    public function newCollection()
-    {
-        $class = $this->getCollectionClass();
-        $collection = new $class();
-        /** @var AssociatedCollection $collection */
-        $collection->initFromRelation($this);
-
-        return $collection;
-    }
-
-    /**
-     * @return mixed|string
-     */
-    public function getCollectionClass()
-    {
-        $collection = $this->getParam('collection');
-        if ($collection) {
-            return $collection;
-        }
-
-        return 'Nip\Records\Collections\Associated';
     }
 
     /**

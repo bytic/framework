@@ -2,47 +2,51 @@
 
 namespace Nip\Database\Adapters;
 
+/**
+ * Class MySQLi
+ * @package Nip\Database\Adapters
+ */
 class MySQLi extends AbstractAdapter implements AdapterInterface
 {
 
-    protected $_connection;
+    protected $connection;
 
     /**
      * Connects to MySQL server
      *
-     * @param string $host
-     * @param string $user
-     * @param string $password
-     * @param string $database
+     * @param string|boolean $host
+     * @param string|boolean $user
+     * @param string|boolean $password
+     * @param string|boolean $database
+     * @param bool $newLink
+     *
      * @return resource
      */
     public function connect($host = false, $user = false, $password = false, $database = false, $newLink = false)
     {
-        $this->_connection = mysqli_connect($host, $user, $password, $newLink);
+        $this->connection = mysqli_connect($host, $user, $password, $newLink);
 
-        if ($this->_connection) {
+        if ($this->connection) {
             if ($this->selectDatabase($database)) {
                 $this->query("SET CHARACTER SET utf8");
                 $this->query("SET NAMES utf8");
-                return $this->_connection;
+                return $this->connection;
             } else {
                 $message = 'Cannot select database ' . $database;
             }
         } else {
-            $message = mysqli_error();
+            $message = mysqli_error($this->connection);
         }
 
-        if (!$this->_connection) {
+        if (!$this->connection) {
             trigger_error($message, E_USER_WARNING);
         }
-
-        return false;
     }
 
 
     public function selectDatabase($database)
     {
-        return mysqli_select_db($this->_connection, $database);
+        return mysqli_select_db($this->connection, $database);
     }
 
     /**
@@ -51,34 +55,56 @@ class MySQLi extends AbstractAdapter implements AdapterInterface
      */
     public function query($sql)
     {
-        return mysqli_query($this->_connection, $sql);
+        return mysqli_query($this->connection, $sql);
     }
 
+    /**
+     * @return int|string
+     */
     public function lastInsertID()
     {
-        return mysqli_insert_id($this->_connection);
+        return mysqli_insert_id($this->connection);
     }
 
+    /**
+     * @return int
+     */
     public function affectedRows()
     {
-        return mysqli_affected_rows($this->_connection);
+        return mysqli_affected_rows($this->connection);
     }
 
+    /**
+     * @return string
+     */
     public function info()
     {
-        return mysqli_info($this->_connection);
+        return mysqli_info($this->connection);
     }
 
+    /**
+     * @param $result
+     * @return null|object
+     */
     public function fetchObject($result)
     {
         return mysqli_fetch_object($result);
     }
 
+    /**
+     * @param $result
+     * @param $row
+     * @param $field
+     * @return mixed
+     */
     public function result($result, $row, $field)
     {
         return mysqli_result($result, $row, $field);
     }
 
+    /**
+     * @param $result
+     */
     public function freeResults($result)
     {
         return mysqli_free_result($result);
@@ -86,12 +112,12 @@ class MySQLi extends AbstractAdapter implements AdapterInterface
 
     public function describeTable($table)
     {
-        $return = array('fields' => array(), 'indexes' => array());
+        $return = ['fields' => [], 'indexes' => []];
 
         $result = $this->execute('SHOW INDEX IN ' . $table);
         if (mysqli_num_rows($result)) {
             while ($row = $this->fetchAssoc($result)) {
-                if (!$return['indexes'][$row['Key_name']]) {
+                if (!isset($return['indexes'][$row['Key_name']])) {
                     $return['indexes'][$row['Key_name']] = [];
                 }
                 $return['indexes'][$row['Key_name']]['fields'][] = $row['Column_name'];
@@ -104,24 +130,34 @@ class MySQLi extends AbstractAdapter implements AdapterInterface
         $result = $this->execute('DESCRIBE ' . $table);
         if (mysqli_num_rows($result)) {
             while ($row = $this->fetchAssoc($result)) {
-                $return['fields'][$row['Field']] = array(
+                $return['fields'][$row['Field']] = [
                     'field' => $row['Field'],
                     'type' => $row['Type'],
-                    'primary' => ($return['indexes']['PRIMARY']['fields'][0] == $row['Field']),
+                    'primary' => (
+                        isset($return['indexes']['PRIMARY']['fields'][0])
+                        && $return['indexes']['PRIMARY']['fields'][0] == $row['Field']
+                    ),
                     'default' => $row['Default'],
                     'auto_increment' => ($row['Extra'] === 'auto_increment')
-                );
+                ];
             }
         }
 
         return $return;
     }
 
+    /**
+     * @param $result
+     * @return array|null
+     */
     public function fetchAssoc($result)
     {
         return mysqli_fetch_assoc($result);
     }
 
+    /**
+     * @return array
+     */
     public function getTables()
     {
         $return = [];
@@ -129,44 +165,62 @@ class MySQLi extends AbstractAdapter implements AdapterInterface
         $result = $this->execute("SHOW FULL TABLES");
         if ($this->numRows($result)) {
             while ($row = $this->fetchArray($result)) {
-                $return[$row[0]] = array(
+                $return[$row[0]] = [
                     "type" => $row[1] == "BASE TABLE" ? "table" : "view"
-                );
+                ];
             }
         }
 
         return $return;
     }
 
+    /**
+     * @param $result
+     * @return int
+     */
     public function numRows($result)
     {
         return mysqli_num_rows($result);
     }
 
+    /**
+     * @param $result
+     * @return array|null
+     */
     public function fetchArray($result)
     {
         return mysqli_fetch_array($result);
     }
 
+    /**
+     * @param $value
+     * @return int|string
+     */
     public function quote($value)
     {
         $value = $this->cleanData($value);
         return is_numeric($value) ? $value : "'$value'";
     }
 
+    /**
+     * @param $data
+     * @return string
+     */
     public function cleanData($data)
     {
-        return mysqli_real_escape_string($this->_connection, $data);
+        return mysqli_real_escape_string($this->connection, $data);
     }
 
+    /**
+     * @return string
+     */
     public function error()
     {
-        return mysqli_error($this->_connection);
+        return mysqli_error($this->connection);
     }
 
     public function disconnect()
     {
-        mysqli_close($this->_connection);
+        mysqli_close($this->connection);
     }
-
 }

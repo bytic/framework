@@ -6,6 +6,10 @@ use Mockery as m;
 use Nip\Records\Record;
 use Nip\Records\Relations\BelongsTo;
 
+/**
+ * Class BelongsToTest
+ * @package Nip\Tests\Unit\Records\Relations
+ */
 class BelongsToTest extends \Codeception\TestCase\Test
 {
     /**

@@ -1,31 +1,5 @@
 <?php
 
-use Nip\Container\Container;
-
-if (!function_exists('app')) {
-    /**
-     * Get the available container instance.
-     *
-     * @param  string $make
-     * @param  array $parameters
-     * @return mixed|Container
-     */
-    function app($make = null, $parameters = [])
-    {
-        if (is_null($make)) {
-            return Container::getInstance();
-        }
-
-        return Container::getInstance()->get($make, $parameters);
-    }
-}
-
-
-function __shutdown()
-{
-    db()->disconnect();
-}
-
 if (!function_exists("pr")) {
 
     function pr($mixed)
@@ -35,30 +9,6 @@ if (!function_exists("pr")) {
         echo "</pre>";
     }
 
-}
-
-/**
- * @return Nip\Database\Connection
- */
-function db()
-{
-    return Container::getInstance()->get('database');
-}
-
-/**
- * @return Nip\Inflector\Inflector
- */
-function inflector()
-{
-    return Nip\Inflector\Inflector::instance();
-}
-
-/**
- * @return \Nip\I18n\Translator
- */
-function translator()
-{
-    return app('translator');
 }
 
 function encode_url($input)
@@ -110,7 +60,7 @@ function current_url()
  */
 function _date($datetime, $format = false)
 {
-    $format = $format ? $format : Nip_Locale::instance()->getOption(['time', 'dateFormat']);
+    $format = $format ? $format : Nip\locale()->getOption(['time', 'dateFormat']);
     $time = is_numeric($datetime) ? $datetime : strtotime($datetime);
 
     return $time ? date($format, $time) : false;
@@ -125,7 +75,7 @@ function _date($datetime, $format = false)
  */
 function _strtotime($date, $format = false)
 {
-    $format = $format ? $format : Nip_Locale::instance()->getOption(array('time', 'dateStringFormat'));
+    $format = $format ? $format : Nip\locale()->getOption(['time', 'dateStringFormat']);
     $dateArray = strptime($date, $format);
 
     return mktime($dateArray['tm_hour'], $dateArray['tm_min'], $dateArray['tm_sec'], 1 + $dateArray['tm_mon'],
@@ -142,7 +92,7 @@ function _strtotime($date, $format = false)
 function _strftime($datetime, $format = false)
 {
     if ($datetime && strpos($datetime, '0000-00-00') === false) {
-        $format = $format ? $format : Nip_Locale::instance()->getOption(array('time', 'dateStringFormat'));
+        $format = $format ? $format : Nip\locale()->getOption(['time', 'dateStringFormat']);
         if (is_numeric($datetime)) {
             $time = $datetime;
         } else {
@@ -180,7 +130,7 @@ function max_upload()
     $multiplier = ($unit == 'M' ? 1048576 : ($unit == 'K' ? 1024 : ($unit == 'G' ? 1073741824 : 1)));
     $upload_max_filesize = ((int)$upload_max_filesize) * $multiplier;
 
-    return round((min($post_max_size, $upload_max_filesize) / 1048576), 2).'MB';
+    return round((min($post_max_size, $upload_max_filesize) / 1048576), 2) . 'MB';
 }
 
 function valid_url($input)
@@ -340,7 +290,7 @@ function valid_cnp($cnp)
 if (!function_exists("money_format")) {
     function money_format($format, $number)
     {
-        $regex = '/%((?:[\^!\-]|\+|\(|\=.)*)([0-9]+)?'.
+        $regex = '/%((?:[\^!\-]|\+|\(|\=.)*)([0-9]+)?' .
             '(?:#([0-9]+))?(?:\.([0-9]+))?([in%])/';
         if (setlocale(LC_MONETARY, 0) == 'C') {
             setlocale(LC_MONETARY, '');
@@ -393,8 +343,8 @@ if (!function_exists("money_format")) {
                     break;
             }
             if (!$flags['nosimbol']) {
-                $currency = $cprefix.
-                    ($conversion == 'i' ? $locale['int_curr_symbol'] : $locale['currency_symbol']).
+                $currency = $cprefix .
+                    ($conversion == 'i' ? $locale['int_curr_symbol'] : $locale['currency_symbol']) .
                     $csuffix;
             } else {
                 $currency = '';
@@ -407,13 +357,13 @@ if (!function_exists("money_format")) {
 
             $n = strlen($prefix) + strlen($currency) + strlen($value[0]);
             if ($left > 0 && $left > $n) {
-                $value[0] = str_repeat($flags['fillchar'], $left - $n).$value[0];
+                $value[0] = str_repeat($flags['fillchar'], $left - $n) . $value[0];
             }
             $value = implode($locale['mon_decimal_point'], $value);
             if ($locale["{$letter}_cs_precedes"]) {
-                $value = $prefix.$currency.$space.$value.$suffix;
+                $value = $prefix . $currency . $space . $value . $suffix;
             } else {
-                $value = $prefix.$value.$space.$currency.$suffix;
+                $value = $prefix . $value . $space . $currency . $suffix;
             }
             if ($width > 0) {
                 $value = str_pad($value, $width, $flags['fillchar'], $flags['isleft'] ?
@@ -435,7 +385,8 @@ if (!function_exists("json_decode")) {
         $n = 0,
         $state = 0,
         $waitfor = 0
-    ) {
+    )
+    {
 
         #-- result var
         $val = null;
@@ -472,9 +423,9 @@ if (!function_exists("json_decode")) {
                         if ($hex < 0x80) { // plain ASCII character
                             $val .= chr($hex);
                         } elseif ($hex < 0x800) {   // 110xxxxx 10xxxxxx
-                            $val .= chr(0xC0 + $hex >> 6).chr(0x80 + $hex & 63);
+                            $val .= chr(0xC0 + $hex >> 6) . chr(0x80 + $hex & 63);
                         } elseif ($hex <= 0xFFFF) { // 1110xxxx 10xxxxxx 10xxxxxx
-                            $val .= chr(0xE0 + $hex >> 12).chr(0x80 + ($hex >> 6) & 63).chr(0x80 + $hex & 63);
+                            $val .= chr(0xE0 + $hex >> 12) . chr(0x80 + ($hex >> 6) & 63) . chr(0x80 + $hex & 63);
                         }
                         // other ranges, like 0x1FFFFF=0xF0, 0x3FFFFFF=0xF8 and 0x7FFFFFFF=0xFC do not apply
                     }
@@ -482,7 +433,7 @@ if (!function_exists("json_decode")) {
                     // no escape, just a redundant backslash
                     //@COMPAT: we could throw an exception here
                     else {
-                        $val .= "\\".$c;
+                        $val .= "\\" . $c;
                     }
                 } // end of string
                 elseif ($c == '"') {
@@ -581,5 +532,5 @@ function _htmlDistance($distance)
     $decimalPosition = strrpos($distance, '.');
     $decimal = $decimalPosition === false ? false : substr($distance, $decimalPosition);
 
-    return intval($distance).($decimal ? '<small>'.$decimal.'</small>' : '');
+    return intval($distance) . ($decimal ? '<small>' . $decimal . '</small>' : '');
 }

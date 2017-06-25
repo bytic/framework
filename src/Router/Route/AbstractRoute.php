@@ -45,7 +45,7 @@ abstract class AbstractRoute
             $this->getParser()->setMap($map);
         }
 
-        if ($params) {
+        if (count($params)) {
             $this->getParser()->setParams($params);
         }
         $this->init();
@@ -165,7 +165,7 @@ abstract class AbstractRoute
     public function getBase($params = [])
     {
         $this->checkBase($params);
-        if ($params['_subdomain']) {
+        if (isset($params['_subdomain']) && !empty($params['_subdomain'])) {
             $base = $this->replaceSubdomain($params['_subdomain'], $this->base);
 
             return $base;
@@ -197,7 +197,7 @@ abstract class AbstractRoute
      */
     public function initBase($params = [])
     {
-        $this->setBase(BASE_URL);
+        $this->setBase(\Nip\url()->to('/'));
     }
 
     /**

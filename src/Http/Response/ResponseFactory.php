@@ -2,6 +2,8 @@
 
 namespace Nip\Http\Response;
 
+use Psr\Http\Message\ResponseInterface;
+
 /**
  * Class ResponseFactory
  * @package Nip\Http\Response
@@ -15,7 +17,7 @@ class ResponseFactory
      * @param string $content
      * @param int $status
      * @param array $headers
-     * @return Response
+     * @return ResponseInterface
      */
     public static function make($content = '', $status = 200, array $headers = [])
     {

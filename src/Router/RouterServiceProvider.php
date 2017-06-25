@@ -2,7 +2,8 @@
 
 namespace Nip\Router;
 
-use Nip\Container\ServiceProvider\AbstractSignatureServiceProvider;
+use Nip\Container\ServiceProviders\Providers\AbstractSignatureServiceProvider;
+use Nip\Router\Generator\UrlGenerator;
 
 /**
  * Class MailServiceProvider
@@ -17,12 +18,13 @@ class RouterServiceProvider extends AbstractSignatureServiceProvider
     public function register()
     {
         $this->registerRouter();
+
+        $this->registerUrlGenerator();
     }
 
     protected function registerRouter()
     {
-        $dispatcher = self::newRouter();
-        $this->getContainer()->singleton('router', $dispatcher);
+        $this->getContainer()->share('router', self::newRouter());
     }
 
     /**
@@ -34,10 +36,40 @@ class RouterServiceProvider extends AbstractSignatureServiceProvider
     }
 
     /**
+     * Register the URL generator service.
+     *
+     * @return void
+     */
+    protected function registerUrlGenerator()
+    {
+        $this->getContainer()->share('url', function () {
+            $routes = app('router')->getRoutes();
+
+            // The URL generator needs the route collection that exists on the router.
+            // Keep in mind this is an object, so we're passing by references here
+            // and all the registered routes will be available to the generator.
+            app()->share('routes', $routes);
+
+            $url = new UrlGenerator(
+                $routes,
+                request()
+            );
+
+            // If the route collection is "rebound", for example, when the routes stay
+            // cached for the application, we will need to rebind the routes on the
+            // URL generator instance so it has the latest version of the routes.
+//            $app->rebinding('routes', function ($app, $routes) {
+//                $app['url']->setRoutes($routes);
+//            });
+            return $url;
+        });
+    }
+
+    /**
      * @inheritdoc
      */
     public function provides()
     {
-        return ['router'];
+        return ['router', 'url'];
     }
 }

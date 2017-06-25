@@ -121,7 +121,7 @@ abstract class AbstractForm
      */
     public function getElementClassName($type)
     {
-        return 'Nip_Form_Element_'.ucfirst($type);
+        return 'Nip_Form_Element_' . ucfirst($type);
     }
 
     /**
@@ -304,7 +304,7 @@ abstract class AbstractForm
      */
     protected function newButton($name, $label = false, $type = 'button')
     {
-        $class = 'Nip_Form_Button_'.ucfirst($type);
+        $class = 'Nip_Form_Button_' . ucfirst($type);
         /** @var ButtonAbstract $button */
         $button = new $class($this);
         $button->setName($name)
@@ -774,7 +774,7 @@ abstract class AbstractForm
      */
     public function getNewRenderer($type = 'basic')
     {
-        $name = 'Nip_Form_Renderer_'.ucfirst($type);
+        $name = 'Nip_Form_Renderer_' . ucfirst($type);
         /** @var AbstractRenderer $renderer */
         $renderer = new $name();
         $renderer->setForm($this);
@@ -857,7 +857,7 @@ abstract class AbstractForm
     public function getControllerView()
     {
         if (!$this->_controllerView) {
-            $this->_controllerView = app('kernel')->getDispatcher()->getCurrentController()->getView();
+            $this->_controllerView = app('app')->getDispatcher()->getCurrentController()->getView();
         }
 
         return $this->_controllerView;

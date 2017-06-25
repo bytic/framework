@@ -3,6 +3,7 @@
 namespace Nip\AutoLoader\Loaders;
 
 use Nip\AutoLoader\Generators\ClassMap as Generator;
+use Nip\Logger\Exception;
 use Nip\Utility\Text;
 
 /**
@@ -93,11 +94,11 @@ class ClassMap extends AbstractLoader
      */
     protected function readMapDir($dir)
     {
-        $filePath = $this->getCachePath($dir);
+        $filepath = $this->getCachePath($dir);
 
-        if (!$this->readCacheFile($filePath)) {
+        if (!$this->readCacheFile($filepath)) {
             $this->generateMapDir($dir);
-            $this->readCacheFile($filePath);
+            $this->readCacheFile($filepath);
         }
     }
 
@@ -107,9 +108,8 @@ class ClassMap extends AbstractLoader
      */
     protected function getCachePath($dir)
     {
-        $fileName = $this->getCacheName($dir);
-
-        return $this->getAutoLoader()->getCachePath().$fileName;
+        $filepath = $this->getCacheName($dir);
+        return $this->getAutoLoader()->getCachePath() . $filepath;
     }
 
     /**
@@ -118,7 +118,7 @@ class ClassMap extends AbstractLoader
      */
     public function getCacheName($dir)
     {
-        return Text::toAscii($dir).'.php';
+        return Text::toAscii($dir) . '.php';
     }
 
     /**
@@ -142,11 +142,14 @@ class ClassMap extends AbstractLoader
 
     /**
      * @param $dir
+     * @throws Exception
      */
     public function generateMapDir($dir)
     {
-        $filePath = $this->getCachePath($dir);
-        Generator::dump($dir, $filePath);
+        $filepath = $this->getCachePath($dir);
+        if (Generator::dump($dir, $filepath) == false) {
+            throw new Exception("Error writing cache to " . $filepath);
+        }
     }
 
     /**
@@ -188,8 +191,7 @@ class ClassMap extends AbstractLoader
      */
     protected function hasMapFile($dir)
     {
-        $filePath = $this->getCachePath($dir);
-
-        return file_exists($filePath);
+        $filepath = $this->getCachePath($dir);
+        return file_exists($filepath);
     }
 }

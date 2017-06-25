@@ -1,4 +1,5 @@
-.idea/
+
 
 tests/_output/*
 vendor/*
+.idea/workspace.xml

@@ -1,32 +1,36 @@
 {
-  "name": "ByTIC/Framework",
+  "name": "bytic/framework",
+  "type": "library",
   "description": "Php Framework",
+  "homepage": "https://github.com/ByTIC/request-detective",
+  "license": "MIT",
   "authors": [
     {
       "name": "Gabriel Solomon",
       "email": "hello@gabrielsolomon.ro"
     }
   ],
-  "repositories": [
-    {
-      "type": "git",
-      "url": "https://github.com/ByTIC/RequestDetective.git"
-    }
-  ],
   "autoload": {
+    "psr-4": {
+      "Nip\\": "src"
+    },
     "classmap": [
       "src"
     ],
     "files": [
+      "src/functions/application.php",
+      "src/functions/application_namespaced.php",
       "src/functions/common.php",
       "src/functions/input.php",
       "src/functions/flash.php"
     ]
   },
   "require": {
-    "php": ">=5.5.0",
-    "ByTIC/RequestDetective": "dev-develop",
-    "container-interop/container-interop": "^1.1",
+    "php": "^7.0",
+    "bytic/request-detective": "dev-develop",
+    "psr/container": "^1.0",
+    "http-interop/http-middleware": "^0.4",
+    "league/container": "^2.3",
     "nesbot/carbon": "^1.21",
     "maximebf/debugbar": "^1.13",
     "html2text/html2text": "^4.0",
@@ -35,7 +39,12 @@
     "symfony/http-foundation": "^3.1",
     "symfony/http-kernel": "^3.1",
     "monolog/monolog": "^1.20",
-    "filp/whoops": "^2.1"
+    "filp/whoops": "^2.1",
+    "vlucas/phpdotenv": "^2.4",
+    "symfony/finder": "^3.2",
+    "symfony/debug": "^3.2",
+    "symfony/filesystem": "^3.2",
+    "league/flysystem": "^1.0"
   },
   "require-dev": {
     "codeception/codeception": "^2.2",

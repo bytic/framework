@@ -2,7 +2,7 @@
 
 namespace Nip\Records\Relations;
 
-use Nip\Database\Connection;
+use Nip\Database\Connections\Connection;
 use Nip\Database\Query\AbstractQuery;
 use Nip\Database\Query\Select as Query;
 use Nip\HelperBroker;
@@ -11,6 +11,7 @@ use Nip\Records\AbstractModels\Record as Record;
 use Nip\Records\AbstractModels\RecordManager;
 use Nip\Records\Collections\Collection;
 use Nip\Records\Collections\Collection as RecordCollection;
+use Nip\Records\Traits\Relations\HasRelationsRecordsTrait;
 use Nip_Helper_Arrays as ArraysHelper;
 
 /**
@@ -128,10 +129,10 @@ abstract class Relation
     }
 
     /**
-     * @param RecordManager $object
+     * @param RecordManager|HasRelationsRecordsTrait $object
      * @return $this
      */
-    public function setWith(RecordManager $object)
+    public function setWith($object)
     {
         $this->with = $object;
 
@@ -178,34 +179,10 @@ abstract class Relation
         if (is_object($object) && $object instanceof RecordManager) {
             $this->setWith($object);
         } else {
-            throw new Exception("Cannot instance records [" . $name . "] in relation");
+            throw new Exception(
+                "Cannot instance records [" . $name . "] in relation for [" . $this->getManager()->getClassName() . "]"
+            );
         }
-    }
-
-    /**
-     * @param AbstractQuery $query
-     */
-    public function populateQuerySpecific(AbstractQuery $query)
-    {
-    }
-
-    /**
-     * @return \Nip\Database\Query\Delete
-     */
-    public function getDeleteQuery()
-    {
-        $query = $this->getWith()->newDeleteQuery();
-        $this->populateQuerySpecific($query);
-
-        return $query;
-    }
-
-    /**
-     * @return Connection
-     */
-    public function getDB()
-    {
-        return $this->getManager()->getDB();
     }
 
     /**
@@ -221,7 +198,7 @@ abstract class Relation
     }
 
     /**
-     * @param RecordManager $manager
+     * @param RecordManager|HasRelationsRecordsTrait $manager
      */
     public function setManager($manager)
     {
@@ -250,6 +227,32 @@ abstract class Relation
         $this->item = $item;
 
         return $this;
+    }
+
+    /**
+     * @param AbstractQuery $query
+     */
+    public function populateQuerySpecific(AbstractQuery $query)
+    {
+    }
+
+    /**
+     * @return \Nip\Database\Query\Delete
+     */
+    public function getDeleteQuery()
+    {
+        $query = $this->getWith()->newDeleteQuery();
+        $this->populateQuerySpecific($query);
+
+        return $query;
+    }
+
+    /**
+     * @return Connection
+     */
+    public function getDB()
+    {
+        return $this->getManager()->getDB();
     }
 
     /**

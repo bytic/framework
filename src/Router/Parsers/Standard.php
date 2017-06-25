@@ -30,7 +30,7 @@ class Standard extends Dynamic
     protected function preMatch()
     {
         $mapCount = count($this->getParts());
-        $uriCount = substr_count($this->uri, '/') + 1;
+        $uriCount = count($this->getUriParts());
         $difference = $mapCount - $uriCount;
         if ($difference == 0 || $difference == 1) {
             return true;

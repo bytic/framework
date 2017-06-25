@@ -2,10 +2,14 @@
 
 namespace Nip\Records\Relations;
 
-use Nip\Database\Connection;
 use Nip\Database\Query\AbstractQuery;
+use Nip\Database\Query\Delete as DeleteQuery;
+use Nip\Database\Query\Insert as InsertQuery;
 use Nip\Database\Query\Select as SelectQuery;
+use Nip\HelperBroker;
 use Nip\Records\Collections\Collection as RecordCollection;
+use Nip\Records\Record;
+use Nip\Records\Relations\Traits\HasPivotTable;
 
 /**
  * Class HasAndBelongsToMany
@@ -13,6 +17,7 @@ use Nip\Records\Collections\Collection as RecordCollection;
  */
 class HasAndBelongsToMany extends HasOneOrMany
 {
+    use HasPivotTable;
 
     /**
      * @var string
@@ -33,7 +38,7 @@ class HasAndBelongsToMany extends HasOneOrMany
         $query = $this->getDB()->newSelect();
 
         $query->from($this->getWith()->getFullNameTable());
-        $query->from($this->getDB()->getDatabase().'.'.$this->getTable());
+        $query->from($this->getDB()->getDatabase() . '.' . $this->getTable());
 
         foreach ($this->getWith()->getFields() as $field) {
             $query->cols(["{$this->getWith()->getTable()}.$field", $field]);
@@ -43,9 +48,7 @@ class HasAndBelongsToMany extends HasOneOrMany
             $query->cols(["{$this->getTable()}.$field", "__$field"]);
         }
 
-        $pk = $this->getWith()->getPrimaryKey();
-        $fk = $this->getWith()->getPrimaryFK();
-        $query->where("`{$this->getTable()}`.`$fk` = `{$this->getWith()->getTable()}`.`$pk`");
+        $this->hydrateQueryWithPivotConstraints($query);
 
         $order = $this->getParam('order');
         if ($order) {
@@ -58,11 +61,15 @@ class HasAndBelongsToMany extends HasOneOrMany
     }
 
     /**
-     * @return Connection
+     * @return null|array
      */
-    public function getDB()
+    protected function getJoinFields()
     {
-        return $this->getParam("link-db") == 'with' ? $this->getWith()->getDB() : parent::getDB();
+        if ($this->joinFields == null) {
+            $this->initJoinFields();
+        }
+
+        return $this->joinFields;
     }
 
     /**
@@ -71,6 +78,12 @@ class HasAndBelongsToMany extends HasOneOrMany
     public function setJoinFields($joinFields)
     {
         $this->joinFields = $joinFields;
+    }
+
+    protected function initJoinFields()
+    {
+        $structure = $this->getDB()->describeTable($this->getTable());
+        $this->setJoinFields(array_keys($structure["fields"]));
     }
 
     /**
@@ -143,6 +156,120 @@ class HasAndBelongsToMany extends HasOneOrMany
         return $this;
     }
 
+    protected function deleteConnections()
+    {
+        $query = $this->newDeleteQuery();
+        $query->where(
+            "{$this->getManager()->getPrimaryFK()} = ?",
+            $this->getItem()->{$this->getManager()->getPrimaryKey()}
+        );
+//        echo $query;
+        $query->execute();
+    }
+
+    /**
+     * @return DeleteQuery
+     */
+    protected function newDeleteQuery()
+    {
+        $query = $this->getDB()->newDelete();
+        $query->table($this->getTable());
+        return $query;
+    }
+
+    protected function saveConnections()
+    {
+        if ($this->hasResults()) {
+            $query = $this->newInsertQuery();
+            $this->queryAttachRecords($query, $this->getResults());
+//            echo $query;
+            $query->execute();
+        }
+    }
+
+    /**
+     * @return InsertQuery
+     */
+    protected function newInsertQuery()
+    {
+        $query = $this->getDB()->newInsert();
+        $query->table($this->getTable());
+        return $query;
+    }
+
+    /**
+     * @param InsertQuery $query
+     * @param $records
+     */
+    protected function queryAttachRecords($query, $records)
+    {
+        foreach ($records as $record) {
+            $data = $this->formatAttachData($record);
+            foreach ($this->getJoinFields() as $field) {
+                if ($record->{"__$field"}) {
+                    $data[$field] = $record->{"__$field"};
+                } else {
+                    $data[$field] = $data[$field] ? $data[$field] : false;
+                }
+            }
+            $query->data($data);
+        }
+    }
+
+    /**
+     * @param $record
+     * @return array
+     */
+    protected function formatAttachData($record)
+    {
+        $data = [
+            $this->getManager()->getPrimaryFK() => $this->getItem()->{$this->getManager()->getPrimaryKey()},
+            $this->getPivotFK() => $record->{$this->getWith()->getPrimaryKey()},
+        ];
+        return $data;
+    }
+
+    /**
+     * @param $model
+     */
+    public function attach($model)
+    {
+        $query = $this->newInsertQuery();
+        $this->queryAttachRecords($query, [$model]);
+//            echo $query;
+        $query->execute();
+    }
+
+    /**
+     * @param Record $model
+     */
+    public function detach($model)
+    {
+        $query = $this->newDeleteQuery();
+        $this->queryDetachRecords($query, [$model]);
+//        echo $query;
+        $query->execute();
+    }
+
+    /**
+     * @param DeleteQuery $query
+     * @param $records
+     */
+    protected function queryDetachRecords($query, $records)
+    {
+        $ids = HelperBroker::get('Arrays')->pluck($records, $this->getWith()->getPrimaryKey());
+        $query->where(
+            "{$this->getPivotFK()} IN ?",
+            $ids
+        );
+
+        $query->where(
+            "{$this->getManager()->getPrimaryFK()} = ?",
+            $this->getItem()->{$this->getManager()->getPrimaryKey()}
+        );
+    }
+
+
     /** @noinspection PhpMissingParentCallCommonInspection
      * @return mixed
      */
@@ -154,85 +281,8 @@ class HasAndBelongsToMany extends HasOneOrMany
     /** @noinspection PhpMissingParentCallCommonInspection
      * @return string
      */
-    public function generateTable()
-    {
-        return $this->getCrossTable();
-    }
-
-    /**
-     * Builds the name of a has-and-belongs-to-many association table
-     * @return string
-     */
-    public function getCrossTable()
-    {
-        $tables = [$this->getManager()->getTable(), $this->getWith()->getTable()];
-        sort($tables);
-
-        return implode("-", $tables);
-    }
-
-    /**
-     * @return null|array
-     */
-    protected function getJoinFields()
-    {
-        if ($this->joinFields == null) {
-            $this->initJoinFields();
-        }
-
-        return $this->joinFields;
-    }
-
-    protected function initJoinFields()
-    {
-        $structure = $this->getDB()->describeTable($this->getTable());
-        $this->setJoinFields(array_keys($structure["fields"]));
-    }
-
-    protected function deleteConnections()
-    {
-        $query = $this->getDB()->newQuery('delete');
-        $query->table($this->getTable());
-        $query->where(
-            "{$this->getManager()->getPrimaryFK()} = ?",
-            $this->getItem()->{$this->getManager()->getPrimaryKey()}
-        );
-//        echo $query;
-        $query->execute();
-    }
-
-    protected function saveConnections()
-    {
-        if ($this->hasResults()) {
-            $query = $this->getDB()->newQuery("insert");
-            $query->table($this->getTable());
-            $results = $this->getResults();
-
-            foreach ($results as $item) {
-                $data = [
-                    $this->getManager()->getPrimaryFK() => $this->getItem()->{$this->getManager()->getPrimaryKey()},
-                    $this->getWith()->getPrimaryFK() => $item->{$this->getWith()->getPrimaryKey()},
-                ];
-                foreach ($this->getJoinFields() as $field) {
-                    if ($item->{"__$field"}) {
-                        $data[$field] = $item->{"__$field"};
-                    } else {
-                        $data[$field] = $data[$field] ? $data[$field] : false;
-                    }
-                }
-                $query->data($data);
-            }
-
-//            echo $query;
-            $query->execute();
-        }
-    }
-
-    /** @noinspection PhpMissingParentCallCommonInspection
-     * @return string
-     */
     protected function getDictionaryKey()
     {
-        return '__'.$this->getFK();
+        return '__' . $this->getFK();
     }
 }

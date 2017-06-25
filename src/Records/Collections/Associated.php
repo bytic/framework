@@ -2,9 +2,10 @@
 
 namespace Nip\Records\Collections;
 
+use Nip\Records\Collections\Collection as RecordCollection;
 use Nip\Records\Record as Record;
 use Nip\Records\Relations\HasOneOrMany as Relation;
-use Nip\Records\Collections\Collection as RecordCollection;
+use Nip\Records\Relations\Traits\HasCollectionResults;
 
 class Associated extends RecordCollection
 {
@@ -20,22 +21,9 @@ class Associated extends RecordCollection
     protected $_item;
 
     /**
-     * @return Relation
+     * @param Relation|HasCollectionResults $relation
      */
-    public function getWithRelation()
-    {
-        return $this->_withRelation;
-    }
-
-    /**
-     * @param Relation $relation
-     */
-    public function setWithRelation($relation)
-    {
-        $this->_withRelation = $relation;
-    }
-
-    public function initFromRelation(Relation $relation)
+    public function initFromRelation($relation)
     {
         $this->setWithRelation($relation);
         $this->setManager($relation->getWith());
@@ -49,6 +37,22 @@ class Associated extends RecordCollection
     public function save()
     {
         return $this->getWithRelation()->save();
+    }
+
+    /**
+     * @return Relation
+     */
+    public function getWithRelation()
+    {
+        return $this->_withRelation;
+    }
+
+    /**
+     * @param Relation $relation
+     */
+    public function setWithRelation($relation)
+    {
+        $this->_withRelation = $relation;
     }
 
     /**

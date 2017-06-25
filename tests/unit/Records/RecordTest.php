@@ -3,7 +3,7 @@
 namespace Nip\Tests\Unit\Records;
 
 use Mockery as m;
-use Nip\Database\Connection;
+use Nip\Database\Connections\Connection;
 use Nip\Records\Record;
 use Nip\Records\RecordManager as Records;
 use Nip\Tests\Unit\AbstractTest;
@@ -63,7 +63,7 @@ class RecordTest extends AbstractTest
     protected function setUp()
     {
         parent::setUp();
-        $wrapper = new Connection();
+        $wrapper = new Connection(false);
 
         $manager = new Records();
         $manager->setDB($wrapper);

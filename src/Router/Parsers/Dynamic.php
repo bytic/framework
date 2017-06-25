@@ -64,11 +64,77 @@ class Dynamic extends AbstractParser
                 }
             }
         }
-        if (!empty ($variable)) {
+        if (!empty($variable)) {
             $variables[] = $variable;
         }
 
         return $variables;
+    }
+
+    /**
+     * @param $uri
+     * @return bool
+     */
+    public function match($uri)
+    {
+        $return = parent::match($uri);
+
+        if ($return) {
+//            if ($this->uri[strlen($this->uri) - 1] == '/') {
+//                $this->uri = substr($this->uri, 0, -1);
+//            }
+            $this->parseUriParts($uri);
+            if ($this->getVariableParts()) {
+                if ($this->preMatch() === true) {
+                    $this->parseParams();
+                    if ($this->postMatch() == true) {
+                        return true;
+                    }
+                }
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * @param $uri
+     */
+    public function parseUriParts($uri)
+    {
+        $this->uriParts = explode("/", trim($uri, '/'));
+    }
+
+    /**
+     * @return bool
+     */
+    public function getVariableParts()
+    {
+        foreach ($this->parts as $key => $part) {
+            if (strpos($part, ':') !== false) {
+                break;
+            }
+            if ($this->uriParts[$key] != $part) {
+                return false;
+            }
+//            unset($this->uriParts[$key]);
+        }
+
+        return true;
+    }
+
+    /**
+     * @return bool
+     */
+    protected function preMatch()
+    {
+        $mapCount = count($this->getParts());
+        $uriCount = count($this->getUriParts());
+        if ($mapCount != $uriCount) {
+            return false;
+        }
+
+        return true;
     }
 
     /**
@@ -88,81 +154,21 @@ class Dynamic extends AbstractParser
     }
 
     /**
-     * @param $uri
-     * @return bool
-     */
-    public function match($uri)
-    {
-        $return = parent::match($uri);
-
-        if ($return) {
-            if ($this->uri[strlen($this->uri) - 1] == '/') {
-                $this->uri = substr($this->uri, 0, -1);
-            }
-
-
-            if ($this->getVariableParts($uri)) {
-                if ($this->preMatch() === true) {
-                    $this->parseParams();
-                    if ($this->postMatch() == true) {
-                        return true;
-                    }
-                }
-            }
-        }
-
-        return false;
-    }
-
-    /**
-     * @param $url
-     * @return bool
-     */
-    public function getVariableParts($url)
-    {
-        $this->uriParts = explode("/", $url);
-
-        foreach ($this->parts as $key => $part) {
-            if (strpos($part, ':') !== false) {
-                break;
-            }
-            if ($this->uriParts[$key] != $part) {
-                return false;
-            }
-            unset($this->uriParts[$key]);
-        }
-
-        return true;
-    }
-
-    /**
-     * @return bool
-     */
-    protected function preMatch()
-    {
-        if (count($this->getParts()) != (substr_count($this->uri, '/') + 1)) {
-            return false;
-        }
-
-        return true;
-    }
-
-    /**
      * @return bool
      */
     protected function parseParams()
     {
-        $uriParts = explode("/", $this->uri);
+        $uriParts = $this->getUriParts();
         foreach ($this->parts as $key => $part) {
             if (strstr($part, ":") === false) {
                 // part is static - no named params
-                if ($uriParts[$key] != $part) {
+                if (!isset($uriParts[$key]) || $uriParts[$key] != $part) {
                     // corresponding part in URI does not match
                     return false;
                 }
             } else {
                 $var = str_replace(":", "", $part);
-                $this->setParam($var, $uriParts[$key]);
+                $this->setParam($var, isset($uriParts[$key]) ? $uriParts[$key] : null);
             }
         }
 

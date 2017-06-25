@@ -3,39 +3,46 @@
 namespace Nip\View;
 
 use Nip\View;
-use Nip\Request;
 
+/**
+ * Class XLS
+ * @package Nip\View
+ */
 class XLS extends View
 {
 
-    public function initBasePath()
+    /**
+     * Singleton
+     *
+     * @return self
+     */
+    public static function instance()
     {
-        $this->setBasePath(MODULES_PATH . Request::instance()->getModuleName() . '/views/');
+        static $instance;
+        if (!($instance instanceof self)) {
+            $instance = new self();
+        }
+        return $instance;
     }
 
-	public function output($view, $name)
-	{
-		header("Content-type: application/vnd.ms-excel");
-		header("Content-Disposition: attachment; filename=\"$name\"");
-		header("Cache-Control: private, max-age=1, pre-check=1", true);
-		header("Pragma: none", true);
+    public function initBasePath()
+    {
+        $this->setBasePath(MODULES_PATH . request()->getModuleName() . '/views/');
+    }
 
-		echo $this->load($view);
-		exit();
-	}
+    /**
+     * @param $view
+     * @param $name
+     */
+    public function output($view, $name)
+    {
+        header("Content-type: application/vnd.ms-excel");
+        header("Content-Disposition: attachment; filename=\"$name\"");
+        header("Cache-Control: private, max-age=1, pre-check=1", true);
+        header("Pragma: none", true);
 
-	/**
-	 * Singleton
-	 *
-	 * @return self
-	 */
-	public static function instance()
-	{
-		static $instance;
-		if (!($instance instanceof self)) {
-			$instance = new self();
-		}
-		return $instance;
-	}
-
+        echo $this->load($view);
+        exit();
+    }
 }
+

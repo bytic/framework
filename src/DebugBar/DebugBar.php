@@ -7,7 +7,14 @@ use DebugBar\DebugBar as DebugBarGeneric;
 use Monolog\Logger as MonologLogger;
 use Nip\DebugBar\Formatter\MonologFormatter;
 use Nip\Http\Response\Response;
+use Nip\Request;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
 
+/**
+ * Class DebugBar
+ * @package Nip\DebugBar
+ */
 abstract class DebugBar extends DebugBarGeneric
 {
 
@@ -17,6 +24,7 @@ abstract class DebugBar extends DebugBarGeneric
      * @var bool
      */
     protected $booted = false;
+
     /**
      * True when enabled, false disabled an null for still unknown
      *
@@ -44,6 +52,8 @@ abstract class DebugBar extends DebugBarGeneric
         }
 
         $this->doBoot();
+
+        $this->booted = true;
     }
 
     public function doBoot()
@@ -59,6 +69,32 @@ abstract class DebugBar extends DebugBarGeneric
     }
 
     /**
+     * @param MonologLogger $monolog
+     */
+    public function addMonolog(MonologLogger $monolog)
+    {
+        $collector = new MonologCollector($monolog);
+        $collector->setFormatter(new MonologFormatter());
+        $this->addCollector($collector);
+    }
+
+    /**
+     * Modify the response and inject the debugbar (or data in headers)
+     *
+     * @param  Request|ServerRequestInterface $request
+     * @param  Response|ResponseInterface $response
+     * @return Response
+     */
+    public function modifyResponse(Request $request, Response $response)
+    {
+        if (!$this->isEnabled()) {
+            return $response;
+        }
+
+        return $this->injectDebugBar($response);
+    }
+
+    /**
      * Check if the DebugBar is enabled
      * @return boolean
      */
@@ -68,16 +104,6 @@ abstract class DebugBar extends DebugBarGeneric
             $this->enabled = true;
         }
         return $this->enabled;
-    }
-
-    /**
-     * @param MonologLogger $monolog
-     */
-    public function addMonolog(MonologLogger $monolog)
-    {
-        $collector = new MonologCollector($monolog);
-        $collector->setFormatter(new MonologFormatter());
-        $this->addCollector($collector);
     }
 
     /**

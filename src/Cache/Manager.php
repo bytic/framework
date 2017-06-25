@@ -5,27 +5,40 @@ namespace Nip\Cache;
 use Nip\Filesystem\Exception\IOException;
 use Nip_File_System as FileSystem;
 
+/**
+ * Class Manager
+ * @package Nip\Cache
+ */
 class Manager
 {
+    protected $active = false;
 
-    protected $_active = false;
-    protected $_ttl = 180;
-    protected $_data;
+    protected $ttl = 180;
 
+    protected $data;
+
+    /**
+     * @param $cacheId
+     * @return mixed
+     */
     public function get($cacheId)
     {
         if (!$this->valid($cacheId)) {
-            return;
+            return null;
         }
 
         return $this->getData($cacheId);
     }
 
+    /**
+     * @param $cacheId
+     * @return bool
+     */
     public function valid($cacheId)
     {
         if ($this->isActive() && $this->exists($cacheId)) {
             $fmtime = filemtime($this->filePath($cacheId));
-            if (($fmtime + $this->_ttl) > time()) {
+            if (($fmtime + $this->ttl) > time()) {
                 return true;
             }
         }
@@ -33,42 +46,69 @@ class Manager
         return false;
     }
 
+    /**
+     * @return bool
+     */
     public function isActive()
     {
-        return $this->_active;
+        return $this->active;
     }
 
+    /**
+     * @param $active
+     * @return $this
+     */
     public function setActive($active)
     {
-        $this->_active = $active;
+        $this->active = $active;
 
         return $this;
     }
 
+    /**
+     * @param $cacheId
+     * @return bool
+     */
     public function exists($cacheId)
     {
         return file_exists($this->filePath($cacheId));
     }
 
+    /**
+     * @param $cacheId
+     * @return string
+     */
     public function filePath($cacheId)
     {
-        return $this->cachePath().$cacheId.'.php';
+        return $this->cachePath() . $cacheId . '.php';
     }
 
+    /**
+     * @return string
+     */
     public function cachePath()
     {
-        return CACHE_PATH;
+        return app('path.storage') . DIRECTORY_SEPARATOR . 'cache';
     }
 
+    /**
+     * @param $cacheId
+     * @return mixed
+     */
     public function getData($cacheId)
     {
-        if (!$this->_data[$cacheId]) {
-            $this->_data[$cacheId] = $this->loadData($cacheId);
+        if (!isset($this->data[$cacheId])) {
+            $this->data[$cacheId] = $this->loadData($cacheId);
         }
 
-        return $this->_data[$cacheId];
+        return $this->data[$cacheId];
     }
 
+    /**
+     * @param $cacheId
+     * @param bool $retry
+     * @return bool|mixed
+     */
     public function loadData($cacheId, $retry = true)
     {
         $file = $this->filePath($cacheId);
@@ -87,17 +127,30 @@ class Manager
         return $data;
     }
 
+    /**
+     * @param $cacheId
+     */
     public function reload($cacheId)
     {
     }
 
+    /**
+     * @param $cacheId
+     * @param $data
+     * @return $this
+     */
     public function set($cacheId, $data)
     {
-        $this->_data[$cacheId] = $data;
+        $this->data[$cacheId] = $data;
 
         return $this;
     }
 
+    /**
+     * @param $cacheId
+     * @param $data
+     * @return bool
+     */
     public function saveData($cacheId, $data)
     {
         $file = $this->filePath($cacheId);
@@ -106,6 +159,11 @@ class Manager
         return $this->save($file, $content);
     }
 
+    /**
+     * @param $file
+     * @param $content
+     * @return bool
+     */
     public function save($file, $content)
     {
         $dir = dirname($file);
@@ -132,6 +190,9 @@ class Manager
         }
     }
 
+    /**
+     * @param $cacheId
+     */
     public function delete($cacheId)
     {
         $file = $this->filePath($cacheId);
@@ -139,5 +200,4 @@ class Manager
             unlink($file);
         }
     }
-
 }

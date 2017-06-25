@@ -2,7 +2,7 @@
 
 namespace Nip\AutoLoader;
 
-use Nip\Container\ServiceProvider\AbstractSignatureServiceProvider;
+use Nip\Container\ServiceProviders\Providers\AbstractSignatureServiceProvider;
 
 /**
  * Class AutoLoaderServiceProvider
@@ -22,7 +22,7 @@ class AutoLoaderServiceProvider extends AbstractSignatureServiceProvider
     protected function registerAutoLoader()
     {
         $autoloader = self::newAutoLoader();
-        $this->getContainer()->singleton('autoloader', $autoloader);
+        $this->getContainer()->share('autoloader', $autoloader);
     }
 
     /**

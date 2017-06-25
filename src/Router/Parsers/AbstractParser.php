@@ -65,7 +65,7 @@ abstract class AbstractParser
 
     protected function parseMap()
     {
-        $this->setParts(explode("/", $this->map));
+        $this->setParts(explode("/", trim($this->map, '/')));
     }
 
     public function init()
@@ -101,8 +101,8 @@ abstract class AbstractParser
 
         if ($params) {
             foreach ($params as $key => $value) {
-                if (stristr($return, ":".$key) !== false) {
-                    $return = str_replace(":".$key, $value, $return);
+                if (stristr($return, ":" . $key) !== false) {
+                    $return = str_replace(":" . $key, $value, $return);
                     unset($params[$key]);
                 }
                 if (array_key_exists($key, $this->params)) {
@@ -110,7 +110,7 @@ abstract class AbstractParser
                 }
             }
             if ($params) {
-                $return .= "?".http_build_query($params);
+                $return .= "?" . http_build_query($params);
             }
         }
 
@@ -118,7 +118,7 @@ abstract class AbstractParser
         if ($this->params) {
             foreach ($this->params as $key => $value) {
                 if (is_string($value)) {
-                    $return = str_replace(":".$key, $value, $return);
+                    $return = str_replace(":" . $key, $value, $return);
                 }
             }
         }

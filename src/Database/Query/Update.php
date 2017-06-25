@@ -32,11 +32,12 @@ class Update extends AbstractQuery
         }
         $fields = [];
         foreach ($this->parts['data'] as $data) {
-            foreach ($data as $key => $value) {
-                if (!is_array($value)) {
-                    $value = [$value];
+            foreach ($data as $key => $values) {
+                if (!is_array($values)) {
+                    $values = [$values];
                 }
-                list($value, $quote) = $value;
+                $value = $values[0];
+                $quote = isset($values[1]) ? $values[1] : null;
 
                 if (!is_numeric($value)) {
                     if (is_null($quote)) {

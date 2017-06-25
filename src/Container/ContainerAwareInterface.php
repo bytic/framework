@@ -21,5 +21,4 @@ interface ContainerAwareInterface
      * @return \Nip\Container\ContainerInterface
      */
     public function getContainer();
-
 }

@@ -40,7 +40,7 @@ class BelongsTo extends Relation
     public function getResultsFromCollectionDictionary($dictionary, $collection, $record)
     {
         $pk = $record->{$this->getFK()};
-        if ($dictionary[$pk]) {
+        if (isset($dictionary[$pk])) {
             return $dictionary[$pk];
         }
 

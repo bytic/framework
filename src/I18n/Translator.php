@@ -3,6 +3,8 @@
 namespace Nip\I18n;
 
 use Nip\I18n\Translator\Backend\AbstractBackend;
+use Nip\Request;
+use function Nip\url;
 
 /**
  * Class Translator
@@ -10,10 +12,19 @@ use Nip\I18n\Translator\Backend\AbstractBackend;
  */
 class Translator
 {
-
+    /**
+     * @var bool
+     */
     public $defaultLanguage = false;
+
+    /**
+     * @var bool|string
+     */
     public $selectedLanguage = false;
 
+    /**
+     * @var array
+     */
     protected $languageCodes = [
         'en' => 'en_US',
     ];
@@ -23,21 +34,19 @@ class Translator
      */
     protected $backend;
 
+    /**
+     * @var Request
+     */
     protected $request;
 
     /**
-     * Singleton pattern
-     *
-     * @return self
+     * Translator constructor.
+     * @param AbstractBackend $backend
      */
-    public static function instance()
+    public function __construct(AbstractBackend $backend)
     {
-        static $instance;
-        if (!($instance instanceof self)) {
-            $instance = new self();
-        }
-
-        return $instance;
+        $this->setBackend($backend);
+        $this->setRequest(app('request'));
     }
 
     /**
@@ -61,19 +70,14 @@ class Translator
         return $this;
     }
 
-    public function getLanguages()
-    {
-        return $this->backend->getLanguages();
-    }
-
     /**
      * @param $lang
      * @return mixed|string
      */
     public function changeLangURL($lang)
     {
-        $newURL = str_replace('language='.$this->getLanguage(), '', CURRENT_URL);
-        $newURL = $newURL.(strpos($newURL, '?') == false ? '?' : '&').'language='.$lang;
+        $newURL = str_replace('language=' . $this->getLanguage(), '', url()->current());
+        $newURL = $newURL . (strpos($newURL, '?') == false ? '?' : '&') . 'language=' . $lang;
 
         return $newURL;
     }
@@ -89,18 +93,14 @@ class Translator
         if (!$this->selectedLanguage) {
             $language = false;
 
-            if (isset($_SESSION['language'])) {
+            if (isset($_SESSION['language']) && $this->isValidLanguage($_SESSION['language'])) {
                 $language = $_SESSION['language'];
             }
 
-            if (isset($_GET['language'])) {
-                $language = $_GET['language'];
+            $requestLanguage = $this->getRequest()->get('language');
+            if ($requestLanguage && $this->isValidLanguage($requestLanguage)) {
+                $language = $requestLanguage;
             }
-
-            if ($this->getRequest()->language) {
-                $language = $this->getRequest()->language;
-            }
-
 
             if ($language) {
                 $this->setLanguage($language);
@@ -113,7 +113,24 @@ class Translator
     }
 
     /**
-     * @return mixed
+     * @param $lang
+     * @return bool
+     */
+    public function isValidLanguage($lang)
+    {
+        return in_array($lang, $this->getLanguages());
+    }
+
+    /**
+     * @return array
+     */
+    public function getLanguages()
+    {
+        return $this->backend->getLanguages();
+    }
+
+    /**
+     * @return Request
      */
     public function getRequest()
     {
@@ -139,13 +156,26 @@ class Translator
         $this->selectedLanguage = $language;
         $_SESSION['language'] = $language;
 
-        $code = $this->languageCodes[$language] ? $this->languageCodes[$language] : $language."_".strtoupper($language);
+        $code = $this->getLanguageCode($language);
 
-        putenv('LC_ALL='.$code);
+        putenv('LC_ALL=' . $code);
         setlocale(LC_ALL, $code);
         setlocale(LC_NUMERIC, 'en_US');
 
         return $this;
+    }
+
+    /**
+     * @param $lang
+     * @return mixed|string
+     */
+    public function getLanguageCode($lang)
+    {
+        if (isset($this->languageCodes[$lang])) {
+            return $this->languageCodes[$lang];
+        }
+
+        return $lang . "_" . strtoupper($lang);
     }
 
     /**
@@ -155,7 +185,11 @@ class Translator
     public function getDefaultLanguage()
     {
         if (!$this->defaultLanguage) {
-            $this->setDefaultLanguage(substr(setlocale(LC_ALL, 0), 0, 2));
+            $language = substr(setlocale(LC_ALL, 0), 0, 2);
+            $languages = $this->getLanguages();
+            $languageDefault = reset($languages);
+            $language = $this->isValidLanguage($language) ? $language : $languageDefault;
+            $this->setDefaultLanguage($language);
         }
 
         return $this->defaultLanguage;
@@ -194,7 +228,7 @@ class Translator
         if ($return) {
             if ($params) {
                 foreach ($params as $key => $value) {
-                    $return = str_replace("#{".$key."}", $value, $return);
+                    $return = str_replace("#{" . $key . "}", $value, $return);
                 }
             }
         }
