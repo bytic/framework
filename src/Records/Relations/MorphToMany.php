@@ -2,6 +2,7 @@
 
 namespace Nip\Records\Relations;
 
+use Nip\Database\Query\AbstractQuery;
 use Nip\Database\Query\Delete as DeleteQuery;
 use Nip\Database\Query\Select as SelectQuery;
 use Nip\Records\Relations\Traits\HasCollectionResults;
@@ -32,7 +33,7 @@ class MorphToMany extends HasAndBelongsToMany
      */
     protected $inverse = false;
 
-    /**
+    /** @noinspection PhpMissingParentCallCommonInspection
      * Builds the name of a has-and-belongs-to-many association table
      * @return string
      */
@@ -65,6 +66,22 @@ class MorphToMany extends HasAndBelongsToMany
     public function setInverse(bool $inverse)
     {
         $this->inverse = $inverse;
+    }
+
+    /**
+     * @param AbstractQuery $query
+     * @return AbstractQuery
+     */
+    public function populateQuerySpecific(AbstractQuery $query)
+    {
+        if ($this->isInverse()) {
+            return parent::populateQuerySpecific($query);
+        }
+        $pk1 = $this->getManager()->getPrimaryKey();
+
+        $query->where("`{$this->getTable()}`.`pivotal_id` = ?", $this->getItem()->{$pk1});
+
+        return $query;
     }
 
     /**
@@ -118,7 +135,7 @@ class MorphToMany extends HasAndBelongsToMany
      */
     protected function generateMorphType()
     {
-        return $this->getWith()->getTable();
+        return $this->isInverse() ? $this->getWith()->getTable() : $this->getManager()->getTable();
     }
 
     /**
@@ -148,6 +165,9 @@ class MorphToMany extends HasAndBelongsToMany
      */
     protected function getPivotFK()
     {
-        return 'pivotal_id';
+        if ($this->isInverse()) {
+            return 'pivotal_id';
+        }
+        return parent::getPivotFK();
     }
 }
