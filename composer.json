@@ -27,7 +27,7 @@
   },
   "require": {
     "php": "^7.0",
-    "bytic/request-detective": "dev-develop",
+    "bytic/request-detective": "^1.0",
     "psr/container": "^1.0",
     "http-interop/http-middleware": "^0.4",
     "league/container": "^2.3",
