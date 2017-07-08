@@ -2,12 +2,15 @@
 
 use function Nip\locale;
 
+/**
+ * Class Nip_Form_Element_Dateselect
+ */
 class Nip_Form_Element_Dateselect extends Nip_Form_Element_MultiElement
 {
 
     protected $_type = 'dateselect';
     protected $_locale = 'ct_EN';
-    protected $_format = 'M d Y';
+    protected $format = 'M d Y';
 
     public function init()
     {
@@ -22,39 +25,42 @@ class Nip_Form_Element_Dateselect extends Nip_Form_Element_MultiElement
     {
         $inputName = $this->getName();
 
-        if (!$this->_elements['day']) {
+        if (!$this->hasElement('day')) {
             $dayElement = $this->getForm()->getNewElement('select');
 
             for ($i = 1; $i <= 31; $i++) {
                 $dayElement->addOption($i, $i);
             }
             $dayElement->setValue(date('d'));
-            $this->_elements['day'] = $dayElement;
+            $this->elements['day'] = $dayElement;
         }
 
 
-        if (!$this->_elements['month']) {
+        if (!$this->hasElement('month')) {
             $monthElement = $this->getForm()->getNewElement('select');
             for ($i = 1; $i <= 12; $i++) {
                 $monthElement->addOption($i, date('M', mktime(0, 0, 0, $i, 1, 2014)));
             }
             $monthElement->setValue(date('m'));
-            $this->_elements['month'] = $monthElement;
+            $this->elements['month'] = $monthElement;
         }
 
-        if (!$this->_elements['year']) {
+        if (!$this->hasElement('year')) {
             $yearElement = $this->getForm()->getNewElement('select');
-            $curentYear = date('Y');
-            $startYear = $curentYear - 100;
-            $endYear = $curentYear + 5;
+            $currentYear = date('Y');
+            $startYear = $currentYear - 100;
+            $endYear = $currentYear + 5;
             for ($i = $startYear; $i <= $endYear; $i++) {
                 $yearElement->addOption($i, $i);
             }
             $yearElement->setValue(date('Y'));
-            $this->_elements['year'] = $yearElement;
+            $this->elements['year'] = $yearElement;
         }
     }
 
+    /**
+     * @inheritdoc
+     */
     public function setName($name)
     {
         $return = parent::setName($name);
@@ -65,9 +71,9 @@ class Nip_Form_Element_Dateselect extends Nip_Form_Element_MultiElement
     public function updateNameSelects()
     {
         $inputName = $this->getName();
-        $this->_elements['day']->setName($inputName . '[day]');
-        $this->_elements['month']->setName($inputName . '[month]');
-        $this->_elements['year']->setName($inputName . '[year]');
+        $this->getElement('day')->setName($inputName . '[day]');
+        $this->getElement('month')->setName($inputName . '[month]');
+        $this->getElement('year')->setName($inputName . '[year]');
     }
 
     /**
@@ -91,7 +97,7 @@ class Nip_Form_Element_Dateselect extends Nip_Form_Element_MultiElement
      */
     public function getFormat()
     {
-        return $this->_format;
+        return $this->format;
     }
 
     /**
@@ -99,7 +105,7 @@ class Nip_Form_Element_Dateselect extends Nip_Form_Element_MultiElement
      */
     public function setFormat($format)
     {
-        $this->_format = $format;
+        $this->format = $format;
     }
 
     /**
@@ -113,9 +119,9 @@ class Nip_Form_Element_Dateselect extends Nip_Form_Element_MultiElement
             if ($data && $data != '0000-00-00' && $data != '0000-00-00 00:00:00') {
                 $dateUnix = strtotime($data);
                 if ($dateUnix && $dateUnix !== false && $dateUnix > -62169989992) {
-                    $this->_elements['day']->setValue(date('d', $dateUnix));
-                    $this->_elements['month']->setValue(date('m', $dateUnix));
-                    $this->_elements['year']->setValue(date('Y', $dateUnix));
+                    $this->getElement('day')->setValue(date('d', $dateUnix));
+                    $this->getElement('month')->setValue(date('m', $dateUnix));
+                    $this->getElement('year')->setValue(date('Y', $dateUnix));
                 }
             }
             return $this;
@@ -123,7 +129,7 @@ class Nip_Form_Element_Dateselect extends Nip_Form_Element_MultiElement
         return parent::getData($data, $source);
     }
 
-    /**
+    /** @noinspection PhpMissingParentCallCommonInspection
      * @param $request
      * @return $this
      */
@@ -152,19 +158,19 @@ class Nip_Form_Element_Dateselect extends Nip_Form_Element_MultiElement
         }
     }
 
-    /**
+    /** @noinspection PhpMissingParentCallCommonInspection
      * @param string $requester
      * @return null
      */
     public function getValue($requester = 'abstract')
     {
         $unixTime = $this->getUnix();
-        $format = $requester == 'model' ? 'Y-m-d' : $this->_format;
+        $format = $requester == 'model' ? 'Y-m-d' : $this->format;
         if ($unixTime) {
-            $value = date($format, $unixTime);
+            return date($format, $unixTime);
         }
 
-        return $value;
+        return;
     }
 
     /**
@@ -173,9 +179,9 @@ class Nip_Form_Element_Dateselect extends Nip_Form_Element_MultiElement
      */
     public function getUnix($format = false)
     {
-        $day = $this->_elements['day']->getValue();
-        $month = $this->_elements['month']->getValue();
-        $year = $this->_elements['year']->getValue();
+        $day = $this->elements['day']->getValue();
+        $month = $this->elements['month']->getValue();
+        $year = $this->elements['year']->getValue();
 
         return mktime(0, 0, 0, $month, $day, $year);
     }
