@@ -14,12 +14,14 @@ class Scripts extends AbstractHelper
      */
     protected $files = [];
 
+    protected $rawScripts = [];
+
     protected $defaultPlaceholder = "head";
 
     /**
      * @param $file
      * @param bool $placeholder
-     * @return Scripts
+     * @return $this
      */
     public function add($file, $placeholder = false)
     {
@@ -47,6 +49,17 @@ class Scripts extends AbstractHelper
         } else {
             $this->files[$placeholder][] = $file;
         }
+
+        return $this;
+    }
+
+    /**
+     * @param $content
+     * @return $this
+     */
+    public function addRaw($content)
+    {
+        $this->rawScripts[] = $content;
 
         return $this;
     }
@@ -135,5 +148,19 @@ class Scripts extends AbstractHelper
     public function buildURL($source)
     {
         return asset('/scripts/' . $source . '.js');
+    }
+
+    /**
+     * @return string
+     */
+    public function renderRaw()
+    {
+        $return = '';
+        if (count($this->rawScripts)) {
+            $return .= '<script type="text/javascript">';
+            $return .= implode("\r\n", $this->rawScripts);
+            $return .= '</script>';
+        }
+        return $return;
     }
 }
