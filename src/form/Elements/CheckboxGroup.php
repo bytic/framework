@@ -3,6 +3,10 @@ class Nip_Form_Element_CheckboxGroup extends Nip_Form_Element_Input_Group {
 
     protected $_type = 'checkboxGroup';
 
+    /**
+     * @param string $requester
+     * @return null
+     */
     public function getValue($requester = 'abstract') {
         $elements = $this->getElements();
         $data = [];
@@ -16,14 +20,21 @@ class Nip_Form_Element_CheckboxGroup extends Nip_Form_Element_Input_Group {
         return $data;
     }
 
+    /**
+     * @param $value
+     * @return $this
+     */
     public function setValue($value) {
         return $this->getDataFromRequest($value);
     }
 
+    /**
+     * @param $request
+     * @return $this
+     */
     public function getDataFromRequest($request) {
-//        var_dump($request);
+        $elements = $this->getElements();
         if (is_array($request)) {
-            $elements = $this->getElements();
             foreach ($elements as $key=>$element) {
                 $element->setChecked(in_array($key, $request));
             }
@@ -35,6 +46,9 @@ class Nip_Form_Element_CheckboxGroup extends Nip_Form_Element_Input_Group {
         return $this;
     }
 
+    /**
+     * @return Nip_Form_Element_Abstract
+     */
     public function getNewElement() {
         $element = $this->getForm()->getNewElement('checkbox');
         $name = $this->getName();
@@ -45,6 +59,9 @@ class Nip_Form_Element_CheckboxGroup extends Nip_Form_Element_Input_Group {
         return $element;
     }
 
+    /**
+     * @return bool
+     */
     public function isRequestArray() {
         return true;
     }
