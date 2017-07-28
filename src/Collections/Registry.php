@@ -2,13 +2,10 @@
 
 namespace Nip\Collections;
 
-use ArrayAccess;
-
 /**
  * Class Registry
  * @package Nip
  */
-class Registry extends AbstractCollection implements ArrayAccess
+class Registry extends AbstractCollection
 {
-    use ArrayAccessTrait;
 }

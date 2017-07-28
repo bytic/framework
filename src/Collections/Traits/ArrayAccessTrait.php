@@ -1,6 +1,6 @@
 <?php
 
-namespace Nip\Collections;
+namespace Nip\Collections\Traits;
 
 /**
  * Class ArrayAccessTrait
