@@ -202,7 +202,7 @@ class RecordsTest extends AbstractTest
     public function testGetPrimaryKey()
     {
         $records = new Records();
-        $tableStructure = unserialize(file_get_contents(TEST_FIXTURE_PATH . '\database_structure\users.serialize'));
+        $tableStructure = unserialize(file_get_contents(TEST_FIXTURE_PATH . '/database_structure/users.serialize'));
         $records->setTableStructure($tableStructure);
         $records->setPrimaryKey('id');
 
