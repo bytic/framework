@@ -32,22 +32,23 @@ trait ArrayAccessTrait
     }
 
     /**
-     * Set a configuration option.
-     *
-     * @param  string $key
+     * @param  string $offset
      * @param  mixed $value
      * @return void
      */
-    public function offsetSet($key, $value)
+    public function offsetSet($offset, $value)
     {
-        $this->set($key, $value);
+        if ( ! isset($offset)) {
+            $this->add($value);
+            return;
+        }
+        $this->set($offset, $value);
     }
 
     /**
      * Unset a configuration option.
      *
-     * @param  string $key
-     * @return void
+     * @inheritdoc
      */
     public function offsetUnset($key)
     {
