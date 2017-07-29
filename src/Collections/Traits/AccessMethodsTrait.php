@@ -21,10 +21,13 @@ trait AccessMethodsTrait
     /**
      * {@inheritDoc}
      */
-    public function add($element)
+    public function add($element, $key = null)
     {
-        $this->items[] = $element;
-        return true;
+        if ($key == null) {
+            $this->items[] = $element;
+            return;
+        }
+        $this->set($key, $element);
     }
 
     /**
