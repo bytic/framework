@@ -3,7 +3,7 @@
   <component name="PhpProjectSharedConfiguration" php_language_level="7.1" />
   <component name="PhpUnit">
     <phpunit_settings>
-      <PhpUnitSettings load_method="CUSTOM_LOADER" />
+      <PhpUnitSettings load_method="CUSTOM_LOADER" bootstrap_file_path="D:/webdev/libraries/bytic/framework/tests/bootstrap.php" configuration_file_path="D:/webdev/libraries/bytic/framework/phpunit.xml.dist" custom_loader_path="D:/webdev/libraries/bytic/framework/vendor/autoload.php" phpunit_phar_path="" use_bootstrap_file="true" use_configuration_file="true" />
     </phpunit_settings>
   </component>
 </project>

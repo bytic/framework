@@ -111,10 +111,10 @@ class Collection extends AbstractCollection
      * @param Record $record
      * @param null $index
      */
-    public function add(Record $record, $index = null)
+    public function add($record, $index = null)
     {
         $index = $this->getRecordKey($record, $index);
-        return $this->offsetSet($index, $record);
+        parent::add($record, $index);
     }
 
     /**
@@ -157,11 +157,11 @@ class Collection extends AbstractCollection
      * @param Record $record
      * @return bool
      */
-    public function has(Record $record)
+    public function has($record)
     {
         $index = $this->getRecordKey($record);
 
-        return $this->offsetExists($index) && $this->offsetGet($index) == $record;
+        return parent::has($index) && $this->get($index) == $record;
     }
 
     /**

@@ -25,10 +25,16 @@
       "src/functions/flash.php"
     ]
   },
+  "autoload-dev": {
+    "psr-4": {
+      "Nip\\Tests\\": "tests/",
+      "Nip\\Fixtures\\": "tests/fixtures"
+    }
+  },
   "require": {
     "php": "^7.0",
-    "bytic/request-detective": "^1.0",
     "psr/container": "^1.0",
+    "bytic/request-detective": "^1.0",
     "http-interop/http-middleware": "^0.4",
     "league/container": "^2.3",
     "nesbot/carbon": "^1.21",
@@ -47,7 +53,8 @@
     "league/flysystem": "^1.0"
   },
   "require-dev": {
-    "codeception/codeception": "^2.2",
+    "phpunit/phpunit": "^6.0",
+    "squizlabs/php_codesniffer": "^2.0",
     "codeception/mockery-module": "^0.2"
   }
 }
