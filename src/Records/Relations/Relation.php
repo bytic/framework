@@ -7,10 +7,10 @@ use Nip\Database\Query\AbstractQuery;
 use Nip\Database\Query\Select as Query;
 use Nip\HelperBroker;
 use Nip\Logger\Exception;
-use Nip\Records\AbstractModels\Record as Record;
-use Nip\Records\AbstractModels\RecordManager;
 use Nip\Records\Collections\Collection;
 use Nip\Records\Collections\Collection as RecordCollection;
+use Nip\Records\Record;
+use Nip\Records\RecordManager;
 use Nip\Records\Traits\Relations\HasRelationsRecordsTrait;
 use Nip_Helper_Arrays as ArraysHelper;
 

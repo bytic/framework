@@ -2,32 +2,14 @@
 
 namespace Nip;
 
-use ArrayAccess;
-use ArrayIterator;
-use Countable;
-use IteratorAggregate;
+use Nip\Collections\AbstractCollection;
 
 /**
  * Class Collection
  * @package Nip
  */
-class Collection implements Countable, IteratorAggregate, ArrayAccess
+class Collection extends AbstractCollection
 {
-    protected $items = [];
-    protected $index = 0;
-
-    /**
-     * Collection constructor.
-     * @param array $items
-     */
-    public function __construct($items = [])
-    {
-        if (is_array($items)) {
-            $this->items = $items;
-        } elseif ($items instanceof Collection) {
-            $this->items = $items->toArray();
-        }
-    }
 
     /**
      * @return array
@@ -38,62 +20,6 @@ class Collection implements Countable, IteratorAggregate, ArrayAccess
         reset($return);
 
         return $return;
-    }
-
-    /**
-     * @return int
-     */
-    public function count()
-    {
-        return count($this->items);
-    }
-
-    /**
-     * @return ArrayIterator
-     */
-    public function getIterator()
-    {
-        return new ArrayIterator($this->items);
-    }
-
-    /**
-     * @param $index
-     * @return bool
-     */
-    public function exists($index)
-    {
-        return $this->offsetExists($index);
-    }
-
-    /**
-     * @param mixed $index
-     * @return bool
-     */
-    public function offsetExists($index)
-    {
-        return in_array($index, array_keys($this->items));
-    }
-
-    /**
-     * @param mixed $index
-     * @param mixed $value
-     */
-    public function offsetSet($index, $value)
-    {
-        if (is_null($index)) {
-            $index = $this->index++;
-        }
-        $this->items[$index] = $value;
-    }
-
-    /**
-     * @param mixed $index
-     */
-    public function offsetUnset($index)
-    {
-        if ($this->offsetExists($index)) {
-            unset($this->items[$index]);
-        }
     }
 
     /**
@@ -248,14 +174,5 @@ class Collection implements Countable, IteratorAggregate, ArrayAccess
     public function keys()
     {
         return array_keys($this->items);
-    }
-
-    /**
-     * @param mixed $index
-     * @return mixed|null
-     */
-    public function offsetGet($index)
-    {
-        return $this->offsetExists($index) ? $this->items[$index] : null;
     }
 }

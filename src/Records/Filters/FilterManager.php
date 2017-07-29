@@ -3,7 +3,7 @@
 namespace Nip\Records\Filters;
 
 use Nip\Collections\AbstractCollection;
-use Nip\Collections\ArrayAccessTrait;
+use Nip\Collections\Traits\ArrayAccessTrait;
 use Nip\Database\Query\Select as SelectQuery;
 use Nip\Records\AbstractModels\RecordManager;
 use Nip\Records\Filters\Column\AbstractFilter as AbstractColumnFilter;

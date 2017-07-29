@@ -226,6 +226,7 @@ class View
      */
     public function setBasePath($path)
     {
+        $path = rtrim($path, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
         $this->basePath = $path;
 
         return $this;

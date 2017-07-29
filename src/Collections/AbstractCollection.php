@@ -2,17 +2,40 @@
 
 namespace Nip\Collections;
 
+use ArrayAccess;
+use ArrayIterator;
+use Countable;
+use IteratorAggregate;
+use Nip\Collections\Traits\ArrayAccessTrait;
+
 /**
  * Class Registry
  * @package Nip
  */
-class AbstractCollection
+class AbstractCollection implements ArrayAccess, Countable, IteratorAggregate, JsonSerializable
 {
+    use ArrayAccessTrait;
+
+
+    /**
+     * Collection constructor.
+     * @param array $items
+     */
+    public function __construct($items = [])
+    {
+        if (is_array($items)) {
+            $this->items = $items;
+        } elseif ($items instanceof AbstractCollection) {
+            $this->items = $items->toArray();
+        }
+    }
 
     /**
      * @var array
      */
     protected $items = [];
+
+    protected $index = 0;
 
     /**
      * @return boolean
@@ -20,7 +43,16 @@ class AbstractCollection
      */
     public function has($key)
     {
-        return array_key_exists($key, $this->items);
+        return $this->offsetExists($key);
+    }
+
+    /**
+     * @param $index
+     * @return bool
+     */
+    public function exists($index)
+    {
+        return $this->offsetExists($index);
     }
 
     /**
@@ -82,5 +114,27 @@ class AbstractCollection
     public function count()
     {
         return count($this->items);
+    }
+
+    /**
+     * @param $needle
+     * @return bool
+     */
+    function contains($needle)
+    {
+        foreach ($this as $key => $value) {
+            if ($value === $needle) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * @return ArrayIterator
+     */
+    public function getIterator()
+    {
+        return new ArrayIterator($this->items);
     }
 }
