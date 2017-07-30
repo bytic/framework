@@ -18,7 +18,7 @@
 >
 
     <testsuites>
-        <testsuite name="ByTIC Media Library Test Suite">
+        <testsuite name="ByTIC Framework Test Suite">
             <directory suffix="Test.php">./tests</directory>
         </testsuite>
     </testsuites>
