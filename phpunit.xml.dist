@@ -10,7 +10,7 @@
          convertWarningsToExceptions="true"
          bootstrap="tests/bootstrap.php"
          failOnRisky="true"
-         failOnWarning="false"
+         failOnWarning="true"
          stopOnError="false"
          stopOnFailure="false"
          syntaxCheck="true"
