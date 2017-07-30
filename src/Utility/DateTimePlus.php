@@ -11,6 +11,10 @@ use DateTime;
 use DateTimeZone;
 use InvalidArgumentException;
 
+/**
+ * Class DateTimePlus
+ * @package Nip\Utility
+ */
 class DateTimePlus extends DateTime
 {
 
@@ -29,7 +33,7 @@ class DateTimePlus extends DateTime
     public function __get($name)
     {
         switch (true) {
-            case array_key_exists($name, $formats = array(
+            case array_key_exists($name, $formats = [
                 'year' => 'Y',
                 'yearIso' => 'o',
                 'month' => 'n',
@@ -43,7 +47,7 @@ class DateTimePlus extends DateTime
                 'weekOfYear' => 'W',
                 'daysInMonth' => 't',
                 'timestamp' => 'U',
-            )):
+            ]):
                 return (int) $this->format($formats[$name]);
             case $name === 'weekOfMonth':
                 return (int) ceil($this->day / static::DAYS_PER_WEEK);
