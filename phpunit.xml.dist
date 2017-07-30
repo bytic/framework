@@ -26,7 +26,10 @@
     <!-- Filter for coverage reports. -->
     <filter>
         <whitelist processUncoveredFilesFromWhitelist="true">
-            <directory>./src</directory>
+            <directory suffix=".php">./src</directory>
+            <exclude>
+                <directory>./src/locale/data</directory>
+            </exclude>
         </whitelist>
     </filter>
 
