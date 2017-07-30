@@ -34,4 +34,13 @@
         -->
     </php>
 
+    <filter>
+        <whitelist processUncoveredFilesFromWhitelist="true">
+            <directory suffix=".php">./src</directory>
+            <file>/path/to/file</file>
+            <exclude>
+            </exclude>
+        </whitelist>
+    </filter>
+
 </phpunit>
