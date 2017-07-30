@@ -18,10 +18,20 @@
 >
 
     <testsuites>
-        <testsuite name="ByTIC Media Library Test Suite">
+        <testsuite name="ByTIC Framework Test Suite">
             <directory suffix="Test.php">./tests</directory>
         </testsuite>
     </testsuites>
+
+    <!-- Filter for coverage reports. -->
+    <filter>
+        <whitelist processUncoveredFilesFromWhitelist="true">
+            <directory suffix=".php">./src</directory>
+            <exclude>
+                <directory>./src/locale/data</directory>
+            </exclude>
+        </whitelist>
+    </filter>
 
     <php>
         <ini name="error_reporting" value="-1"/>
@@ -33,14 +43,5 @@
         <env name="REDIS_PORT" value="6379" />
         -->
     </php>
-
-    <filter>
-        <whitelist processUncoveredFilesFromWhitelist="true">
-            <directory suffix=".php">./src</directory>
-            <file>/path/to/file</file>
-            <exclude>
-            </exclude>
-        </whitelist>
-    </filter>
 
 </phpunit>

@@ -1,16 +1,24 @@
 <?php
 
-/*
- * Based on briannesbitt/Carbon
- * http://carbon.nesbot.com/
- */
-
 namespace Nip\Utility;
 
 use DateTime;
-use DateTimeZone;
 use InvalidArgumentException;
 
+/**
+ * Class DateTimePlus
+ * Based on briannesbitt/Carbon
+ * http://carbon.nesbot.com/
+ * @package Nip\Utility
+ *
+ * @property $day
+ * @property $month
+ * @property $year
+ * @property $hour
+ * @property $minute
+ * @property $offset
+ * @property $second
+ */
 class DateTimePlus extends DateTime
 {
 
@@ -29,7 +37,7 @@ class DateTimePlus extends DateTime
     public function __get($name)
     {
         switch (true) {
-            case array_key_exists($name, $formats = array(
+            case array_key_exists($name, $formats = [
                 'year' => 'Y',
                 'yearIso' => 'o',
                 'month' => 'n',
@@ -43,14 +51,14 @@ class DateTimePlus extends DateTime
                 'weekOfYear' => 'W',
                 'daysInMonth' => 't',
                 'timestamp' => 'U',
-            )):
-                return (int) $this->format($formats[$name]);
+            ]):
+                return (int)$this->format($formats[$name]);
             case $name === 'weekOfMonth':
-                return (int) ceil($this->day / static::DAYS_PER_WEEK);
+                return (int)ceil($this->day / static::DAYS_PER_WEEK);
             case $name === 'age':
-                return (int) $this->diffInYears();
+                return (int)$this->diffInYears();
             case $name === 'quarter':
-                return (int) ceil($this->month / 3);
+                return (int)ceil($this->month / 3);
             case $name === 'offset':
                 return $this->getOffset();
             case $name === 'offsetHours':
@@ -69,6 +77,7 @@ class DateTimePlus extends DateTime
                 throw new InvalidArgumentException(sprintf("Unknown getter '%s'", $name));
         }
     }
+
     /**
      * Check if an attribute exists on the object
      *
@@ -198,7 +207,11 @@ class DateTimePlus extends DateTime
         return $this;
     }
 
-    public static function createFromFormat($format, $time, DateTimeZone $timezone = null)
+
+    /**
+     * @inheritdoc
+     */
+    public static function createFromFormat($format, $time, $timezone = null)
     {
         if ($timezone !== null) {
             $dt = parent::createFromFormat($format, $time, static::safeCreateDateTimeZone($timezone));
@@ -214,8 +227,8 @@ class DateTimePlus extends DateTime
     }
 
     /**
-     * Modify date to this year 
-     *     
+     * Modify date to this year
+     *
      * @return static
      */
     public function currentYear()
@@ -228,7 +241,7 @@ class DateTimePlus extends DateTime
      * @param \DateTime $dt
      * @return static
      */
-    public static function instance(DateTime $dt)
+    public static function instance(\DateTime $dt)
     {
         if ($dt instanceof static) {
             return clone $dt;
