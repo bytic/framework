@@ -17,6 +17,8 @@ class StyleSheets extends AbstractHelper
      */
     protected $files = [];
 
+    protected $rawStyles = [];
+
     /**
      * @param $file
      * @param bool $condition
@@ -25,6 +27,17 @@ class StyleSheets extends AbstractHelper
     public function add($file, $condition = false)
     {
         $this->files[$condition][$file] = $file;
+        return $this;
+    }
+
+    /**
+     * @param $content
+     * @return $this
+     */
+    public function addRaw($content)
+    {
+        $this->rawStyles[] = $content;
+
         return $this;
     }
 
@@ -68,6 +81,20 @@ class StyleSheets extends AbstractHelper
             }
         }
 
+        return $return;
+    }
+
+    /**
+     * @return string
+     */
+    public function renderRaw()
+    {
+        $return = '';
+        if (count($this->rawStyles)) {
+            $return .= '<style type="text/css" media="screen">';
+            $return .= implode("\r\n", $this->rawStyles);
+            $return .= '</style>';
+        }
         return $return;
     }
 
