@@ -2,6 +2,8 @@
 
 namespace Nip\Http\Response;
 
+use Psr\Http\Message\ResponseInterface;
+
 /**
  * Class ContainerAwareTrait
  * @package Nip\Container
@@ -30,10 +32,10 @@ trait ResponseAwareTrait
     /**
      * Set a container.
      *
-     * @param  Response $response
+     * @param Response|ResponseInterface $response
      * @return $this
      */
-    public function setResponse(Response $response)
+    public function setResponse(ResponseInterface $response)
     {
         $this->response = $response;
 
