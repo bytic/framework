@@ -34,4 +34,12 @@ trait ContainerAwareTrait
         $this->container = $container;
         return $this;
     }
+
+    /**
+     * @return bool
+     */
+    public function hasContainer()
+    {
+        return $this->container instanceof ContainerInterface;
+    }
 }
