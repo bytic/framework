@@ -3,6 +3,7 @@
 namespace Nip\I18n;
 
 use Nip\Container\ServiceProviders\Providers\AbstractSignatureServiceProvider;
+use Nip\I18n\Translator\Backend\AbstractBackend;
 use Nip\I18n\Translator\Backend\File;
 
 /**
@@ -17,6 +18,7 @@ class TranslatorServiceProvider extends AbstractSignatureServiceProvider
     public function register()
     {
         $this->registerTranslator();
+        $this->registerLanguages();
         $this->registerLoader();
     }
 
@@ -28,7 +30,7 @@ class TranslatorServiceProvider extends AbstractSignatureServiceProvider
     protected function registerTranslator()
     {
         $this->getContainer()->share('translator', Translator::class)
-            ->withArgument(File::class);
+            ->withArgument(AbstractBackend::class);
     }
 
     /**
@@ -39,17 +41,30 @@ class TranslatorServiceProvider extends AbstractSignatureServiceProvider
     protected function registerLoader()
     {
         $this->getContainer()->share('translation.loader', function () {
-            $backend = new File();
-            $languages = config('app.locale.enabled');
-            $languages = is_array($languages) ? $languages : explode(',', $languages);
-
-            foreach ($languages as $lang) {
-                $backend->addLanguage($lang, app('path.lang') . DIRECTORY_SEPARATOR . $lang);
-            }
+            $backend = $this->createFileBackend();
             return $backend;
         });
 
-        $this->getContainer()->alias('translation.loader', File::class);
+        $this->getContainer()->alias('translation.loader', AbstractBackend::class);
+    }
+
+    protected function registerLanguages()
+    {
+        $this->getContainer()->share('translation.languages', function () {
+            $languages = config('app.locale.enabled');
+            return is_array($languages) ? $languages : explode(',', $languages);
+        });
+
+    }
+
+    protected function createFileBackend()
+    {
+        $backend = $this->getContainer()->get(File::class);
+        $languages = $this->getContainer()->get('translation.languages');
+
+        foreach ($languages as $lang) {
+            $backend->addLanguage($lang, app('path.lang') . DIRECTORY_SEPARATOR . $lang);
+        }
     }
 
     /**
@@ -57,6 +72,6 @@ class TranslatorServiceProvider extends AbstractSignatureServiceProvider
      */
     public function provides()
     {
-        return ['translator', 'translation.loader'];
+        return ['translator', 'translator.languages', 'translation.loader'];
     }
 }

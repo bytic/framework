@@ -14,7 +14,6 @@ use Nip_File_System as FileSystem;
  */
 class File extends AbstractBackend
 {
-
     protected $variableName = 'lang';
     protected $dictionary;
 
