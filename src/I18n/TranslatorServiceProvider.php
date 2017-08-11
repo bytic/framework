@@ -12,6 +12,11 @@ use Nip\I18n\Translator\Backend\File;
  */
 class TranslatorServiceProvider extends AbstractSignatureServiceProvider
 {
+
+    protected $languages = null;
+
+    protected $languageDirectory = null;
+
     /**
      * @inheritdoc
      */
@@ -51,20 +56,23 @@ class TranslatorServiceProvider extends AbstractSignatureServiceProvider
     protected function registerLanguages()
     {
         $this->getContainer()->share('translation.languages', function () {
-            $languages = config('app.locale.enabled');
-            return is_array($languages) ? $languages : explode(',', $languages);
+            return $this->getLanguages();
         });
-
     }
 
+    /**
+     * @return File
+     */
     protected function createFileBackend()
     {
+        /** @var File $backend */
         $backend = $this->getContainer()->get(File::class);
-        $languages = $this->getContainer()->get('translation.languages');
+        $backend->setBaseDirectory($this->getLanguageDirectory());
 
-        foreach ($languages as $lang) {
-            $backend->addLanguage($lang, app('path.lang') . DIRECTORY_SEPARATOR . $lang);
-        }
+        $languages = $this->getContainer()->get('translation.languages');
+        $backend->addLanguages($languages);
+
+        return $backend;
     }
 
     /**
@@ -74,4 +82,55 @@ class TranslatorServiceProvider extends AbstractSignatureServiceProvider
     {
         return ['translator', 'translator.languages', 'translation.loader'];
     }
+
+    /**
+     * @return null
+     */
+    public function getLanguages()
+    {
+        if ($this->languages === null) {
+            $this->initLanguages();
+        }
+        return $this->languages;
+    }
+
+    protected function initLanguages()
+    {
+        $languages = config('app.locale.enabled');
+        return is_array($languages) ? $languages : explode(',', $languages);
+    }
+
+    /**
+     * @param null $languages
+     */
+    public function setLanguages($languages)
+    {
+        $this->languages = $languages;
+    }
+
+    /**
+     * @return null
+     */
+    public function getLanguageDirectory()
+    {
+        if ($this->languageDirectory === null) {
+            $this->initLanguageDirectory();
+        }
+        return $this->languageDirectory;
+    }
+
+    /**
+     * @param null $languageDirectory
+     */
+    public function setLanguageDirectory($languageDirectory)
+    {
+        $this->languageDirectory = $languageDirectory;
+    }
+
+    protected function initLanguageDirectory()
+    {
+        return app('path.lang');
+    }
+
+
 }
