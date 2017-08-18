@@ -80,7 +80,7 @@ class TranslatorServiceProvider extends AbstractSignatureServiceProvider
      */
     public function provides()
     {
-        return ['translator', 'translator.languages', 'translation.loader'];
+        return ['translator', 'translation.languages', 'translation.loader'];
     }
 
     /**
@@ -96,7 +96,16 @@ class TranslatorServiceProvider extends AbstractSignatureServiceProvider
 
     protected function initLanguages()
     {
+        $this->setLanguages($this->generateLanguages());
+    }
+
+    /**
+     * @return array
+     */
+    protected function generateLanguages()
+    {
         $languages = config('app.locale.enabled');
+
         return is_array($languages) ? $languages : explode(',', $languages);
     }
 
@@ -129,8 +138,14 @@ class TranslatorServiceProvider extends AbstractSignatureServiceProvider
 
     protected function initLanguageDirectory()
     {
-        return app('path.lang');
+        $this->setLanguageDirectory($this->generateLanguageDirectory());
     }
 
-
+    /**
+     * @return string
+     */
+    protected function generateLanguageDirectory()
+    {
+        return app('path.lang');
+    }
 }
