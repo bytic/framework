@@ -118,6 +118,9 @@ class Time
 
     }
 
+    /**
+     * @return double
+     */
     public function getSeconds()
     {
         if ($this->_seconds === null) {
@@ -149,27 +152,33 @@ class Time
 
         $hours = $this->getHoursPart();
         if ($hours OR $return) {
-            $return .= ($return ? ' ' : '').str_pad($hours, 2, 0, STR_PAD_LEFT).'h';
+            $return .= ($return ? ' ' : '') . str_pad($hours, 2, 0, STR_PAD_LEFT) . 'h';
         }
 
         $minutes = $this->getMinutesPart();
         if ($minutes OR $return) {
-            $return .= ($return ? ' ' : '').str_pad($minutes, 2, 0, STR_PAD_LEFT).'m';
+            $return .= ($return ? ' ' : '') . str_pad($minutes, 2, 0, STR_PAD_LEFT) . 'm';
         }
 
         $seconds = $this->getSecondsPart();
         if ($seconds) {
-            $return .= ($return ? ' ' : '').str_pad($seconds, 2, 0, STR_PAD_LEFT).'s';
+            $return .= ($return ? ' ' : '') . str_pad($seconds, 2, 0, STR_PAD_LEFT) . 's';
         }
 
         return $return;
     }
 
+    /**
+     * @return string
+     */
     public function getHoursPart()
     {
         return $this->getPart('h');
     }
 
+    /**
+     * @param string $p
+     */
     public function getPart($p)
     {
         if ($this->_parts === null) {
@@ -179,11 +188,17 @@ class Time
         return $this->_parts[$p];
     }
 
+    /**
+     * @return string
+     */
     public function getMinutesPart()
     {
         return $this->getPart('m');
     }
 
+    /**
+     * @return string
+     */
     public function getSecondsPart()
     {
         return $this->getPart('s');
@@ -195,6 +210,6 @@ class Time
         $minutes = str_pad($this->getMinutesPart(), 2, 0, STR_PAD_LEFT);
         $seconds = str_pad($this->getSecondsPart(), 2, 0, STR_PAD_LEFT);
 
-        return $hours.':'.$minutes.':'.$seconds;
+        return $hours . ':' . $minutes . ':' . $seconds;
     }
 }

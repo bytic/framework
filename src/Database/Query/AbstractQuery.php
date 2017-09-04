@@ -80,7 +80,7 @@ abstract class AbstractQuery
     }
 
     /**
-     * @param null $generated
+     * @param boolean $generated
      * @return bool
      */
     public function isGenerated($generated = null)
@@ -150,7 +150,7 @@ abstract class AbstractQuery
     {
         if (isset($params['where']) && is_array($params['where'])) {
             foreach ($params['where'] as $condition) {
-                $condition = (array)$condition;
+                $condition = (array) $condition;
                 $this->where(
                     $condition[0],
                     isset($condition[1]) ? $condition[1] : null
@@ -236,7 +236,7 @@ abstract class AbstractQuery
     }
 
     /**
-     * @param $start
+     * @param integer $start
      * @param bool $offset
      * @return $this
      */
@@ -329,7 +329,7 @@ abstract class AbstractQuery
     public function getString()
     {
         if ($this->string === null) {
-            $this->string = (string)$this->assemble();
+            $this->string = (string) $this->assemble();
         }
 
         return $this->string;
@@ -367,7 +367,7 @@ abstract class AbstractQuery
      */
     protected function parseWhere()
     {
-        return is_object($this->parts['where']) ? (string)$this->parts['where'] : '';
+        return is_object($this->parts['where']) ? (string) $this->parts['where'] : '';
     }
 
     /**
@@ -384,7 +384,7 @@ abstract class AbstractQuery
     }
 
     /**
-     * @param $name
+     * @param string $name
      * @return mixed|null
      */
     public function getPart($name)
@@ -415,7 +415,7 @@ abstract class AbstractQuery
     }
 
     /**
-     * @return mixed
+     * @return string
      */
     protected function getTable()
     {
@@ -432,7 +432,7 @@ abstract class AbstractQuery
     protected function parseHaving()
     {
         if (isset($this->parts['having'])) {
-            return (string)$this->parts['having'];
+            return (string) $this->parts['having'];
         }
 
         return '';

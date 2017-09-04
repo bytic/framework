@@ -7,7 +7,7 @@ class Nip_Form_Renderer_Basic extends Nip_Form_Renderer_Table {
             foreach ($elements as $element) {
                 if (!$element->isRendered()) {
                     $idRow = $element->getUniqueId();
-                    $this->setRowAttrib($idRow, 'class', "row ". $idRow);
+                    $this->setRowAttrib($idRow, 'class', "row " . $idRow);
                     $this->addCell($idRow, 1, $element, 'label');
                     $this->addCell($idRow, 2, $element, 'value');
                 }

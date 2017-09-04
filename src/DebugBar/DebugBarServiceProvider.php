@@ -30,7 +30,7 @@ class DebugBarServiceProvider extends AbstractSignatureServiceProvider implement
     {
         $this->getContainer()->alias(StandardDebugBar::class, DebugBar::class);
 
-        $this->getContainer()->share('debugbar', function () {
+        $this->getContainer()->share('debugbar', function() {
             $debugbar = $this->getContainer()->get(DebugBar::class);
             return $debugbar;
         });

@@ -50,12 +50,12 @@ class Nip_Form_DisplayGroup extends Collection
     }
 
     /**
-     * @param $legend
+     * @param string $legend
      * @return Nip_Form_DisplayGroup
      */
     public function setLegend($legend)
     {
-        return $this->setAttrib('legend', (string)$legend);
+        return $this->setAttrib('legend', (string) $legend);
     }
 
     /**
@@ -65,7 +65,7 @@ class Nip_Form_DisplayGroup extends Collection
      */
     public function setAttrib($key, $value)
     {
-        $key = (string)$key;
+        $key = (string) $key;
         $this->_attribs[$key] = $value;
 
         return $this;
@@ -80,12 +80,12 @@ class Nip_Form_DisplayGroup extends Collection
     }
 
     /**
-     * @param $key
+     * @param string $key
      * @return mixed|null
      */
     public function getAttrib($key)
     {
-        $key = (string)$key;
+        $key = (string) $key;
         if (!isset($this->_attribs[$key])) {
             return null;
         }

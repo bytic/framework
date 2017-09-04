@@ -67,7 +67,7 @@ trait HasRelationsRecordsTrait
     }
 
     /**
-     * @param $type
+     * @param string $type
      * @param $array
      */
     public function initRelationsFromArray($type, $array)

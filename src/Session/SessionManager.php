@@ -72,7 +72,7 @@ class SessionManager
     /**
      * Public method to return the session id
      * @todo implement a verification method ( ex: adding another validation string in the sessionID )
-     * @return int
+     * @return string
      */
     public function getId()
     {
@@ -98,7 +98,7 @@ class SessionManager
     public function setRootDomain($domain)
     {
         if ($domain !== 'localhost') {
-            ini_set('session.cookie_domain', '.'.$domain);
+            ini_set('session.cookie_domain', '.' . $domain);
         }
 
         CookieJar::instance()->setDefaults(

@@ -26,7 +26,7 @@ trait AutoLoaderAwareTrait
     }
 
     /**
-     * @param bool|AutoLoader $autoLoader
+     * @param AutoLoader $autoLoader
      * @return $this
      */
     public function setAutoLoader($autoLoader = false)

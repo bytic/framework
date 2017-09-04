@@ -73,7 +73,7 @@ abstract class Nip_Form_Renderer_Abstract
         $return = '<form ';
         $atributes = $this->getForm()->getAttribs();
         foreach ($atributes as $name => $value) {
-            $return .= $name.'="'.$value.'" ';
+            $return .= $name . '="' . $value . '" ';
         }
         $return .= '>';
 
@@ -140,7 +140,7 @@ abstract class Nip_Form_Renderer_Abstract
         if ($buttons) {
             $return .= '<div class="form-actions">';
             foreach ($buttons as $button) {
-                $return .= $button->render()."\n";
+                $return .= $button->render() . "\n";
             }
             $return .= '    <div class="clear"></div>';
             $return .= '</div>';
@@ -165,8 +165,8 @@ abstract class Nip_Form_Renderer_Abstract
             $error = $element->isError();
         }
 
-        $return = '<label class="col-sm-3 '.($error ? ' error' : '').'">';
-        $return .= $label.':';
+        $return = '<label class="col-sm-3 ' . ($error ? ' error' : '') . '">';
+        $return .= $label . ':';
 
         if ($required) {
             $return .= '<span class="required">*</span>';
@@ -190,7 +190,7 @@ abstract class Nip_Form_Renderer_Abstract
     protected function getNewElementRenderer(Nip_Form_Element_Abstract $element)
     {
         $type = $element->getType();
-        $name = 'Nip_Form_Renderer_Elements_'.ucfirst($type);
+        $name = 'Nip_Form_Renderer_Elements_' . ucfirst($type);
         $renderer = new $name();
         $renderer->setRenderer($this);
         $renderer->setElement($element);
@@ -211,7 +211,7 @@ abstract class Nip_Form_Renderer_Abstract
     protected function getNewButtonRenderer(Nip_Form_Button_Abstract $button)
     {
         $type = $button->getType();
-        $name = 'Nip_Form_Renderer_Button_'.ucfirst($type);
+        $name = 'Nip_Form_Renderer_Button_' . ucfirst($type);
         $renderer = new $name();
         $renderer->setRenderer($this);
         $renderer->setItem($button);

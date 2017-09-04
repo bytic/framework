@@ -4,7 +4,7 @@ class Nip_PHPException extends \Exception {
 
     public function log()
     {
-        trigger_error($this->getMessage(),  $this->getCode());
+        trigger_error($this->getMessage(), $this->getCode());
     }
 
 }

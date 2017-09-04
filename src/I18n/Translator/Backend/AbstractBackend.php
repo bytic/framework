@@ -83,7 +83,7 @@ abstract class AbstractBackend
     abstract protected function doTranslation($slug, $language = false);
 
     /**
-     * @param $slug
+     * @param boolean|string $slug
      * @param bool $language
      * @return bool
      */
@@ -91,6 +91,6 @@ abstract class AbstractBackend
     {
         $return = $this->doTranslation($slug, $language);
 
-        return (bool)$return;
+        return (bool) $return;
     }
 }

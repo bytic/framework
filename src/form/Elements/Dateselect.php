@@ -160,7 +160,7 @@ class Nip_Form_Element_Dateselect extends Nip_Form_Element_MultiElement
 
     /** @noinspection PhpMissingParentCallCommonInspection
      * @param string $requester
-     * @return null
+     * @return string|null
      */
     public function getValue($requester = 'abstract')
     {

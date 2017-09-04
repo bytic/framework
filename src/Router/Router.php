@@ -40,7 +40,7 @@ class Router
 
     /**
      * @param $name
-     * @return Route
+     * @return null|Route\Route
      */
     public function getRoute($name)
     {
@@ -112,7 +112,7 @@ class Router
 
     /**
      * @param $name
-     * @param array $params
+     * @param boolean $params
      * @return string
      */
     public function assembleFull($name, $params = [])
@@ -131,7 +131,7 @@ class Router
     /**
      * @param $name
      * @param array $params
-     * @return Route
+     * @return null|Route\Route
      */
     public function getDefaultRoute($name, &$params = [])
     {
@@ -144,7 +144,7 @@ class Router
                     $module = array_shift($parts);
                     $params['controller'] = isset($parts[0]) ? $parts[0] : null;
                     $params['action'] = isset($parts[1]) ? $parts[1] : null;
-                    $route = $this->getRoute($module.'.default');
+                    $route = $this->getRoute($module . '.default');
                 }
             }
         }
@@ -153,7 +153,7 @@ class Router
     }
 
     /**
-     * @return mixed
+     * @return Request
      */
     public function getRequest()
     {
@@ -170,8 +170,8 @@ class Router
 
     /**
      * @param $name
-     * @param array $params
-     * @return mixed|string
+     * @param boolean $params
+     * @return string|null
      */
     public function assemble($name, $params = [])
     {
@@ -195,7 +195,7 @@ class Router
     }
 
     /**
-     * @param $name
+     * @param string $name
      * @return bool
      */
     public function hasRoute($name)

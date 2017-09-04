@@ -43,7 +43,7 @@ class Locale
     }
 
     /**
-     * @param array $path
+     * @param string[] $path
      * @param bool $locale
      * @return bool|mixed
      */
@@ -90,7 +90,7 @@ class Locale
     }
 
     /**
-     * @param $locale
+     * @param string $locale
      */
     public function setCurrent($locale)
     {

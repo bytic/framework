@@ -9,10 +9,10 @@ class HTML extends AbstractHelper
     {
         $return = "";
 
-        $return .= '<option value="0"'.($selected !== "" && $selected == '0' ? ' selected="selected"'
-                : '').'>'.translator()->translate("NO").'</option>';
-        $return .= '<option value="1"'.($selected == '1' ? ' selected="selected"'
-                : '').'>'.translator()->translate("YES").'</option>';
+        $return .= '<option value="0"' . ($selected !== "" && $selected == '0' ? ' selected="selected"'
+                : '') . '>' . translator()->translate("NO") . '</option>';
+        $return .= '<option value="1"' . ($selected == '1' ? ' selected="selected"'
+                : '') . '>' . translator()->translate("YES") . '</option>';
 
         return $return;
     }
@@ -22,7 +22,7 @@ class HTML extends AbstractHelper
      * @param $string
      * @param $tree
      * @param bool $selected
-     * @return bool|string
+     * @return string|false
      */
     public function treeOptions($value, $string, $tree, $selected = false)
     {
@@ -37,7 +37,7 @@ class HTML extends AbstractHelper
      * @param $string
      * @param array $array
      * @param int $level
-     * @return array
+     * @return boolean
      */
     public function optionTree(
         $tree,
@@ -73,11 +73,11 @@ class HTML extends AbstractHelper
     }
 
     /**
-     * @param $options
+     * @param string $options
      * @param bool $value
      * @param bool $string
      * @param bool $selected
-     * @return bool|string
+     * @return string|false
      */
     public function options(
         $options,
@@ -89,7 +89,7 @@ class HTML extends AbstractHelper
             $return = '';
             foreach ($options as $key => $option) {
                 if (is_string($key) && is_array($option) && !isset($option[$value])) {
-                    $return .= '<optgroup label="'.$key.'">';
+                    $return .= '<optgroup label="' . $key . '">';
                     $return .= $this->options($option, $value, $string,
                         $selected);
                     $return .= '</optgroup>';
@@ -115,7 +115,7 @@ class HTML extends AbstractHelper
                     $oDisabled = ($oDisabled === true) ? ' disabled="disabled" '
                         : '';
 
-                    $return .= '<option value="'.$oValue.'"'.$oSelected.''.$oDisabled.'>'.$oString.'</option>';
+                    $return .= '<option value="' . $oValue . '"' . $oSelected . '' . $oDisabled . '>' . $oString . '</option>';
                 }
             }
 
@@ -149,7 +149,7 @@ class HTML extends AbstractHelper
                     $oString = $option;
                 }
                 $oSelected = ($oValue == $selected) ? ' checked="checked" ' : '';
-                $return .= '<input type="radio" name="'.$name.'" value="'.$oValue.'" '.$oSelected.' >'.$oString.$separator;
+                $return .= '<input type="radio" name="' . $name . '" value="' . $oValue . '" ' . $oSelected . ' >' . $oString . $separator;
             }
 
             return $return;
@@ -185,7 +185,7 @@ class HTML extends AbstractHelper
             }
         }
 
-        return " ".implode(" ", $return);
+        return " " . implode(" ", $return);
     }
 
     /**

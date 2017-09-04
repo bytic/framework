@@ -146,7 +146,7 @@ abstract class Relation
     }
 
     /**
-     * @return mixed
+     * @return string
      */
     public function getWithClass()
     {
@@ -162,7 +162,7 @@ abstract class Relation
     }
 
     /**
-     * @param mixed $name
+     * @param string $name
      */
     public function setName($name)
     {
@@ -198,7 +198,7 @@ abstract class Relation
     }
 
     /**
-     * @param RecordManager|HasRelationsRecordsTrait $manager
+     * @param HasRelationsRecordsTrait $manager
      */
     public function setManager($manager)
     {
@@ -266,7 +266,7 @@ abstract class Relation
 
     /**
      * @param $key
-     * @return mixed
+     * @return boolean
      */
     public function hasParam($key)
     {
@@ -515,8 +515,8 @@ abstract class Relation
 
     /**
      * @param $dictionary
-     * @param $collection
-     * @param $record
+     * @param Collection $collection
+     * @param Record $record
      * @return mixed
      */
     abstract public function getResultsFromCollectionDictionary($dictionary, $collection, $record);

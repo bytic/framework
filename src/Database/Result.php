@@ -103,7 +103,7 @@ class Result
     public function checkValid()
     {
         if (!$this->isValid()) {
-            trigger_error("Invalid result for query [".$this->getQuery()->getString()."]", E_USER_WARNING);
+            trigger_error("Invalid result for query [" . $this->getQuery()->getString() . "]", E_USER_WARNING);
 
             return false;
         }

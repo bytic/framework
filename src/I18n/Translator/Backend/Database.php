@@ -33,7 +33,7 @@ class Database extends AbstractBackend
      * Adds a language to the dictionary
      *
      * @param string $language
-     * @return I18n
+     * @return Database
      */
     public function addLanguage($language)
     {

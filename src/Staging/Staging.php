@@ -105,7 +105,7 @@ class Staging
     }
 
     /**
-     * @param $file
+     * @param string $file
      * @return bool
      */
     protected function hasConfigFile($file)
@@ -142,7 +142,7 @@ class Staging
     }
 
     /**
-     * @return array
+     * @return Stage[]
      */
     public function getStages()
     {

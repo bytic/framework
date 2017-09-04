@@ -79,6 +79,7 @@ class File extends \League\Flysystem\File
 
     /**
      * @inheritdoc
+     * @param string $path
      */
     public function setPath($path)
     {

@@ -24,7 +24,7 @@ class Favicon extends AbstractEntity
     protected $tags = [];
 
     /**
-     * @return array
+     * @return AbstractTag[]
      */
     public function getTags()
     {
@@ -40,12 +40,12 @@ class Favicon extends AbstractEntity
     }
 
     /**
-     * @param $path
+     * @param string $path
      * @return string
      */
     public function generateUrl($path)
     {
-        return $this->getBaseDir().$path;
+        return $this->getBaseDir() . $path;
     }
 
     /**
@@ -61,7 +61,7 @@ class Favicon extends AbstractEntity
     }
 
     /**
-     * @param null $baseDir
+     * @param string $baseDir
      */
     public function setBaseDir($baseDir)
     {
@@ -83,7 +83,7 @@ class Favicon extends AbstractEntity
 
     /**
      * @param AbstractTag $tag
-     * @param null $name
+     * @param string $name
      * @return $this
      */
     public function addTag($tag, $name = null)
@@ -127,11 +127,11 @@ class Favicon extends AbstractEntity
      */
     public function addDefault($size)
     {
-        $fullSize = $size.'x'.$size;
+        $fullSize = $size . 'x' . $size;
         $tag = new LinkIcon();
         $tag->setSizes($fullSize)
-            ->setHref($this->generateUrl('/favicon-'.$fullSize.'.png'));
-        $this->addTag($tag, 'default-'.$fullSize);
+            ->setHref($this->generateUrl('/favicon-' . $fullSize . '.png'));
+        $this->addTag($tag, 'default-' . $fullSize);
     }
 
     public function addAndroidIcon()

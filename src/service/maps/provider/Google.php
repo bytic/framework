@@ -18,7 +18,7 @@ class Nip_Service_Maps_Provider_Google extends Nip_Service_Maps_Provider_Abstrac
                     var script = document.createElement("script");
                     script.type = "text/javascript";
                     script.async = false;
-                    script.src = "'.$this->getScriptURL().'";
+                    script.src = "'.$this->getScriptURL() . '";
                     document.documentElement.firstChild.appendChild(script);
                 </script>
             ';
@@ -40,16 +40,16 @@ class Nip_Service_Maps_Provider_Google extends Nip_Service_Maps_Provider_Abstrac
         $html = '
             function loadMap() {
             if (GBrowserIsCompatible()) {
-                var map = new GMap2(document.getElementById("'.$this->_container['id'].'"));';
+                var map = new GMap2(document.getElementById("'.$this->_container['id'] . '"));';
         $center = $this->getService()->getParam('center');
         if (is_array($center) && count($center) == 3) {
-            list($cLat,$cLng, $cZoom) = $center;
+            list($cLat, $cLng, $cZoom) = $center;
         } else {
             $cLat = '37.4419';
             $cLng = '-122.1419';
             $cZoom = '1';
         }
-        $html .= 'map.setCenter(new GLatLng('.$cLat.','.$cLng.' ), '.$cZoom.');';
+        $html .= 'map.setCenter(new GLatLng(' . $cLat . ',' . $cLng . ' ), ' . $cZoom . ');';
         $html .= 'map.setUIToDefault();';
         return $html;
     }
@@ -80,7 +80,7 @@ class Nip_Service_Maps_Provider_Google extends Nip_Service_Maps_Provider_Abstrac
                 );
             });
             ';
-       $this->_scripts[] = $script;
+        $this->_scripts[] = $script;
 
         return $return;
     }
@@ -88,17 +88,17 @@ class Nip_Service_Maps_Provider_Google extends Nip_Service_Maps_Provider_Abstrac
     public function renderMarker($marker) {
         $html = '';
         if ($marker->latitude && $marker->longitude) {
-            $html .= 'var latlng = new GLatLng('.$marker->latitude.', '.$marker->longitude.');';
+            $html .= 'var latlng = new GLatLng(' . $marker->latitude . ', ' . $marker->longitude . ');';
         } else {
             $html .= 'var latlng = map.getCenter();';
         }
         $options = array(
             'draggable' => $marker->getParam('draggable'),
         );
-        $html  .= 'var marker = new GMarker(latlng, ' . json_encode($options) . ');';
+        $html .= 'var marker = new GMarker(latlng, ' . json_encode($options) . ');';
         if ($marker->getParam('info')) {
-            $html  .= 'GEvent.addListener(marker, "click", function() {
-            marker.openInfoWindowHtml("'.$marker->getParam('info').'");
+            $html .= 'GEvent.addListener(marker, "click", function() {
+            marker.openInfoWindowHtml("'.$marker->getParam('info') . '");
             });
             GEvent.addListener(marker, "dragstart", function() {
             map.closeInfoWindow();
@@ -118,13 +118,13 @@ class Nip_Service_Maps_Provider_Google extends Nip_Service_Maps_Provider_Abstrac
         $listeners = $marker->getListeners();
         foreach ($listeners as $type=>$functions) {
             foreach ($functions as $function) {
-                $html  .= 'GEvent.addListener(marker, "'.$type.'", function() {
-                    '.$function.'
+                $html .= 'GEvent.addListener(marker, "' . $type . '", function() {
+                    '.$function . '
                 });
                 ';
             }
         }
-        $html  .= 'map.addOverlay(marker);';
+        $html .= 'map.addOverlay(marker);';
         return $html;
     }
 }

@@ -48,11 +48,11 @@ class Nip_File_System
 
         $errorCode = $this->getUploadErrorNo($file, $extensions);
         if (is_int($errorCode)) {
-            $translateSlug = 'general.errors.upload.code-'.$errorCode;
+            $translateSlug = 'general.errors.upload.code-' . $errorCode;
 
             return app('translator')->hasTranslation($translateSlug) ? __($translateSlug) : $this->_uploadErrors[$errorCode];
         } elseif (is_string($errorCode)) {
-            $translateSlug = 'general.errors.upload.'.$errorCode;
+            $translateSlug = 'general.errors.upload.' . $errorCode;
 
             return app('translator')->hasTranslation($translateSlug) ? __($translateSlug) : $messages[$errorCode];
         }
@@ -65,7 +65,7 @@ class Nip_File_System
      *
      * @param string $file
      * @param array $extensions
-     * @return mixed
+     * @return string|false
      */
     public function getUploadErrorNo($file, $extensions = array())
     {
@@ -75,7 +75,7 @@ class Nip_File_System
         $unit = strtoupper(substr($maxUpload, -1));
         $multiplier = $unit == 'M' ? 1048576 : ($unit == 'K' ? 1024 : ($unit == 'G' ? 1073741824 : 1));
 
-        if ($maxUpload && ((int)$_SERVER['CONTENT_LENGTH'] > $multiplier * (int)$maxUpload)) {
+        if ($maxUpload && ((int) $_SERVER['CONTENT_LENGTH'] > $multiplier * (int) $maxUpload)) {
             $result = "max_post";
         }
 
@@ -129,7 +129,7 @@ class Nip_File_System
                 $iterator = new RecursiveDirectoryIterator($dir);
                 foreach (new RecursiveIteratorIterator($iterator, RecursiveIteratorIterator::CHILD_FIRST) as $file) {
                     if ($file->isFile()) {
-                        $result[] = ($fullPaths ? $file->getPath().DIRECTORY_SEPARATOR : '').$file->getFilename();
+                        $result[] = ($fullPaths ? $file->getPath() . DIRECTORY_SEPARATOR : '') . $file->getFilename();
                     }
                 }
             } else {
@@ -170,7 +170,7 @@ class Nip_File_System
         $d = dir($dir);
 
         while (false != ($entry = $d->read())) {
-            $complete = $d->path."/".$entry;
+            $complete = $d->path . "/" . $entry;
             if (!in_array($entry, array(".", "..", ".svn"))) {
                 if (is_dir($complete)) {
                     $tree[$entry] = $this->directoryTree($complete, $tree[$dir][$entry]);
@@ -199,7 +199,7 @@ class Nip_File_System
         array_shift($files);
 
         foreach ($files as $file) {
-            $file = $dir.'/'.$file;
+            $file = $dir . '/' . $file;
             if (is_dir($file)) {
                 $this->removeDirectory($file);
             } else {
@@ -223,7 +223,7 @@ class Nip_File_System
 
             foreach ($files as $file) {
                 if (!in_array($file, array(".", ".."))) {
-                    $file = $dir.DIRECTORY_SEPARATOR.$file;
+                    $file = $dir . DIRECTORY_SEPARATOR . $file;
                     if (is_dir($file)) {
                         $this->removeDirectory($file);
                     } else {
@@ -236,6 +236,9 @@ class Nip_File_System
         }
     }
 
+    /**
+     * @param null|string $path
+     */
     public function deleteFile($path)
     {
         if (file_exists($path)) {
@@ -264,9 +267,12 @@ class Nip_File_System
         $s = array('b', 'kb', 'MB', 'GB', 'TB', 'PB');
         $e = floor(log($bytes) / log(1024));
 
-        return sprintf('%.2f '.$s[$e], ($bytes / pow(1024, floor($e))));
+        return sprintf('%.2f ' . $s[$e], ($bytes / pow(1024, floor($e))));
     }
 
+    /**
+     * @param integer $mode
+     */
     public function chmod($file, $mode)
     {
         if (true !== @chmod($file, $mode)) {

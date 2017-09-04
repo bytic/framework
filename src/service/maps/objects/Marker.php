@@ -19,12 +19,12 @@ class Nip_Service_Maps_Objects_Marker extends Nip_Service_Maps_Objects_Abstract 
     }
 
     public function setDraggable($draggable = true) {
-        $this->setParam('draggable',(bool) $draggable);
+        $this->setParam('draggable', (bool) $draggable);
         return $this;
     }
 
     public function moveOnClick($move = true) {
-        $this->setParam('moveOnClick',(bool) $move);
+        $this->setParam('moveOnClick', (bool) $move);
         return $this;
     }
 

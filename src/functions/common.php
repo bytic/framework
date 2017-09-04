@@ -70,7 +70,6 @@ function _date($datetime, $format = false)
  * Transforms a date's string representation into $format
  *
  * @param string $format
- * @param string|int $datetime
  * @return string/bool
  */
 function _strtotime($date, $format = false)
@@ -124,11 +123,11 @@ function max_upload()
 
     $unit = strtoupper(substr($post_max_size, -1));
     $multiplier = ($unit == 'M' ? 1048576 : ($unit == 'K' ? 1024 : ($unit == 'G' ? 1073741824 : 1)));
-    $post_max_size = ((int)$post_max_size) * $multiplier;
+    $post_max_size = ((int) $post_max_size) * $multiplier;
 
     $unit = strtoupper(substr($upload_max_filesize, -1));
     $multiplier = ($unit == 'M' ? 1048576 : ($unit == 'K' ? 1024 : ($unit == 'G' ? 1073741824 : 1)));
-    $upload_max_filesize = ((int)$upload_max_filesize) * $multiplier;
+    $upload_max_filesize = ((int) $upload_max_filesize) * $multiplier;
 
     return round((min($post_max_size, $upload_max_filesize) / 1048576), 2) . 'MB';
 }
@@ -233,8 +232,7 @@ function valid_cc_number($cc_number)
         }
         /* Split digits and add. */
         $checksum += $current_num % 10;
-        if
-        ($current_num > 9
+        if ($current_num > 9
         ) {
             $checksum += 1;
         }
@@ -288,6 +286,10 @@ function valid_cnp($cnp)
 }
 
 if (!function_exists("money_format")) {
+
+    /**
+     * @param string $format
+     */
     function money_format($format, $number)
     {
         $regex = '/%((?:[\^!\-]|\+|\(|\=.)*)([0-9]+)?' .
@@ -308,9 +310,9 @@ if (!function_exists("money_format")) {
                 'nosimbol' => preg_match('/\!/', $fmatch[1]) > 0,
                 'isleft' => preg_match('/\-/', $fmatch[1]) > 0,
             );
-            $width = trim($fmatch[2]) ? (int)$fmatch[2] : 0;
-            $left = trim($fmatch[3]) ? (int)$fmatch[3] : 0;
-            $right = trim($fmatch[4]) ? (int)$fmatch[4] : $locale['int_frac_digits'];
+            $width = trim($fmatch[2]) ? (int) $fmatch[2] : 0;
+            $left = trim($fmatch[3]) ? (int) $fmatch[3] : 0;
+            $right = trim($fmatch[4]) ? (int) $fmatch[4] : $locale['int_frac_digits'];
             $conversion = $fmatch[5];
 
             $positive = true;
@@ -444,7 +446,7 @@ if (!function_exists("json_decode")) {
                 }
             } #-> end of sub-call (array/object)
             elseif ($waitfor && (strpos($waitfor, $c) !== false)) {
-                return array($val, $n);  // return current value and state
+                return array($val, $n); // return current value and state
             } #-= in-array
             elseif ($state === ']') {
                 list($v, $n) = json_decode($json, 0, $n, 0, ",]");
@@ -454,7 +456,7 @@ if (!function_exists("json_decode")) {
                 }
             } #-= in-object
             elseif ($state === '}') {
-                list($i, $n) = json_decode($json, 0, $n, 0, ":");   // this allowed non-string indicies
+                list($i, $n) = json_decode($json, 0, $n, 0, ":"); // this allowed non-string indicies
                 list($v, $n) = json_decode($json, 0, $n + 1, 0, ",}");
                 $val[$i] = $v;
                 if ($json[$n] == "}") {
@@ -492,15 +494,15 @@ if (!function_exists("json_decode")) {
                     $val = $uu[1];
                     $n += strlen($uu[0]) - 1;
                     if (strpos($val, ".")) {  // float
-                        $val = (float)$val;
+                        $val = (float) $val;
                     } elseif ($val[0] == "0") {  // oct
                         $val = octdec($val);
                     } else {
-                        $val = (int)$val;
+                        $val = (int) $val;
                     }
                     // exponent?
                     if (isset($uu[2])) {
-                        $val *= pow(10, (int)$uu[2]);
+                        $val *= pow(10, (int) $uu[2]);
                     }
                 } #-> boolean or null
                 elseif (preg_match("#^(true|false|null)\b#", substr($json, $n), $uu)) {

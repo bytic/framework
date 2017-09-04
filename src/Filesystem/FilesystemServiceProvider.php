@@ -41,7 +41,7 @@ class FilesystemServiceProvider extends AbstractServiceProvider
      */
     protected function registerNativeFilesystem()
     {
-        $this->getContainer()->share('files', function () {
+        $this->getContainer()->share('files', function() {
             return new Filesystem;
         });
     }
@@ -55,10 +55,10 @@ class FilesystemServiceProvider extends AbstractServiceProvider
     {
         $this->registerManager();
 
-        $this->getContainer()->share('filesystem.disk', function () {
+        $this->getContainer()->share('filesystem.disk', function() {
             return app('filesystem')->disk($this->getDefaultDriver());
         });
-        $this->getContainer()->share('filesystem.cloud', function () {
+        $this->getContainer()->share('filesystem.cloud', function() {
             return app('filesystem')->disk($this->getCloudDriver());
         });
     }
@@ -70,7 +70,7 @@ class FilesystemServiceProvider extends AbstractServiceProvider
      */
     protected function registerManager()
     {
-        $this->getContainer()->share('filesystem', function () {
+        $this->getContainer()->share('filesystem', function() {
             return new FilesystemManager($this->getContainer()->get('app'));
         });
     }

@@ -131,7 +131,7 @@ class GoogleAnalytics extends AbstractHelper
     }
 
     /**
-     * @param $method
+     * @param string $method
      * @param array $params
      * @param string $position
      * @return $this
@@ -234,7 +234,7 @@ class GoogleAnalytics extends AbstractHelper
 
         if ($transactions) {
             foreach ($transactions as $transaction) {
-                $this->addOperation($prefix.'_addTrans', [
+                $this->addOperation($prefix . '_addTrans', [
                     $transaction->orderId,
                     $transaction->affiliation,
                     $transaction->total,
@@ -247,7 +247,7 @@ class GoogleAnalytics extends AbstractHelper
 
                 if ($transaction->items) {
                     foreach ($transaction->items as $item) {
-                        $this->addOperation($prefix.'_addItem', [
+                        $this->addOperation($prefix . '_addItem', [
                             $item->orderId,
                             $item->sku,
                             $item->name,

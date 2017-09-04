@@ -140,7 +140,7 @@ class FilterManager extends AbstractCollection
     }
 
     /**
-     * @return null|RecordManager|RecordsTrait
+     * @return null|RecordManager
      */
     public function getRecordManager()
     {
@@ -148,7 +148,7 @@ class FilterManager extends AbstractCollection
     }
 
     /**
-     * @param RecordManager|RecordsTrait $recordManager
+     * @param RecordsTrait $recordManager
      */
     public function setRecordManager($recordManager)
     {

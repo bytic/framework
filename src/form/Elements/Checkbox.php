@@ -22,7 +22,7 @@ class Nip_Form_Element_Checkbox extends Nip_Form_Element_Input_Abstract
     }
 
     /**
-     * @param $checked
+     * @param boolean $checked
      * @return $this
      */
     public function setChecked($checked)

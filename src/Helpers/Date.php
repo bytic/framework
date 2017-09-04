@@ -22,9 +22,9 @@ class Nip_Helper_Date extends Nip\Helpers\AbstractHelper
 
         $dDiff = $dStart->diff($dEnd);
 
-        $years = (int)$dDiff->format("%y");
-        $months = (int)$dDiff->format("%m");
-        $days = (int)$dDiff->format("%d");
+        $years = (int) $dDiff->format("%y");
+        $months = (int) $dDiff->format("%m");
+        $days = (int) $dDiff->format("%d");
 
         return array($years, $months, $days);
     }

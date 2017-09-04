@@ -13,6 +13,6 @@ class OrCondition extends Condition {
     }
 
     public function getString() {
-        return $this->protectCondition($this->_condition->getString()) ." OR ". $this->protectCondition($this->_orCondition->getString()) ."";
+        return $this->protectCondition($this->_condition->getString()) . " OR " . $this->protectCondition($this->_orCondition->getString()) . "";
     }
 }

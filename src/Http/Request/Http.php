@@ -62,8 +62,7 @@ class Http
             // This is why we use urldecode and then normalize to
             // RFC 3986 with rawurlencode.
             $parts[] = isset($keyValuePair[1]) ?
-                rawurlencode(urldecode($keyValuePair[0])) . '=' . rawurlencode(urldecode($keyValuePair[1])) :
-                rawurlencode(urldecode($keyValuePair[0]));
+                rawurlencode(urldecode($keyValuePair[0])) . '=' . rawurlencode(urldecode($keyValuePair[1])) : rawurlencode(urldecode($keyValuePair[0]));
             $order[] = urldecode($keyValuePair[0]);
         }
         array_multisort($order, SORT_ASC, $parts);

@@ -96,7 +96,7 @@ trait RecordsTrait
 
     /**
      * @param $query
-     * @return mixed
+     * @return SelectQuery
      * @internal param array $filters
      */
     public function filter($query)

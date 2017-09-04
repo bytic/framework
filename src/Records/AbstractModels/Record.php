@@ -33,7 +33,7 @@ abstract class Record extends \Nip_Object
      *
      * @param string $name
      * @param array $arguments
-     * @return mixed
+     * @return \Nip\Helpers\AbstractHelper|null
      */
     public function __call($name, $arguments)
     {
@@ -46,7 +46,7 @@ abstract class Record extends \Nip_Object
     }
 
     /**
-     * @param $name
+     * @param string $name
      * @return \Nip\Helpers\AbstractHelper
      */
     public function getHelper($name)
@@ -129,7 +129,7 @@ abstract class Record extends \Nip_Object
     }
 
     /**
-     * @return null
+     * @return string
      */
     public function getManagerName()
     {
@@ -163,7 +163,7 @@ abstract class Record extends \Nip_Object
 
     /**
      * @param string $class
-     * @return mixed
+     * @return RecordManager
      * @throws Exception
      */
     protected function getManagerInstance($class)
@@ -303,7 +303,7 @@ abstract class Record extends \Nip_Object
     /**
      * Clone the relations records from a sibling
      * @param self $from
-     * @return self
+     * @return \Nip\Records\Traits\Relations\HasRelationsRecordTrait
      */
     public function cloneRelations($from)
     {

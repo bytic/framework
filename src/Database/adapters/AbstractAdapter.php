@@ -40,7 +40,7 @@ abstract class AbstractAdapter
         if ($result !== false) {
             return $result;
         } else {
-            trigger_error($this->error()." [$sql]", E_USER_WARNING);
+            trigger_error($this->error() . " [$sql]", E_USER_WARNING);
         }
 
         return false;
@@ -62,11 +62,17 @@ abstract class AbstractAdapter
         return $this->_profiler;
     }
 
+    /**
+     * @param Profiler $profiler
+     */
     public function setProfiler($profiler)
     {
         $this->_profiler = $profiler;
     }
 
+    /**
+     * @param string $sql
+     */
     abstract public function query($sql);
 
     abstract public function error();
@@ -90,6 +96,9 @@ abstract class AbstractAdapter
         $newLink = false
     );
 
+    /**
+     * @param string $table
+     */
     abstract public function describeTable($table);
 
     abstract public function disconnect();

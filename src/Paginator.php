@@ -28,7 +28,7 @@ class Paginator
 
     public function getTotalPages()
     {
-        $this->totalPages = (int)($this->count / $this->itemsPerPage);
+        $this->totalPages = (int) ($this->count / $this->itemsPerPage);
         if ($this->count % $this->itemsPerPage != 0) {
             $this->totalPages++;
         }

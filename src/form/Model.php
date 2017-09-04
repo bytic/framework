@@ -24,7 +24,7 @@ class Nip_Form_Model extends Nip_Form
 
     public function getModelMessage($name, $variables = array())
     {
-        return $this->getModel()->getManager()->getMessage('form.'.$name, $variables);
+        return $this->getModel()->getManager()->getMessage('form.' . $name, $variables);
     }
 
     /**

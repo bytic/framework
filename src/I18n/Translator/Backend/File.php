@@ -38,7 +38,7 @@ class File extends AbstractBackend
             $this->loadFile($language, $fromIncludePath);
         } else {
             trigger_error(
-                "Language file [".$language."][".$path."][".$fromIncludePath."] does not exist",
+                "Language file [" . $language . "][" . $path . "][" . $fromIncludePath . "] does not exist",
                 E_USER_ERROR
             );
         }

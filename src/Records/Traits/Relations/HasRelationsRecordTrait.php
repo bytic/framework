@@ -40,7 +40,7 @@ trait HasRelationsRecordTrait
     }
 
     /**
-     * @param $name
+     * @param string $name
      * @param $arguments
      * @return \Nip\Records\AbstractModels\Record|\Nip\Records\Collections\Collection
      */

@@ -4,7 +4,7 @@ class Nip_Form_Renderer_Elements_Select extends Nip_Form_Renderer_Elements_Abstr
     public function generateElement() {        
         $return = '<select ';
         $return .= $this->renderAttributes();
-        $return .= ' >'. $this->renderOptions() .'</select>';
+        $return .= ' >' . $this->renderOptions() . '</select>';
         return $return;
     }
 
@@ -24,7 +24,7 @@ class Nip_Form_Renderer_Elements_Select extends Nip_Form_Renderer_Elements_Abstr
 
                 $atribs['value'] = $value;
                 $selectedValue = $this->getElement()->getValue();
-                if ($selectedValue === 0 OR $value=== 0) {
+                if ($selectedValue === 0 OR $value === 0) {
                     if ($value === $selectedValue) {
                         $atribs['selected'] = 'selected';
                     }
@@ -35,7 +35,7 @@ class Nip_Form_Renderer_Elements_Select extends Nip_Form_Renderer_Elements_Abstr
                 foreach ($atribs as $name=>$value) {
                     $return .= ' ' . $name . '="' . $value . '"';
                 }
-                $return .= '>'.$label.'</option>';
+                $return .= '>' . $label . '</option>';
             }
         }
         return $return;

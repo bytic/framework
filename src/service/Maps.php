@@ -20,7 +20,7 @@ class Nip_Service_Maps {
     public function  __construct() {        
     }
 
-    public function  __call($name,  $arguments) {
+    public function  __call($name, $arguments) {
         if (strpos($name, 'render') === 0) {
             return call_user_func_array(array($this->getProvider(), $name), $arguments);
         }

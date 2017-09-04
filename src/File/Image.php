@@ -269,10 +269,10 @@ class Nip_File_Image extends Nip_File_Handler
 
         if ($sourceRatio > $target_ratio) {
             $new_height = $max_height;
-            $new_width = ( int )($max_height * $sourceRatio);
+            $new_width = (int) ($max_height * $sourceRatio);
         } else {
             $new_width = $max_width;
-            $new_height = ( int )($max_width / $sourceRatio);
+            $new_height = (int) ($max_width / $sourceRatio);
         }
 
         $image = imagecreatetruecolor($new_width, $new_height);
@@ -289,8 +289,8 @@ class Nip_File_Image extends Nip_File_Handler
     }
 
     /**
-     * @param $x
-     * @param $y
+     * @param double $x
+     * @param double $y
      * @param $dwidth
      * @param $dheight
      * @param $swidth
@@ -455,7 +455,7 @@ class Nip_File_Image extends Nip_File_Handler
     }
 
     /**
-     * @return mixed
+     * @return string
      */
     public function getFile()
     {

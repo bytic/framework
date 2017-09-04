@@ -52,13 +52,13 @@ class DateTimePlus extends DateTime
                 'daysInMonth' => 't',
                 'timestamp' => 'U',
             ]):
-                return (int)$this->format($formats[$name]);
+                return (int) $this->format($formats[$name]);
             case $name === 'weekOfMonth':
-                return (int)ceil($this->day / static::DAYS_PER_WEEK);
+                return (int) ceil($this->day / static::DAYS_PER_WEEK);
             case $name === 'age':
-                return (int)$this->diffInYears();
+                return (int) $this->diffInYears();
             case $name === 'quarter':
-                return (int)ceil($this->month / 3);
+                return (int) ceil($this->month / 3);
             case $name === 'offset':
                 return $this->getOffset();
             case $name === 'offsetHours':

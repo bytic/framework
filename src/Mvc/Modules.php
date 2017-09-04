@@ -71,7 +71,7 @@ class Modules implements ArrayAccess
      */
     public function getViewPath($name)
     {
-        return $this->getModuleDirectory($name).DIRECTORY_SEPARATOR.'views'.DIRECTORY_SEPARATOR;
+        return $this->getModuleDirectory($name) . DIRECTORY_SEPARATOR . 'views' . DIRECTORY_SEPARATOR;
     }
 
     /**
@@ -80,7 +80,7 @@ class Modules implements ArrayAccess
      */
     public function getModuleDirectory($name)
     {
-        return $this->getModulesBaseDirectory().$name;
+        return $this->getModulesBaseDirectory() . $name;
     }
 
     /**

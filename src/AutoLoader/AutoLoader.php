@@ -88,7 +88,7 @@ class AutoLoader
     }
 
     /**
-     * @param $name
+     * @param string $name
      * @return AbstractLoader
      */
     public function getLoader($name)
@@ -136,7 +136,7 @@ class AutoLoader
      */
     public function getLoaderClass($name)
     {
-        return 'Nip\AutoLoader\Loaders\\'.$name;
+        return 'Nip\AutoLoader\Loaders\\' . $name;
     }
 
     /**
@@ -178,7 +178,7 @@ class AutoLoader
     }
 
     /**
-     * @return array
+     * @return string[]
      */
     public function getLoaderOrder()
     {
@@ -186,7 +186,7 @@ class AutoLoader
     }
 
     /**
-     * @return mixed
+     * @return string
      */
     public function getCachePath()
     {
@@ -194,7 +194,7 @@ class AutoLoader
     }
 
     /**
-     * @param $path
+     * @param string $path
      * @return $this
      */
     public function setCachePath($path)
@@ -205,7 +205,7 @@ class AutoLoader
     }
 
     /**
-     * @param $class
+     * @param string $class
      * @return bool
      */
     public function isClass($class)

@@ -20,6 +20,7 @@ trait AccessMethodsTrait
 
     /**
      * {@inheritDoc}
+     * @param \Nip\Records\AbstractModels\Record $element
      */
     public function add($element, $key = null)
     {
