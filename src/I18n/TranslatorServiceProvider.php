@@ -3,6 +3,7 @@
 namespace Nip\I18n;
 
 use Nip\Container\ServiceProviders\Providers\AbstractSignatureServiceProvider;
+use Nip\I18n\Translator\Backend\AbstractBackend;
 use Nip\I18n\Translator\Backend\File;
 
 /**
@@ -11,12 +12,16 @@ use Nip\I18n\Translator\Backend\File;
  */
 class TranslatorServiceProvider extends AbstractSignatureServiceProvider
 {
+    protected $languages = null;
+    protected $languageDirectory = null;
+
     /**
      * @inheritdoc
      */
     public function register()
     {
         $this->registerTranslator();
+        $this->registerLanguages();
         $this->registerLoader();
     }
 
@@ -28,7 +33,7 @@ class TranslatorServiceProvider extends AbstractSignatureServiceProvider
     protected function registerTranslator()
     {
         $this->getContainer()->share('translator', Translator::class)
-            ->withArgument(File::class);
+            ->withArgument(AbstractBackend::class);
     }
 
     /**
@@ -38,18 +43,34 @@ class TranslatorServiceProvider extends AbstractSignatureServiceProvider
      */
     protected function registerLoader()
     {
-        $this->getContainer()->share('translation.loader', function() {
-            $backend = new File();
-            $languages = config('app.locale.enabled');
-            $languages = is_array($languages) ? $languages : explode(',', $languages);
-
-            foreach ($languages as $lang) {
-                $backend->addLanguage($lang, app('path.lang') . DIRECTORY_SEPARATOR . $lang);
-            }
+        $this->getContainer()->share('translation.loader', function () {
+            $backend = $this->createFileBackend();
             return $backend;
         });
 
-        $this->getContainer()->alias('translation.loader', File::class);
+        $this->getContainer()->alias('translation.loader', AbstractBackend::class);
+    }
+
+    protected function registerLanguages()
+    {
+        $this->getContainer()->share('translation.languages', function () {
+            return $this->getLanguages();
+        });
+    }
+
+    /**
+     * @return File
+     */
+    protected function createFileBackend()
+    {
+        /** @var File $backend */
+        $backend = $this->getContainer()->get(File::class);
+        $backend->setBaseDirectory($this->getLanguageDirectory());
+
+        $languages = $this->getContainer()->get('translation.languages');
+        $backend->addLanguages($languages);
+
+        return $backend;
     }
 
     /**
@@ -57,6 +78,74 @@ class TranslatorServiceProvider extends AbstractSignatureServiceProvider
      */
     public function provides()
     {
-        return ['translator', 'translation.loader'];
+        return ['translator', 'translation.languages', 'translation.loader'];
+    }
+
+    /**
+     * @return null
+     */
+    public function getLanguages()
+    {
+        if ($this->languages === null) {
+            $this->initLanguages();
+        }
+
+        return $this->languages;
+    }
+
+    protected function initLanguages()
+    {
+        $this->setLanguages($this->generateLanguages());
+    }
+
+    /**
+     * @return array
+     */
+    protected function generateLanguages()
+    {
+        $languages = config('app.locale.enabled');
+
+        return is_array($languages) ? $languages : explode(',', $languages);
+    }
+
+    /**
+     * @param null $languages
+     */
+    public function setLanguages($languages)
+    {
+        $this->languages = $languages;
+    }
+
+    /**
+     * @return null
+     */
+    public function getLanguageDirectory()
+    {
+        if ($this->languageDirectory === null) {
+            $this->initLanguageDirectory();
+        }
+
+        return $this->languageDirectory;
+    }
+
+    /**
+     * @param null $languageDirectory
+     */
+    public function setLanguageDirectory($languageDirectory)
+    {
+        $this->languageDirectory = $languageDirectory;
+    }
+
+    protected function initLanguageDirectory()
+    {
+        $this->setLanguageDirectory($this->generateLanguageDirectory());
+    }
+
+    /**
+     * @return string
+     */
+    protected function generateLanguageDirectory()
+    {
+        return app('path.lang');
     }
 }

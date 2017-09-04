@@ -9,6 +9,10 @@ use Nip\I18n\Translator\Backend\File;
 use Nip\I18n\TranslatorServiceProvider;
 use Nip\Tests\AbstractTest;
 
+/**
+ * Class TranslatorServiceProviderTest
+ * @package Nip\Tests\Form
+ */
 class TranslatorServiceProviderTest extends AbstractTest
 {
     public function testRegisterLoader()
