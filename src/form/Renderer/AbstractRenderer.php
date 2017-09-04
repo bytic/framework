@@ -1,10 +1,16 @@
 <?php
 
+namespace Nip\Form\Renderer;
+
 use Nip\Form\AbstractForm;
 use Nip\Helpers\View\Errors as ErrorsHelper;
 use Nip\Helpers\View\Messages as MessagesHelper;
 
-abstract class Nip_Form_Renderer_Abstract
+/**
+ * Class AbstractRenderer
+ * @package Nip\Form\Renderer
+ */
+abstract class AbstractRenderer
 {
 
     protected $_form;
