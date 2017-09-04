@@ -23,7 +23,7 @@ class MvcServiceProvider extends AbstractSignatureServiceProvider
 
     protected function registerModules()
     {
-        $this->getContainer()->share('mvc.modules', function () {
+        $this->getContainer()->share('mvc.modules', function() {
             return $this->createModulesProvider();
         });
     }
@@ -39,7 +39,7 @@ class MvcServiceProvider extends AbstractSignatureServiceProvider
 
     protected function registerSections()
     {
-        $this->getContainer()->share('mvc.sections', function () {
+        $this->getContainer()->share('mvc.sections', function() {
             return $this->createSectionsManager();
         });
     }

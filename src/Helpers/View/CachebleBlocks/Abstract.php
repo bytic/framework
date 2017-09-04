@@ -44,7 +44,7 @@ class AbstractBlock
     }
 
     /**
-     * @param $manager
+     * @param  $manager
      * @return $this
      */
     public function setManager($manager)

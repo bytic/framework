@@ -26,14 +26,14 @@ class Terminal
 
     public function initHTML()
     {
-        require(dirname(__FILE__).'/Layout/header.html');
+        require(dirname(__FILE__) . '/Layout/header.html');
     }
 
     public function printHeader()
     {
         echo '
 Checking the environment ...
-Running as <b>'.$this->getRunUser().'</b>.
+Running as <b>'.$this->getRunUser() . '</b>.
 ';
     }
 
@@ -56,7 +56,7 @@ Running as <b>'.$this->getRunUser().'</b>.
 
     public function checkRequiredBinary($binary)
     {
-        $shellCommand = $this->getCommand('which').' '.$binary;
+        $shellCommand = $this->getCommand('which') . ' ' . $binary;
         $process = $this->runProcess($shellCommand, false);
         $path = $process->getReturn();
         $this->checkRequiredBinaryPath($path, $shellCommand, $binary);
@@ -105,7 +105,7 @@ Running as <b>'.$this->getRunUser().'</b>.
 <div class="error">
 Error encountered!
 Stopping the script to prevent possible data loss.
-ERROR CODE ['.$process->getExitCode().']
+ERROR CODE ['.$process->getExitCode() . ']
 </div>
 ';
     }
@@ -118,8 +118,8 @@ ERROR CODE ['.$process->getExitCode().']
                     [%s]
                 </div>', $binary, $shellCommand));
         } else {
-            $version = explode("\n", shell_exec($binary.' --version'));
-            printf('<b>%s</b> : %s'."\n", $path, $version[0]);
+            $version = explode("\n", shell_exec($binary . ' --version'));
+            printf('<b>%s</b> : %s' . "\n", $path, $version[0]);
         }
     }
 
@@ -138,8 +138,8 @@ ERROR CODE ['.$process->getExitCode().']
     {
         echo '
 Environment OK.
-Deploying ['.__DIR__.']
-Run Commands on ['.getcwd()."]\n";
+Deploying ['.__DIR__ . ']
+Run Commands on ['.getcwd() . "]\n";
     }
 
     public function runCommands()
@@ -155,13 +155,13 @@ Run Commands on ['.getcwd()."]\n";
         $this->printCommand($command);
         echo '<div class="output">';
         $process = $this->runProcess($command);
-        echo 'Exit Code ['.$process->getExitCode().']'."\n";
+        echo 'Exit Code [' . $process->getExitCode() . ']' . "\n";
         echo '</div>';
     }
 
     public function printCommand($command)
     {
-        echo '<span class="prompt">$</span> <span class="command">'.$command.'</span>';
+        echo '<span class="prompt">$</span> <span class="command">' . $command . '</span>';
     }
 
     public function postDispatch()

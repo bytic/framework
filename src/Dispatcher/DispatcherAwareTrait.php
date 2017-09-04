@@ -38,7 +38,7 @@ trait DispatcherAwareTrait
     }
 
     /**
-     * @param bool|Dispatcher $dispatcher
+     * @param Dispatcher $dispatcher
      * @return $this
      */
     public function setDispatcher($dispatcher = false)

@@ -17,12 +17,12 @@ class Delete extends AbstractQuery
     {
         $order = $this->parseOrder();
 
-        $query = 'DELETE FROM '.$this->getManager()->protect($this->getTable());
+        $query = 'DELETE FROM ' . $this->getManager()->protect($this->getTable());
 
         $query .= $this->assembleWhere();
 
         if (!empty($order)) {
-            $query .= ' ORDER BY '.$order;
+            $query .= ' ORDER BY ' . $order;
         }
 
         $query .= $this->assembleLimit();

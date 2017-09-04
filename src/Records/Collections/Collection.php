@@ -109,7 +109,7 @@ class Collection extends AbstractCollection
 
     /**
      * @param Record $record
-     * @param null $index
+     * @param string $index
      */
     public function add($record, $index = null)
     {

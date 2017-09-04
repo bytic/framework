@@ -36,7 +36,7 @@ class Messages extends AbstractHelper
     {
         $return = '';
 
-        $items = (array)$items;
+        $items = (array) $items;
 
         if (count($items)) {
             if ($wrap) {

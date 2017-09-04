@@ -30,6 +30,6 @@ class Literal extends AbstractParser
     {
         $params = $this->stripEmptyParams($params);
 
-        return $this->getMap().($params ? '?'.http_build_query($params) : '');
+        return $this->getMap() . ($params ? '?' . http_build_query($params) : '');
     }
 }

@@ -74,7 +74,7 @@ class Nip_Tool
     public function getMenu($name)
     {
         if (!$this->_menus[$name]) {
-            $class = 'Nip_Tool_Menu_'.ucfirst($name);
+            $class = 'Nip_Tool_Menu_' . ucfirst($name);
             $this->_menus[$name] = new $class();
             $this->_menus[$name]->setTool($this);
         }

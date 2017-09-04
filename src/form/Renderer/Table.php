@@ -38,7 +38,7 @@ class Nip_Form_Renderer_Table extends Nip_Form_Renderer_Abstract {
         $this->_data[$idRow][$idCol]['element'] = $element;
         $this->_data[$idRow][$idCol]['type'] = $type;
         if (!in_array($idCol, $this->_cols)) {
-            $this->_cols[]= $idCol;
+            $this->_cols[] = $idCol;
         }
     }
 
@@ -50,13 +50,13 @@ class Nip_Form_Renderer_Table extends Nip_Form_Renderer_Abstract {
     public function renderElements() {
         $return = '<table';
         foreach ($this->_table as $attrib => $value) {
-            $return .= ' '. $attrib .'="'. $value .'"';
+            $return .= ' ' . $attrib . '="' . $value . '"';
         }
         $return .= '>';
         $renderRows = $this->renderRows();
         $return .= '<tbody';
         foreach ($this->_tbody as $attrib => $value) {
-            $return .= ' '. $attrib .'="'. $value .'"';
+            $return .= ' ' . $attrib . '="' . $value . '"';
         }
         $return .= '>';
         if ($renderRows) {
@@ -77,7 +77,7 @@ class Nip_Form_Renderer_Table extends Nip_Form_Renderer_Abstract {
                 $return .= '<tr';
                 if ($this->_rows[$idRow]) {
                     foreach ($this->_rows[$idRow] as $attrib => $value) {
-                        $return .= ' '. $attrib .'="'. $value .'"';
+                        $return .= ' ' . $attrib . '="' . $value . '"';
                     }
                 }
 

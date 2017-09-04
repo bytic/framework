@@ -36,7 +36,7 @@ class Dispatcher
     }
 
     /**
-     * @param $name
+     * @param boolean $name
      * @return mixed
      */
     public static function formatActionName($name)
@@ -63,7 +63,7 @@ class Dispatcher
 
         if ($this->hops <= $this->maxHops) {
             if ($request->getControllerName() == null) {
-                throw new Exception('No valid controller name in request ['.$request->getMCA().']');
+                throw new Exception('No valid controller name in request [' . $request->getMCA() . ']');
             }
 
             $controller = $this->generateController($request);
@@ -80,7 +80,7 @@ class Dispatcher
                     return $return;
                 }
             } else {
-                throw new Exception('Error finding a valid controller for ['.$request->getMCA().']');
+                throw new Exception('Error finding a valid controller for [' . $request->getMCA() . ']');
             }
         } else {
             throw new Exception("Maximum number of hops ($this->maxHops) has been reached for {$request->getMCA()}");
@@ -123,12 +123,12 @@ class Dispatcher
             }
         }
         throw new Exception(
-            'Error finding a valid controller ['.$namespaceClass.']['.$classicClass.'] for ['.$request->getMCA().']'
+            'Error finding a valid controller [' . $namespaceClass . '][' . $classicClass . '] for [' . $request->getMCA() . ']'
         );
     }
 
     /**
-     * @param $name
+     * @param string $name
      * @return mixed
      */
     public function formatModuleName($name)
@@ -139,7 +139,7 @@ class Dispatcher
     }
 
     /**
-     * @param $name
+     * @param string $name
      * @return mixed
      */
     public function formatControllerName($name)
@@ -174,7 +174,7 @@ class Dispatcher
     }
 
     /**
-     * @param $namespaceClass
+     * @param string $namespaceClass
      * @return bool
      */
     protected function isValidControllerNamespace($namespaceClass)
@@ -190,7 +190,7 @@ class Dispatcher
     }
 
     /**
-     * @param $class
+     * @param string $class
      * @return Controller
      */
     public function newController($class)

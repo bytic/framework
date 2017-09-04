@@ -21,7 +21,7 @@ class Associated extends RecordCollection
     protected $_item;
 
     /**
-     * @param Relation|HasCollectionResults $relation
+     * @param HasCollectionResults $relation
      */
     public function initFromRelation($relation)
     {

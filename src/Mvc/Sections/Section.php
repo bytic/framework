@@ -51,7 +51,7 @@ class Section
 
     /**
      * @param bool $url
-     * @return mixed
+     * @return string
      */
     public function getURL($url = false)
     {
@@ -68,7 +68,7 @@ class Section
      * Compile path for this section from a given path of current section
      *
      * @param bool $path
-     * @return bool|mixed
+     * @return string
      */
     public function compilePath($path = false)
     {
@@ -120,7 +120,7 @@ class Section
     }
 
     /**
-     * @return mixed
+     * @return string
      */
     public function getName()
     {

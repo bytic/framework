@@ -19,7 +19,7 @@ class Scripts extends AbstractHelper
     protected $defaultPlaceholder = "head";
 
     /**
-     * @param $file
+     * @param string $file
      * @param bool $placeholder
      * @return $this
      */

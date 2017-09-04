@@ -32,8 +32,8 @@ class Process
     public function getDescriptorSpec()
     {
         return array(
-            0 => array("pipe", "r"),  // stdin
-            1 => array("pipe", "w"),  // stdout -> we use this
+            0 => array("pipe", "r"), // stdin
+            1 => array("pipe", "w"), // stdout -> we use this
             2 => array("pipe", "w")   // stderr
         );
     }
@@ -60,7 +60,7 @@ class Process
                 break;
             }
             if ($this->isVerbose()) {
-                echo $returnLine."\n";
+                echo $returnLine . "\n";
             }
             ob_flush();
             flush();

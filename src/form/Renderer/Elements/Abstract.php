@@ -6,7 +6,7 @@ abstract class Nip_Form_Renderer_Elements_Abstract {
     
     /**
      * @return Nip_Form_Renderer_Abstract
-    */
+     */
     public function getRenderer() {
         return $this->_renderer;
     }
@@ -30,7 +30,7 @@ abstract class Nip_Form_Renderer_Elements_Abstract {
     }
 
     public function renderElement() {
-        $return =  $this->renderDecorators($this->generateElement(), 'element');
+        $return = $this->renderDecorators($this->generateElement(), 'element');
         $this->getElement()->setRendered(true);
         return $return;
     }
@@ -71,7 +71,7 @@ abstract class Nip_Form_Renderer_Elements_Abstract {
         if ($this->getElement()->isError() && $this->getElement()->getForm()->getOption('renderElementErrors') !== false) {
             $errors = $this->getElement()->getErrors();
             $errors_string = implode('<br />', $errors);            
-            $return .= '<span class="help-inline">' . $errors_string .'</span>';
+            $return .= '<span class="help-inline">' . $errors_string . '</span>';
         }
         return $return;
     }
@@ -89,7 +89,7 @@ abstract class Nip_Form_Renderer_Elements_Abstract {
                     $value = $overrides[$name];
                 }
                 if ($name == "name" && $this->getElement()->isGroup()) {
-                    $value = $value."[]";
+                    $value = $value . "[]";
                 }
                 $return .= ' ' . $name . '="' . $value . '"';
             }

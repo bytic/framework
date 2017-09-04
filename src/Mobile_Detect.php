@@ -37,9 +37,9 @@ class Nip_Mobile_Detect {
         $this->userAgent = $_SERVER['HTTP_USER_AGENT'];
         $this->accept    = $_SERVER['HTTP_ACCEPT'];
 
-        if (isset($_SERVER['HTTP_X_WAP_PROFILE'])|| isset($_SERVER['HTTP_PROFILE'])) {
+        if (isset($_SERVER['HTTP_X_WAP_PROFILE']) || isset($_SERVER['HTTP_PROFILE'])) {
             $this->isMobile = true;
-        } elseif (strpos($this->accept,'text/vnd.wap.wml') > 0 || strpos($accept,'application/vnd.wap.xhtml+xml') > 0) {
+        } elseif (strpos($this->accept, 'text/vnd.wap.wml') > 0 || strpos($accept, 'application/vnd.wap.xhtml+xml') > 0) {
             $this->isMobile = true;
         } else {
             foreach ($this->devices as $device => $regexp) {

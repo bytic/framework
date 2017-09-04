@@ -75,7 +75,7 @@ class Nip_File_Handler
     }
 
     /**
-     * @return $this
+     * @return Nip_File_System
      */
     public function delete()
     {

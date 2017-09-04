@@ -11,7 +11,7 @@ class Nip_Mailer
         $this->_mail->CharSet = "UTF-8";
 //		$this->_mail->SMTPDebug = true;
 
-        $config = Nip_Config::instance()->parse(CONFIG_PATH.'smtp.ini');
+        $config = Nip_Config::instance()->parse(CONFIG_PATH . 'smtp.ini');
         if ($config->SMTP->host) {
             $this->_mail->IsSMTP();
             if ($config->SMTP->username) {

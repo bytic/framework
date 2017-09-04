@@ -33,7 +33,7 @@ class Cache extends CacheManager
      */
     public function getCacheId($table)
     {
-        return $this->getConnection()->getDatabase().'.'.$table;
+        return $this->getConnection()->getDatabase() . '.' . $table;
     }
 
     /**
@@ -102,7 +102,7 @@ class Cache extends CacheManager
      */
     public function cachePath()
     {
-        return parent::cachePath().'/db-metadata/';
+        return parent::cachePath() . '/db-metadata/';
     }
 
 }

@@ -35,7 +35,7 @@ class QueryCollector extends PDOCollector
      */
     public function setFindSource($value = true)
     {
-        $this->findSource = (bool)$value;
+        $this->findSource = (bool) $value;
     }
 
     /**

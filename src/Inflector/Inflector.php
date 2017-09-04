@@ -162,7 +162,7 @@ class Inflector
     }
 
     /**
-     * @param $directory
+     * @param string $directory
      */
     public function setCachePath($directory)
     {
@@ -373,7 +373,7 @@ class Inflector
 
     /**
      * @param $word
-     * @return mixed
+     * @return string
      */
     protected function doCamelize($word)
     {
@@ -382,7 +382,7 @@ class Inflector
 
     /**
      * @param $word
-     * @return mixed
+     * @return string
      */
     protected function doHyphenize($word)
     {
@@ -417,7 +417,7 @@ class Inflector
 
     /**
      * @param $word
-     * @return mixed
+     * @return string
      */
     public function pluralize($word)
     {

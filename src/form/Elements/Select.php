@@ -13,7 +13,7 @@ class Nip_Form_Element_Select extends Nip_Form_Element_Abstract
     public function addOptionsArray($options, $valueKey, $labelKey)
     {
         foreach ($options as $key => $option) {
-            $option = (object)$option;
+            $option = (object) $option;
 
             $oValue = $option->$valueKey;
             $oLabel = $option->$labelKey;

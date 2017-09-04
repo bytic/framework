@@ -18,7 +18,7 @@ class Text
     public static function toAscii($str, $replace = [], $delimiter = '-')
     {
         if (!empty($replace)) {
-            $str = str_replace((array)$replace, ' ', $str);
+            $str = str_replace((array) $replace, ' ', $str);
         }
 
         $clean = iconv('UTF-8', 'ASCII//TRANSLIT', $str);

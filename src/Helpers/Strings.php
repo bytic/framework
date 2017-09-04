@@ -74,7 +74,7 @@ class Nip_Helper_Strings extends Nip\Helpers\AbstractHelper {
 
         foreach ($matches as &$match) {
             if (preg_match('/<(a|img)\b/', $match) && !preg_match('/(?:http|#|mailto)/', $match)) {
-                $match = preg_replace('/^([^"]+")([^"]+)/', '$1'.$base.'$2', $match);
+                $match = preg_replace('/^([^"]+")([^"]+)/', '$1' . $base . '$2', $match);
             }
         }
 
@@ -82,39 +82,39 @@ class Nip_Helper_Strings extends Nip\Helpers\AbstractHelper {
         return $string;
     }
 
-	public function moneyFormat($number)
-	{
-		return money_format('%n', $number);
-	}
+    public function moneyFormat($number)
+    {
+        return money_format('%n', $number);
+    }
 	
-	public function cronoTimeInSeconds($time)
-	{
-		$parts = explode(':', $time);		
-		$seconds = array_pop($parts);
-		$minutes = array_pop($parts);
-		$hours = array_pop($parts);
-		$days = array_pop($parts);
+    public function cronoTimeInSeconds($time)
+    {
+        $parts = explode(':', $time);		
+        $seconds = array_pop($parts);
+        $minutes = array_pop($parts);
+        $hours = array_pop($parts);
+        $days = array_pop($parts);
 
-		return (($days*24 + $hours)*60 + $minutes)*60 + $seconds;		
-	}
+        return (($days*24 + $hours)*60 + $minutes)*60 + $seconds;		
+    }
 	
-	public function secondsInCronoTime($seconds)
-	{
-		if ($days = intval((floor($seconds / 86400)))) {
+    public function secondsInCronoTime($seconds)
+    {
+        if ($days = intval((floor($seconds / 86400)))) {
             $seconds = $seconds - $days*86400;
-			$return .= ($return ? ':' : '') . str_pad($days, 2, 0,STR_PAD_LEFT);
-		}
-		if ($hours = intval((floor($seconds / 3600))) OR $return) {
+            $return .= ($return ? ':' : '') . str_pad($days, 2, 0,STR_PAD_LEFT);
+        }
+        if ($hours = intval((floor($seconds / 3600))) OR $return) {
             $seconds = $seconds - $hours*3600;
-			$return .= ($return ? ':' : '') . str_pad($hours, 2, 0,STR_PAD_LEFT);
-		}
-		if ($minutes = intval((floor($seconds / 60))) OR $return) {
-			$seconds = $seconds - $minutes*60;
-			$return .= ($return ? ':' : '') . str_pad($minutes, 2, 0, STR_PAD_LEFT);
-		}
-		$seconds = round($seconds, 2);  
-		$return .= ($return ? ':' : '') . str_pad($seconds, 2, 0, STR_PAD_LEFT);
+            $return .= ($return ? ':' : '') . str_pad($hours, 2, 0,STR_PAD_LEFT);
+        }
+        if ($minutes = intval((floor($seconds / 60))) OR $return) {
+            $seconds = $seconds - $minutes*60;
+            $return .= ($return ? ':' : '') . str_pad($minutes, 2, 0, STR_PAD_LEFT);
+        }
+        $seconds = round($seconds, 2);  
+        $return .= ($return ? ':' : '') . str_pad($seconds, 2, 0, STR_PAD_LEFT);
 			
-		return $return;
-	}
+        return $return;
+    }
 }

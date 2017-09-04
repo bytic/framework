@@ -18,6 +18,9 @@ abstract class Nip_Service_Maps_Objects_Abstract {
 
     }
 
+    /**
+     * @param string $key
+     */
     public function setParam($key, $value) {
         $this->_params[$key] = $value;
         return $this;

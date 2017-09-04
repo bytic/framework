@@ -122,7 +122,7 @@ class ClassMap extends AbstractLoader
     }
 
     /**
-     * @param $filePath
+     * @param string $filePath
      * @return bool
      */
     protected function readCacheFile($filePath)

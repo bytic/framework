@@ -10,7 +10,6 @@ class Nip_Form_Renderer_DisplayGroup
 
 
     /**
-     * @param  Nip_Form_DisplayGroup $form
      * @return Nip_Form_Renderer_DisplayGroup
      */
     public function setGroup(Nip_Form_DisplayGroup $group)
@@ -29,7 +28,7 @@ class Nip_Form_Renderer_DisplayGroup
     
     public function render()
     {
-        $return = '<fieldset'.$this->renderAttributes().'>';
+        $return = '<fieldset' . $this->renderAttributes() . '>';
         $return .= '<legend>' . $this->getGroup()->getLegend() . '</legend>';
 
         $renderer = clone $this->getGroup()->getForm()->getRenderer();

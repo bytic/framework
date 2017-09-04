@@ -14,7 +14,7 @@ class Jar {
 
     /**
      * @return Cookie
-    */
+     */
     public function newCookie() {
         $cookie = new Cookie();
         $defaults = $this->getDefaults();
@@ -28,7 +28,7 @@ class Jar {
         $this->_defaults = array(
             'path'   => '/',
             'domain' => $_SERVER['SERVER_NAME'],
-            'expireTimer' => 6 * 60 *60,
+            'expireTimer' => 6 * 60 * 60,
         );
     }
 
@@ -48,11 +48,11 @@ class Jar {
         return $this->_defaults;
     }
 
-	/**
-	 * Singleton
-	 *
-	 * @return self
-	 */
+    /**
+     * Singleton
+     *
+     * @return self
+     */
     public static function instance() {
         if (!self::$instance instanceof self) {
             self::$instance = new self;

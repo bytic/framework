@@ -16,7 +16,7 @@ class Nip_Form_Renderer_List extends Nip_Form_Renderer_Abstract {
     public function renderElements() {
         $return = '<ul';
         foreach ($this->_list as $attrib => $value) {
-            $return .= ' '. $attrib .'="'. $value .'"';
+            $return .= ' ' . $attrib . '="' . $value . '"';
         }
         $return .= '>';
 
@@ -35,10 +35,10 @@ class Nip_Form_Renderer_List extends Nip_Form_Renderer_Abstract {
             if (!$element->isRendered()) {
                 $return .= '<li class="row">';
 
-					$return = $this->renderLabel($element);
+                    $return = $this->renderLabel($element);
 					
                     $class = "value " . ($element->getType() == 'input' ? 'input' : '');
-                    $return .= '<span class="'.$class.'">';
+                    $return .= '<span class="' . $class . '">';
                     $return .= $element->renderElement();
                     $return .= '</span>';
 

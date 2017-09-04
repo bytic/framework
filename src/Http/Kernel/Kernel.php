@@ -78,7 +78,7 @@ class Kernel implements KernelInterface
     /**
      * Handle an incoming HTTP request.
      *
-     * @param SymfonyRequest|ServerRequestInterface $request
+     * @param SymfonyRequest $request
      * @param int $type
      * @param bool $catch
      * @return ResponseInterface
@@ -112,7 +112,7 @@ class Kernel implements KernelInterface
     /**
      * Handles a request to convert it to a response.
      *
-     * @param SymfonyRequest|ServerRequestInterface $request A Request instance
+     * @param ServerRequestInterface $request A Request instance
      * @param int $type The type of the request
      *
      * @return ResponseInterface A Response instance

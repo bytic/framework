@@ -76,7 +76,7 @@ class ConnectionFactory
      * Create a new connection instance.
      *
      * @param  string $driver
-     * @param  \PDO|\Closure $connection
+     * @param  boolean $connection
      * @param  string $database
      * @param  string $prefix
      * @param  array $config

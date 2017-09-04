@@ -50,7 +50,7 @@ abstract class Nip_Form_Decorator_Elements_Abstract {
         $decorator = $this->generate();
         switch ($this->_placement) {
             case self::PREPEND:
-                return $decorator . $this->getSeparator() .  $content;
+                return $decorator . $this->getSeparator() . $content;
             case self::APPEND:
             default:
                 return $content . $this->getSeparator() . $decorator;

@@ -54,8 +54,8 @@ class SendgridTransport extends AbstractTransport
             return 1;
         } else {
             throw new Swift_TransportException(
-                'Error sending email Code ['.$response->statusCode().']. '.
-                $response->body().$response->headers()
+                'Error sending email Code [' . $response->statusCode() . ']. ' .
+                $response->body() . $response->headers()
             );
         }
     }
@@ -118,7 +118,7 @@ class SendgridTransport extends AbstractTransport
      * @param $emailTo
      * @param $nameTo
      * @param Message $message
-     * @param $i
+     * @param integer $i
      * @return Personalization
      */
     protected function generatePersonalization($emailTo, $nameTo, $message, $i)
@@ -135,8 +135,8 @@ class SendgridTransport extends AbstractTransport
             if (is_array($value)) {
                 $value = $value[$i];
             }
-            $value = (string)$value;
-            $personalization->addSubstitution('{{'.$varKey.'}}', $value);
+            $value = (string) $value;
+            $personalization->addSubstitution('{{' . $varKey . '}}', $value);
         }
 
         return $personalization;
@@ -216,7 +216,7 @@ class SendgridTransport extends AbstractTransport
     }
 
     /**
-     * @return array
+     * @return string[]
      */
     protected function getSupportedContentTypes()
     {
@@ -250,7 +250,7 @@ class SendgridTransport extends AbstractTransport
             if ($key == 'category') {
                 $this->getMail()->addCategory($value);
             } else {
-                $this->getMail()->addCustomArg($key, (string)$value);
+                $this->getMail()->addCustomArg($key, (string) $value);
             }
         }
     }

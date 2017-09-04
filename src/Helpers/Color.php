@@ -41,6 +41,9 @@ class Nip_Helper_Color extends Nip\Helpers\AbstractHelper
     }
 
 
+    /**
+     * @param string $color
+     */
     public function hsl($color)
     {
         list($r, $g, $b) = $this->rgb($color);
@@ -135,7 +138,7 @@ class Nip_Helper_Color extends Nip\Helpers\AbstractHelper
      *
      * @param string|array $color1
      * @param string|array $color2
-     * @return int
+     * @return double
      */
     public function lumDiff($color1, $color2)
     {

@@ -32,7 +32,7 @@ trait ContainerPersistenceTrait
      * Set the shared instance of the container.
      *
      * @param  ContainerInterface|null $container
-     * @return static
+     * @return null|ContainerInterface
      */
     public static function setInstance(ContainerInterface $container = null)
     {

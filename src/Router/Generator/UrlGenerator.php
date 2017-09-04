@@ -142,8 +142,8 @@ class UrlGenerator
         $root = $this->formatRoot($this->formatScheme($secure));
         list($path, $query) = $this->extractQueryString($path);
         return $this->format(
-                $root, '/'.trim($path.'/'.$tail, '/')
-            ).$query;
+                $root, '/' . trim($path . '/' . $tail, '/')
+            ) . $query;
     }
 
     /**
@@ -217,7 +217,7 @@ class UrlGenerator
      * Extract the query string from the given path.
      *
      * @param  string  $path
-     * @return array
+     * @return string[]
      */
     protected function extractQueryString($path)
     {

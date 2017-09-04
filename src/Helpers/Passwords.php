@@ -18,7 +18,7 @@ class Nip_Helper_Passwords extends Nip\Helpers\AbstractHelper
      */
     public function hash($password)
     {
-        return md5($this->getSalt().$password);
+        return md5($this->getSalt() . $password);
     }
 
     /**

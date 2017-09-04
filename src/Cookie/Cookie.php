@@ -92,13 +92,13 @@ class Cookie {
     public function save() {
         $expire = $this->getExpire();
         if (!$expire) {
-            $timer = $this->getExpireTimer() ? $this->getExpireTimer() : 3*60*60;
+            $timer = $this->getExpireTimer() ? $this->getExpireTimer() : 3 * 60 * 60;
             $expire = time() + $timer;
 
         }
         $domain = ($this->getDomain() != 'localhost') ? $this->getDomain() : false;
 
-        return setcookie (
+        return setcookie(
                 $this->getName(),
                 $this->getValue(),
                 $expire,

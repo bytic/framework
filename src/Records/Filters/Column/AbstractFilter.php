@@ -49,7 +49,7 @@ class AbstractFilter extends \Nip\Records\Filters\AbstractFilter implements Filt
     {
         $table = $this->getManager()->getRecordManager()->getTable();
 
-        return '`'.$table.'`.`'.$this->getField().'`';
+        return '`' . $table . '`.`' . $this->getField() . '`';
     }
 
 }
