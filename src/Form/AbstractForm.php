@@ -2,12 +2,12 @@
 
 namespace Nip\Form;
 
+use Nip\Form\Renderer\AbstractRenderer;
 use Nip\Form\Traits\MagicMethodElementsFormTrait;
 use Nip\View;
 use Nip_Form_Button_Abstract as ButtonAbstract;
 use Nip_Form_DisplayGroup;
 use Nip_Form_Element_Abstract as ElementAbstract;
-use Nip_Form_Renderer_Abstract as AbstractRenderer;
 
 /**
  * Class AbstractForm
@@ -43,7 +43,7 @@ abstract class AbstractForm
     protected $_messageTemplates = [];
     protected $_cache;
 
-    protected $__controllerView = false;
+    protected $controllerView = false;
 
     /**
      * AbstractForm constructor.
@@ -65,7 +65,7 @@ abstract class AbstractForm
      */
     public function setAction($action)
     {
-        return $this->setAttrib('action', (string) $action);
+        return $this->setAttrib('action', (string)$action);
     }
 
     /**
@@ -75,7 +75,7 @@ abstract class AbstractForm
      */
     public function setAttrib($key, $value)
     {
-        $key = (string) $key;
+        $key = (string)$key;
         $this->_attribs[$key] = $value;
 
         return $this;
@@ -121,7 +121,7 @@ abstract class AbstractForm
      */
     public function getElementClassName($type)
     {
-        return 'Nip_Form_Element_' . ucfirst($type);
+        return 'Nip_Form_Element_'.ucfirst($type);
     }
 
     /**
@@ -244,7 +244,7 @@ abstract class AbstractForm
             trigger_error('No valid elements specified for display group');
         }
 
-        $name = (string) $name;
+        $name = (string)$name;
         $group->setLegend($name);
 
         $this->_displayGroups[$name] = $group;
@@ -264,6 +264,7 @@ abstract class AbstractForm
     }
 
     /**
+     * @param string $name
      * @return Nip_Form_DisplayGroup
      */
     public function getDisplayGroup($name)
@@ -276,7 +277,7 @@ abstract class AbstractForm
     }
 
     /**
-     * @return array
+     * @return Nip_Form_DisplayGroup[]
      */
     public function getDisplayGroups()
     {
@@ -304,11 +305,12 @@ abstract class AbstractForm
      */
     protected function newButton($name, $label = false, $type = 'button')
     {
-        $class = 'Nip_Form_Button_' . ucfirst($type);
+        $class = 'Nip_Form_Button_'.ucfirst($type);
         /** @var ButtonAbstract $button */
         $button = new $class($this);
         $button->setName($name)
             ->setLabel($label);
+
         return $button;
     }
 
@@ -377,6 +379,9 @@ abstract class AbstractForm
         return $this;
     }
 
+    /**
+     * @return ButtonAbstract[]
+     */
     public function getButtons()
     {
         return $this->_buttons;
@@ -415,7 +420,7 @@ abstract class AbstractForm
      */
     public function setOption($key, $value)
     {
-        $key = (string) $key;
+        $key = (string)$key;
         $this->_options[$key] = $value;
 
         return $this;
@@ -427,7 +432,7 @@ abstract class AbstractForm
      */
     public function getOption($key)
     {
-        $key = (string) $key;
+        $key = (string)$key;
         if (!isset($this->_options[$key])) {
             return null;
         }
@@ -456,7 +461,7 @@ abstract class AbstractForm
      */
     public function getAttrib($key)
     {
-        $key = (string) $key;
+        $key = (string)$key;
         if (!isset($this->_attribs[$key])) {
             return null;
         }
@@ -560,6 +565,8 @@ abstract class AbstractForm
             return $this->setAttrib('method', $method);
         }
         trigger_error('Method is not valid', E_USER_ERROR);
+
+        return null;
     }
 
     /**
@@ -679,7 +686,7 @@ abstract class AbstractForm
      */
     public function getErrors()
     {
-        $errors = array_merge((array) $this->getMessagesType('error'), $this->getElementsErrors());
+        $errors = array_merge((array)$this->getMessagesType('error'), $this->getElementsErrors());
 
         return $errors;
     }
@@ -774,7 +781,7 @@ abstract class AbstractForm
      */
     public function getNewRenderer($type = 'basic')
     {
-        $name = 'Nip_Form_Renderer_' . ucfirst($type);
+        $name = 'Nip_Form_Renderer_'.ucfirst($type);
         /** @var AbstractRenderer $renderer */
         $renderer = new $name();
         $renderer->setForm($this);
@@ -856,11 +863,11 @@ abstract class AbstractForm
      */
     public function getControllerView()
     {
-        if (!$this->_controllerView) {
-            $this->_controllerView = app('app')->getDispatcher()->getCurrentController()->getView();
+        if (!$this->controllerView) {
+            $this->controllerView = app('app')->getDispatcher()->getCurrentController()->getView();
         }
 
-        return $this->_controllerView;
+        return $this->controllerView;
     }
 
     /**

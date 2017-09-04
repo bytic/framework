@@ -1,23 +1,37 @@
 <?php
-abstract class Nip_Form_Renderer_Elements_Abstract {
+
+use Nip\Form\Renderer\AbstractRenderer;
+
+abstract class Nip_Form_Renderer_Elements_Abstract
+{
 
     protected $_renderer;
     protected $_element;
-    
+
     /**
-     * @return Nip_Form_Renderer_Abstract
+     * @return AbstractRenderer
      */
-    public function getRenderer() {
+    public function getRenderer()
+    {
         return $this->_renderer;
     }
 
-    public function setRenderer(Nip_Form_Renderer_Abstract $renderer)
+    /**
+     * @param AbstractRenderer $renderer
+     * @return $this
+     */
+    public function setRenderer(AbstractRenderer $renderer)
     {
         $this->_renderer = $renderer;
+
         return $this;
     }
 
-    public function render() {
+    /**
+     * @return string
+     */
+    public function render()
+    {
         $return = '';
         $return .= $this->renderElement();
 
@@ -26,16 +40,28 @@ abstract class Nip_Form_Renderer_Elements_Abstract {
             $return .= $this->renderErrors();
         }
         $this->getElement()->setRendered(true);
+
         return $return;
     }
 
-    public function renderElement() {
+    /**
+     * @return mixed
+     */
+    public function renderElement()
+    {
         $return = $this->renderDecorators($this->generateElement(), 'element');
         $this->getElement()->setRendered(true);
+
         return $return;
     }
 
-    public function renderDecorators($return, $position = false) {
+    /**
+     * @param $return
+     * @param bool $position
+     * @return mixed
+     */
+    public function renderDecorators($return, $position = false)
+    {
         if ($position) {
             $decorators = $this->getElement()->getDecoratorsByPosition($position);
             if (is_array($decorators)) {
@@ -44,6 +70,7 @@ abstract class Nip_Form_Renderer_Elements_Abstract {
                 }
             }
         }
+
         return $return;
     }
 
@@ -58,6 +85,7 @@ abstract class Nip_Form_Renderer_Elements_Abstract {
     public function setElement(Nip_Form_Element_Abstract $element)
     {
         $this->_element = $element;
+
         return $this;
     }
 
@@ -66,17 +94,24 @@ abstract class Nip_Form_Renderer_Elements_Abstract {
         return;
     }
 
-    public function renderErrors() {
+    public function renderErrors()
+    {
         $return = '';
         if ($this->getElement()->isError() && $this->getElement()->getForm()->getOption('renderElementErrors') !== false) {
             $errors = $this->getElement()->getErrors();
-            $errors_string = implode('<br />', $errors);            
-            $return .= '<span class="help-inline">' . $errors_string . '</span>';
+            $errors_string = implode('<br />', $errors);
+            $return .= '<span class="help-inline">'.$errors_string.'</span>';
         }
+
         return $return;
     }
 
-    public function renderAttributes($overrides = array()) {
+    /**
+     * @param array $overrides
+     * @return string
+     */
+    public function renderAttributes($overrides = [])
+    {
         $attribs = $this->getElement()->getAttribs();
         if (!isset($attribs['title'])) {
             $attribs['title'] = $this->getElement()->getLabel();
@@ -89,16 +124,20 @@ abstract class Nip_Form_Renderer_Elements_Abstract {
                     $value = $overrides[$name];
                 }
                 if ($name == "name" && $this->getElement()->isGroup()) {
-                    $value = $value . "[]";
+                    $value = $value."[]";
                 }
-                $return .= ' ' . $name . '="' . $value . '"';
+                $return .= ' '.$name.'="'.$value.'"';
             }
         }
+
         return $return;
     }
 
-    public function getElementAttribs() {
-        return array('id', 'name', 'style', 'class', 'title', 'readonly', 'disabled');
+    /**
+     * @return array
+     */
+    public function getElementAttribs()
+    {
+        return ['id', 'name', 'style', 'class', 'title', 'readonly', 'disabled'];
     }
-
 }

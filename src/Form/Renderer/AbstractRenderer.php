@@ -5,6 +5,10 @@ namespace Nip\Form\Renderer;
 use Nip\Form\AbstractForm;
 use Nip\Helpers\View\Errors as ErrorsHelper;
 use Nip\Helpers\View\Messages as MessagesHelper;
+use Nip_Form_Button_Abstract;
+use Nip_Form_Element_Abstract as AbstractElement;
+use Nip_Form_Renderer_Button_Abstract as AbstractButtonRenderer;
+use Nip_Form_Renderer_Elements_Abstract as AbstractElementRenderer;
 
 /**
  * Class AbstractRenderer
@@ -13,13 +17,16 @@ use Nip\Helpers\View\Messages as MessagesHelper;
 abstract class AbstractRenderer
 {
 
-    protected $_form;
+    protected $form;
 
-    protected $_elements;
-    protected $_elementsRenderer;
+    protected $elements;
+    protected $elementsRenderer;
 
-    protected $_buttonsRenderer;
+    protected $buttonsRenderer = [];
 
+    /**
+     * AbstractRenderer constructor.
+     */
     public function __construct()
     {
     }
@@ -29,16 +36,19 @@ abstract class AbstractRenderer
      */
     public function getElements()
     {
-        if (!$this->_elements) {
-            $this->_elements = $this->getForm()->getElements();
+        if (!$this->elements) {
+            $this->elements = $this->getForm()->getElements();
         }
 
-        return $this->_elements;
+        return $this->elements;
     }
 
+    /**
+     * @param $elements
+     */
     public function setElements($elements)
     {
-        $this->_elements = $elements;
+        $this->elements = $elements;
     }
 
     /**
@@ -46,16 +56,23 @@ abstract class AbstractRenderer
      */
     public function getForm()
     {
-        return $this->_form;
+        return $this->form;
     }
 
+    /**
+     * @param AbstractForm $form
+     * @return $this
+     */
     public function setForm(AbstractForm $form)
     {
-        $this->_form = $form;
+        $this->form = $form;
 
         return $this;
     }
 
+    /**
+     * @return string
+     */
     public function render()
     {
         $return = $this->openTag();
@@ -74,6 +91,9 @@ abstract class AbstractRenderer
         return $return;
     }
 
+    /**
+     * @return string
+     */
     public function openTag()
     {
         $return = '<form ';
@@ -86,6 +106,9 @@ abstract class AbstractRenderer
         return $return;
     }
 
+    /**
+     * @return string
+     */
     public function renderHidden()
     {
         $hiddenElements = $this->getForm()->findElements(['type' => 'hidden']);
@@ -99,7 +122,11 @@ abstract class AbstractRenderer
         return $return;
     }
 
-    public function renderElement(Nip_Form_Element_Abstract $element)
+    /**
+     * @param AbstractElement $element
+     * @return mixed
+     */
+    public function renderElement(AbstractElement $element)
     {
         return $element->render();
     }
@@ -124,6 +151,9 @@ abstract class AbstractRenderer
         return $return;
     }
 
+    /**
+     * @return string
+     */
     public function renderGroups()
     {
         $groups = $this->getForm()->getDisplayGroups();
@@ -135,10 +165,17 @@ abstract class AbstractRenderer
         return $return;
     }
 
+    /**
+     * @return string
+     */
     public function renderElements()
     {
+        return '';
     }
 
+    /**
+     * @return string
+     */
     public function renderButtons()
     {
         $return = '';
@@ -155,6 +192,9 @@ abstract class AbstractRenderer
         return $return;
     }
 
+    /**
+     * @return string
+     */
     public function closeTag()
     {
         $return = '</form>';
@@ -162,6 +202,12 @@ abstract class AbstractRenderer
         return $return;
     }
 
+    /**
+     * @param string|AbstractElement $label
+     * @param bool $required
+     * @param bool $error
+     * @return string
+     */
     public function renderLabel($label, $required = false, $error = false)
     {
         if (is_object($label)) {
@@ -183,20 +229,29 @@ abstract class AbstractRenderer
         return $return;
     }
 
-    public function getElementRenderer(Nip_Form_Element_Abstract $element)
+    /**
+     * @param AbstractElement $element
+     * @return mixed
+     */
+    public function getElementRenderer(AbstractElement $element)
     {
         $name = $element->getUniqueId();
-        if (!$this->_elementsRenderer[$name]) {
-            $this->_elementsRenderer[$name] = $this->getNewElementRenderer($element);
+        if (!isset($this->elementsRenderer[$name])) {
+            $this->elementsRenderer[$name] = $this->getNewElementRenderer($element);
         }
 
-        return $this->_elementsRenderer[$name];
+        return $this->elementsRenderer[$name];
     }
 
-    protected function getNewElementRenderer(Nip_Form_Element_Abstract $element)
+    /**
+     * @param AbstractElement $element
+     * @return mixed
+     */
+    protected function getNewElementRenderer(AbstractElement $element)
     {
         $type = $element->getType();
         $name = 'Nip_Form_Renderer_Elements_' . ucfirst($type);
+        /** @var AbstractElementRenderer $renderer */
         $renderer = new $name();
         $renderer->setRenderer($this);
         $renderer->setElement($element);
@@ -204,25 +259,33 @@ abstract class AbstractRenderer
         return $renderer;
     }
 
+    /**
+     * @param Nip_Form_Button_Abstract $button
+     * @return mixed
+     */
     public function getButtonRenderer(Nip_Form_Button_Abstract $button)
     {
         $name = $button->getName();
-        if (!$this->_buttonsRenderer[$name]) {
-            $this->_buttonsRenderer[$name] = $this->getNewButtonRenderer($button);
+        if (!isset($this->buttonsRenderer[$name])) {
+            $this->buttonsRenderer[$name] = $this->getNewButtonRenderer($button);
         }
 
-        return $this->_buttonsRenderer[$name];
+        return $this->buttonsRenderer[$name];
     }
 
+    /**
+     * @param Nip_Form_Button_Abstract $button
+     * @return mixed
+     */
     protected function getNewButtonRenderer(Nip_Form_Button_Abstract $button)
     {
         $type = $button->getType();
         $name = 'Nip_Form_Renderer_Button_' . ucfirst($type);
+        /** @var AbstractButtonRenderer $renderer */
         $renderer = new $name();
         $renderer->setRenderer($this);
         $renderer->setItem($button);
 
         return $renderer;
     }
-
 }
