@@ -4,6 +4,9 @@ use Nip\Form\AbstractForm;
 use Nip\Helpers\View\Errors as ErrorsHelper;
 use Nip\Helpers\View\Messages as MessagesHelper;
 
+/**
+ * Class Nip_Form_Renderer_Abstract
+ */
 abstract class Nip_Form_Renderer_Abstract
 {
 
@@ -14,6 +17,9 @@ abstract class Nip_Form_Renderer_Abstract
 
     protected $_buttonsRenderer;
 
+    /**
+     * Nip_Form_Renderer_Abstract constructor.
+     */
     public function __construct()
     {
     }
@@ -30,6 +36,9 @@ abstract class Nip_Form_Renderer_Abstract
         return $this->_elements;
     }
 
+    /**
+     * @param $elements
+     */
     public function setElements($elements)
     {
         $this->_elements = $elements;
@@ -43,6 +52,10 @@ abstract class Nip_Form_Renderer_Abstract
         return $this->_form;
     }
 
+    /**
+     * @param AbstractForm $form
+     * @return $this
+     */
     public function setForm(AbstractForm $form)
     {
         $this->_form = $form;
@@ -50,6 +63,9 @@ abstract class Nip_Form_Renderer_Abstract
         return $this;
     }
 
+    /**
+     * @return string
+     */
     public function render()
     {
         $return = $this->openTag();
@@ -68,11 +84,14 @@ abstract class Nip_Form_Renderer_Abstract
         return $return;
     }
 
+    /**
+     * @return string
+     */
     public function openTag()
     {
         $return = '<form ';
-        $atributes = $this->getForm()->getAttribs();
-        foreach ($atributes as $name => $value) {
+        $attributes = $this->getForm()->getAttribs();
+        foreach ($attributes as $name => $value) {
             $return .= $name.'="'.$value.'" ';
         }
         $return .= '>';
@@ -80,6 +99,9 @@ abstract class Nip_Form_Renderer_Abstract
         return $return;
     }
 
+    /**
+     * @return string
+     */
     public function renderHidden()
     {
         $hiddenElements = $this->getForm()->findElements(['type' => 'hidden']);
@@ -93,6 +115,10 @@ abstract class Nip_Form_Renderer_Abstract
         return $return;
     }
 
+    /**
+     * @param Nip_Form_Element_Abstract $element
+     * @return mixed
+     */
     public function renderElement(Nip_Form_Element_Abstract $element)
     {
         return $element->render();
@@ -118,6 +144,9 @@ abstract class Nip_Form_Renderer_Abstract
         return $return;
     }
 
+    /**
+     * @return string
+     */
     public function renderGroups()
     {
         $groups = $this->getForm()->getDisplayGroups();
@@ -129,10 +158,17 @@ abstract class Nip_Form_Renderer_Abstract
         return $return;
     }
 
+    /**
+     * @return string
+     */
     public function renderElements()
     {
+        return '';
     }
 
+    /**
+     * @return string
+     */
     public function renderButtons()
     {
         $return = '';
@@ -149,6 +185,9 @@ abstract class Nip_Form_Renderer_Abstract
         return $return;
     }
 
+    /**
+     * @return string
+     */
     public function closeTag()
     {
         $return = '</form>';
@@ -156,6 +195,12 @@ abstract class Nip_Form_Renderer_Abstract
         return $return;
     }
 
+    /**
+     * @param $label
+     * @param bool $required
+     * @param bool $error
+     * @return string
+     */
     public function renderLabel($label, $required = false, $error = false)
     {
         if (is_object($label)) {
@@ -177,16 +222,24 @@ abstract class Nip_Form_Renderer_Abstract
         return $return;
     }
 
+    /**
+     * @param Nip_Form_Element_Abstract $element
+     * @return mixed
+     */
     public function getElementRenderer(Nip_Form_Element_Abstract $element)
     {
         $name = $element->getUniqueId();
-        if (!$this->_elementsRenderer[$name]) {
+        if (!isset($this->_elementsRenderer[$name])) {
             $this->_elementsRenderer[$name] = $this->getNewElementRenderer($element);
         }
 
         return $this->_elementsRenderer[$name];
     }
 
+    /**
+     * @param Nip_Form_Element_Abstract $element
+     * @return mixed
+     */
     protected function getNewElementRenderer(Nip_Form_Element_Abstract $element)
     {
         $type = $element->getType();
@@ -198,16 +251,24 @@ abstract class Nip_Form_Renderer_Abstract
         return $renderer;
     }
 
+    /**
+     * @param Nip_Form_Button_Abstract $button
+     * @return mixed
+     */
     public function getButtonRenderer(Nip_Form_Button_Abstract $button)
     {
         $name = $button->getName();
-        if (!$this->_buttonsRenderer[$name]) {
+        if (!isset($this->_buttonsRenderer[$name])) {
             $this->_buttonsRenderer[$name] = $this->getNewButtonRenderer($button);
         }
 
         return $this->_buttonsRenderer[$name];
     }
 
+    /**
+     * @param Nip_Form_Button_Abstract $button
+     * @return mixed
+     */
     protected function getNewButtonRenderer(Nip_Form_Button_Abstract $button)
     {
         $type = $button->getType();
@@ -218,5 +279,4 @@ abstract class Nip_Form_Renderer_Abstract
 
         return $renderer;
     }
-
 }
