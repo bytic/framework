@@ -86,7 +86,7 @@ abstract class AbstractRoute
      */
     public function getParserClass()
     {
-        return 'Nip\Router\Parsers\\'.inflector()->camelize($this->getType());
+        return 'Nip\Router\Parsers\\' . inflector()->camelize($this->getType());
     }
 
     /**
@@ -102,7 +102,7 @@ abstract class AbstractRoute
     }
 
     /**
-     * @param $type
+     * @param string $type
      * @return $this
      */
     public function setType($type)
@@ -155,12 +155,12 @@ abstract class AbstractRoute
         $base = $this->getBase($params);
         $base = rtrim($base, "/");
 
-        return $base.$this->assemble($params);
+        return $base . $this->assemble($params);
     }
 
     /**
      * @param array $params
-     * @return mixed
+     * @return string
      */
     public function getBase($params = [])
     {
@@ -175,7 +175,7 @@ abstract class AbstractRoute
     }
 
     /**
-     * @param $base
+     * @param string $base
      */
     public function setBase($base)
     {
@@ -221,7 +221,7 @@ abstract class AbstractRoute
 
     /**
      * @param array $params
-     * @return mixed|string
+     * @return string
      */
     public function assemble($params = [])
     {
@@ -298,7 +298,7 @@ abstract class AbstractRoute
     }
 
     /**
-     * @param mixed $request
+     * @param \Nip\Request $request
      */
     public function setRequest($request)
     {

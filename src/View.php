@@ -221,7 +221,7 @@ class View
     }
 
     /**
-     * @param $path
+     * @param string $path
      * @return $this
      */
     public function setBasePath($path)

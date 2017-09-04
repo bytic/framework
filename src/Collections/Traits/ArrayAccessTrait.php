@@ -38,7 +38,7 @@ trait ArrayAccessTrait
      */
     public function offsetSet($offset, $value)
     {
-        if ( ! isset($offset)) {
+        if (!isset($offset)) {
             $this->add($value);
             return;
         }

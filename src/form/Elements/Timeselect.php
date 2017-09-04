@@ -17,8 +17,8 @@ class Nip_Form_Element_Timeselect extends Nip_Form_Element_MultiElement {
             $hoursElement = $this->getForm()->getNewElement('select');
 
             $hoursElement->addOption('-', 'HH');
-            for ($i=0; $i<=24 ; $i++) {
-                $hoursElement->addOption($i, $i.'h');
+            for ($i = 0; $i <= 24; $i++) {
+                $hoursElement->addOption($i, $i . 'h');
             }
             $hoursElement->setValue('-');
 
@@ -30,8 +30,8 @@ class Nip_Form_Element_Timeselect extends Nip_Form_Element_MultiElement {
             $minutesElement = $this->getForm()->getNewElement('select');
 
             $minutesElement->addOption('-', 'MM');
-            for ($i=0; $i<=59 ; $i++) {
-                $minutesElement->addOption($i, $i.'m');
+            for ($i = 0; $i <= 59; $i++) {
+                $minutesElement->addOption($i, $i . 'm');
             }
             $minutesElement->setValue('-');
 
@@ -42,8 +42,8 @@ class Nip_Form_Element_Timeselect extends Nip_Form_Element_MultiElement {
             $secondsElement = $this->getForm()->getNewElement('select');
 
             $secondsElement->addOption('-', 'SS');
-            for ($i=0; $i<=59 ; $i++) {
-                $secondsElement->addOption($i, $i.'s');
+            for ($i = 0; $i <= 59; $i++) {
+                $secondsElement->addOption($i, $i . 's');
             }
             $secondsElement->setValue('-');
 
@@ -125,8 +125,8 @@ class Nip_Form_Element_Timeselect extends Nip_Form_Element_MultiElement {
         $hour = intval($this->elements['hours']->getValue());
         $minutes = intval($this->elements['minutes']->getValue());
         $seconds = intval($this->elements['seconds']->getValue());
-        if ($hour+$minutes+$seconds > 0) {
-            return mktime($hour,$minutes,$seconds);
+        if ($hour + $minutes + $seconds > 0) {
+            return mktime($hour, $minutes, $seconds);
         }
         return false;
     }

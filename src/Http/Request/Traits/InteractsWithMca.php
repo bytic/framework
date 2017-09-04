@@ -68,7 +68,7 @@ trait InteractsWithMca
      */
     public function setActionKey($key)
     {
-        $this->actionKey = (string)$key;
+        $this->actionKey = (string) $key;
 
         return $this;
     }
@@ -120,7 +120,7 @@ trait InteractsWithMca
      */
     public function setModuleKey($key)
     {
-        $this->moduleKey = (string)$key;
+        $this->moduleKey = (string) $key;
 
         return $this;
     }
@@ -161,7 +161,7 @@ trait InteractsWithMca
      */
     public function setControllerKey($key)
     {
-        $this->controllerKey = (string)$key;
+        $this->controllerKey = (string) $key;
 
         return $this;
     }

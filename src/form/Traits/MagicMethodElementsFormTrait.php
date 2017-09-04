@@ -55,7 +55,7 @@ trait MagicMethodElementsFormTrait
             return $addElements;
         }
 
-        trigger_error('Call to undefined method: ['.$name.']', E_USER_ERROR);
+        trigger_error('Call to undefined method: [' . $name . ']', E_USER_ERROR);
 
         return $this;
     }
@@ -73,7 +73,7 @@ trait MagicMethodElementsFormTrait
             if ($this->isElementsType($type)) {
                 return $this->magicMethodAddElement($type, $arguments);
             } else {
-                trigger_error('Undefined element type for add operation: ['.$type.']', E_USER_ERROR);
+                trigger_error('Undefined element type for add operation: [' . $type . ']', E_USER_ERROR);
             }
         }
 
@@ -90,7 +90,7 @@ trait MagicMethodElementsFormTrait
     }
 
     /**
-     * @param $type
+     * @param string[] $type
      * @return boolean
      */
     public function isElementsType($type)
@@ -115,7 +115,7 @@ trait MagicMethodElementsFormTrait
     }
 
     /**
-     * @param $type
+     * @param string[] $type
      * @param $arguments
      * @return mixed
      */

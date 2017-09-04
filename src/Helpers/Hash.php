@@ -14,7 +14,7 @@ class Nip_Helper_Hash extends Nip\Helpers\AbstractHelper
         while ($len < $maxlen && pow($base, $len) < $num)
             $len++;
         if ($len >= $maxlen)
-            throw new Exception($num." out of range (max ".pow($base, $maxlen - 1).")");
+            throw new Exception($num . " out of range (max " . pow($base, $maxlen - 1) . ")");
         $ceil = pow($base, $len);
         $prime = $gp[$len];
         $dechash = ($num * $prime) % $ceil;
@@ -22,19 +22,19 @@ class Nip_Helper_Hash extends Nip\Helpers\AbstractHelper
         return str_pad($hash, $len, "0", STR_PAD_LEFT);
     }
 
-	/**
-	 * Singleton
-	 *
-	 * @return Nip_Helper_Hash
-	 */
-	static public function instance()
-	{
-		static $instance;
-		if (!($instance instanceof self)) {
-			$instance = new self();
-		}
-		return $instance;
-	}
+    /**
+     * Singleton
+     *
+     * @return Nip_Helper_Hash
+     */
+    static public function instance()
+    {
+        static $instance;
+        if (!($instance instanceof self)) {
+            $instance = new self();
+        }
+        return $instance;
+    }
 
 
 }

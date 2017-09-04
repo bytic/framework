@@ -25,12 +25,12 @@ class Nip_Form_Renderer_Paragraph extends Nip_Form_Renderer_Abstract {
     {
         $return = '';
         if (!$element->isRendered()) {
-            $return .= '<p class="row row-'.$element->getUniqueId().($element->isError() ? ' error' : '').'">';
+            $return .= '<p class="row row-' . $element->getUniqueId() . ($element->isError() ? ' error' : '') . '">';
 
                 $return .= $this->renderLabel($element);
 
                 $class = "value " . ($element->getType() == 'input' ? 'input' : '');
-                $return .= '<span class="'.$class.'">';
+                $return .= '<span class="' . $class . '">';
                 $return .= $element->renderElement();
                 $return .= '</span>';
 

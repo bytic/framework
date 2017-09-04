@@ -67,8 +67,8 @@ class Str
      */
     public static function endsWith($haystack, $needles)
     {
-        foreach ((array)$needles as $needle) {
-            if (substr($haystack, -strlen($needle)) === (string)$needle) {
+        foreach ((array) $needles as $needle) {
+            if (substr($haystack, -strlen($needle)) === (string) $needle) {
                 return true;
             }
         }
@@ -105,7 +105,7 @@ class Str
         // to make it convenient to check if the strings starts with the given
         // pattern such as "library/*", making any string check convenient.
         $pattern = str_replace('\*', '.*', $pattern);
-        return (bool)preg_match('#^' . $pattern . '\z#u', $value);
+        return (bool) preg_match('#^' . $pattern . '\z#u', $value);
     }
 
     /**
@@ -215,7 +215,7 @@ class Str
      */
     public static function contains($haystack, $needles)
     {
-        foreach ((array)$needles as $needle) {
+        foreach ((array) $needles as $needle) {
             if ($needle != '' && mb_strpos($haystack, $needle) !== false) {
                 return true;
             }
@@ -499,8 +499,8 @@ class Str
      */
     public static function startsWith($haystack, $needles)
     {
-        foreach ((array)$needles as $needle) {
-            if ($needle != '' && substr($haystack, 0, strlen($needle)) === (string)$needle) {
+        foreach ((array) $needles as $needle) {
+            if ($needle != '' && substr($haystack, 0, strlen($needle)) === (string) $needle) {
                 return true;
             }
         }

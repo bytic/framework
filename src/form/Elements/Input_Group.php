@@ -19,7 +19,7 @@ abstract class Nip_Form_Element_Input_Group extends Nip_Form_Element_Abstract {
 
 
             $oValue    = $option->$valueKey;
-            $oLabel   = $option->$labelKey;
+            $oLabel = $option->$labelKey;
             $oDisabled = $option->disabled;
 
             if ($oDisabled) {
@@ -34,7 +34,7 @@ abstract class Nip_Form_Element_Input_Group extends Nip_Form_Element_Abstract {
     /**
      * @return Nip_Form_Element_Input_Group
      */
-    public function addOption($value, $label , $attribs=array()) {
+    public function addOption($value, $label, $attribs = array()) {
         $element = $this->getNewElement();
         $element->setValue($value);
         $element->setLabel($label);

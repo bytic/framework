@@ -57,7 +57,7 @@ class FileLoader extends AbstractLoader
     }
 
     /**
-     * @param mixed $extension
+     * @param string $extension
      */
     public function setExtension($extension)
     {
@@ -96,7 +96,7 @@ class FileLoader extends AbstractLoader
      */
     protected function initFileParser($type)
     {
-        $class = 'Nip\Config\FileParser\\'.$type;
+        $class = 'Nip\Config\FileParser\\' . $type;
         $parser = new $class();
         $this->fileParsers[$type] = $parser;
     }

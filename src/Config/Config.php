@@ -42,7 +42,7 @@ class Config implements Countable, Iterator, ArrayAccess
      */
     public function __construct(array $array = [], $allowModifications = false)
     {
-        $this->allowModifications = (bool)$allowModifications;
+        $this->allowModifications = (bool) $allowModifications;
 
         foreach ($array as $key => $value) {
             $this->setDataItem($key, $value);
@@ -81,7 +81,7 @@ class Config implements Countable, Iterator, ArrayAccess
      * Retrieve a value and return $default if there is no element set.
      *
      * @param  string $key
-     * @param  mixed $default
+     * @param  string $default
      * @return mixed
      */
     public function get($key, $default = null)
@@ -96,7 +96,7 @@ class Config implements Countable, Iterator, ArrayAccess
     }
 
     /**
-     * @param $key
+     * @param string $key
      * @return mixed|null
      */
     public function getByKey($key)
@@ -120,7 +120,7 @@ class Config implements Countable, Iterator, ArrayAccess
     }
 
     /**
-     * @param $path
+     * @param string $path
      * @return string
      */
     protected function getByPath($path)
@@ -163,7 +163,7 @@ class Config implements Countable, Iterator, ArrayAccess
     }
 
     /**
-     * @param $path
+     * @param string $path
      * @return bool
      */
     public function hasByPath($path)

@@ -100,6 +100,6 @@ class HelperBroker
      */
     public function getHelperClass($name)
     {
-        return 'Nip_Helper_'.ucfirst($name);
+        return 'Nip_Helper_' . ucfirst($name);
     }
 }

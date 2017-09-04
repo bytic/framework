@@ -60,12 +60,12 @@ abstract class AbstractForm
     }
 
     /**
-     * @param $action
+     * @param string $action
      * @return AbstractForm
      */
     public function setAction($action)
     {
-        return $this->setAttrib('action', (string)$action);
+        return $this->setAttrib('action', (string) $action);
     }
 
     /**
@@ -75,7 +75,7 @@ abstract class AbstractForm
      */
     public function setAttrib($key, $value)
     {
-        $key = (string)$key;
+        $key = (string) $key;
         $this->_attribs[$key] = $value;
 
         return $this;
@@ -105,7 +105,7 @@ abstract class AbstractForm
     }
 
     /**
-     * @param $type
+     * @param string $type
      * @return ElementAbstract
      */
     public function getNewElement($type)
@@ -244,7 +244,7 @@ abstract class AbstractForm
             trigger_error('No valid elements specified for display group');
         }
 
-        $name = (string)$name;
+        $name = (string) $name;
         $group->setLegend($name);
 
         $this->_displayGroups[$name] = $group;
@@ -300,7 +300,7 @@ abstract class AbstractForm
      * @param $name
      * @param bool $label
      * @param string $type
-     * @return mixed
+     * @return ButtonAbstract
      */
     protected function newButton($name, $label = false, $type = 'button')
     {
@@ -415,19 +415,19 @@ abstract class AbstractForm
      */
     public function setOption($key, $value)
     {
-        $key = (string)$key;
+        $key = (string) $key;
         $this->_options[$key] = $value;
 
         return $this;
     }
 
     /**
-     * @param $key
+     * @param string $key
      * @return mixed|null
      */
     public function getOption($key)
     {
-        $key = (string)$key;
+        $key = (string) $key;
         if (!isset($this->_options[$key])) {
             return null;
         }
@@ -451,12 +451,12 @@ abstract class AbstractForm
     }
 
     /**
-     * @param $key
-     * @return mixed|null
+     * @param string $key
+     * @return string
      */
     public function getAttrib($key)
     {
-        $key = (string)$key;
+        $key = (string) $key;
         if (!isset($this->_attribs[$key])) {
             return null;
         }
@@ -485,7 +485,7 @@ abstract class AbstractForm
     }
 
     /**
-     * @param $class
+     * @param string $class
      * @return bool
      */
     public function hasClass($class)
@@ -679,7 +679,7 @@ abstract class AbstractForm
      */
     public function getErrors()
     {
-        $errors = array_merge((array)$this->getMessagesType('error'), $this->getElementsErrors());
+        $errors = array_merge((array) $this->getMessagesType('error'), $this->getElementsErrors());
 
         return $errors;
     }
@@ -748,7 +748,7 @@ abstract class AbstractForm
     }
 
     /**
-     * @param $name
+     * @param string $name
      * @return mixed
      */
     public function getMessageTemplate($name)
@@ -792,7 +792,7 @@ abstract class AbstractForm
     }
 
     /**
-     * @param $key
+     * @param string $key
      * @param $value
      */
     public function setCache($key, $value)
@@ -818,7 +818,7 @@ abstract class AbstractForm
     }
 
     /**
-     * @return null
+     * @return null|string
      */
     public function __toString()
     {

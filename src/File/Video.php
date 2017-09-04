@@ -11,15 +11,15 @@ class Nip_File_Video extends Nip_File_Handler {
 
         $command = [];
         $command[] = '/usr/bin/ffmpeg';
-        $command[] = "-i ".escapeshellarg($this->path);
+        $command[] = "-i " . escapeshellarg($this->path);
         foreach ($params as $key => $value) {
-            $command[] = "-$key ".escapeshellarg($value);
+            $command[] = "-$key " . escapeshellarg($value);
         }
 
-        $path = dirname($this->path) .DIRECTORY_SEPARATOR. pathinfo($this->path, PATHINFO_FILENAME) . '.' . strtolower($params['f']);
+        $path = dirname($this->path) . DIRECTORY_SEPARATOR . pathinfo($this->path, PATHINFO_FILENAME) . '.' . strtolower($params['f']);
         $command[] = $path;
 
-        $command = implode(" ", $command) . " && chmod 777 $path".($removeOriginal ? " && rm $this->path" : "");
+        $command = implode(" ", $command) . " && chmod 777 $path" . ($removeOriginal ? " && rm $this->path" : "");
 
         $process = new Process($command);
         $process->start();
@@ -46,7 +46,7 @@ class Nip_File_Video extends Nip_File_Handler {
         $filename = implode(".", $filename);
         $image->path = $dir . '/' . $filename;
         $image->save();
-   }
+    }
 
     public function getRandomFrame()
     {

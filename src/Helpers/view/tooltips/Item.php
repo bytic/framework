@@ -19,9 +19,9 @@ class Item {
 
 
 	public function __construct($id, $content, $title = false) {
-		$this->_id		= $id;
-		$this->_content	= $content;
-		$this->_title	= $title;
+		$this->_id = $id;
+		$this->_content = $content;
+		$this->_title = $title;
 	}
 
 

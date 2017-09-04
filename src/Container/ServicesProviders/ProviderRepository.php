@@ -132,7 +132,7 @@ class ProviderRepository implements ProviderRepositoryInterface
     public function getProvider($provider)
     {
         $name = is_string($provider) ? $provider : get_class($provider);
-        return \Nip_Helper_Arrays::first($this->providers, function ($value) use ($name) {
+        return \Nip_Helper_Arrays::first($this->providers, function($value) use ($name) {
             return $value instanceof $name;
         });
     }

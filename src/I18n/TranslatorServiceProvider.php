@@ -38,7 +38,7 @@ class TranslatorServiceProvider extends AbstractSignatureServiceProvider
      */
     protected function registerLoader()
     {
-        $this->getContainer()->share('translation.loader', function () {
+        $this->getContainer()->share('translation.loader', function() {
             $backend = new File();
             $languages = config('app.locale.enabled');
             $languages = is_array($languages) ? $languages : explode(',', $languages);

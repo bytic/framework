@@ -32,7 +32,7 @@ class Nip_Helper_Arrays extends Nip\Helpers\AbstractHelper
     /**
      * Return the first element in an array passing a given truth test.
      *
-     * @param  array $array
+     * @param  Nip\Container\ServiceProviders\Providers\AbstractServiceProvider[] $array
      * @param  callable|null $callback
      * @param  mixed $default
      * @return mixed
@@ -187,7 +187,7 @@ class Nip_Helper_Arrays extends Nip\Helpers\AbstractHelper
     /**
      * Fetch the same property for all the elements.
      *
-     * @param array|\Nip\Records\Collections\Collection $array
+     * @param Nip\Records\Collections\Collection $array
      * @param string $property
      * @param bool|string $return
      * @return array The property values
@@ -258,7 +258,6 @@ class Nip_Helper_Arrays extends Nip\Helpers\AbstractHelper
      *
      * @param array $array
      * @param array $params
-     * @param string $key
      * @return array
      */
     public function findAll($array, $params, $returnKey = false)
@@ -318,8 +317,9 @@ class Nip_Helper_Arrays extends Nip\Helpers\AbstractHelper
     public function toXML($data, $rootNodeName = 'ResultSet', &$xml = null)
     {
         // turn off compatibility mode as simple xml throws a wobbly if you don't.
-        if (ini_get('zend.ze1_compatibility_mode') == 1)
-            ini_set('zend.ze1_compatibility_mode', 0);
+        if (ini_get('zend.ze1_compatibility_mode') == 1) {
+                    ini_set('zend.ze1_compatibility_mode', 0);
+        }
 
         if (is_null($xml)) {
             $xml = simplexml_load_string("<?xml version='1.0' encoding='utf-8'?><$rootNodeName />");
@@ -341,8 +341,9 @@ class Nip_Helper_Arrays extends Nip\Helpers\AbstractHelper
                 $node = $this->isAssoc($value) || $numeric ? $xml->addChild($key) : $xml;
 
                 // recursive call
-                if ($numeric)
-                    $key = 'anon';
+                if ($numeric) {
+                                    $key = 'anon';
+                }
                 $this->toXML($value, $key, $node);
             } else {
                 // add single node.

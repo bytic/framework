@@ -67,7 +67,7 @@ abstract class HasOneOrMany extends Relation
 
     /**
      * @param RecordCollection $collection
-     * @param $items
+     * @param Collection $items
      */
     public function populateCollection(RecordCollection $collection, $items)
     {

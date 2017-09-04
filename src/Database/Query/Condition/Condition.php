@@ -12,6 +12,9 @@ class Condition
     protected $_values;
     protected $_query;
 
+    /**
+     * @param string $string
+     */
     public function __construct($string, $values = array())
     {
         $this->_string = $string;
@@ -75,9 +78,12 @@ class Condition
         return $string;
     }
 
+    /**
+     * @param Query $value
+     */
     protected function parseValueQuery($value)
     {
-        return "(".$value->assemble().")";
+        return "(" . $value->assemble() . ")";
     }
 
     /**
@@ -99,11 +105,17 @@ class Condition
         return $this;
     }
 
+    /**
+     * @param Condition $condition
+     */
     public function and_($condition)
     {
         return new AndCondition($this, $condition);
     }
 
+    /**
+     * @param Condition $condition
+     */
     public function or_($condition)
     {
         return new OrCondition($this, $condition);
@@ -111,7 +123,7 @@ class Condition
 
     public function protectCondition($condition)
     {
-        return strpos($condition, ' AND ') || strpos($condition, ' OR ') ? '('.$condition.')' : $condition;
+        return strpos($condition, ' AND ') || strpos($condition, ' OR ') ? '(' . $condition . ')' : $condition;
     }
 
 }

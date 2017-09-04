@@ -46,7 +46,7 @@ class Nip_Helper_Url extends Nip\Helpers\AbstractHelper
     /**
      * @param $name
      * @param bool $params
-     * @return mixed
+     * @return string|null
      */
     public function assemble($name, $params = false)
     {
@@ -56,7 +56,7 @@ class Nip_Helper_Url extends Nip\Helpers\AbstractHelper
     /**
      * @param $name
      * @param bool $params
-     * @return mixed
+     * @return string|null
      */
     public function get($name, $params = false)
     {
@@ -66,7 +66,7 @@ class Nip_Helper_Url extends Nip\Helpers\AbstractHelper
     /**
      * @param $name
      * @param bool $params
-     * @return mixed|string
+     * @return string|null
      */
     public function route($name, $params = false)
     {
@@ -82,7 +82,7 @@ class Nip_Helper_Url extends Nip\Helpers\AbstractHelper
         $currentRoute = $this->getRouter()->getCurrent();
         $base = $currentRoute ? $currentRoute->getBase($params) : request()->root();
 
-        return $base.($params ? "?".http_build_query($params) : '');
+        return $base . ($params ? "?" . http_build_query($params) : '');
     }
 
     /**

@@ -48,7 +48,7 @@ abstract class Nip_Form_Element_Abstract implements Nip_Form_Element_Interface
      */
     public function setAttrib($key, $value)
     {
-        $key = (string)$key;
+        $key = (string) $key;
         $this->_attribs[$key] = $value;
 
         return $this;
@@ -59,9 +59,12 @@ abstract class Nip_Form_Element_Abstract implements Nip_Form_Element_Interface
         return $this->getAttrib('id');
     }
 
+    /**
+     * @param string $key
+     */
     public function getAttrib($key)
     {
-        $key = (string)$key;
+        $key = (string) $key;
         if (!isset($this->_attribs[$key])) {
             return null;
         }
@@ -70,7 +73,7 @@ abstract class Nip_Form_Element_Abstract implements Nip_Form_Element_Interface
     }
 
     /**
-     * @return mixed
+     * @return string
      */
     public function getJSID()
     {
@@ -110,7 +113,7 @@ abstract class Nip_Form_Element_Abstract implements Nip_Form_Element_Interface
     protected function generateUniqueId()
     {
         $name = $this->getName();
-        $registeredNames = (array)$this->getForm()->getCache('elements_names');
+        $registeredNames = (array) $this->getForm()->getCache('elements_names');
         if (in_array($name, $registeredNames)) {
             $name = uniqid($name);
         }
@@ -206,23 +209,23 @@ abstract class Nip_Form_Element_Abstract implements Nip_Form_Element_Interface
     }
 
     /**
-     * @param $isRequired
+     * @param boolean $isRequired
      * @return $this
      */
     public function setRequired($isRequired)
     {
-        $this->_isRequired = (bool)$isRequired;
+        $this->_isRequired = (bool) $isRequired;
 
         return $this;
     }
 
     /**
-     * @param $isRendered
+     * @param boolean $isRendered
      * @return $this
      */
     public function setRendered($isRendered)
     {
-        $this->_isRendered = (bool)$isRendered;
+        $this->_isRendered = (bool) $isRendered;
 
         return $this;
     }
@@ -232,7 +235,7 @@ abstract class Nip_Form_Element_Abstract implements Nip_Form_Element_Interface
      */
     public function isRendered()
     {
-        return (bool)$this->_isRendered;
+        return (bool) $this->_isRendered;
     }
 
     /**
@@ -273,12 +276,12 @@ abstract class Nip_Form_Element_Abstract implements Nip_Form_Element_Interface
     public function validate()
     {
         if ($this->isRequired() && !$this->getValue()) {
-            $message = $this->getForm()->getMessageTemplate('no-'.$this->getName());
+            $message = $this->getForm()->getMessageTemplate('no-' . $this->getName());
             if (!$message) {
                 $translateSlug = 'general.form.errors.required';
                 $message = app('translator')->translate($translateSlug, array('label' => $this->getLabel()));
                 if ($message == $translateSlug) {
-                    $message = $message ? $message : 'The field `'.$this->getLabel().'` is mandatory.';
+                    $message = $message ? $message : 'The field `' . $this->getLabel() . '` is mandatory.';
                 }
             }
             $this->addError($message);
@@ -290,7 +293,7 @@ abstract class Nip_Form_Element_Abstract implements Nip_Form_Element_Interface
      */
     public function isRequired()
     {
-        return (bool)$this->_isRequired;
+        return (bool) $this->_isRequired;
     }
 
     /**
@@ -303,7 +306,7 @@ abstract class Nip_Form_Element_Abstract implements Nip_Form_Element_Interface
     }
 
     /**
-     * @return null
+     * @return string
      */
     public function getLabel()
     {
@@ -354,12 +357,12 @@ abstract class Nip_Form_Element_Abstract implements Nip_Form_Element_Interface
     }
 
     /**
-     * @param $key
+     * @param string $key
      * @return bool
      */
     public function delAttrib($key)
     {
-        $key = (string)$key;
+        $key = (string) $key;
         unset($this->_attribs[$key]);
 
         return true;
@@ -428,19 +431,19 @@ abstract class Nip_Form_Element_Abstract implements Nip_Form_Element_Interface
      */
     public function setOption($key, $value)
     {
-        $key = (string)$key;
+        $key = (string) $key;
         $this->_options[$key] = $value;
 
         return $this;
     }
 
     /**
-     * @param $key
+     * @param string $key
      * @return null
      */
     public function getOption($key)
     {
-        $key = (string)$key;
+        $key = (string) $key;
         if (!isset($this->_options[$key])) {
             return null;
         }
@@ -454,7 +457,7 @@ abstract class Nip_Form_Element_Abstract implements Nip_Form_Element_Interface
      */
     public function newDecorator($type = '')
     {
-        $name = 'Nip_Form_Decorator_Elements_'.ucfirst($type);
+        $name = 'Nip_Form_Decorator_Elements_' . ucfirst($type);
         $decorator = new $name();
         $decorator->setElement($this);
 
@@ -480,7 +483,7 @@ abstract class Nip_Form_Element_Abstract implements Nip_Form_Element_Interface
     }
 
     /**
-     * @param $position
+     * @param boolean $position
      * @return mixed
      */
     public function getDecoratorsByPosition($position)

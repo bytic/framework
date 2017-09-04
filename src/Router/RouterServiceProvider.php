@@ -42,7 +42,7 @@ class RouterServiceProvider extends AbstractSignatureServiceProvider
      */
     protected function registerUrlGenerator()
     {
-        $this->getContainer()->share('url', function () {
+        $this->getContainer()->share('url', function() {
             $routes = app('router')->getRoutes();
 
             // The URL generator needs the route collection that exists on the router.

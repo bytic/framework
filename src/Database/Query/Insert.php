@@ -14,7 +14,7 @@ class Insert extends AbstractQuery
     protected $_values;
 
     /**
-     * @return null
+     * @return string
      */
     public function assemble()
     {
@@ -48,12 +48,12 @@ class Insert extends AbstractQuery
     }
 
     /**
-     * @return bool|string
+     * @return string|false
      */
     public function parseValues()
     {
         if ($this->_values instanceof AbstractQuery) {
-            return ' ' . (string)$this->_values;
+            return ' ' . (string) $this->_values;
         } elseif (is_array($this->parts['data'])) {
             return $this->parseData();
         }

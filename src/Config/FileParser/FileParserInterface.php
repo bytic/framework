@@ -11,7 +11,6 @@ interface FileParserInterface
     /**
      * Parses a file from `$path` and gets its contents as an array
      *
-     * @param  string $path
      *
      * @return array
      */

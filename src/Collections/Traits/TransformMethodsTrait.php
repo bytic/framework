@@ -17,7 +17,7 @@ trait TransformMethodsTrait
      */
     public function toArray()
     {
-        return array_map(function ($value) {
+        return array_map(function($value) {
             return $value instanceof AbstractCollection ? $value->toArray() : $value;
         }, $this->items);
     }
@@ -31,7 +31,7 @@ trait TransformMethodsTrait
      */
     function jsonSerialize()
     {
-        return array_map(function ($value) {
+        return array_map(function($value) {
             if ($value instanceof JsonSerializable) {
                 return $value->jsonSerialize();
             } else {

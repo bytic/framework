@@ -153,7 +153,7 @@ class Email extends View
     }
 
     /**
-     * @param $body
+     * @param string|null $body
      * @return $this
      */
     public function setBody($body)

@@ -11,7 +11,7 @@ abstract class Nip_Form_Renderer_Button_Abstract {
 
     /**
      * @return Nip_Form_Renderer_Abstract
-    */
+     */
     public function getRenderer() {
         return $this->_renderer;
     }
@@ -23,7 +23,7 @@ abstract class Nip_Form_Renderer_Button_Abstract {
 
     /**
      * @return Nip_Form_Button_Abstract
-    */
+     */
     public function getItem() {
         return $this->_item;
     }
@@ -37,7 +37,7 @@ abstract class Nip_Form_Renderer_Button_Abstract {
     }
 
     public function renderItem() {
-        $return =  $this->generateItem();
+        $return = $this->generateItem();
         return $return;
     }
     

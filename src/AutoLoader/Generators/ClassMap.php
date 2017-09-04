@@ -17,7 +17,7 @@ class ClassMap
      */
     public static function dump($dirs, $file)
     {
-        $dirs = (array)$dirs;
+        $dirs = (array) $dirs;
         $maps = [];
         foreach ($dirs as $dir) {
             $maps = array_merge($maps, static::createMap($dir));
@@ -116,7 +116,7 @@ class ClassMap
                             break;
                         }
                     }
-                $classes[] = ltrim($namespace.$class, '\\');
+                $classes[] = ltrim($namespace . $class, '\\');
                     break;
                 default:
                     break;

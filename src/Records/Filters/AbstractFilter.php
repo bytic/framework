@@ -69,7 +69,7 @@ class AbstractFilter implements FilterInterface
     }
 
     /**
-     * @param null $value
+     * @param string|false $value
      */
     public function setValue($value)
     {
@@ -83,7 +83,7 @@ class AbstractFilter implements FilterInterface
     }
 
     /**
-     * @return bool|string
+     * @return string|false
      */
     public function getProcessedRequestValue()
     {
@@ -96,7 +96,7 @@ class AbstractFilter implements FilterInterface
     }
 
     /**
-     * @return bool|string
+     * @return string|false
      */
     public function getValueFromRequest()
     {
@@ -138,7 +138,7 @@ class AbstractFilter implements FilterInterface
     }
 
     /**
-     * @return null
+     * @return null|string
      */
     public function getName()
     {
@@ -162,7 +162,7 @@ class AbstractFilter implements FilterInterface
     }
 
     /**
-     * @param $value
+     * @param string|false $value
      * @return bool
      */
     public function isValidRequestValue($value)
@@ -171,7 +171,7 @@ class AbstractFilter implements FilterInterface
     }
 
     /**
-     * @param $value
+     * @param string|false $value
      * @return string
      */
     public function cleanRequestValue($value)

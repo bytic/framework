@@ -17,7 +17,7 @@ class Nip_Form_Element_File extends Nip_Form_Element_Input_Abstract {
             $name = str_replace(']', '', $name);
             $parts = explode('[', $name);
 
-            if (count($parts) > 1 ) {
+            if (count($parts) > 1) {
                 if ($_FILES[$parts[0]]) {
                     $fileData = [];
                     foreach ($_FILES[$parts[0]] as $key=>$data) {

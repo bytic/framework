@@ -271,10 +271,10 @@ class Image extends File
 
         if ($sourceRatio > $target_ratio) {
             $new_height = $max_height;
-            $new_width = ( int )($max_height * $sourceRatio);
+            $new_width = (int) ($max_height * $sourceRatio);
         } else {
             $new_width = $max_width;
-            $new_height = ( int )($max_width / $sourceRatio);
+            $new_height = (int) ($max_width / $sourceRatio);
         }
 
         $image = imagecreatetruecolor($new_width, $new_height);
@@ -291,8 +291,8 @@ class Image extends File
     }
 
     /**
-     * @param $x
-     * @param $y
+     * @param double $x
+     * @param double $y
      * @param $dwidth
      * @param $dheight
      * @param $swidth
@@ -457,7 +457,7 @@ class Image extends File
     }
 
     /**
-     * @return mixed
+     * @return string
      */
     public function getFile()
     {

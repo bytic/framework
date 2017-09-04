@@ -53,7 +53,7 @@ class Nip_Form_Element_CheckboxGroup extends Nip_Form_Element_Input_Group {
         $element = $this->getForm()->getNewElement('checkbox');
         $name = $this->getName();
         if (!strpos($name, '[]')) {
-            $name = $name .'[]';
+            $name = $name . '[]';
         }
         $element->setName($name);
         return $element;

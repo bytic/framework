@@ -41,7 +41,7 @@ class Nip_Profiler
      */
     public function setEnabled($enabled = false)
     {
-        $this->enabled = (boolean)$enabled;
+        $this->enabled = (boolean) $enabled;
         return $this;
     }
 
@@ -74,6 +74,9 @@ class Nip_Profiler
         return $this->enabled;
     }
 
+    /**
+     * @param boolean $name
+     */
     public function newProfileID($name)
     {
         if ($name) {
@@ -128,6 +131,9 @@ class Nip_Profiler
         return;
     }
 
+    /**
+     * @param boolean $profileID
+     */
     protected function endPreckeck($profileID)
     {
         if (!$this->checkEnabled()) {
@@ -215,7 +221,7 @@ class Nip_Profiler
         if (null === $minimumSeconds) {
             $this->filterElapsedSecs = null;
         } else {
-            $this->filterElapsedSecs = (integer)$minimumSeconds;
+            $this->filterElapsedSecs = (integer) $minimumSeconds;
         }
 
         return $this;
@@ -230,7 +236,7 @@ class Nip_Profiler
     }
 
     /**
-     * @param $name
+     * @param string $name
      * @return AbstractAdapter
      */
     public function newWriter($name)

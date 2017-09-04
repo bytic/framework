@@ -40,7 +40,7 @@ trait RouterAwareTrait
     }
 
     /**
-     * @param bool|Router $router
+     * @param Router $router
      * @return $this
      */
     public function setRouter($router = false)

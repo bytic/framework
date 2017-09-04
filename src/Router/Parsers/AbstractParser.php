@@ -93,7 +93,7 @@ abstract class AbstractParser
 
     /**
      * @param array $params
-     * @return mixed|string
+     * @return string
      */
     public function assemble($params = [])
     {
@@ -135,7 +135,7 @@ abstract class AbstractParser
     }
 
     /**
-     * @param $map
+     * @param boolean $map
      */
     public function setMap($map)
     {
@@ -216,7 +216,7 @@ abstract class AbstractParser
     }
 
     /**
-     * @param $key
+     * @param string $key
      * @return mixed|null
      */
     public function getParam($key)

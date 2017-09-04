@@ -72,7 +72,7 @@ class Translator
 
     /**
      * @param $lang
-     * @return mixed|string
+     * @return string
      */
     public function changeLangURL($lang)
     {
@@ -166,8 +166,8 @@ class Translator
     }
 
     /**
-     * @param $lang
-     * @return mixed|string
+     * @param string $lang
+     * @return string
      */
     public function getLanguageCode($lang)
     {
@@ -180,7 +180,7 @@ class Translator
 
     /**
      * gets the default language to be used when translating
-     * @return string $language
+     * @return boolean $language
      */
     public function getDefaultLanguage()
     {
@@ -241,7 +241,7 @@ class Translator
      *
      * @param bool|string $slug
      * @param bool|string $language
-     * @return string
+     * @return boolean
      */
     public function hasTranslation($slug = false, $language = false)
     {

@@ -31,7 +31,7 @@ abstract class Nip_Service_Maps_Provider_Abstract {
             'height' => $service->getParam('container_height') ? $service->getParam('container_height') : '500',
         );
 
-        $html = '<div id="'.$this->_container['id'].'" style="width: '.$this->_container['width'].'px; height: '.$this->_container['height'].'px;">&nbsp;</div> ';
+        $html = '<div id="' . $this->_container['id'] . '" style="width: ' . $this->_container['width'] . 'px; height: ' . $this->_container['height'] . 'px;">&nbsp;</div> ';
         return $html;
     }
 

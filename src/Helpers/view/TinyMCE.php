@@ -27,7 +27,7 @@ class TinyMCE extends AbstractHelper
     }
 
     /**
-     * @return mixed
+     * @return string
      */
     public function init()
     {

@@ -57,7 +57,7 @@ class Dispatcher implements DispatcherInterface
     /**
      * Return a new dispatcher containing the given element.
      *
-     * @param mixed $element
+     * @param MiddlewareInterface $element
      * @return DispatcherInterface
      */
     public function withElement($element): DispatcherInterface

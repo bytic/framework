@@ -79,10 +79,10 @@ class GoogleDFP extends AbstractHelper
         $add = $this->_slots[$id];
         if ($add) {
             return "
-                <!-- ".$add['unitName']." -->
-                <div id='".$add['divId']."' style='width:".$add['width']."px; height:".$add['height']."px;'>
+                <!-- ".$add['unitName'] . " -->
+                <div id='".$add['divId'] . "' style='width:" . $add['width'] . "px; height:" . $add['height'] . "px;'>
                 <script type='text/javascript'>
-                googletag.cmd.push(function() { googletag.display('".$add['divId']."'); });
+                googletag.cmd.push(function() { googletag.display('".$add['divId'] . "'); });
                 </script>
                 </div>";
         }

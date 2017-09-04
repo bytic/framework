@@ -133,7 +133,7 @@ trait ActiveRecordsTrait
     }
 
     /**
-     * @param null $table
+     * @param string $table
      */
     public function setTable($table)
     {
@@ -346,7 +346,7 @@ trait ActiveRecordsTrait
     /**
      * Delete a Record's database entry
      *
-     * @param mixed|Record $input
+     * @param Record $input
      */
     public function delete($input)
     {
@@ -387,7 +387,7 @@ trait ActiveRecordsTrait
         if (isset($where)) {
             if (is_array($where)) {
                 foreach ($where as $condition) {
-                    $condition = (array)$condition;
+                    $condition = (array) $condition;
                     $query->where($condition[0], $condition[1]);
                 }
             } else {
@@ -496,7 +496,7 @@ trait ActiveRecordsTrait
     }
 
     /**
-     * @param $query
+     * @param Query $query
      * @param array $params
      * @return RecordCollection
      */
@@ -577,7 +577,7 @@ trait ActiveRecordsTrait
     }
 
     /**
-     * @param $name
+     * @param string $name
      * @param $arguments
      * @return RecordCollection|null
      */

@@ -88,7 +88,7 @@ abstract class RecordManager
     }
 
     /**
-     * @param $name
+     * @param string $name
      * @param $arguments
      * @return bool
      */
@@ -106,10 +106,10 @@ abstract class RecordManager
     }
 
     /**
-     * @param $action
+     * @param string $action
      * @param array $params
      * @param null $module
-     * @return mixed
+     * @return string|null
      */
     public function compileURL($action, $params = [], $module = null)
     {
@@ -242,8 +242,8 @@ abstract class RecordManager
     }
 
     /**
-     * @param $name
-     * @return mixed
+     * @param string $name
+     * @return \Nip\Helpers\AbstractHelper
      */
     public function getHelper($name)
     {
@@ -432,7 +432,7 @@ abstract class RecordManager
     }
 
     /**
-     * @param null $class
+     * @param string $class
      * @return string
      */
     public function generateModelClass($class = null)
@@ -449,7 +449,7 @@ abstract class RecordManager
                 $class = ucfirst(inflector()->singularize($class));
             }
 
-            return implode($nsParts, '\\').'\\'.$class;
+            return implode($nsParts, '\\') . '\\' . $class;
         }
 
         return ucfirst(inflector()->singularize($class));
@@ -484,7 +484,7 @@ abstract class RecordManager
         }
 
         foreach ($fields as $field) {
-            $params['where'][$field.'-UNQ'] = ["$field = ?", $item->{$field}];
+            $params['where'][$field . '-UNQ'] = ["$field = ?", $item->{$field}];
         }
 
         $pk = $this->getPrimaryKey();
@@ -548,7 +548,7 @@ abstract class RecordManager
      * Finds Records using params array
      *
      * @param array $params
-     * @return mixed
+     * @return RecordCollection
      */
     public function findByParams($params = [])
     {
@@ -579,7 +579,7 @@ abstract class RecordManager
 
     /**
      * @param int $count
-     * @return mixed
+     * @return RecordCollection
      */
     public function findLast($count = 9)
     {
@@ -592,7 +592,7 @@ abstract class RecordManager
      * Inserts a Record into the database
      * @param Record $model
      * @param array|bool $onDuplicate
-     * @return mixed
+     * @return integer
      */
     public function insert($model, $onDuplicate = false)
     {
@@ -603,7 +603,7 @@ abstract class RecordManager
     }
 
     /**
-     * @param $model
+     * @param Record $model
      * @param $onDuplicate
      * @return InsertQuery
      */
@@ -658,7 +658,7 @@ abstract class RecordManager
     }
 
     /**
-     * @param null $foreignKey
+     * @param string $foreignKey
      */
     public function setForeignKey($foreignKey)
     {
@@ -672,7 +672,7 @@ abstract class RecordManager
     {
         $singularize = inflector()->singularize($this->getController());
 
-        return $this->getPrimaryKey()."_".inflector()->underscore($singularize);
+        return $this->getPrimaryKey() . "_" . inflector()->underscore($singularize);
     }
 
     /**

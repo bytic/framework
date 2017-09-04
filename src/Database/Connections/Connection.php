@@ -118,7 +118,7 @@ class Connection
     }
 
     /**
-     * @param $adapter
+     * @param AbstractAdapter $adapter
      */
     public function setAdapter($adapter)
     {
@@ -131,7 +131,7 @@ class Connection
     }
 
     /**
-     * @param $name
+     * @param string $name
      */
     public function setAdapterName($name)
     {
@@ -167,7 +167,7 @@ class Connection
     }
 
     /**
-     * @param mixed $database
+     * @param string $database
      */
     public function setDatabase($database)
     {
@@ -296,7 +296,7 @@ class Connection
     }
 
     /**
-     * @param $table
+     * @param null|string $table
      * @return mixed
      */
     public function describeTable($table)

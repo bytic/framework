@@ -127,7 +127,7 @@ abstract class AbstractTag
     {
         $return = '';
         foreach ($this->attributes as $name => $value) {
-            $return .= ' '.$name.'="'.$value.'"';
+            $return .= ' ' . $name . '="' . $value . '"';
         }
 
         return $return;
