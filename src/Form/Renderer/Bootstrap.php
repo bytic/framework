@@ -1,6 +1,8 @@
 <?php
 
-class Nip_Form_Renderer_Bootstrap extends Nip_Form_Renderer_Abstract
+use Nip\Form\Renderer\AbstractRenderer;
+
+class Nip_Form_Renderer_Bootstrap extends AbstractRenderer
 {
 
     /**
