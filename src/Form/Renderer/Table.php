@@ -1,5 +1,9 @@
 <?php
-class Nip_Form_Renderer_Table extends Nip_Form_Renderer_Abstract {
+
+use Nip\Form\Renderer\AbstractRenderer;
+
+class Nip_Form_Renderer_Table extends AbstractRenderer
+{
 
     protected $_table = [];
     protected $_tbody = [];

@@ -14,7 +14,15 @@ trait ContainerAliasBindingsTrait
 
     public function initContainer()
     {
+        if ($this->hasContainer()) {
+            return;
+        }
         $this->setContainer($this->generateContainer());
+        $this->initContainerBindings();
+    }
+
+    protected function initContainerBindings()
+    {
     }
 
     /**

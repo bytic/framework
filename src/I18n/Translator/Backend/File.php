@@ -14,9 +14,47 @@ use Nip_File_System as FileSystem;
  */
 class File extends AbstractBackend
 {
-
     protected $variableName = 'lang';
     protected $dictionary;
+
+    protected $baseDirectory;
+
+    /**
+     * @return mixed
+     */
+    public function getBaseDirectory()
+    {
+        return $this->baseDirectory;
+    }
+
+    /**
+     * @param mixed $baseDirectory
+     */
+    public function setBaseDirectory($baseDirectory)
+    {
+        $this->baseDirectory = $baseDirectory;
+    }
+
+    /**
+     * @param array $languages
+     */
+    public function addLanguages($languages)
+    {
+        foreach ($languages as $language) {
+            $this->addLanguage($language);
+        }
+    }
+
+    public function addLanguage($language)
+    {
+        $directory = $this->compileLanguageDirectory($language);
+        return $this->addLanguageFromPath($language, $directory);
+    }
+
+    protected function compileLanguageDirectory($lang)
+    {
+        return $this->getBaseDirectory() . DIRECTORY_SEPARATOR . $lang;
+    }
 
     /**
      * Adds a language to the dictionary
@@ -25,7 +63,7 @@ class File extends AbstractBackend
      * @param string $path Path to file containing translations
      * @return $this
      */
-    public function addLanguage($language, $path)
+    public function addLanguageFromPath($language, $path)
     {
         $this->languages[] = $language;
 
@@ -69,10 +107,9 @@ class File extends AbstractBackend
     protected function loadFile($language, $path)
     {
         if (file_exists($path)) {
-            ob_start();
             /** @noinspection PhpIncludeInspection */
             $messages = include $path;
-            ob_clean();
+
             if (is_array($messages)) {
                 $this->loadMessages($language, $messages);
             } else {

@@ -80,7 +80,7 @@ abstract class Nip_Form_Button_Abstract
     }
 
     /**
-     * @return Nip_Form_Button_Abstract
+     * @return string
      */
     public function getName()
     {
@@ -88,7 +88,8 @@ abstract class Nip_Form_Button_Abstract
     }
 
     /**
-     * @param boolean $label
+     * @param string $label
+     * @return $this
      */
     public function setLabel($label)
     {
@@ -97,11 +98,18 @@ abstract class Nip_Form_Button_Abstract
         return $this;
     }
 
+    /**
+     * @return string
+     */
     public function getLabel()
     {
         return $this->getAttrib('label');
     }
 
+    /**
+     * @param $value
+     * @return $this
+     */
     public function setValue($value)
     {
         $this->setAttrib('value', $value);
@@ -109,11 +117,19 @@ abstract class Nip_Form_Button_Abstract
         return $this;
     }
 
+    /**
+     * @param string $requester
+     * @return string
+     */
     public function getValue($requester = 'abstract')
     {
         return $this->getAttrib('value');
     }
 
+    /**
+     * @param $key
+     * @return bool
+     */
     public function delAttrib($key)
     {
         $key = (string) $key;
