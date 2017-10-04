@@ -4,7 +4,7 @@ namespace Nip\Database\Adapters\Profiler;
 
 use Nip\Profiler\Profile;
 
-class QueryProfile extends Profile
+class Query extends Profile
 {
     public $query;
     public $type;
@@ -79,5 +79,4 @@ class QueryProfile extends Profile
     {
         $this->adapter = $adapter;
     }
-
 }

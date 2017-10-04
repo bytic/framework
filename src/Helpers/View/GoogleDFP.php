@@ -3,7 +3,6 @@ namespace Nip\Helpers\View;
 
 class GoogleDFP extends AbstractHelper
 {
-
     protected $_slots = [];
 
 
@@ -58,8 +57,8 @@ class GoogleDFP extends AbstractHelper
     {
         $return = "<script type='text/javascript'>";
         $return .= "googletag.cmd.push(function() { ";
-            $return .= $this->renderHeadSlots();
-            $return .= "googletag.pubads().enableSingleRequest(); 
+        $return .= $this->renderHeadSlots();
+        $return .= "googletag.pubads().enableSingleRequest(); 
                         googletag.enableServices();";
         $return .= "});";
         $return .= " </script> ";

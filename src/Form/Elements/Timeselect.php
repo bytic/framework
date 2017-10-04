@@ -1,16 +1,18 @@
 <?php
 
-class Nip_Form_Element_Timeselect extends Nip_Form_Element_MultiElement {
-
+class Nip_Form_Element_Timeselect extends Nip_Form_Element_MultiElement
+{
     protected $_type = 'timeselect';
 
-    public function init() {
+    public function init()
+    {
         parent::init();
 
         $this->initSelects();
     }
 
-    public function initSelects() {
+    public function initSelects()
+    {
         $inputName = $this->getName();
 
         if (!$this->elements['hours']) {
@@ -66,7 +68,8 @@ class Nip_Form_Element_Timeselect extends Nip_Form_Element_MultiElement {
         $this->elements['seconds']->setName($inputName . '[seconds]');
     }
 
-    public function getData($data, $source = 'abstract') {
+    public function getData($data, $source = 'abstract')
+    {
         if ($source == 'model') {
             $dateUnix = strtotime($data);
             if ($dateUnix && $dateUnix !== false && $dateUnix > -62169989992) {
@@ -79,7 +82,8 @@ class Nip_Form_Element_Timeselect extends Nip_Form_Element_MultiElement {
         return parent::getData($data, $source);
     }
 
-    public function getDataFromRequest($request) {
+    public function getDataFromRequest($request)
+    {
         if (is_array($request)) {
             $elements = $this->getElements();
             foreach ($elements as $key=>$element) {
@@ -92,7 +96,8 @@ class Nip_Form_Element_Timeselect extends Nip_Form_Element_MultiElement {
         return $this;
     }
 
-    public function  validate() {
+    public function validate()
+    {
         parent::validate();
         if (!$this->isError()) {
             $value = $this->getValue();
@@ -130,5 +135,4 @@ class Nip_Form_Element_Timeselect extends Nip_Form_Element_MultiElement {
         }
         return false;
     }
-
 }

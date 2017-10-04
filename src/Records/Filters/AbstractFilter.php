@@ -194,5 +194,4 @@ class AbstractFilter implements FilterInterface
     {
         $this->manager = $manager;
     }
-
 }

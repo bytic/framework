@@ -13,7 +13,6 @@ namespace Nip\Http\Request;
 
 class Http
 {
-
     protected $request;
 
     /**

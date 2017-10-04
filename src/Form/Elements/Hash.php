@@ -2,7 +2,6 @@
 
 class Nip_Form_Element_Hash extends Nip_Form_Element_Hidden
 {
-
     protected $_ID;
 
     public function init()
@@ -64,5 +63,4 @@ class Nip_Form_Element_Hash extends Nip_Form_Element_Hidden
             $this->addError('Form security hash different from server');
         }
     }
-
 }

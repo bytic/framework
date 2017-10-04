@@ -70,5 +70,4 @@ class Associated extends RecordCollection
     {
         $this->_item = $item;
     }
-
 }

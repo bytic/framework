@@ -9,8 +9,8 @@
  * @version    SVN: $Id: Mobile_Detect.php 115 2009-05-21 12:48:26Z victor.stanciu $
  */
 
-class Nip_Mobile_Detect {
-    
+class Nip_Mobile_Detect
+{
     protected $accept;
     protected $userAgent;
     
@@ -33,7 +33,8 @@ class Nip_Mobile_Detect {
     );
 
 
-    public function __construct() {
+    public function __construct()
+    {
         $this->userAgent = $_SERVER['HTTP_USER_AGENT'];
         $this->accept    = $_SERVER['HTTP_ACCEPT'];
 
@@ -58,7 +59,8 @@ class Nip_Mobile_Detect {
      * @param array $arguments
      * @return bool
      */
-    public function __call($name, $arguments) {
+    public function __call($name, $arguments)
+    {
         $device = substr($name, 2);
         if ($name == "is" . ucfirst($device)) {
             return $this->isDevice($device);
@@ -72,12 +74,14 @@ class Nip_Mobile_Detect {
      * Returns true if any type of mobile device detected, including special ones
      * @return bool
      */
-    public function isMobile() {
+    public function isMobile()
+    {
         return $this->isMobile;
     }
 
 
-    protected function isDevice($device) {
+    protected function isDevice($device)
+    {
         $var    = "is" . ucfirst($device);
         $return = $this->$var === null ? (bool) preg_match("/" . $this->devices[$device] . "/i", $this->userAgent) : $this->$var;
 

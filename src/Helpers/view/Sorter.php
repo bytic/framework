@@ -4,7 +4,6 @@ namespace Nip\Helpers\View;
 
 class Sorter extends AbstractHelper
 {
-
     protected $_sorter;
     protected $_url;
 

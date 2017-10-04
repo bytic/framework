@@ -7,7 +7,6 @@ use function Nip\locale;
  */
 class Nip_Form_Element_Dateselect extends Nip_Form_Element_MultiElement
 {
-
     protected $_type = 'dateselect';
     protected $_locale = 'ct_EN';
     protected $format = 'M d Y';
@@ -153,7 +152,6 @@ class Nip_Form_Element_Dateselect extends Nip_Form_Element_MultiElement
         if (!$this->isError()) {
             $value = $this->getValue();
             if ($value) {
-
             }
         }
     }

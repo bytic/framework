@@ -38,5 +38,4 @@ class TranslatorServiceProviderTest extends AbstractTest
         $container->addServiceProvider(TranslatorServiceProvider::class);
         return $container;
     }
-
 }

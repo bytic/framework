@@ -12,7 +12,6 @@ use Nip\Utility\Text;
  */
 class ClassMap extends AbstractLoader
 {
-
     protected $directories = [];
 
     protected $directoriesMap = [];

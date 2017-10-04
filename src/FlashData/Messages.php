@@ -6,7 +6,7 @@ namespace Nip\FlashData;
  * Class FlashMessages
  * @package Nip\FlashData
  */
-class FlashMessages extends FlashData
+class Messages extends FlashData
 {
     protected $session_var = 'flash-messages';
 

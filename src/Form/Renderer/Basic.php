@@ -1,7 +1,8 @@
 <?php
-class Nip_Form_Renderer_Basic extends Nip_Form_Renderer_Table {
-    
-    public function renderElements() {
+class Nip_Form_Renderer_Basic extends Nip_Form_Renderer_Table
+{
+    public function renderElements()
+    {
         $elements = $this->getElements();
         if ($elements) {
             foreach ($elements as $element) {
@@ -15,5 +16,4 @@ class Nip_Form_Renderer_Basic extends Nip_Form_Renderer_Table {
         }
         return parent::renderElements();
     }
-
 }

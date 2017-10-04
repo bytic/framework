@@ -4,7 +4,6 @@ namespace Nip\Application;
 
 class Trace
 {
-
     protected $_traces = [];
 
     /**

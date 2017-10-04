@@ -4,9 +4,8 @@ namespace Nip\DebugBar\Formatter;
 
 use Monolog\Formatter\HtmlFormatter;
 
-class MonologFormatter extends HtmlFormatter
+class Monolog extends HtmlFormatter
 {
-
     public function format(array $record)
     {
         $title = $record['level_name'] . ' ' . (string) $record['message'];

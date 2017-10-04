@@ -26,7 +26,7 @@ trait OperationsTrait
      *
      * @return int
      */
-    function size()
+    public function size()
     {
         $result = 0;
         foreach ($this as $value) {

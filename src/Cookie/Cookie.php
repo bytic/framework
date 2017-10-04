@@ -2,8 +2,8 @@
 
 namespace Nip\Cookie;
 
-class Cookie {
-
+class Cookie
+{
     protected $name;
     protected $value;
     protected $expires;
@@ -12,7 +12,8 @@ class Cookie {
     protected $path = '/';
     protected $secure;
 
-    public function setName($name) {
+    public function setName($name)
+    {
         if ($name) {
             if (!preg_match("/[=,; \t\r\n\013\014]/", $name)) {
                 $this->name = $name;
@@ -21,66 +22,80 @@ class Cookie {
         return $this;
     }
 
-    public function getName() {
+    public function getName()
+    {
         return $this->name;
     }
 
-    public function setValue($value) {
+    public function setValue($value)
+    {
         $this->value = $value;
         return $this;
     }
 
-    public function getValue() {
+    public function getValue()
+    {
         return $this->value;
     }
 
-    public function setDomain($domain) {
+    public function setDomain($domain)
+    {
         $this->domain = $domain;
         return $this;
     }
 
-    public function getDomain() {
+    public function getDomain()
+    {
         return $this->domain;
     }
 
-    public function setPath($path) {
+    public function setPath($path)
+    {
         $this->path = $path;
         return $this;
     }
 
-    public function getPath() {
+    public function getPath()
+    {
         return $this->path;
     }
 
-    public function setExpire($expires) {
+    public function setExpire($expires)
+    {
         $this->expires = $expires;
         return $this;
     }
 
-    public function getExpire() {
+    public function getExpire()
+    {
         return $this->expires;
     }
 
-    public function setExpireTimer($expires) {
+    public function setExpireTimer($expires)
+    {
         $this->expiresTimer = $expires;
         return $this;
     }
 
-    public function getExpireTimer() {
+    public function getExpireTimer()
+    {
         return $this->expiresTimer;
     }
 
 
-    public function setSecured($secured) {
+    public function setSecured($secured)
+    {
         $this->secure = $secured;
         return $this;
     }
 
-    public function isSecure() {
+    public function isSecure()
+    {
         return (bool) $this->secure;
     }
 
-    public function isExpired() {
+    public function isExpired()
+    {
         if (is_int($this->expires) && $this->expires < time()) {
             return true;
         } else {
@@ -89,12 +104,12 @@ class Cookie {
     }
 
 
-    public function save() {
+    public function save()
+    {
         $expire = $this->getExpire();
         if (!$expire) {
             $timer = $this->getExpireTimer() ? $this->getExpireTimer() : 3 * 60 * 60;
             $expire = time() + $timer;
-
         }
         $domain = ($this->getDomain() != 'localhost') ? $this->getDomain() : false;
 
@@ -106,5 +121,4 @@ class Cookie {
                 $domain,
                 $this->isSecure());
     }
-
 }

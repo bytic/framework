@@ -2,7 +2,6 @@
 
 class Nip_Helper_Color extends Nip\Helpers\AbstractHelper
 {
-
     protected $colors = array(
         0 => array(0 => '000000', 1 => 'Black'),
         1 => array(0 => '000080', 1 => 'NavyBlue'),
@@ -166,7 +165,7 @@ class Nip_Helper_Color extends Nip\Helpers\AbstractHelper
      *
      * @return Nip_Helper_Color
      */
-    static public function instance()
+    public static function instance()
     {
         static $instance;
         if (!($instance instanceof self)) {

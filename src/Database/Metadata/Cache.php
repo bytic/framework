@@ -11,7 +11,6 @@ use Nip\Database\Connections\Connection;
  */
 class Cache extends CacheManager
 {
-
     protected $ttl = 10 * 24 * 60 * 60;
     protected $active = true;
     protected $metadata;
@@ -104,5 +103,4 @@ class Cache extends CacheManager
     {
         return parent::cachePath() . '/db-metadata/';
     }
-
 }

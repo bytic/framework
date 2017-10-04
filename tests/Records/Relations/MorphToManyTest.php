@@ -14,7 +14,6 @@ use Nip\Records\Relations\MorphToMany;
  */
 class MorphToManyTest extends \Nip\Tests\AbstractTest
 {
-
     public function testNewQuery()
     {
         $tagsManager = new RecordManager();

@@ -38,5 +38,4 @@ trait HasCollectionResults
 
         return AssociatedCollection::class;
     }
-
 }

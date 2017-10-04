@@ -101,12 +101,10 @@ function _strftime($datetime, $format = false)
 
 
 if (!function_exists("pluck")) {
-
     function pluck($array, $property)
     {
         return \Nip\HelperBroker::get('Arrays')->pluck($array, $property);
     }
-
 }
 
 /**
@@ -407,8 +405,7 @@ if (!function_exists("json_decode")) {
         $n = 0,
         $state = 0,
         $waitfor = 0
-    )
-    {
+    ) {
 
         #-- result var
         $val = null;
@@ -430,7 +427,6 @@ if (!function_exists("json_decode")) {
 
             #-= in-string
             if ($state === '"') {
-
                 if ($c == '\\') {
                     $c = $json[++$n];
                     // simple C escapes
@@ -461,7 +457,7 @@ if (!function_exists("json_decode")) {
                 elseif ($c == '"') {
                     $state = 0;
                 } // yeeha! a single character found!!!!1!
-                else/* if (ord($c) >= 32) */ { //@COMPAT: specialchars check - but native json doesn't do it?
+                else /* if (ord($c) >= 32) */ { //@COMPAT: specialchars check - but native json doesn't do it?
                     $val .= $c;
                 }
             } #-> end of sub-call (array/object)
@@ -545,7 +541,6 @@ if (!function_exists("json_decode")) {
         #-- final result
         return ($val);
     }
-
 }
 
 /**

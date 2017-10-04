@@ -2,7 +2,6 @@
 
 class Nip_Object
 {
-
     protected $_data;
 
     public function &__get($name)
@@ -27,5 +26,4 @@ class Nip_Object
     {
         unset($this->_data[$name]);
     }
-
 }

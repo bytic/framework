@@ -4,41 +4,46 @@ use Nip\Form\Renderer\AbstractRenderer;
 
 class Nip_Form_Renderer_Table extends AbstractRenderer
 {
-
     protected $_table = [];
     protected $_tbody = [];
     protected $_data = [];
     protected $_rows = [];
     protected $_cols = [];
 
-    public function  __construct() {
+    public function __construct()
+    {
         parent::__construct();
         $this->setTableAttrib('class', 'form horizontal');
         $this->setTableAttrib('cellspacing', '0');
         $this->setTableAttrib('cellpadding', '0');
     }
 
-    public function setTableAttrib($type, $value) {
+    public function setTableAttrib($type, $value)
+    {
         $this->_table[$type] = $value;
         return $this;
     }
 
-    public function setTBodyAttrib($type, $value) {
+    public function setTBodyAttrib($type, $value)
+    {
         $this->_tbody[$type] = $value;
         return $this;
     }
 
-    public function setRowAttrib($idRow, $type, $value) {
+    public function setRowAttrib($idRow, $type, $value)
+    {
         $this->_rows[$idRow][$type] = $value;
         return $this;
     }
 
-    public function addClassName($name) {
+    public function addClassName($name)
+    {
         $this->_table['class'] .= ' ' . $name;
         return $this;
     }
 
-    public function addCell($idRow, $idCol, $element, $type = 'text') {
+    public function addCell($idRow, $idCol, $element, $type = 'text')
+    {
         $this->_data[$idRow][$idCol]['element'] = $element;
         $this->_data[$idRow][$idCol]['type'] = $type;
         if (!in_array($idCol, $this->_cols)) {
@@ -46,12 +51,14 @@ class Nip_Form_Renderer_Table extends AbstractRenderer
         }
     }
 
-    public function setCols() {
+    public function setCols()
+    {
         $this->_cols = func_get_args();
     }
 
 
-    public function renderElements() {
+    public function renderElements()
+    {
         $return = '<table';
         foreach ($this->_table as $attrib => $value) {
             $return .= ' ' . $attrib . '="' . $value . '"';
@@ -71,7 +78,8 @@ class Nip_Form_Renderer_Table extends AbstractRenderer
         return $return;
     }
 
-    public function renderRows() {
+    public function renderRows()
+    {
         $return = '';
         foreach ($this->_data as $idRow=>$row) {
             $cell = reset($row);
@@ -116,6 +124,4 @@ class Nip_Form_Renderer_Table extends AbstractRenderer
         }
         return $return;
     }
-
-
 }

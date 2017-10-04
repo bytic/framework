@@ -4,7 +4,6 @@ use function Nip\locale;
 
 class Nip_Form_Element_Dateinput extends Nip_Form_Element_Input
 {
-
     protected $_type = 'dateinput';
     protected $_locale = 'ct_EN';
     protected $_format = 'M d Y';

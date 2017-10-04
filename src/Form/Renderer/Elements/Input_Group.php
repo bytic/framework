@@ -6,14 +6,15 @@ use Nip_Form_Element_Input_Abstract as AbstractInput;
 /**
  * Class Nip_Form_Renderer_Elements_Input_Group
  */
-abstract class Nip_Form_Renderer_Elements_Input_Group extends Nip_Form_Renderer_Elements_Input_Abstract {
-
+abstract class Nip_Form_Renderer_Elements_Input_Group extends Nip_Form_Renderer_Elements_Input_Abstract
+{
     protected $_separator = '<br />';
 
     /** @noinspection PhpMissingParentCallCommonInspection
      * @return string
      */
-    public function generateElement() {
+    public function generateElement()
+    {
         $elements = $this->getElement()->getElements();
         $returnElements = [];
         $return = '';
@@ -53,6 +54,4 @@ abstract class Nip_Form_Renderer_Elements_Input_Group extends Nip_Form_Renderer_
         $this->_separator = $separator;
         return $this;
     }
-    
-    
 }

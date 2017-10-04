@@ -40,7 +40,6 @@ Running as <b>'.$this->getRunUser() . '</b>.
     public function getRunUser()
     {
         if ($this->_RunUser === null) {
-
             $this->_RunUser = trim(shell_exec('whoami'));
         }
 

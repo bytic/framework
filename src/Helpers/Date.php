@@ -2,8 +2,6 @@
 
 class Nip_Helper_Date extends Nip\Helpers\AbstractHelper
 {
-
-
     public function validate($date, $format)
     {
         $unix = $this->parseUnix($date, $format);
@@ -39,7 +37,7 @@ class Nip_Helper_Date extends Nip\Helpers\AbstractHelper
      *
      * @return Nip_Helper_Date
      */
-    static public function instance()
+    public static function instance()
     {
         static $instance;
         if (!($instance instanceof self)) {
@@ -47,5 +45,4 @@ class Nip_Helper_Date extends Nip\Helpers\AbstractHelper
         }
         return $instance;
     }
-
 }

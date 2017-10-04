@@ -2,7 +2,6 @@
 
 class Nip_Service_Google_Charts
 {
-
     protected $_url = "http://chart.apis.google.com/chart";
 
     /**
@@ -31,7 +30,7 @@ class Nip_Service_Google_Charts
      *
      * @return Nip_Service_Google_Charts
      */
-    static public function instance()
+    public static function instance()
     {
         static $instance;
         if (!($instance instanceof self)) {

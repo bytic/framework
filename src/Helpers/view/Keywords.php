@@ -13,7 +13,6 @@ namespace Nip\Helpers\View;
 
 class Keywords extends AbstractHelper
 {
-
     private $items;
 
     public function addItem($item)

@@ -6,7 +6,6 @@ use Nip\View;
 
 class XML extends View
 {
-
     public function load($view = false, $variables = array(), $return = false)
     {
         header('Content-type: text/xml');
@@ -26,5 +25,4 @@ class XML extends View
         }
         return $instance;
     }
-
 }

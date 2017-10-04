@@ -60,7 +60,7 @@ abstract class LeagueContainer extends Container implements BridgeInterface
         $this->aliases[$alias] = $abstract;
 //        $this->abstractAliases[$abstract][] = $alias;
 
-        $this->share($alias, function() use ($abstract) {
+        $this->share($alias, function () use ($abstract) {
             return $this->get($abstract);
         });
     }

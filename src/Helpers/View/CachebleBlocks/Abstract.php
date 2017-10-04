@@ -11,7 +11,6 @@ use Nip_File_System as FileSystem;
  */
 class AbstractBlock
 {
-
     protected $_name;
 
     /** $_model Nip_Record */

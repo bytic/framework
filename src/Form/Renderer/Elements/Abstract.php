@@ -4,7 +4,6 @@ use Nip\Form\Renderer\AbstractRenderer;
 
 abstract class Nip_Form_Renderer_Elements_Abstract
 {
-
     protected $_renderer;
     protected $_element;
 

@@ -17,7 +17,6 @@ class HelperBrokerTest extends \Nip\Tests\AbstractTest
         static::assertEquals('Nip_Helper_Url', $broker->getHelperClass('Url'));
         static::assertEquals('Nip_Helper_XML', $broker->getHelperClass('XML'));
         static::assertEquals('Nip_Helper_Passwords', $broker->getHelperClass('passwords'));
-
     }
 
     public function testGenerateHelper()
@@ -37,5 +36,4 @@ class HelperBrokerTest extends \Nip\Tests\AbstractTest
         static::assertInstanceOf('Nip_Helper_XML', HelperBroker::get('XML'));
         static::assertInstanceOf('Nip_Helper_Passwords', HelperBroker::get('passwords'));
     }
-
 }

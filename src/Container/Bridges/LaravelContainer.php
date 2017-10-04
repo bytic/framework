@@ -10,7 +10,6 @@ use League\Container\Container as Container;
  */
 abstract class LaravelContainer extends Container implements BridgeInterface
 {
-
     public function share($alias, $concrete = null)
     {
         $this->singleton($alias, $concrete);

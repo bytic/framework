@@ -1,7 +1,6 @@
 <?php
 class Nip_Helper_Async extends Nip\Helpers\AbstractHelper
 {
-	
     public function sendMessage($message, $type = 'success', $format ='json')
     {
         $data = array(
@@ -10,7 +9,7 @@ class Nip_Helper_Async extends Nip\Helpers\AbstractHelper
             );
         return $this->$format($data);
     }
-	
+    
     public function json($data)
     {
         header("Content-type: text/x-json");

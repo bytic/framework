@@ -8,8 +8,8 @@
  * @license    http://www.opensource.org/licenses/mit-license.php The MIT License
  */
 
-class Nip_Service_Maps {
-
+class Nip_Service_Maps
+{
     protected $_api_key;
     protected $_provider;
     protected $_providerObj;
@@ -17,10 +17,12 @@ class Nip_Service_Maps {
     protected $_params = [];
     protected $_objects = [];
 
-    public function  __construct() {        
+    public function __construct()
+    {
     }
 
-    public function  __call($name, $arguments) {
+    public function __call($name, $arguments)
+    {
         if (strpos($name, 'render') === 0) {
             return call_user_func_array(array($this->getProvider(), $name), $arguments);
         }
@@ -38,12 +40,14 @@ class Nip_Service_Maps {
         return $this->_providerObj;
     }
 
-    public function setProvider($name) {
+    public function setProvider($name)
+    {
         $this->_provider = $name;
         return $this;
     }
 
-    public function initProvider() {
+    public function initProvider()
+    {
         if ($this->_provider) {
             $class = 'Nip_Service_Maps_Provider_' . ucfirst($this->_provider);
             $this->_providerObj = new $class();
@@ -65,32 +69,38 @@ class Nip_Service_Maps {
         return $this;
     }
 
-    public function addObject(Nip_Service_Maps_Objects_Abstract $object) {
+    public function addObject(Nip_Service_Maps_Objects_Abstract $object)
+    {
         $this->_objects[] = $object;
         return $this;
     }
 
-    public function getNewObject($name) {
+    public function getNewObject($name)
+    {
         $name = 'Nip_Service_Maps_Objects_' . ucfirst($name);
         $object = new $name();
         $object->setService($this);
         return $object;
     }
 
-    public function getObjects() {
+    public function getObjects()
+    {
         return $this->_objects;
     }
 
-    public function setParam($key, $value) {
+    public function setParam($key, $value)
+    {
         $this->_params[$key] = $value;
         return $this;
     }
 
-    public function getParam($key) {
+    public function getParam($key)
+    {
         return $this->_params[$key];
     }
 
-    public function render() {
+    public function render()
+    {
         return $this->getProvider()->render();
     }
 }

@@ -1,8 +1,8 @@
 <?php
 namespace Nip\Helpers\View;
 
-class GoogleWebFonts extends AbstractHelper {
-
+class GoogleWebFonts extends AbstractHelper
+{
     protected $_fontSelected = [];
     protected $_fontStrings = array(
         'Open+Sans' => 'Open+Sans:400,300,600,700,800,300italic,400italic,700italic,800italic:latin,latin-ext',
@@ -10,7 +10,8 @@ class GoogleWebFonts extends AbstractHelper {
         'Kaushan+Script' => 'Kaushan+Script::latin,latin-ext',
     );
 
-    public function __toString() {
+    public function __toString()
+    {
         $return = '';
         if (count($this->_fontSelected)) {
             $return .= '<script type="text/javascript">';

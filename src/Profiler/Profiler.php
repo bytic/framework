@@ -9,7 +9,6 @@ use Nip\Profiler\Profile;
 
 class Nip_Profiler
 {
-
     public $enabled = false;
 
     public $profiles = [];
@@ -88,7 +87,6 @@ class Nip_Profiler
 
     public function getProfiles($type = null, $showUnfinished = false)
     {
-
         $profiles = [];
         foreach ($this->profiles as $key => $profile) {
             if ($type === null) {

@@ -4,8 +4,7 @@ namespace Nip\Helpers\View;
 
 class Messages extends AbstractHelper
 {
-
-    static $_cssClass = array(
+    public static $_cssClass = array(
         'warning' => 'alert alert-warning',
         'error' => 'alert alert-danger',
         'success' => 'alert alert-success',

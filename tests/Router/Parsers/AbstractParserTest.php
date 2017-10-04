@@ -61,5 +61,4 @@ abstract class AbstractParserTest extends \Nip\Tests\AbstractTest
 //
 //		static::assertEquals($outputArray, $this->object->stripEmptyParams($inputArray));
 //    }
-
 }

@@ -4,7 +4,6 @@ namespace Nip\Helpers\View;
 
 class Icontext extends AbstractHelper
 {
-
     protected $_symbols = array(
         'unknown' => 'f016',
         'image' => 'f03e',
@@ -21,5 +20,4 @@ class Icontext extends AbstractHelper
         }
         return '&#x' . $this->_symbols[$name] . ';';
     }
-
 }

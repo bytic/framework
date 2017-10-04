@@ -1,6 +1,7 @@
 <?php
 
 namespace Nip\Helpers\View;
+
 use Nip\Helpers\View\Tooltips\Item;
 
 /**
@@ -14,7 +15,6 @@ use Nip\Helpers\View\Tooltips\Item;
 
 class Tooltips extends AbstractHelper
 {
-
     private $tooltips = [];
 
     /**

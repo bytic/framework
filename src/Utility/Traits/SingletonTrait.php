@@ -10,7 +10,7 @@ trait SingletonTrait
      *
      * @return self
      */
-    static public function instance()
+    public static function instance()
     {
         static $instance;
         if (!($instance instanceof self)) {

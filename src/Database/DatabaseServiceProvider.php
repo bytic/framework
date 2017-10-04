@@ -41,7 +41,7 @@ class DatabaseServiceProvider extends AbstractServiceProvider
             ->withArgument(Application::class)
             ->withArgument(ConnectionFactory::class);
 
-        $this->getContainer()->share('db.connection', function() {
+        $this->getContainer()->share('db.connection', function () {
             return app('db')->connection();
         });
     }

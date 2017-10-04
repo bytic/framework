@@ -4,7 +4,6 @@ namespace Nip\Database\Adapters\Profiler;
 
 class Profiler extends \Nip_Profiler
 {
-
     public $filterTypes = null;
 
     public function newProfile($id)

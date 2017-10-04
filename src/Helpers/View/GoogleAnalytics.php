@@ -11,7 +11,6 @@ use Nip\FlashData\FlashData;
  */
 class GoogleAnalytics extends AbstractHelper
 {
-
     use ConfigAwareTrait;
 
     public $transactions = null;

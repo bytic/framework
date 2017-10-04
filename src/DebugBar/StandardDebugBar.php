@@ -21,7 +21,6 @@ use Nip\Profiler\Adapters\DebugBar as ProfilerDebugBar;
  */
 class StandardDebugBar extends DebugBar
 {
-
     public function doBoot()
     {
         $this->addCollector(new PhpInfoCollector());

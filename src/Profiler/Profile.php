@@ -4,7 +4,6 @@ namespace Nip\Profiler;
 
 class Profile
 {
-
     public $id = null;
     public $name = null;
     public $columns = array('type', 'time', 'memory');

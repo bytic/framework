@@ -36,10 +36,11 @@ class Nip_Form_Renderer_DisplayGroup
         $return .= $renderer->renderElements();
         $return .= '</fieldset>';
         return $return;
-    }    
+    }
     
-    public function renderAttributes($overrides = array()) {
-        $attribs = $this->getGroup()->getAttribs();        
+    public function renderAttributes($overrides = array())
+    {
+        $attribs = $this->getGroup()->getAttribs();
         $elementAttribs = $this->getElementAttribs();
         $return = '';
         foreach ($attribs as $name => $value) {
@@ -53,8 +54,8 @@ class Nip_Form_Renderer_DisplayGroup
         return $return;
     }
 
-    public function getElementAttribs() {
+    public function getElementAttribs()
+    {
         return array('id', 'style', 'class');
     }
-
 }

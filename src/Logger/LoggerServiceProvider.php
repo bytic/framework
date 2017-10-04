@@ -19,7 +19,7 @@ class LoggerServiceProvider extends AbstractSignatureServiceProvider implements 
      */
     public function register()
     {
-        $this->getContainer()->share('log', function() {
+        $this->getContainer()->share('log', function () {
             return $this->createLogger();
         });
 

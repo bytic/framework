@@ -2,7 +2,6 @@
 
 class Nip_Form_Renderer_Elements_Dateinput extends Nip_Form_Renderer_Elements_Input
 {
-
     public function generateElement()
     {
         if (!$this->getElement()->getAttrib('id')) {
@@ -36,5 +35,4 @@ class Nip_Form_Renderer_Elements_Dateinput extends Nip_Form_Renderer_Elements_In
         $return .= '</script>';
         return $return;
     }
-
 }

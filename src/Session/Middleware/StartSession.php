@@ -59,7 +59,6 @@ class StartSession implements ServerMiddlewareInterface
      */
     protected function startSession(ServerRequestInterface $request)
     {
-
         if ($request->isCLI() == false) {
             $requestHTTP = $request->getHttp();
             $domain = $requestHTTP->getRootDomain();

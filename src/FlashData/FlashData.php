@@ -17,7 +17,6 @@ namespace Nip\FlashData;
 
 class FlashData
 {
-
     protected $previous = [];
     protected $next = [];
 

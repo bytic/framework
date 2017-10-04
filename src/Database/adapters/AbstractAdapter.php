@@ -106,5 +106,4 @@ abstract class AbstractAdapter
     abstract public function lastInsertID();
 
     abstract public function affectedRows();
-
 }

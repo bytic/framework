@@ -4,7 +4,6 @@ use Nip\Form\Renderer\AbstractRenderer;
 
 class Nip_Form_Renderer_List extends AbstractRenderer
 {
-
     protected $_list = [];
 
     public function setListAttrib($type, $value)
@@ -61,5 +60,4 @@ class Nip_Form_Renderer_List extends AbstractRenderer
 
         return $return;
     }
-
 }

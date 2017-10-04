@@ -119,5 +119,4 @@ class Insert extends AbstractQuery
     {
         $this->addPart('onDuplicate', $value);
     }
-
 }

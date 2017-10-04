@@ -2,7 +2,6 @@
 
 class Nip_Form_Renderer_Elements_Dateselect extends Nip_Form_Renderer_Elements_MultiElement
 {
-
     public function generateElement()
     {
         $return = '<div class="row">';
@@ -52,5 +51,4 @@ class Nip_Form_Renderer_Elements_Dateselect extends Nip_Form_Renderer_Elements_M
         $return .= '</script>';
         return $return;
     }
-
 }

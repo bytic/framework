@@ -1,10 +1,11 @@
 <?php
-class Nip_File_Video extends Nip_File_Handler {
-
-    static public $extensions = array('avi', 'mp4', 'mpg', 'mpeg', 'mkv', 'm4v');
+class Nip_File_Video extends Nip_File_Handler
+{
+    public static $extensions = array('avi', 'mp4', 'mpg', 'mpeg', 'mkv', 'm4v');
     protected $_ffmpeg_video;
 
-    public function convert($params = array(), $removeOriginal = true) {
+    public function convert($params = array(), $removeOriginal = true)
+    {
         if (!$params['f'] || $params['f'] == $this->extension) {
             return;
         }
@@ -25,7 +26,8 @@ class Nip_File_Video extends Nip_File_Handler {
         $process->start();
     }
 
-    public function saveRandomFrame($dir, $width = false, $height = false) {
+    public function saveRandomFrame($dir, $width = false, $height = false)
+    {
         /* @var $frame ffmpeg_frame */
         $frame = $this->getRandomFrame();
         $image = new Image_VideoFrame();

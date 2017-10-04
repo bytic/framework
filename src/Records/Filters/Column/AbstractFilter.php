@@ -8,7 +8,6 @@ namespace Nip\Records\Filters\Column;
  */
 class AbstractFilter extends \Nip\Records\Filters\AbstractFilter implements FilterInterface
 {
-
     protected $field;
 
     protected $dbName;
@@ -51,5 +50,4 @@ class AbstractFilter extends \Nip\Records\Filters\AbstractFilter implements Filt
 
         return '`' . $table . '`.`' . $this->getField() . '`';
     }
-
 }

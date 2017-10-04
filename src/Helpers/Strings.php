@@ -1,5 +1,6 @@
 <?php
-class Nip_Helper_Strings extends Nip\Helpers\AbstractHelper {
+class Nip_Helper_Strings extends Nip\Helpers\AbstractHelper
+{
 
     /**
      * Limits a string to a certain number of words
@@ -9,7 +10,8 @@ class Nip_Helper_Strings extends Nip\Helpers\AbstractHelper {
      * @param string $end
      * @return string
      */
-    public function limitWords($string, $limit = false, $end = '...') {
+    public function limitWords($string, $limit = false, $end = '...')
+    {
         $words = explode(" ", $string);
         
         if (count($words) <= $limit) {
@@ -29,12 +31,13 @@ class Nip_Helper_Strings extends Nip\Helpers\AbstractHelper {
 
     /**
      * Injects GET params in links
-     * 
+     *
      * @param string $string
      * @param array $params
      * @return string
      */
-    public function injectParams($string, $params = array()) {
+    public function injectParams($string, $params = array())
+    {
         $links = preg_split('#(<a\b[^>]+>)#', $string, -1, PREG_SPLIT_DELIM_CAPTURE);
         $old   = $links;
 
@@ -68,7 +71,8 @@ class Nip_Helper_Strings extends Nip\Helpers\AbstractHelper {
      * @param string $base
      * @return string
      */
-    public function relativeToAbsolute($string, $base) {
+    public function relativeToAbsolute($string, $base)
+    {
         $matches = preg_split('#(<(a|img)\b[^>]+>)#', $string, -1, PREG_SPLIT_DELIM_CAPTURE);
         $old     = $matches;
 
@@ -86,35 +90,35 @@ class Nip_Helper_Strings extends Nip\Helpers\AbstractHelper {
     {
         return money_format('%n', $number);
     }
-	
+    
     public function cronoTimeInSeconds($time)
     {
-        $parts = explode(':', $time);		
+        $parts = explode(':', $time);
         $seconds = array_pop($parts);
         $minutes = array_pop($parts);
         $hours = array_pop($parts);
         $days = array_pop($parts);
 
-        return (($days*24 + $hours)*60 + $minutes)*60 + $seconds;		
+        return (($days*24 + $hours)*60 + $minutes)*60 + $seconds;
     }
-	
+    
     public function secondsInCronoTime($seconds)
     {
         if ($days = intval((floor($seconds / 86400)))) {
             $seconds = $seconds - $days*86400;
-            $return .= ($return ? ':' : '') . str_pad($days, 2, 0,STR_PAD_LEFT);
+            $return .= ($return ? ':' : '') . str_pad($days, 2, 0, STR_PAD_LEFT);
         }
-        if ($hours = intval((floor($seconds / 3600))) OR $return) {
+        if ($hours = intval((floor($seconds / 3600))) or $return) {
             $seconds = $seconds - $hours*3600;
-            $return .= ($return ? ':' : '') . str_pad($hours, 2, 0,STR_PAD_LEFT);
+            $return .= ($return ? ':' : '') . str_pad($hours, 2, 0, STR_PAD_LEFT);
         }
-        if ($minutes = intval((floor($seconds / 60))) OR $return) {
+        if ($minutes = intval((floor($seconds / 60))) or $return) {
             $seconds = $seconds - $minutes*60;
             $return .= ($return ? ':' : '') . str_pad($minutes, 2, 0, STR_PAD_LEFT);
         }
-        $seconds = round($seconds, 2);  
+        $seconds = round($seconds, 2);
         $return .= ($return ? ':' : '') . str_pad($seconds, 2, 0, STR_PAD_LEFT);
-			
+            
         return $return;
     }
 }

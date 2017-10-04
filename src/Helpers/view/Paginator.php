@@ -4,7 +4,6 @@ namespace Nip\Helpers\View;
 
 class Paginator extends AbstractHelper
 {
-
     protected $_url;
     protected $_interval = [];
     protected $_paginator;
@@ -100,5 +99,4 @@ class Paginator extends AbstractHelper
         $this->_url = $url;
         return $this;
     }
-
 }

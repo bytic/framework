@@ -2,7 +2,6 @@
 
 class Nip_Form_Element_MultiElement extends Nip_Form_Element_Abstract
 {
-
     protected $_type = 'multiElement';
 
     /**

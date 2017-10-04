@@ -10,7 +10,6 @@
  */
 class Nip_File_Image extends Nip_File_Handler
 {
-
     public $extensions = ["jpg", "jpeg", "gif", "png"];
     public $quality = 90;
     public $type = 'jpg';
@@ -139,7 +138,6 @@ class Nip_File_Image extends Nip_File_Handler
     public function save()
     {
         if (Nip_File_System::instance()->createDirectory(dirname($this->path))) {
-
             switch ($this->type) {
                 case 'png':
                     if ($this->quality > 9) {
@@ -237,7 +235,6 @@ class Nip_File_Image extends Nip_File_Handler
 
     public function cropToCenter($cWidth, $cHeight)
     {
-
         $this->resizeToLarge($cWidth, $cHeight);
 
         $width = $this->getWidth();
@@ -365,7 +362,6 @@ class Nip_File_Image extends Nip_File_Handler
         if ($threshold > 0) {
             for ($x = 0; $x < $w - 1; $x++) {
                 for ($y = 0; $y < $h; $y++) {
-
                     $rgbOrig = ImageColorAt($img, $x, $y);
                     $rOrig = (($rgbOrig >> 16) & 0xFF);
                     $gOrig = (($rgbOrig >> 8) & 0xFF);
@@ -469,5 +465,4 @@ class Nip_File_Image extends Nip_File_Handler
     {
         return Nip_File_System::instance()->getExtension($this->path);
     }
-
 }

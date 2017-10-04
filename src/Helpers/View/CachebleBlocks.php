@@ -5,7 +5,6 @@ use Nip\Helpers\View\CachebleBlocks\Block;
 
 class CachebleBlocks extends AbstractHelper
 {
-
     private $_blocks = [];
 
 
