@@ -1,16 +1,5 @@
 <?php
 
-if (!function_exists("pr")) {
-
-    function pr($mixed)
-    {
-        echo "<pre>";
-        print_r($mixed);
-        echo "</pre>";
-    }
-
-}
-
 function encode_url($input)
 {
     $chars = array(
