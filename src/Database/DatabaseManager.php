@@ -188,7 +188,7 @@ class DatabaseManager
      */
     public function newConnection()
     {
-        return new \Nip\Database\Connection();
+        return new Connection();
     }
 
     /**
