@@ -159,6 +159,19 @@ class Collection extends AbstractCollection
      */
     public function has($record)
     {
+        if ($record instanceof Record) {
+            return $this->hasRecord($record);
+        }
+
+        return parent::has($record);
+    }
+
+    /**
+     * @param Record $record
+     * @return bool
+     */
+    public function hasRecord(Record $record)
+    {
         $index = $this->getRecordKey($record);
 
         return parent::has($index) && $this->get($index) == $record;
