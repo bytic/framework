@@ -1,8 +1,12 @@
 <?php
 
+/**
+ * @param $input
+ * @return string
+ */
 function encode_url($input)
 {
-    $chars = array(
+    $chars = [
         '&#x102;' => 'a',
         '&#x103;' => 'a',
         '&#xC2;' => 'A',
@@ -18,7 +22,7 @@ function encode_url($input)
         '&#354;' => 'T',
         '&#355;' => 't',
         '&#039;' => '',
-    );
+    ];
 
     foreach ($chars as $i => $v) {
         $chars[html_entity_decode($i, ENT_QUOTES, 'UTF-8')] = $v;
@@ -105,6 +109,9 @@ if (!function_exists("pluck")) {
 
 }
 
+/**
+ * @return string
+ */
 function max_upload()
 {
     $post_max_size = ini_get('post_max_size');
@@ -121,12 +128,20 @@ function max_upload()
     return round((min($post_max_size, $upload_max_filesize) / 1048576), 2) . 'MB';
 }
 
+/**
+ * @param $input
+ * @return int
+ */
 function valid_url($input)
 {
     return preg_match("|^http(s)?://[a-z0-9-]+(.[a-z0-9-]+)*(:[0-9]+)?(/.*)?$|i", $input);
 }
 
 
+/**
+ * @param $email
+ * @return bool
+ */
 function valid_email($email)
 {
     $isValid = true;
@@ -186,18 +201,22 @@ function valid_email($email)
     return $isValid;
 }
 
+/**
+ * @param $cc_number
+ * @return bool|mixed|string
+ */
 function valid_cc_number($cc_number)
 {
     /* Validate; return value is card type if valid. */
     $card_type = "";
-    $card_regexes = array(
+    $card_regexes = [
         "/^4\d{12}(\d\d\d){0,1}$/" => "visa",
         "/^5[12345]\d{14}$/" => "mastercard",
         "/^3[47]\d{13}$/" => "amex",
         "/^6011\d{12}$/" => "discover",
         "/^30[012345]\d{11}$/" => "diners",
         "/^3[68]\d{12}$/" => "diners",
-    );
+    ];
 
     foreach ($card_regexes as $regex => $type) {
         if (preg_match($regex, $cc_number)) {
@@ -234,6 +253,10 @@ function valid_cc_number($cc_number)
     }
 }
 
+/**
+ * @param $cnp
+ * @return bool
+ */
 function valid_cnp($cnp)
 {
     $const = '279146358279';
@@ -290,7 +313,7 @@ if (!function_exists("money_format")) {
         preg_match_all($regex, $format, $matches, PREG_SET_ORDER);
         foreach ($matches as $fmatch) {
             $value = floatval($number);
-            $flags = array(
+            $flags = [
                 'fillchar' => preg_match('/\=(.)/', $fmatch[1], $match) ?
                     $match[1] : ' ',
                 'nogroup' => preg_match('/\^/', $fmatch[1]) > 0,
@@ -298,7 +321,7 @@ if (!function_exists("money_format")) {
                     $match[0] : '+',
                 'nosimbol' => preg_match('/\!/', $fmatch[1]) > 0,
                 'isleft' => preg_match('/\-/', $fmatch[1]) > 0,
-            );
+            ];
             $width = trim($fmatch[2]) ? (int) $fmatch[2] : 0;
             $left = trim($fmatch[3]) ? (int) $fmatch[3] : 0;
             $right = trim($fmatch[4]) ? (int) $fmatch[4] : $locale['int_frac_digits'];
@@ -370,6 +393,14 @@ if (!function_exists("money_format")) {
 
 if (!function_exists("json_decode")) {
 
+    /**
+     * @param $json
+     * @param bool $assoc
+     * @param int $n
+     * @param int $state
+     * @param int $waitfor
+     * @return array|float|int|mixed|null|stdClass|string
+     */
     function json_decode(
         $json,
         $assoc = false, /* emu_args */
@@ -381,7 +412,7 @@ if (!function_exists("json_decode")) {
 
         #-- result var
         $val = null;
-        static $lang_eq = array("true" => true, "false" => false, "null" => null);
+        static $lang_eq = ["true" => true, "false" => false, "null" => null];
         static $str_eq = array(
             "n" => "\012",
             "r" => "\015",
@@ -435,13 +466,13 @@ if (!function_exists("json_decode")) {
                 }
             } #-> end of sub-call (array/object)
             elseif ($waitfor && (strpos($waitfor, $c) !== false)) {
-                return array($val, $n); // return current value and state
+                return [$val, $n]; // return current value and state
             } #-= in-array
             elseif ($state === ']') {
                 list($v, $n) = json_decode($json, 0, $n, 0, ",]");
                 $val[] = $v;
                 if ($json[$n] == "]") {
-                    return array($val, $n);
+                    return [$val, $n];
                 }
             } #-= in-object
             elseif ($state === '}') {
@@ -449,7 +480,7 @@ if (!function_exists("json_decode")) {
                 list($v, $n) = json_decode($json, 0, $n + 1, 0, ",}");
                 $val[$i] = $v;
                 if ($json[$n] == "}") {
-                    return array($val, $n);
+                    return [$val, $n];
                 }
             } #-- looking for next item (0)
             else {
@@ -502,7 +533,7 @@ if (!function_exists("json_decode")) {
                     // PHPs native json_decode() breaks here usually and QUIETLY
                     trigger_error("json_decode: error parsing '$c' at position $n", E_USER_WARNING);
 
-                    return $waitfor ? array(null, 1 << 30) : null;
+                    return $waitfor ? [null, 1 << 30] : null;
                 }
             }//state
             #-- next char
@@ -517,6 +548,10 @@ if (!function_exists("json_decode")) {
 
 }
 
+/**
+ * @param $distance
+ * @return string
+ */
 function _htmlDistance($distance)
 {
     $integer = intval($distance);

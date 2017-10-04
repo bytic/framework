@@ -2,6 +2,8 @@
 
 namespace Nip\Container\Traits;
 
+use Nip\Container\ContainerInterface;
+
 /**
  * Class ContainerPersistenceTrait
  * @package Nip\Container
@@ -25,6 +27,7 @@ trait ContainerPersistenceTrait
         if (is_null(static::$instance)) {
             static::$instance = new static;
         }
+
         return static::$instance;
     }
 
