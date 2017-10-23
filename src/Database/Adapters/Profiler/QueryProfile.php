@@ -4,7 +4,11 @@ namespace Nip\Database\Adapters\Profiler;
 
 use Nip\Profiler\Profile;
 
-class Query extends Profile
+/**
+ * Class QueryProfile
+ * @package Nip\Database\Adapters\Profiler
+ */
+class QueryProfile extends Profile
 {
     public $query;
     public $type;
@@ -12,7 +16,7 @@ class Query extends Profile
 
     public $info;
     public $affectedRows;
-    public $columns = array('time', 'type', 'memory', 'query', 'affectedRows', 'info');
+    public $columns = ['time', 'type', 'memory', 'query', 'affectedRows', 'info'];
 
     public function setName($name)
     {
@@ -42,11 +46,17 @@ class Query extends Profile
         }
     }
 
+    /**
+     * @return mixed
+     */
     public function getQuery()
     {
         return $this->query;
     }
 
+    /**
+     * @return mixed
+     */
     public function getConnection()
     {
         return $this->query;
