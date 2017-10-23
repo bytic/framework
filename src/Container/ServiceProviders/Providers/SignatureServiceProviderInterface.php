@@ -6,7 +6,7 @@ namespace Nip\Container\ServiceProviders\Providers;
  * Interface SignatureServiceProviderInterface
  * @package Nip\Container\ServiceProvider
  */
-interface SignatureServiceProviderInterface
+interface SignatureServiceProviderInterface extends ServiceProviderInterface
 {
     /**
      * Set a custom signature for the service provider. This enables

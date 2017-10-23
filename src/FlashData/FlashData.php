@@ -20,7 +20,7 @@ class FlashData
     protected $previous = [];
     protected $next = [];
 
-    protected $session_var = 'flash-data';
+    protected $sessionKey = 'flash-data';
 
     /**
      * FlashData constructor.
@@ -32,12 +32,12 @@ class FlashData
 
     public function read()
     {
-        if (isset($_SESSION[$this->session_var])) {
-            $data = $_SESSION[$this->session_var];
+        if (isset($_SESSION[$this->sessionKey])) {
+            $data = $_SESSION[$this->sessionKey];
             if (is_array($data)) {
                 $this->previous = $data;
             }
-            unset($_SESSION[$this->session_var]);
+            unset($_SESSION[$this->sessionKey]);
         }
     }
 
@@ -59,7 +59,7 @@ class FlashData
 
     protected function write()
     {
-        $_SESSION[$this->session_var] = $this->next;
+        $_SESSION[$this->sessionKey] = $this->next;
     }
 
     public function remove($var)
