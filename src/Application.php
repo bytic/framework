@@ -7,26 +7,12 @@ use Nip\Application\Bootstrap\CoreBootstrapersTrait;
 use Nip\Application\Traits\BindPathsTrait;
 use Nip\Application\Traits\EnviromentConfiguration;
 use Nip\AutoLoader\AutoLoaderAwareTrait;
-use Nip\AutoLoader\AutoLoaderServiceProvider;
 use Nip\Container\ContainerAliasBindingsTrait;
 use Nip\Container\ServiceProviders\ServiceProviderAwareTrait;
-use Nip\Database\DatabaseServiceProvider;
 use Nip\Dispatcher\DispatcherAwareTrait;
-use Nip\Dispatcher\DispatcherServiceProvider;
-use Nip\Filesystem\FilesystemServiceProvider;
-use Nip\FlashData\FlashServiceProvider;
 use Nip\Http\Response\Response;
-use Nip\I18n\TranslatorServiceProvider;
-use Nip\Inflector\InflectorServiceProvider;
-use Nip\Locale\LocaleServiceProvider;
-use Nip\Logger\LoggerServiceProvider;
-use Nip\Mail\MailServiceProvider;
-use Nip\Mvc\MvcServiceProvider;
 use Nip\Router\RouterAwareTrait;
-use Nip\Router\RouterServiceProvider;
-use Nip\Router\RoutesServiceProvider;
 use Nip\Staging\StagingAwareTrait;
-use Nip\Staging\StagingServiceProvider;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
@@ -69,8 +55,6 @@ class Application implements ApplicationInterface
      * Create a new Illuminate application instance.
      *
      * @param  string|null $basePath
-     *
-     * @return void
      */
     public function __construct($basePath = null)
     {
@@ -116,29 +100,6 @@ class Application implements ApplicationInterface
 
     public function terminate()
     {
-    }
-
-    /**
-     * @return array
-     */
-    public function getConfiguredProviders()
-    {
-        return [
-            AutoLoaderServiceProvider::class,
-            LoggerServiceProvider::class,
-            InflectorServiceProvider::class,
-            LocaleServiceProvider::class,
-            MailServiceProvider::class,
-            MvcServiceProvider::class,
-            DispatcherServiceProvider::class,
-            StagingServiceProvider::class,
-            RouterServiceProvider::class,
-            RoutesServiceProvider::class,
-            DatabaseServiceProvider::class,
-            TranslatorServiceProvider::class,
-            FlashServiceProvider::class,
-            FilesystemServiceProvider::class,
-        ];
     }
 
     /**
