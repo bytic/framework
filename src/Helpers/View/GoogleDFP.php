@@ -1,4 +1,5 @@
 <?php
+
 namespace Nip\Helpers\View;
 
 class GoogleDFP extends AbstractHelper
@@ -10,9 +11,9 @@ class GoogleDFP extends AbstractHelper
     {
         $this->_slots[$divId] = array(
             'unitName' => $unitName,
-            'width' => $width,
-            'height' => $height,
-            'divId' => $divId,
+            'width'    => $width,
+            'height'   => $height,
+            'divId'    => $divId,
         );
     }
 
@@ -28,9 +29,9 @@ class GoogleDFP extends AbstractHelper
             $return .= $this->renderHeadScriptCommands();
 
 
-
             return $return;
         }
+
         return;
     }
 
@@ -50,6 +51,7 @@ class GoogleDFP extends AbstractHelper
                     node.parentNode.insertBefore(gads, node);
                     })();
                     </script>";
+
         return $return;
     }
 
@@ -70,18 +72,24 @@ class GoogleDFP extends AbstractHelper
         foreach ($this->_slots as $slot) {
             $return .= "googletag.defineSlot('" . $slot['unitName'] . "', [" . $slot['width'] . ", " . $slot['height'] . "], '" . $slot['divId'] . "').addService(googletag.pubads());";
         }
+
         return $return;
     }
 
+    /**
+     * @param $id
+     *
+     * @return string|void
+     */
     public function renderAdUnit($id)
     {
-        $add = $this->_slots[$id];
+        $add = isset($this->_slots[$id]) ? $this->_slots[$id] : null ;
         if ($add) {
             return "
-                <!-- ".$add['unitName'] . " -->
-                <div id='".$add['divId'] . "' style='width:" . $add['width'] . "px; height:" . $add['height'] . "px;'>
+                <!-- " . $add['unitName'] . " -->
+                <div id='" . $add['divId'] . "' style='width:" . $add['width'] . "px; height:" . $add['height'] . "px;'>
                 <script type='text/javascript'>
-                googletag.cmd.push(function() { googletag.display('".$add['divId'] . "'); });
+                googletag.cmd.push(function() { googletag.display('" . $add['divId'] . "'); });
                 </script>
                 </div>";
         }
