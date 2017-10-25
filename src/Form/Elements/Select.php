@@ -2,7 +2,6 @@
 
 class Nip_Form_Element_Select extends Nip_Form_Element_Abstract
 {
-
     protected $_type = 'select';
     protected $_optionsElements = [];
     protected $_values = [];
@@ -97,12 +96,10 @@ class Nip_Form_Element_Select extends Nip_Form_Element_Abstract
 
     public function setValue($value)
     {
-
         if (in_array($value, $this->_values)) {
             return parent::setValue($value);
         }
 
         return false;
     }
-
 }

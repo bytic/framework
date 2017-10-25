@@ -146,5 +146,4 @@ abstract class DebugBar extends DebugBarGeneric
         }
         return $content;
     }
-
 }

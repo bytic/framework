@@ -8,7 +8,6 @@ namespace Nip\Html\Head\Tags;
  */
 abstract class AbstractTag
 {
-
     protected $element = null;
 
     protected $attributes = [];

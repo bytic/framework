@@ -10,7 +10,7 @@ use Nip\Utility\Str;
  * @category   Nip
  * @license    http://www.opensource.org/licenses/mit-license.php The MIT License
  */
-class StyleSheets extends AbstractHelper
+class Stylesheets extends AbstractHelper
 {
     /**
      * @var array

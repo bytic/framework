@@ -4,7 +4,6 @@ use Nip\Form\AbstractForm;
 
 abstract class Nip_Form_Button_Abstract
 {
-
     protected $_form;
     protected $_attribs;
     protected $_uniqueID;

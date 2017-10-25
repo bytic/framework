@@ -9,7 +9,6 @@ namespace Nip\Inflector;
  */
 class Inflector
 {
-
     protected $plural = [
         '/(s)tatus$/i' => '\1tatuses',
         '/(quiz)$/i' => '\1zes',

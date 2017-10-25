@@ -6,7 +6,6 @@ use Nip\Database\Query\Select;
 
 class Union extends Select
 {
-
     protected $_query1;
     protected $_query2;
 
@@ -34,5 +33,4 @@ class Union extends Select
 
         return $query;
     }
-
 }

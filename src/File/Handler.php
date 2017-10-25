@@ -178,5 +178,4 @@ class Nip_File_Handler
     {
         $this->path = '';
     }
-
 }

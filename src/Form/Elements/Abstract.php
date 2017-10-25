@@ -7,7 +7,6 @@ use Nip\Form\AbstractForm;
  */
 abstract class Nip_Form_Element_Abstract implements Nip_Form_Element_Interface
 {
-
     protected $_form;
 
     protected $_attribs;
@@ -519,7 +518,7 @@ abstract class Nip_Form_Element_Abstract implements Nip_Form_Element_Interface
     public function removeDecorator($name, $position = false)
     {
         if ($position) {
-            unset ($this->_decorators[$position][$name]);
+            unset($this->_decorators[$position][$name]);
         } else {
             foreach ($this->_decorators as $position => $decorators) {
                 if (isset($decorators[$name])) {
@@ -572,5 +571,4 @@ abstract class Nip_Form_Element_Abstract implements Nip_Form_Element_Interface
     {
         return $this->getRenderer()->renderErrors($this);
     }
-
 }

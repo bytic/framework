@@ -8,7 +8,6 @@ namespace Nip\Database\Adapters;
  */
 class MySQLi extends AbstractAdapter implements AdapterInterface
 {
-
     protected $connection;
 
     /**

@@ -2,6 +2,6 @@
 
 namespace Nip\Helpers;
 
-abstract class AbstractHelper {
-    
+abstract class AbstractHelper
+{
 }

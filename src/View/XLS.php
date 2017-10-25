@@ -45,4 +45,3 @@ class XLS extends View
         exit();
     }
 }
-

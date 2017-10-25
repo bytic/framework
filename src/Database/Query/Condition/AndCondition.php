@@ -4,7 +4,6 @@ namespace Nip\Database\Query\Condition;
 
 class AndCondition extends Condition
 {
-
     protected $_condition;
     protected $_andCondition;
 
@@ -18,5 +17,4 @@ class AndCondition extends Condition
     {
         return $this->protectCondition($this->_condition->getString()) . " AND " . $this->protectCondition($this->_andCondition->getString()) . "";
     }
-
 }

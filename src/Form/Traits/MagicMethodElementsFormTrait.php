@@ -20,7 +20,6 @@ use Nip\Form\AbstractForm;
  */
 trait MagicMethodElementsFormTrait
 {
-
     protected $elementsTypes = [
         'input',
         'hidden',

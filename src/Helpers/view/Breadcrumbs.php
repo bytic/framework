@@ -13,7 +13,6 @@ namespace Nip\Helpers\View;
 
 class Breadcrumbs extends AbstractHelper
 {
-
     protected $_items;
     protected $_viewPath = "/breadcrumbs";
 
@@ -42,7 +41,7 @@ class Breadcrumbs extends AbstractHelper
             $key = sha1(serialize($data));
         }
         if ($checkUnique) {
-            if (!isset ($this->_items[$key])) {
+            if (!isset($this->_items[$key])) {
                 $this->_items[$key] = $data;
             }
         } else {

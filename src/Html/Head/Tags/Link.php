@@ -8,7 +8,6 @@ namespace Nip\Html\Head\Tags;
  */
 class Link extends AbstractTag
 {
-
     protected $element = 'link';
 
     /**

@@ -49,5 +49,4 @@ class BelongsToTest extends \Nip\Tests\AbstractTest
     protected function _after()
     {
     }
-
 }

@@ -2,12 +2,11 @@
 
 class Nip_Record_Sorter
 {
-	
     protected $_query;
     protected $_field;
     protected $_type = "asc";
 
-    public function  __construct($field = false, $type = false)
+    public function __construct($field = false, $type = false)
     {
         $this->_field = $field;
 
@@ -27,7 +26,7 @@ class Nip_Record_Sorter
         return $query;
     }
 
-    public function setParams($request = array()) 
+    public function setParams($request = array())
     {
         if ($request['order'] && preg_match("/[a-z0-9_-]/i", $request['order'])) {
             $this->_field = $request['order'];
@@ -65,5 +64,4 @@ class Nip_Record_Sorter
     {
         return $this->_type;
     }
-
 }

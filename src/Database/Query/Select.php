@@ -284,7 +284,6 @@ class Select extends AbstractQuery
                         $result .= '(' . $joinOn . ')';
                     }
                 }
-
             }
         }
 
@@ -300,7 +299,7 @@ class Select extends AbstractQuery
     private function parseGroup()
     {
         $group = '';
-        if (isset ($this->parts['group']['fields'])) {
+        if (isset($this->parts['group']['fields'])) {
             if (is_array($this->parts['group']['fields'])) {
                 $groupFields = [];
                 foreach ($this->parts['group']['fields'] as $field) {

@@ -19,8 +19,8 @@ class DispatcherTest extends AbstractTest
 
     public function testReverseControllerName()
     {
-        self::assertSame('event-manager',Dispatcher::reverseControllerName('event_manager'));
-        self::assertSame('event_manager',Dispatcher::reverseControllerName('event-manager'));
+        self::assertSame('event-manager', Dispatcher::reverseControllerName('event_manager'));
+        self::assertSame('event_manager', Dispatcher::reverseControllerName('event-manager'));
     }
 
     protected function setUp()

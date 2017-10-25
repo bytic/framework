@@ -1,19 +1,22 @@
 <?php
-abstract class Nip_Form_Element_Input_Group extends Nip_Form_Element_Abstract {
-
+abstract class Nip_Form_Element_Input_Group extends Nip_Form_Element_Abstract
+{
     protected $_type = 'input_group';
     protected $_elements = [];
     protected $_values = [];
 
-    public function isGroup() {
+    public function isGroup()
+    {
         return true;
     }
 
-    public function isRequestArray() {
+    public function isRequestArray()
+    {
         return false;
     }
 
-    public function addOptionsArray($options, $valueKey, $labelKey) {
+    public function addOptionsArray($options, $valueKey, $labelKey)
+    {
         foreach ($options as $key => $option) {
             $option = (object) $option;
 
@@ -34,7 +37,8 @@ abstract class Nip_Form_Element_Input_Group extends Nip_Form_Element_Abstract {
     /**
      * @return Nip_Form_Element_Input_Group
      */
-    public function addOption($value, $label, $attribs = array()) {
+    public function addOption($value, $label, $attribs = array())
+    {
         $element = $this->getNewElement();
         $element->setValue($value);
         $element->setLabel($label);
@@ -51,18 +55,21 @@ abstract class Nip_Form_Element_Input_Group extends Nip_Form_Element_Abstract {
         trigger_error('No new element funtion defined for this group', E_USER_ERROR);
     }
 
-    public function addElement(Nip_Form_Element_Input_Abstract $element) {
+    public function addElement(Nip_Form_Element_Input_Abstract $element)
+    {
         $key = $element->getValue();
         $this->_elements[$key] = $element;
         $this->_values[] = $key;
         return $this;
     }
 
-    public function getElement($key) {
+    public function getElement($key)
+    {
         return $this->_elements[$key];
     }
 
-    public function getElements() {
+    public function getElements()
+    {
         return $this->_elements;
     }
 

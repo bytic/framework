@@ -10,7 +10,6 @@ use Nip\Controller;
  */
 class ControllerTest extends AbstractTest
 {
-
     public function testDynamicCallHelper()
     {
         $controller = new Controller();

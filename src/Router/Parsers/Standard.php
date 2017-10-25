@@ -8,7 +8,6 @@ namespace Nip\Router\Parsers;
  */
 class Standard extends Dynamic
 {
-
     protected $map = ':controller/:action';
 
     /**

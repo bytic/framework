@@ -76,5 +76,4 @@ class FacebookMeta extends AbstractHelper
     {
         return $this->_tags[$field];
     }
-
 }

@@ -1,10 +1,11 @@
 <?php
-class Nip_Form_Element_File extends Nip_Form_Element_Input_Abstract {
-
+class Nip_Form_Element_File extends Nip_Form_Element_Input_Abstract
+{
     protected $_value;
 
 
-    public function init() {
+    public function init()
+    {
         parent::init();
         $this->setAttrib('type', 'file');
         $this->getForm()->setAttrib('enctype', 'multipart/form-data');
@@ -33,5 +34,4 @@ class Nip_Form_Element_File extends Nip_Form_Element_Input_Abstract {
         }
         return $this->_value;
     }
-
 }

@@ -2,11 +2,10 @@
 
 class Nip_File_Upload extends Nip_File
 {
-
     protected $_error;
     protected $_tmp_name;
 
-    public function  __construct($data = array())
+    public function __construct($data = array())
     {
         if ($data) {
             $this->_name = $data['name'];
@@ -30,14 +29,11 @@ class Nip_File_Upload extends Nip_File
 
         if (!$this->getPath()) {
             return false;
-
-        } else if (isset($this->error) && $this->error != 0) {
+        } elseif (isset($this->error) && $this->error != 0) {
             return false;
-
-        } else if (!isset($this->_tmp_name) || !@is_uploaded_file($this->_tmp_name)) {
+        } elseif (!isset($this->_tmp_name) || !@is_uploaded_file($this->_tmp_name)) {
             return false;
-
-        } else if (!isset($this->_name)) {
+        } elseif (!isset($this->_name)) {
             return false;
         }
 
@@ -48,5 +44,4 @@ class Nip_File_Upload extends Nip_File
     {
         return $this->move($path);
     }
-
 }

@@ -2,20 +2,22 @@
 
 namespace Nip\Cookie;
 
-class Jar {
-
+class Jar
+{
     protected $_defaults;
 
     public static $instance;
 
-    public function  __construct() {
+    public function __construct()
+    {
         $this->initDefaults();
     }
 
     /**
      * @return Cookie
      */
-    public function newCookie() {
+    public function newCookie()
+    {
         $cookie = new Cookie();
         $defaults = $this->getDefaults();
         $cookie->setPath($defaults['path']);
@@ -24,7 +26,8 @@ class Jar {
         return $cookie;
     }
 
-    public function initDefaults() {
+    public function initDefaults()
+    {
         $this->_defaults = array(
             'path'   => '/',
             'domain' => $_SERVER['SERVER_NAME'],
@@ -32,19 +35,22 @@ class Jar {
         );
     }
 
-    public function setDefaults($defaults) {
+    public function setDefaults($defaults)
+    {
         foreach ($defaults as $name => $value) {
             $this->setDefault($name, $value);
         }
     }
 
-    public function setDefault($name, $value = NULL) {
-        if ($value !== NULL) {
+    public function setDefault($name, $value = null)
+    {
+        if ($value !== null) {
             $this->_defaults[$name] = $value;
         }
     }
 
-    public function getDefaults() {
+    public function getDefaults()
+    {
         return $this->_defaults;
     }
 
@@ -53,7 +59,8 @@ class Jar {
      *
      * @return self
      */
-    public static function instance() {
+    public static function instance()
+    {
         if (!self::$instance instanceof self) {
             self::$instance = new self;
         }

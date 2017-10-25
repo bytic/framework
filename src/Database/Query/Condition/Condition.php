@@ -7,7 +7,6 @@ use Nip\Database\Query\AbstractQuery as Query;
 
 class Condition
 {
-
     protected $_string;
     protected $_values;
     protected $_query;
@@ -125,5 +124,4 @@ class Condition
     {
         return strpos($condition, ' AND ') || strpos($condition, ' OR ') ? '(' . $condition . ')' : $condition;
     }
-
 }

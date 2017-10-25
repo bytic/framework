@@ -15,7 +15,6 @@ use stdClass;
  */
 class Meta extends AbstractHelper
 {
-
     public $charset = 'utf-8';
     public $language = 'en';
 

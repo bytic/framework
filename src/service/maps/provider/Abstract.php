@@ -8,14 +8,15 @@
  * @license    http://www.opensource.org/licenses/mit-license.php The MIT License
  */
 
-abstract class Nip_Service_Maps_Provider_Abstract {
-
+abstract class Nip_Service_Maps_Provider_Abstract
+{
     protected $_service;
     protected $_container;
 
     protected $_scripts = [];
 
-    public function render() {
+    public function render()
+    {
         $return = '';
         $return .= $this->initContainer();
         $return .= $this->generateScript();
@@ -23,7 +24,8 @@ abstract class Nip_Service_Maps_Provider_Abstract {
         return $return;
     }
 
-    public function initContainer() {
+    public function initContainer()
+    {
         $service = $this->getService();
         $this->_container = array(
             'id' => $service->getParam('container_id') ? $service->getParam('container_id') : 'map_canvas',
@@ -50,7 +52,8 @@ abstract class Nip_Service_Maps_Provider_Abstract {
         return $this;
     }
 
-    public function generateScript() {
+    public function generateScript()
+    {
         $return .= '<script type="text/javascript">';
         $return .= $this->initMapScript();
         $return .= $this->renderObjects();
@@ -60,7 +63,8 @@ abstract class Nip_Service_Maps_Provider_Abstract {
         return $return;
     }
 
-    public function renderObjects() {
+    public function renderObjects()
+    {
         $objects = $this->getService()->getObjects();
         $return = '';
         foreach ($objects as $object) {
@@ -93,5 +97,4 @@ abstract class Nip_Service_Maps_Provider_Abstract {
 
         return $return;
     }
-
 }

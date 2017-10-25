@@ -15,7 +15,6 @@ use Nip\View;
  */
 abstract class AbstractHelper extends NipAbstractHelper
 {
-
     protected $_view;
 
     public function setView(View $view)
@@ -35,6 +34,4 @@ abstract class AbstractHelper extends NipAbstractHelper
     {
         $this->_view = View::instance();
     }
-
-
 }

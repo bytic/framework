@@ -33,5 +33,4 @@ trait HasRequestTrait
         $this->_request = $request;
         return $this;
     }
-
 }

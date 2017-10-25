@@ -4,7 +4,6 @@ use Nip\Form\Renderer\AbstractRenderer;
 
 class Nip_Form_Renderer_Paragraph extends AbstractRenderer
 {
-
     public function renderElements()
     {
         $return = '';
@@ -48,5 +47,4 @@ class Nip_Form_Renderer_Paragraph extends AbstractRenderer
 
         return $return;
     }
-
 }

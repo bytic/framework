@@ -154,4 +154,3 @@ trait NameWorksTrait
         $this->classFirstName = array_pop($parts);
     }
 }
-

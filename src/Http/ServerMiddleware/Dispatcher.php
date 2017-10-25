@@ -88,8 +88,7 @@ class Dispatcher implements DispatcherInterface
      */
     private function createDelegate(DelegateInterface $delegate = null): DelegateInterface
     {
-        return new class($this, $delegate) implements DelegateInterface
-        {
+        return new class($this, $delegate) implements DelegateInterface {
             private $dispatcher;
             private $delegate;
 
@@ -193,8 +192,7 @@ class Dispatcher implements DispatcherInterface
      */
     private function createMiddlewareFromClosure(Closure $handler): MiddlewareInterface
     {
-        return new class($handler) implements MiddlewareInterface
-        {
+        return new class($handler) implements MiddlewareInterface {
             private $handler;
 
             /**

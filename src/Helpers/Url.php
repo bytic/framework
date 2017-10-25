@@ -14,7 +14,7 @@ class Nip_Helper_Url extends Nip\Helpers\AbstractHelper
      * Singleton
      * @return Nip_Helper_URL
      */
-    static public function instance()
+    public static function instance()
     {
         static $instance;
         if (!($instance instanceof self)) {

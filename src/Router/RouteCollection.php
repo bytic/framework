@@ -14,7 +14,6 @@ use Nip\Router\Route\Route;
  */
 class RouteCollection implements Countable, IteratorAggregate, ArrayAccess
 {
-
     protected $routes = [];
 
     /**

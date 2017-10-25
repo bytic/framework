@@ -218,7 +218,6 @@ class Translator
      */
     public function translate($slug = false, $params = [], $language = false)
     {
-
         if (!$language) {
             $language = $this->getLanguage();
         }

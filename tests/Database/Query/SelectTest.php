@@ -92,14 +92,14 @@ class SelectTest extends \Nip\Tests\AbstractTest
 
     public function testUnion()
     {
-		$this->selectQuery->from("table1");
+        $this->selectQuery->from("table1");
 
-		$query = $this->connection->newQuery();
-		$query->from("table2");
+        $query = $this->connection->newQuery();
+        $query->from("table2");
 
-		$union = $this->selectQuery->union($query);
+        $union = $this->selectQuery->union($query);
 
-		static::assertEquals("SELECT * FROM `table1` UNION SELECT * FROM `table2`", $union->assemble());
+        static::assertEquals("SELECT * FROM `table1` UNION SELECT * FROM `table2`", $union->assemble());
     }
 
     protected function setUp()
@@ -115,5 +115,4 @@ class SelectTest extends \Nip\Tests\AbstractTest
         $this->connection->setAdapter($adapterMock);
         $this->selectQuery->setManager($this->connection);
     }
-
 }

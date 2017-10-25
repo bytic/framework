@@ -21,8 +21,7 @@ class RouteFactory
         $name,
         $class,
         $mapPrefix = ''
-    )
-    {
+    ) {
         $params = ["controller" => "index", "action" => "index"];
         $map = '/';
 
@@ -47,8 +46,7 @@ class RouteFactory
         $mapPrefix = '',
         $map = '/',
         $params = []
-    )
-    {
+    ) {
         $map = $mapPrefix . $map;
 
         return self::generateGenericRoute($collection, $name, $class, $map, $params);
@@ -68,8 +66,7 @@ class RouteFactory
         $class,
         $map,
         $params = []
-    )
-    {
+    ) {
         $map = str_replace('//', '/', $map);
 
         $route = new $class($map, $params);
@@ -92,8 +89,7 @@ class RouteFactory
         $mapPrefix = '',
         $map = '/:controller/:action',
         $params = []
-    )
-    {
+    ) {
         return self::generateGenericRoute($collection, $name, $class, $mapPrefix . $map, $params);
     }
 }

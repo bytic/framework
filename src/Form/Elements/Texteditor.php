@@ -2,7 +2,6 @@
 
 class Nip_Form_Element_Texteditor extends Nip_Form_Element_Textarea
 {
-
     protected $_type = 'texteditor';
 
     protected $inputFilter;

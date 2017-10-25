@@ -4,7 +4,6 @@ namespace Nip\Helpers\View;
 
 class HTML extends AbstractHelper
 {
-
     public function booleanOptions($selected = "")
     {
         $return = "";
@@ -140,11 +139,9 @@ class HTML extends AbstractHelper
                     $oValue = $option->$value;
                     $oString = $option->$string;
                 } elseif (is_array($option)) {
-
                     $oValue = $option[$value];
                     $oString = $option[$string];
                 } else {
-
                     $oValue = $option;
                     $oString = $option;
                 }

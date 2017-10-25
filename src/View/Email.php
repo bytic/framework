@@ -10,7 +10,6 @@ use Nip\View;
  */
 class Email extends View
 {
-
     protected $_layout = "/layouts/email";
 
     /**

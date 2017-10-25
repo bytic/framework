@@ -4,7 +4,6 @@ namespace Nip\Database\Metadata;
 
 class Manager
 {
-
     protected $_connection;
     protected $_cache;
 

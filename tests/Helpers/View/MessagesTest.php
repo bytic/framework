@@ -36,5 +36,4 @@ class MessagesTest extends \Nip\Tests\AbstractTest
         parent::setUp();
         $this->_object = new Messages();
     }
-
 }

@@ -4,7 +4,6 @@ namespace Nip;
 
 class Paginator
 {
-
     protected $params;
     protected $itemsPerPage = 10;
     protected $currentPage = 1;
@@ -100,5 +99,4 @@ class Paginator
         }
         return $this;
     }
-
 }

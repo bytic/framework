@@ -2,7 +2,6 @@
 
 class Nip_Tool
 {
-
     protected $_console;
     protected $_generator;
     protected $_menus = [];
@@ -81,5 +80,4 @@ class Nip_Tool
 
         return $this->_menus[$name];
     }
-
 }

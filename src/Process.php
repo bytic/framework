@@ -4,7 +4,6 @@ namespace Nip;
 
 class Process
 {
-
     protected $_pid;
     protected $_command;
 
@@ -44,5 +43,4 @@ class Process
     {
         return $this->_pid;
     }
-
 }

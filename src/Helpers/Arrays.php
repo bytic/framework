@@ -239,7 +239,6 @@ class Nip_Helper_Arrays extends Nip\Helpers\AbstractHelper
             foreach ($array as $item) {
                 $found = true;
                 foreach ($params as $key => $value) {
-
                     if ($item->$key != $value) {
                         $found = false;
                     }
@@ -318,7 +317,7 @@ class Nip_Helper_Arrays extends Nip\Helpers\AbstractHelper
     {
         // turn off compatibility mode as simple xml throws a wobbly if you don't.
         if (ini_get('zend.ze1_compatibility_mode') == 1) {
-                    ini_set('zend.ze1_compatibility_mode', 0);
+            ini_set('zend.ze1_compatibility_mode', 0);
         }
 
         if (is_null($xml)) {
@@ -342,7 +341,7 @@ class Nip_Helper_Arrays extends Nip\Helpers\AbstractHelper
 
                 // recursive call
                 if ($numeric) {
-                                    $key = 'anon';
+                    $key = 'anon';
                 }
                 $this->toXML($value, $key, $node);
             } else {
@@ -374,7 +373,7 @@ class Nip_Helper_Arrays extends Nip\Helpers\AbstractHelper
         return (is_array($array) && 0 !== count(array_diff_key($array, array_keys(array_keys($array)))));
     }
 
-    function merge_distinct(array &$array1, array &$array2)
+    public function merge_distinct(array &$array1, array &$array2)
     {
         $merged = $array1;
 

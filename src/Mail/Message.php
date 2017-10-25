@@ -11,7 +11,6 @@ use Swift_Mime_Message;
  */
 class Message extends Swift_Message implements Swift_Mime_Message
 {
-
     protected $mergeTags = [];
     protected $custom_args = [];
 

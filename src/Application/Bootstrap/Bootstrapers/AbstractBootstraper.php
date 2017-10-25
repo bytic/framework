@@ -28,5 +28,4 @@ abstract class AbstractBootstraper implements BootstraperInterface
     {
         $this->app = $app;
     }
-
 }

@@ -8,5 +8,4 @@ namespace Nip\Html\Head\Entities;
  */
 abstract class AbstractEntity
 {
-
 }

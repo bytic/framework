@@ -49,7 +49,7 @@ class AbstractCollection implements ArrayAccess, Countable, IteratorAggregate, J
      * @param $needle
      * @return bool
      */
-    function contains($needle)
+    public function contains($needle)
     {
         foreach ($this as $key => $value) {
             if ($value === $needle) {
@@ -66,6 +66,4 @@ class AbstractCollection implements ArrayAccess, Countable, IteratorAggregate, J
     {
         return new ArrayIterator($this->items);
     }
-
-
 }

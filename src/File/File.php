@@ -6,7 +6,6 @@ class Nip_File_Exception extends Exception
 
 class Nip_File extends Nip_Object
 {
-
     protected $_path;
     protected $_name;
     protected $_extension;
@@ -138,7 +137,6 @@ class Nip_File extends Nip_Object
     {
         if (function_exists('mime_content_type')) {
             return mime_content_type($this->getPath());
-
         } elseif (function_exists('finfo_open')) {
             $finfo = finfo_open(FILEINFO_MIME);
             $mimetype = finfo_file($finfo, $this->getPath());
@@ -148,5 +146,4 @@ class Nip_File extends Nip_Object
 
         return "unknown";
     }
-
 }

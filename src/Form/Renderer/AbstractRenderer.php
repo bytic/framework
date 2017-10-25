@@ -16,7 +16,6 @@ use Nip_Form_Renderer_Elements_Abstract as AbstractElementRenderer;
  */
 abstract class AbstractRenderer
 {
-
     protected $form;
 
     protected $elements;
@@ -142,7 +141,6 @@ abstract class AbstractRenderer
         foreach ($messages as $type => $lines) {
             if ($type == "error") {
                 $return .= ErrorsHelper::render($lines);
-
             } else {
                 $return .= MessagesHelper::render($lines, $type);
             }

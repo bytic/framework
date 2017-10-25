@@ -2,7 +2,6 @@
 
 class Nip_Service_Google_Charts_Chart
 {
-
     protected $_service;
     protected $_params = [];
 

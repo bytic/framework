@@ -10,7 +10,6 @@ use ArrayAccess;
  */
 class Modules implements ArrayAccess
 {
-
     protected $modules = [];
 
     /**

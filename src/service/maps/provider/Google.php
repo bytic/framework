@@ -8,9 +8,10 @@
  * @license    http://www.opensource.org/licenses/mit-license.php The MIT License
  */
 
-class Nip_Service_Maps_Provider_Google extends Nip_Service_Maps_Provider_Abstract {
-
-    public function loadScript() {
+class Nip_Service_Maps_Provider_Google extends Nip_Service_Maps_Provider_Abstract
+{
+    public function loadScript()
+    {
         $lazyLoading = $this->getService()->getParam('lazyLoading');
         if ($lazyLoading) {
             $html = '
@@ -32,11 +33,13 @@ class Nip_Service_Maps_Provider_Google extends Nip_Service_Maps_Provider_Abstrac
         return $html;
     }
 
-    protected function getScriptURL() {
+    protected function getScriptURL()
+    {
         return 'http://maps.google.com/maps?file=api&v=2&async=2&callback=loadMap&key=' . $this->getService()->getApiKey();
     }
 
-    public function initMapScript() {
+    public function initMapScript()
+    {
         $html = '
             function loadMap() {
             if (GBrowserIsCompatible()) {
@@ -54,12 +57,14 @@ class Nip_Service_Maps_Provider_Google extends Nip_Service_Maps_Provider_Abstrac
         return $html;
     }
 
-    public function postMapScript() {
+    public function postMapScript()
+    {
         $html = '}}';
         return $html;
     }
 
-    public function renderSearch() {
+    public function renderSearch()
+    {
         $return = parent::renderSearch();
         $script = '
             geocoder = new GClientGeocoder();
@@ -85,7 +90,8 @@ class Nip_Service_Maps_Provider_Google extends Nip_Service_Maps_Provider_Abstrac
         return $return;
     }
 
-    public function renderMarker($marker) {
+    public function renderMarker($marker)
+    {
         $html = '';
         if ($marker->latitude && $marker->longitude) {
             $html .= 'var latlng = new GLatLng(' . $marker->latitude . ', ' . $marker->longitude . ');';

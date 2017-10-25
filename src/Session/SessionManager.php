@@ -23,7 +23,7 @@ class SessionManager
     {
         $this->_lifetime = get_cfg_var("session.gc_maxlifetime");
 
-//		ini_set('session.save_handler', 'user');
+        //		ini_set('session.save_handler', 'user');
         register_shutdown_function('session_write_close');
     }
 

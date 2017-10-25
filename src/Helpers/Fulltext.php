@@ -9,9 +9,10 @@
  * @version    SVN: $Id: Fulltext.php 14 2009-04-13 11:24:22Z victor.stanciu $
  */
 
-class Nip_Helper_Fulltext extends Nip\Helpers\AbstractHelper {
-
-    public function buildString($keywords, $mode = 'any') {
+class Nip_Helper_Fulltext extends Nip\Helpers\AbstractHelper
+{
+    public function buildString($keywords, $mode = 'any')
+    {
         $return = "";
 
         $keywords = explode(" ", $keywords);
@@ -47,7 +48,8 @@ class Nip_Helper_Fulltext extends Nip\Helpers\AbstractHelper {
     }
 
 
-    private function matchNumbers($input) {
+    private function matchNumbers($input)
+    {
         $stripped = array("%", ",", ".");
         $replaced = array("__", "_", "_");
 
@@ -64,7 +66,8 @@ class Nip_Helper_Fulltext extends Nip\Helpers\AbstractHelper {
      *
      * @return Nip_Helper_Fulltext
      */
-    static public function instance() {
+    public static function instance()
+    {
         static $instance;
         if (!($instance instanceof self)) {
             $instance = new self();

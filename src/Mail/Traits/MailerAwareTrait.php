@@ -4,7 +4,6 @@ namespace Nip\Mail\Traits;
 
 use Nip\Mail\Mailer;
 
-
 /**
  * Class MailerAwareTrait
  * @package Nip\Mail\Traits

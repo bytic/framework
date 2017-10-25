@@ -17,7 +17,7 @@ trait TransformMethodsTrait
      */
     public function toArray()
     {
-        return array_map(function($value) {
+        return array_map(function ($value) {
             return $value instanceof AbstractCollection ? $value->toArray() : $value;
         }, $this->items);
     }
@@ -29,9 +29,9 @@ trait TransformMethodsTrait
      * which is a value of any type other than a resource.
      * @since 5.4.0
      */
-    function jsonSerialize()
+    public function jsonSerialize()
     {
-        return array_map(function($value) {
+        return array_map(function ($value) {
             if ($value instanceof JsonSerializable) {
                 return $value->jsonSerialize();
             } else {

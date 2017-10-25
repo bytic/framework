@@ -2,14 +2,13 @@
 
 class Nip_Mailer
 {
-
     protected $_mail;
 
     public function __construct()
     {
         $this->_mail = new PHPMailer();
         $this->_mail->CharSet = "UTF-8";
-//		$this->_mail->SMTPDebug = true;
+        //		$this->_mail->SMTPDebug = true;
 
         $config = Nip_Config::instance()->parse(CONFIG_PATH . 'smtp.ini');
         if ($config->SMTP->host) {
@@ -174,5 +173,4 @@ class Nip_Mailer
 
         return $this;
     }
-
 }

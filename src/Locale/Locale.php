@@ -11,7 +11,6 @@ use Nip_File_System;
  */
 class Locale
 {
-
     protected $supported;
 
     protected $data = [];
@@ -54,7 +53,7 @@ class Locale
         $pathFlat = '';
         foreach ($path as $key) {
             $pathFlat .= $key;
-            if (isset ($value[$key])) {
+            if (isset($value[$key])) {
                 $value = $value[$key];
             } else {
                 trigger_error("invalid path [{$pathFlat}] for " . __CLASS__ . "->" . __METHOD__, E_USER_WARNING);
@@ -161,10 +160,10 @@ class Locale
 
         if (is_file($file)) {
             include $file;
-            if (isset ($_import)) {
+            if (isset($_import)) {
                 $data = $this->getDataFromFile($_import);
             }
-            if (isset ($_data)) {
+            if (isset($_data)) {
                 $data = \Nip\HelperBroker::get('Arrays')->merge_distinct($data, $_data);
             }
         } else {
