@@ -17,7 +17,7 @@ namespace Nip;
  * @method Helpers\View\Scripts Scripts()
  * @method Helpers\View\Stylesheets StyleSheets()
  * @method Helpers\View\TinyMCE TinyMCE()
- * @method Helpers\View\URL Url()
+ * @method Helpers\View\Url Url()
  *
  */
 class View
