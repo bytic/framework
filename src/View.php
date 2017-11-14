@@ -15,9 +15,9 @@ namespace Nip;
  * @method Helpers\View\Meta Meta()
  * @method Helpers\View\Paginator Paginator()
  * @method Helpers\View\Scripts Scripts()
- * @method Helpers\View\StyleSheets StyleSheets()
+ * @method Helpers\View\Stylesheets StyleSheets()
  * @method Helpers\View\TinyMCE TinyMCE()
- * @method Helpers\View\Url Url()
+ * @method Helpers\View\URL Url()
  *
  */
 class View
