@@ -18,7 +18,7 @@ class Select extends AbstractQuery
     /**
      * @param $name
      * @param $arguments
-     * @return $this
+     * @return AbstractQuery|Select
      */
     public function __call($name, $arguments)
     {
@@ -188,7 +188,7 @@ class Select extends AbstractQuery
      */
     protected function parseCols()
     {
-        if (!isset($this->parts['cols']) or !is_array($this->parts['cols']) or count($this->parts['cols']) < 1) {
+        if (!isset($this->parts['cols']) || !is_array($this->parts['cols']) || count($this->parts['cols']) < 1) {
             return '*';
         } else {
             $selectParts = [];

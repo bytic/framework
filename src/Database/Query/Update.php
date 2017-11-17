@@ -14,7 +14,7 @@ class Update extends AbstractQuery
      */
     public function assemble()
     {
-        $query = "UPDATE " . $this->protect($this->getTable()) . " SET " . $this->parseUpdate();
+        $query = "UPDATE {$this->protect($this->getTable())} SET {$this->parseUpdate()}";
 
         $query .= $this->assembleWhere();
         $query .= $this->assembleLimit();

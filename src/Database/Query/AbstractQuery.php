@@ -20,7 +20,7 @@ use Nip\Database\Result;
  * @method $this data() data(array $data)
  * @method $this table() table(array | string $table)
  * @method $this order() order(array | string $order)\
- * @method $this group() group(array | string $group)\
+ * @method $this group() group(array | string $group, $rollup = false)\
  */
 abstract class AbstractQuery
 {
