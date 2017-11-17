@@ -16,6 +16,11 @@ trait ModuleView
      */
     protected function generateBasePath()
     {
+        $folderPath = $this->generateFolderBasePath();
+        if (is_dir($folderPath)) {
+            return $folderPath;
+        }
+
         return $this->generateModuleBasePath();
     }
 
@@ -26,7 +31,16 @@ trait ModuleView
     {
         /** @var Modules $modules */
         $modules = app('mvc.modules');
+
         return $modules->getViewPath($this->getModuleName());
+    }
+
+    /**
+     * @return string
+     */
+    public function generateFolderBasePath()
+    {
+        return dirname(dirname(__DIR__)).DIRECTORY_SEPARATOR."views".DIRECTORY_SEPARATOR;
     }
 
     /**
