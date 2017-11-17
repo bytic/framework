@@ -145,7 +145,7 @@ trait MagicMethodElementsFormTrait
         return isset($arguments[1]) ? $arguments[1] : false;
     }
 
-    /**
+    /** @noinspection PhpMethodNamingConventionInspection
      * @param $arguments
      * @return string|false
      */
