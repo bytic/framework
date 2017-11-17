@@ -3,6 +3,7 @@
 namespace Nip\View\Traits;
 
 use Nip\Mvc\Modules;
+use ReflectionClass;
 
 /**
  * Class ModuleView
@@ -40,7 +41,10 @@ trait ModuleView
      */
     public function generateFolderBasePath()
     {
-        return dirname(dirname(__DIR__)).DIRECTORY_SEPARATOR."views".DIRECTORY_SEPARATOR;
+        $reflector = new ReflectionClass(get_class($this));
+        $dirName = dirname($reflector->getFileName());
+
+        return dirname(dirname($dirName)).DIRECTORY_SEPARATOR."views".DIRECTORY_SEPARATOR;
     }
 
     /**
