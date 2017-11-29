@@ -62,14 +62,14 @@ if (!function_exists('recordManager')) {
      */
     function recordManager($model)
     {
-        $managerClass = app('app')->getRootNamespace().$model;
-        if (class_exists($managerClass)) {
-            return call_user_func([$managerClass, "instance"]);
+        $managerClassNamespaced = app('app')->getRootNamespace().$model;
+        if (class_exists($managerClassNamespaced)) {
+            return call_user_func([$managerClassNamespaced, "instance"]);
         }
         if (class_exists($model)) {
-            return call_user_func([$managerClass, "instance"]);
+            return call_user_func([$model, "instance"]);
         }
 
-        throw new Exception("Invalid record manager {$model}");
+        throw new Exception("Invalid record manager [{$model}][{$managerClassNamespaced}]");
     }
 }
