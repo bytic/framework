@@ -62,7 +62,7 @@ if (!function_exists('recordManager')) {
      */
     function recordManager($model)
     {
-        $managerClassNamespaced = app('app')->getRootNamespace().$model;
+        $managerClassNamespaced = app('app')->getRootNamespace().'Models\\'.$model.'\\'.$model;
         if (class_exists($managerClassNamespaced)) {
             return call_user_func([$managerClassNamespaced, "instance"]);
         }
