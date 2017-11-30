@@ -76,6 +76,7 @@ class SectionsManager extends AbstractCollection
                 return $key;
             }
         }
+
         return $subDomain;
     }
 
@@ -84,7 +85,7 @@ class SectionsManager extends AbstractCollection
      */
     public function init()
     {
-        $data = config('sections.sections');
+        $data = config('sections.sections', []);
         foreach ($data as $key => $row) {
             $this->set($key, new Section($row->toArray()));
         }
