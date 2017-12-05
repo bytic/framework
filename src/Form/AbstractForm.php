@@ -772,9 +772,28 @@ abstract class AbstractForm
      */
     public function setRendererType($type)
     {
-        $this->_renderer = $this->getNewRenderer($type);
+        $this->setRenderer($this->getNewRenderer($type));
 
         return $this;
+    }
+
+    /**
+     * @param string $class
+     */
+    protected function setRendererClass($class)
+    {
+        /** @var AbstractRenderer $renderer */
+        $renderer = new $class();
+        $renderer->setForm($this);
+        $this->setRenderer($renderer);
+    }
+
+    /**
+     * @param AbstractRenderer $renderer
+     */
+    public function setRenderer($renderer)
+    {
+        $this->_renderer = $renderer;
     }
 
     /**
