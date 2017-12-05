@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "6147373c5c987c085fca5ed5dac01512",
+  "content-hash": "193931b5918ff5c9c669e6c75c80bfd1",
     "packages": [
         {
             "name": "bytic/request-detective",
@@ -82,8 +82,55 @@
             "time": "2017-02-14T19:40:03+00:00"
         },
         {
+          "name": "ezyang/htmlpurifier",
+          "version": "v4.9.3",
+          "source": {
+            "type": "git",
+            "url": "https://github.com/ezyang/htmlpurifier.git",
+            "reference": "95e1bae3182efc0f3422896a3236e991049dac69"
+          },
+          "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/ezyang/htmlpurifier/zipball/95e1bae3182efc0f3422896a3236e991049dac69",
+            "reference": "95e1bae3182efc0f3422896a3236e991049dac69",
+            "shasum": ""
+          },
+          "require": {
+            "php": ">=5.2"
+          },
+          "require-dev": {
+            "simpletest/simpletest": "^1.1"
+          },
+          "type": "library",
+          "autoload": {
+            "psr-0": {
+              "HTMLPurifier": "library/"
+            },
+            "files": [
+              "library/HTMLPurifier.composer.php"
+            ]
+          },
+          "notification-url": "https://packagist.org/downloads/",
+          "license": [
+            "LGPL"
+          ],
+          "authors": [
+            {
+              "name": "Edward Z. Yang",
+              "email": "admin@htmlpurifier.org",
+              "homepage": "http://ezyang.com"
+            }
+          ],
+          "description": "Standards compliant HTML filter written in PHP",
+          "homepage": "http://htmlpurifier.org/",
+          "keywords": [
+            "html"
+          ],
+          "time": "2017-06-03T02:28:16+00:00"
+        },
+      {
             "name": "filp/whoops",
-          "version": "2.1.12",
+        "version": "2.1.12",
             "source": {
                 "type": "git",
                 "url": "https://github.com/filp/whoops.git",
@@ -140,7 +187,7 @@
               "throwable",
               "whoops"
             ],
-          "time": "2017-10-15T13:05:10+00:00"
+        "time": "2017-10-15T13:05:10+00:00"
         },
         {
             "name": "html2text/html2text",
@@ -229,6 +276,7 @@
                 "request",
                 "response"
             ],
+          "abandoned": "http-interop/http-server-middleware",
             "time": "2017-01-14T15:23:42+00:00"
         },
         {
