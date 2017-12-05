@@ -47,7 +47,7 @@ class Nip_Form_Element_File extends Nip_Form_Element_Input_Abstract
         }
 
         $keys = array_keys($data);
-        if ($keys !== ['error', 'name', 'size', 'tmp_name', 'type']) {
+        if (count(array_diff($keys, ['error', 'name', 'size', 'tmp_name', 'type'])) > 0) {
             return false;
         }
 
