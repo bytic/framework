@@ -19,6 +19,8 @@ class Nip_Form_DisplayGroup extends Collection
      */
     protected $_form;
 
+    protected $renderer;
+
     /**
      * @return Nip_Form|null
      */
@@ -159,18 +161,19 @@ class Nip_Form_DisplayGroup extends Collection
     }
 
     /**
-     * @return Nip_Form_Renderer
+     * @return Nip_Form_Renderer_DisplayGroup
      */
     public function getRenderer()
     {
-        if (!$this->_renderer) {
-            $this->_renderer = $this->getNewRenderer();
+        if (!$this->renderer) {
+            $this->renderer = $this->getNewRenderer();
         }
 
-        return $this->_renderer;
+        return $this->renderer;
     }
 
     /**
+     * @param string $type
      * @return Nip_Form_Renderer_DisplayGroup
      */
     public function getNewRenderer($type = 'basic')
