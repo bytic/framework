@@ -282,7 +282,7 @@ class View
 
         echo $html;
 
-        return true;
+        return null;
     }
 
     /**
