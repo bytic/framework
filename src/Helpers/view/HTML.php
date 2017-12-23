@@ -2,16 +2,20 @@
 
 namespace Nip\Helpers\View;
 
+/**
+ * Class HTML
+ * @package Nip\Helpers\View
+ */
 class HTML extends AbstractHelper
 {
     public function booleanOptions($selected = "")
     {
         $return = "";
 
-        $return .= '<option value="0"' . ($selected !== "" && $selected == '0' ? ' selected="selected"'
-                : '') . '>' . translator()->translate("NO") . '</option>';
-        $return .= '<option value="1"' . ($selected == '1' ? ' selected="selected"'
-                : '') . '>' . translator()->translate("YES") . '</option>';
+        $return .= '<option value="0"'.($selected !== "" && $selected == '0' ? ' selected="selected"'
+                : '').'>'.translator()->translate("NO").'</option>';
+        $return .= '<option value="1"'.($selected == '1' ? ' selected="selected"'
+                : '').'>'.translator()->translate("YES").'</option>';
 
         return $return;
     }
@@ -42,7 +46,7 @@ class HTML extends AbstractHelper
         $tree,
         $value,
         $string,
-        $array = array(),
+        $array = [],
         $level = 0
     ) {
         if (is_array($tree)) {
@@ -53,12 +57,12 @@ class HTML extends AbstractHelper
                 }
                 $oString .= '|--';
 
-                $oString .= $page->$string;
-                $array[] = array(
-                    'value' => $page->$value,
+                $oString .= $page->{$string};
+                $array[] = [
+                    'value' => $page->{$value},
                     'string' => $oString,
                     'disabled' => ($page->has_children == '1') ? false : true,
-                );
+                ];
 
 
                 if (is_array($page->children) && count($page->children) > 0) {
@@ -72,7 +76,7 @@ class HTML extends AbstractHelper
     }
 
     /**
-     * @param string $options
+     * @param array $options
      * @param bool $value
      * @param bool $string
      * @param bool $selected
@@ -88,14 +92,14 @@ class HTML extends AbstractHelper
             $return = '';
             foreach ($options as $key => $option) {
                 if (is_string($key) && is_array($option) && !isset($option[$value])) {
-                    $return .= '<optgroup label="' . $key . '">';
+                    $return .= '<optgroup label="'.$key.'">';
                     $return .= $this->options($option, $value, $string,
                         $selected);
                     $return .= '</optgroup>';
                 } else {
                     if (is_object($option)) {
-                        $oValue = $option->$value;
-                        $oString = $option->$string;
+                        $oValue = $option->{$value};
+                        $oString = $option->{$string};
                         $oDisabled = $option->disabled;
                     } elseif (is_array($option)) {
                         $oValue = $option[$value];
@@ -109,12 +113,10 @@ class HTML extends AbstractHelper
                         $oString = $option;
                     }
 
-                    $oSelected = ($oValue == $selected) ? ' selected="selected" '
-                        : '';
-                    $oDisabled = ($oDisabled === true) ? ' disabled="disabled" '
-                        : '';
+                    $oSelected = ($oValue == $selected) ? ' selected="selected" ' : '';
+                    $oDisabled = (isset($oDisabled) && $oDisabled === true) ? ' disabled="disabled" ' : '';
 
-                    $return .= '<option value="' . $oValue . '"' . $oSelected . '' . $oDisabled . '>' . $oString . '</option>';
+                    $return .= '<option value="'.$oValue.'"'.$oSelected.''.$oDisabled.'>'.$oString.'</option>';
                 }
             }
 
@@ -124,6 +126,15 @@ class HTML extends AbstractHelper
         }
     }
 
+    /**
+     * @param $name
+     * @param $value
+     * @param $string
+     * @param $options
+     * @param string $separator
+     * @param bool $selected
+     * @return bool|string
+     */
     public function radios(
         $name,
         $value,
@@ -136,8 +147,8 @@ class HTML extends AbstractHelper
             $return = '';
             foreach ($options as $option) {
                 if (is_object($option)) {
-                    $oValue = $option->$value;
-                    $oString = $option->$string;
+                    $oValue = $option->{$value};
+                    $oString = $option->{$string};
                 } elseif (is_array($option)) {
                     $oValue = $option[$value];
                     $oString = $option[$string];
@@ -146,7 +157,7 @@ class HTML extends AbstractHelper
                     $oString = $option;
                 }
                 $oSelected = ($oValue == $selected) ? ' checked="checked" ' : '';
-                $return .= '<input type="radio" name="' . $name . '" value="' . $oValue . '" ' . $oSelected . ' >' . $oString . $separator;
+                $return .= '<input type="radio" name="'.$name.'" value="'.$oValue.'" '.$oSelected.' >'.$oString.$separator;
             }
 
             return $return;
@@ -155,7 +166,11 @@ class HTML extends AbstractHelper
         }
     }
 
-    public function unorderedList($items = array())
+    /**
+     * @param array $items
+     * @return string
+     */
+    public function unorderedList($items = [])
     {
         $return = '<ul>';
 
@@ -172,7 +187,7 @@ class HTML extends AbstractHelper
      * @param array $attributes
      * @return string
      */
-    public function attributes($attributes = array())
+    public function attributes($attributes = [])
     {
         $return = [];
 
@@ -182,7 +197,7 @@ class HTML extends AbstractHelper
             }
         }
 
-        return " " . implode(" ", $return);
+        return " ".implode(" ", $return);
     }
 
     /**
@@ -192,10 +207,10 @@ class HTML extends AbstractHelper
     public function compress($buffer)
     {
         // remove comments, tabs, spaces, newlines, etc.
-        $search = array(
+        $search = [
             "/ +/" => " ",
             "/<!--(.*?)-->|[\t\r\n]|<!--|-->|\/\/ <!--|\/\/ -->|<!--\[CDATA\[|\/\/ \]\]-->|\]\]>|\/\/\]\]>|\/\/<!--\[CDATA\[/" => "",
-        );
+        ];
 
         return preg_replace(array_keys($search), array_values($search), $buffer);
     }

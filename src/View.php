@@ -15,9 +15,10 @@ namespace Nip;
  * @method Helpers\View\Meta Meta()
  * @method Helpers\View\Paginator Paginator()
  * @method Helpers\View\Scripts Scripts()
- * @method Helpers\View\StyleSheets StyleSheets()
+ * @method Helpers\View\Stylesheets Stylesheets()
  * @method Helpers\View\TinyMCE TinyMCE()
  * @method Helpers\View\Url Url()
+ * @method Helpers\View\GoogleDFP GoogleDFP()
  *
  */
 class View
@@ -42,6 +43,7 @@ class View
         } else {
             trigger_error("Call to undefined method $name", E_USER_ERROR);
         }
+
         return null;
     }
 
@@ -86,7 +88,7 @@ class View
      */
     public function getHelperClass($name)
     {
-        return '\Nip\Helpers\View\\' . $name;
+        return '\Nip\Helpers\View\\'.$name;
     }
 
     /**
@@ -138,6 +140,7 @@ class View
     public function set($name, $value)
     {
         $this->data[$name] = $value;
+
         return $this;
     }
 
@@ -167,6 +170,7 @@ class View
     {
         $value = $this->has($name) ? $this->get($name) : '';
         $value .= $appended;
+
         return $this->set($name, $value);
     }
 
@@ -199,12 +203,12 @@ class View
     protected function buildPath($view)
     {
         if ($view[0] == '/') {
-            return $this->getBasePath() . ltrim($view, "/") . '.php';
+            return $this->getBasePath().ltrim($view, "/").'.php';
         } else {
             $backtrace = debug_backtrace();
             $caller = $backtrace[3]['file'];
 
-            return dirname($caller) . "/" . $view . ".php";
+            return dirname($caller)."/".$view.".php";
         }
     }
 
@@ -226,7 +230,7 @@ class View
      */
     public function setBasePath($path)
     {
-        $path = rtrim($path, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
+        $path = rtrim($path, DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR;
         $this->basePath = $path;
 
         return $this;
@@ -245,6 +249,7 @@ class View
         if (defined('VIEWS_PATH')) {
             return VIEWS_PATH;
         }
+
         return false;
     }
 
@@ -254,7 +259,7 @@ class View
     public function render($block = 'default')
     {
         if (!empty($this->blocks[$block])) {
-            $this->load("/" . $this->blocks[$block]);
+            $this->load("/".$this->blocks[$block]);
         } else {
             trigger_error("No $block block", E_USER_ERROR);
         }
@@ -265,7 +270,7 @@ class View
      * @param $view
      * @param array $variables
      * @param bool $return
-     * @return string|null
+     * @return string|boolean
      */
     public function load($view, $variables = [], $return = false)
     {
@@ -276,6 +281,8 @@ class View
         }
 
         echo $html;
+
+        return null;
     }
 
     /**
@@ -295,6 +302,7 @@ class View
         include($path);
         $html = ob_get_contents();
         ob_end_clean();
+
         return $html;
     }
 
@@ -320,6 +328,7 @@ class View
                 $this->set($key, $value);
             }
         }
+
         return $this;
     }
 
