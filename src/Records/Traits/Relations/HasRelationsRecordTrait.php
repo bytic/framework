@@ -42,7 +42,7 @@ trait HasRelationsRecordTrait
     /**
      * @param string $name
      * @param $arguments
-     * @return \Nip\Records\AbstractModels\Record|\Nip\Records\Collections\Collection
+     * @return bool|\Nip\Records\AbstractModels\Record|\Nip\Records\Collections\Collection
      */
     protected function isCallRelationOperation($name, $arguments = [])
     {
@@ -52,7 +52,8 @@ trait HasRelationsRecordTrait
                 return $relation->getResults();
             }
         }
-        return null;
+
+        return false;
     }
 
     /**
