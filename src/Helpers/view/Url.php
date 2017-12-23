@@ -8,8 +8,13 @@ use Nip\HelperBroker;
  * Class Url
  * @package Nip\Helpers\View
  */
-class URL extends AbstractHelper
+class Url extends AbstractHelper
 {
+    /**
+     * @param $name
+     * @param $arguments
+     * @return mixed
+     */
     public function __call($name, $arguments)
     {
         $helper = HelperBroker::get('Url');

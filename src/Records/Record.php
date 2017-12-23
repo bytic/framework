@@ -22,7 +22,7 @@ class Record extends AbstractModels\Record
     public function __call($name, $arguments)
     {
         $return = $this->isCallRelationOperation($name, $arguments);
-        if ($return !== null) {
+        if ($return !== false) {
             return $return;
         }
 

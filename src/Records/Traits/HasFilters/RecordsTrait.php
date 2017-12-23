@@ -20,6 +20,7 @@ trait RecordsTrait
      */
     public function requestFilters($request)
     {
+        $request = $request instanceof Request ? $request : new Request($request);
         $this->getFilterManager()->setRequest($request);
 
         return $this->getFilterManager()->getFiltersArray();

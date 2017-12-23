@@ -15,7 +15,7 @@ class GoogleAnalytics extends AbstractHelper
 
     public $transactions = null;
 
-    protected $UA = null;
+    protected $trackingId = null;
 
     protected $domain = null;
     
@@ -93,7 +93,7 @@ class GoogleAnalytics extends AbstractHelper
         $this->addOperation('_set', ['currencyCode', 'RON'], 'prepend');
         $this->addOperation('_trackPageview', $this->getPage() ? $this->getPage() : null, 'prepend');
         $this->addOperation('_setDomainName', $this->getDomain(), 'prepend');
-        $this->addOperation('_setAccount', $this->getUA(), 'prepend');
+        $this->addOperation('_setAccount', $this->getTrackingId(), 'prepend');
 
         $this->parseTransactions('');
 
@@ -195,31 +195,31 @@ class GoogleAnalytics extends AbstractHelper
     /**
      * @return null|string
      */
-    public function getUA()
+    public function getTrackingId()
     {
-        if ($this->UA == null) {
+        if ($this->trackingId == null) {
             $this->initUA();
         }
 
-        return $this->UA;
+        return $this->trackingId;
     }
 
     /**
      * @param $code
      */
-    public function setUA($code)
+    public function setTrackingId($code)
     {
-        $this->UA = $code;
+        $this->trackingId = $code;
     }
 
     protected function initUA()
     {
         $ua = '';
         $config = $this->getConfig();
-        if ($config->has('ANALYTICS.UA')) {
-            $ua = $config->get('ANALYTICS.UA');
+        if ($config->has('analytics.tracking_id')) {
+            $ua = $config->get('analytics.tracking_id');
         }
-        $this->setUA($ua);
+        $this->setTrackingId($ua);
     }
 
     /**

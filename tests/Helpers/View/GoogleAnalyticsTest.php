@@ -5,12 +5,13 @@ namespace Nip\Tests\Helpers\View;
 use Mockery as m;
 use Nip\FlashData\FlashData;
 use Nip\Helpers\View\GoogleAnalytics;
+use Nip\Tests\AbstractTest;
 
 /**
  * Class GoogleAnalyticsTest
  * @package Nip\Tests\Helpers\View
  */
-class GoogleAnalyticsTest extends \Nip\Tests\AbstractTest
+class GoogleAnalyticsTest extends AbstractTest
 {
     /**
      * @var \UnitTester
@@ -22,8 +23,8 @@ class GoogleAnalyticsTest extends \Nip\Tests\AbstractTest
      */
     protected $_object;
 
-    protected $_ua = '';
-    protected $_domain = 'galantom.loc';
+    protected $trackingId = '';
+    protected $trackingDomain = 'galantom.loc';
 
     public function testAddOperation()
     {
@@ -47,8 +48,9 @@ class GoogleAnalyticsTest extends \Nip\Tests\AbstractTest
         $flashMock = m::mock(FlashData::class)->shouldDeferMissing();
 
         $this->_object = new GoogleAnalytics();
+        /** @noinspection PhpParamsInspection */
         $this->_object->setFlashMemory($flashMock);
-        $this->_object->setUA($this->_ua);
-        $this->_object->setDomain($this->_domain);
+        $this->_object->setTrackingId($this->trackingId);
+        $this->_object->setDomain($this->trackingDomain);
     }
 }
