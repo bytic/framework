@@ -47,13 +47,14 @@ class Controller
      */
     public function __construct()
     {
-        $name = str_replace("Controller", "", get_class($this));
+        $name       = str_replace("Controller", "", get_class($this));
         $this->name = inflector()->unclassify($name);
     }
 
     /**
      * @param $name
      * @param $arguments
+     *
      * @return bool|mixed
      */
     public function __call($name, $arguments)
@@ -67,6 +68,7 @@ class Controller
 
     /**
      * @param $name
+     *
      * @return Helpers\AbstractHelper
      */
     public function getHelper($name)
@@ -84,6 +86,7 @@ class Controller
 
     /**
      * @param null|Request $request
+     *
      * @return Response
      */
     public function dispatch($request = null)
@@ -100,7 +103,7 @@ class Controller
      */
     public function getRequest()
     {
-        if (!$this->request instanceof Request) {
+        if ( ! $this->request instanceof Request) {
             $this->request = new Request();
         }
 
@@ -109,6 +112,7 @@ class Controller
 
     /**
      * @param Request $request
+     *
      * @return self
      */
     public function setRequest(Request $request)
@@ -123,12 +127,13 @@ class Controller
      */
     public function populateFromRequest(Request $request)
     {
-        $this->name = $request->getControllerName();
+        $this->name   = $request->getControllerName();
         $this->action = $request->getActionName();
     }
 
     /**
      * @param bool $action
+     *
      * @return Response
      */
     public function dispatchAction($action = false)
@@ -155,6 +160,7 @@ class Controller
 
     /**
      * @param $action
+     *
      * @return bool
      */
     protected function validAction($action)
@@ -191,6 +197,7 @@ class Controller
      * @param bool $controller
      * @param bool $module
      * @param array $params
+     *
      * @return mixed
      */
     public function call($action = false, $controller = false, $module = false, $params = [])
@@ -206,6 +213,7 @@ class Controller
     /**
      * @param self $controller
      * @param Request $newRequest
+     *
      * @return Controller
      */
     protected function prepareCallController($controller, $newRequest)
@@ -226,6 +234,7 @@ class Controller
 
     /**
      * @param string $action
+     *
      * @return self
      */
     public function setAction($action)
@@ -323,7 +332,7 @@ class Controller
                 header("HTTP/1.1 301 Moved Permanently");
                 break;
         }
-        header("Location: ".$url);
+        header("Location: " . $url);
         exit();
     }
 }

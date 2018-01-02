@@ -173,6 +173,8 @@ class Dispatcher
 
     /**
      * @param bool $params
+     *
+     * @throws ForwardException
      */
     public function throwError($params = false)
     {
@@ -244,18 +246,20 @@ class Dispatcher
     }
 
     /**
-     * @param $namespaceClass
+     * @param string $namespaceClass
+     *
      * @return bool
      */
     protected function isValidControllerNamespace($namespaceClass)
     {
-        $loader = $this->getAutoloader()->getPsr4ClassLoader();
-        $loader->load($namespaceClass);
-        if ($loader->isLoaded($namespaceClass)) {
-            return true;
-        }
-
-        return false;
+        return class_exists($namespaceClass);
+//        $loader = $this->getAutoloader()->getPsr4ClassLoader();
+//        $loader->load($namespaceClass);
+//        if ($loader->isLoaded($namespaceClass)) {
+//            return true;
+//        }
+//
+//        return false;
     }
 
     /**
