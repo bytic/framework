@@ -6,8 +6,7 @@ namespace Nip\Tests\Helper;
 // all public methods declared in helper class will be available in $I
 
 /**
- * Class Acceptance
- * @package Nip\Tests\Helper
+ * Class Acceptance.
  */
 class Acceptance extends \Codeception\Module
 {

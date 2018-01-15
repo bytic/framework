@@ -5,14 +5,13 @@ namespace Nip\Config\FileParser;
 use Nip\Config\Exception\ParseException;
 
 /**
- * Class Ini
- * @package Nip\Config\FileParser
+ * Class Ini.
  */
 class Ini extends AbstractFileParser
 {
     /**
-     * {@inheritDoc}
-     * Parses an INI file as an array
+     * {@inheritdoc}
+     * Parses an INI file as an array.
      *
      * @throws ParseException If there is an error parsing the INI file
      */
@@ -25,6 +24,7 @@ class Ini extends AbstractFileParser
         }
         if ($data === false) {
             $error = error_get_last();
+
             throw new ParseException($error);
         }
 
@@ -32,7 +32,7 @@ class Ini extends AbstractFileParser
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getSupportedExtensions()
     {

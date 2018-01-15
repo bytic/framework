@@ -34,11 +34,13 @@ class ConnectionTest extends \Codeception\TestCase\Test
         foreach ($types as $type) {
             $return[] = [$type, 'Nip\Database\Query\\'.ucfirst($type)];
         }
+
         return $return;
     }
 
     /**
      * @dataProvider testNewQueryProvider
+     *
      * @param $type
      * @param $class
      */

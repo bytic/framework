@@ -3,8 +3,7 @@
 namespace Nip\Config\Exception;
 
 /**
- * Class ParseException
- * @package Nip\Config\Exception
+ * Class ParseException.
  */
 class UnsupportedFormatException extends \Exception
 {

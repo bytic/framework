@@ -15,8 +15,6 @@ use Nip\DebugBar\DataCollector\RouteCollector;
 
 class StandardDebugBar extends DebugBar
 {
-
-
     public function doBoot()
     {
         $this->addCollector(new PhpInfoCollector());
@@ -34,7 +32,7 @@ class StandardDebugBar extends DebugBar
         $profiler = $adapter->newProfiler()->setEnabled(true);
         $writer = $profiler->newWriter('DebugBar');
 
-        /** @var ProfilerDebugBar $writer */
+        /* @var ProfilerDebugBar $writer */
         $writer->setCollector($this->getCollector('queries'));
         $profiler->addWriter($writer);
         $adapter->setProfiler($profiler);

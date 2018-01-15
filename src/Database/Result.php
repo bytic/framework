@@ -7,12 +7,10 @@ use Nip\Database\Adapters\MySQLi;
 use Nip\Database\Query\AbstractQuery;
 
 /**
- * Class Result
- * @package Nip\Database
+ * Class Result.
  */
 class Result
 {
-
     /**
      * @var \mysqli_result
      */
@@ -32,7 +30,8 @@ class Result
 
     /**
      * Result constructor.
-     * @param \mysqli_result $resultSQL
+     *
+     * @param \mysqli_result  $resultSQL
      * @param AbstractAdapter $adapter
      */
     public function __construct($resultSQL, $adapter)
@@ -40,7 +39,6 @@ class Result
         $this->resultSQL = $resultSQL;
         $this->adapter = $adapter;
     }
-
 
     public function __destruct()
     {
@@ -66,7 +64,8 @@ class Result
     }
 
     /**
-     * Fetches all rows from current result set
+     * Fetches all rows from current result set.
+     *
      * @return array
      */
     public function fetchResults()
@@ -81,7 +80,8 @@ class Result
     }
 
     /**
-     * Fetches row from current result set
+     * Fetches row from current result set.
+     *
      * @return bool|array
      */
     public function fetchResult()
@@ -103,7 +103,7 @@ class Result
     public function checkValid()
     {
         if (!$this->isValid()) {
-            trigger_error("Invalid result for query [".$this->getQuery()->getString()."]", E_USER_WARNING);
+            trigger_error('Invalid result for query ['.$this->getQuery()->getString().']', E_USER_WARNING);
 
             return false;
         }

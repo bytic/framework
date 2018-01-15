@@ -6,8 +6,7 @@ use Nip\Router\Parsers\AbstractParser;
 use Nip\Utility\Traits\NameWorksTrait;
 
 /**
- * Class AbstractRoute
- * @package Nip\Router\Route
+ * Class AbstractRoute.
  */
 abstract class AbstractRoute
 {
@@ -36,7 +35,8 @@ abstract class AbstractRoute
 
     /**
      * AbstractRoute constructor.
-     * @param bool $map
+     *
+     * @param bool  $map
      * @param array $params
      */
     public function __construct($map = false, $params = [])
@@ -65,6 +65,7 @@ abstract class AbstractRoute
 
     /**
      * @param $class
+     *
      * @return $this
      */
     public function setParser($class)
@@ -77,7 +78,7 @@ abstract class AbstractRoute
     public function initParser()
     {
         $class = $this->getParserClass();
-        $parser = new $class;
+        $parser = new $class();
         $this->setParser($parser);
     }
 
@@ -103,6 +104,7 @@ abstract class AbstractRoute
 
     /**
      * @param $type
+     *
      * @return $this
      */
     public function setType($type)
@@ -124,6 +126,7 @@ abstract class AbstractRoute
     {
         if ($this->isNamespaced()) {
             $name = strtolower($this->getClassFirstName());
+
             return str_replace('route', '', $name);
         }
         $name = get_class($this);
@@ -139,6 +142,7 @@ abstract class AbstractRoute
     /**
      * @param $name
      * @param $arguments
+     *
      * @return mixed
      */
     public function __call($name, $arguments)
@@ -148,18 +152,20 @@ abstract class AbstractRoute
 
     /**
      * @param array $params
+     *
      * @return string
      */
     public function assembleFull($params = [])
     {
         $base = $this->getBase($params);
-        $base = rtrim($base, "/");
+        $base = rtrim($base, '/');
 
         return $base.$this->assemble($params);
     }
 
     /**
      * @param array $params
+     *
      * @return mixed
      */
     public function getBase($params = [])
@@ -203,6 +209,7 @@ abstract class AbstractRoute
     /**
      * @param $subdomain
      * @param $url
+     *
      * @return mixed
      */
     public function replaceSubdomain($subdomain, $url)
@@ -221,6 +228,7 @@ abstract class AbstractRoute
 
     /**
      * @param array $params
+     *
      * @return mixed|string
      */
     public function assemble($params = [])
@@ -230,6 +238,7 @@ abstract class AbstractRoute
 
     /**
      * @param $uri
+     *
      * @return bool
      */
     public function match($uri)

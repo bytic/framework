@@ -1,14 +1,17 @@
 <?php
-class Nip_Form_Element_Hash extends Nip_Form_Element_Hidden {
 
+class Nip_Form_Element_Hash extends Nip_Form_Element_Hidden
+{
     protected $_ID;
 
-    public function init() {
+    public function init()
+    {
         parent::init();
         $this->initSession();
     }
 
-    public function initSession() {
+    public function initSession()
+    {
         $name = $this->getSessionName();
         if (!$_SESSION[$name]) {
             $this->reset();
@@ -25,7 +28,8 @@ class Nip_Form_Element_Hash extends Nip_Form_Element_Hidden {
         $this->setValue($hash);
     }
 
-    public function validate() {
+    public function validate()
+    {
         if (!$this->getValue()) {
             $this->addError('Request received without security hash');
         } elseif ($this->getValue() != $this->getSessionValue()) {
@@ -33,27 +37,31 @@ class Nip_Form_Element_Hash extends Nip_Form_Element_Hidden {
         }
     }
 
-    public function getSessionName() {
-        return $this->getForm()->getName() . '_' . $this->getSalt();
+    public function getSessionName()
+    {
+        return $this->getForm()->getName().'_'.$this->getSalt();
     }
 
-    public function getSessionValue() {
+    public function getSessionValue()
+    {
         $name = $this->getSessionName();
+
         return $_SESSION[$name];
     }
 
-    public function getSalt() {
+    public function getSalt()
+    {
         return sha1(__CLASS__);
     }
 
-    protected function _generateHash() {
+    protected function _generateHash()
+    {
         return md5(
-            mt_rand(1,1000000)
-            .  $this->getSalt()
-            .  $this->getName()
-            .  session_id()
-            .  mt_rand(1,1000000)
+            mt_rand(1, 1000000)
+            .$this->getSalt()
+            .$this->getName()
+            .session_id()
+            .mt_rand(1, 1000000)
         );
     }
-
 }

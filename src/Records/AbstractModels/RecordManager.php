@@ -19,14 +19,12 @@ use Nip\Request;
 use Nip\Utility\Traits\NameWorksTrait;
 
 /**
- * Class Table
- * @package Nip\Records\_Abstract
+ * Class Table.
  *
  * @method \Nip_Helper_Url Url()
  */
 abstract class RecordManager
 {
-
     use NameWorksTrait;
 
     /**
@@ -35,7 +33,7 @@ abstract class RecordManager
     protected $db = null;
 
     /**
-     * Collection class for current record manager
+     * Collection class for current record manager.
      *
      * @var string
      */
@@ -68,7 +66,8 @@ abstract class RecordManager
     protected $urlPK = null;
 
     /**
-     * Model class name
+     * Model class name.
+     *
      * @var null|string
      */
     protected $model = null;
@@ -87,9 +86,9 @@ abstract class RecordManager
 
     protected $filterManager = null;
 
-
     /**
      * The loaded relationships for the model table.
+     *
      * @var array
      */
     protected $relations = null;
@@ -161,7 +160,7 @@ abstract class RecordManager
     }
 
     /**
-     * Overloads findByRecord, findByField, deleteByRecord, deleteByField, countByRecord, countByField
+     * Overloads findByRecord, findByField, deleteByRecord, deleteByField, countByRecord, countByField.
      *
      * @example findByCategory(Category $item)
      * @example deleteByProduct(Product $item)
@@ -170,7 +169,7 @@ abstract class RecordManager
      * @example countByIdCategory(1)
      *
      * @param string $name
-     * @param array $arguments
+     * @param array  $arguments
      *
      * @return mixed
      */
@@ -181,7 +180,7 @@ abstract class RecordManager
             return $return;
         }
 
-        /** @noinspection PhpAssignmentInConditionInspection */
+        /* @noinspection PhpAssignmentInConditionInspection */
         if ($return = $this->isCallUrl($name, $arguments)) {
             return $return;
         }
@@ -198,34 +197,33 @@ abstract class RecordManager
     /**
      * @param $name
      * @param $arguments
+     *
      * @return RecordCollection|null
      */
     protected function isCallDatabaseOperation($name, $arguments)
     {
-        $operations = ["find", "delete", "count"];
+        $operations = ['find', 'delete', 'count'];
         foreach ($operations as $operation) {
-            if (strpos($name, $operation . "By") !== false || strpos($name, $operation . "OneBy") !== false) {
+            if (strpos($name, $operation.'By') !== false || strpos($name, $operation.'OneBy') !== false) {
                 $params = [];
                 if (count($arguments) > 1) {
                     $params = end($arguments);
                 }
 
-                $match = str_replace([$operation . "By", $operation . "OneBy"], "", $name);
+                $match = str_replace([$operation.'By', $operation.'OneBy'], '', $name);
                 $field = inflector()->underscore($match);
 
                 if ($field == $this->getPrimaryKey()) {
                     return $this->findByPrimary($arguments[0]);
                 }
 
-                $params['where'][] = ["$field " . (is_array($arguments[0]) ? "IN" : "=") . " ?", $arguments[0]];
+                $params['where'][] = ["$field ".(is_array($arguments[0]) ? 'IN' : '=').' ?', $arguments[0]];
 
-                $operation = str_replace($match, "", $name) . "Params";
+                $operation = str_replace($match, '', $name).'Params';
 
                 return $this->$operation($params);
             }
         }
-
-        return null;
     }
 
     /**
@@ -308,6 +306,7 @@ abstract class RecordManager
 
     /**
      * @param Connection $db
+     *
      * @return $this
      */
     public function setDB($db)
@@ -333,7 +332,7 @@ abstract class RecordManager
     public function checkDB()
     {
         if (!$this->hasDB()) {
-            trigger_error("Database connection missing for [".get_class($this)."]", E_USER_ERROR);
+            trigger_error('Database connection missing for ['.get_class($this).']', E_USER_ERROR);
         }
     }
 
@@ -421,9 +420,10 @@ abstract class RecordManager
 
     /**
      * When searching by primary key, look for items in current registry before
-     * fetching them from the database
+     * fetching them from the database.
      *
      * @param array $pk_list
+     *
      * @return RecordCollection
      */
     public function findByPrimary($pk_list = [])
@@ -517,6 +517,7 @@ abstract class RecordManager
 
     /**
      * @param array $params
+     *
      * @return SelectQuery
      */
     public function paramsToQuery($params = [])
@@ -537,14 +538,16 @@ abstract class RecordManager
     }
 
     /**
-     * Factory
+     * Factory.
+     *
      * @param string $type
+     *
      * @return Query|SelectQuery|InsertQuery|DeleteQuery|UpdateQuery
      */
     public function newQuery($type = 'select')
     {
         $query = $this->getDB()->newQuery($type);
-        $query->cols("`".$this->getTable()."`.*");
+        $query->cols('`'.$this->getTable().'`.*');
         $query->from($this->getFullNameTable());
         $query->table($this->getTable());
 
@@ -564,6 +567,7 @@ abstract class RecordManager
     /**
      * @param $query
      * @param array $params
+     *
      * @return RecordCollection
      */
     public function findByQuery($query, $params = [])
@@ -573,7 +577,7 @@ abstract class RecordManager
         $results = $this->getDB()->execute($query);
         if ($results->numRows() > 0) {
             $pk = $this->getPrimaryKey();
-            /** @noinspection PhpAssignmentInConditionInspection */
+            /* @noinspection PhpAssignmentInConditionInspection */
             while ($row = $results->fetchResult()) {
                 $item = $this->getNew($row);
                 if (is_string($pk)) {
@@ -591,14 +595,14 @@ abstract class RecordManager
     }
 
     /**
-     * Factory
+     * Factory.
+     *
+     * @param array $data [optional]
      *
      * @return Record
-     * @param array $data [optional]
      */
     public function getNew($data = [])
     {
-
         $pk = $this->getPrimaryKey();
         if (is_string($pk) && $this->getRegistry()->get($data[$pk])) {
             $return = $this->getRegistry()->get($data[$pk]);
@@ -615,6 +619,7 @@ abstract class RecordManager
 
     /**
      * @param array $data
+     *
      * @return Record
      */
     public function getNewRecordFromDB($data = [])
@@ -627,6 +632,7 @@ abstract class RecordManager
 
     /**
      * @param array $data
+     *
      * @return Record
      */
     public function getNewRecord($data = [])
@@ -670,6 +676,7 @@ abstract class RecordManager
 
     /**
      * @param null $class
+     *
      * @return string
      */
     public function generateModelClass($class = null)
@@ -695,11 +702,12 @@ abstract class RecordManager
     /**
      * @param $name
      * @param $arguments
+     *
      * @return bool
      */
     protected function isCallUrl($name, $arguments)
     {
-        if (substr($name, 0, 3) == "get" && substr($name, -3) == "URL") {
+        if (substr($name, 0, 3) == 'get' && substr($name, -3) == 'URL') {
             $action = substr($name, 3, -3);
             $params = $arguments[0];
             $module = $arguments[1];
@@ -713,7 +721,8 @@ abstract class RecordManager
     /**
      * @param $action
      * @param array $params
-     * @param null $module
+     * @param null  $module
+     *
      * @return mixed
      */
     public function compileURL($action, $params = [], $module = null)
@@ -721,12 +730,12 @@ abstract class RecordManager
         $controller = $this->getController();
 
         if (substr($action, 0, 5) == 'Async') {
-            $controller = 'async-' . $controller;
+            $controller = 'async-'.$controller;
             $action = substr($action, 5);
         }
 
         if (substr($action, 0, 5) == 'Modal') {
-            $controller = 'modal-' . $controller;
+            $controller = 'modal-'.$controller;
             $action = substr($action, 5);
         }
 
@@ -739,11 +748,11 @@ abstract class RecordManager
         $params['controller'] = $controller ? $controller : $this->getController();
         $params['module'] = $module ? $module : Request::instance()->getModuleName();
 
-        $routeName = $params['module'] . '.' . $params['controller'] . '.' . $params['action'];
+        $routeName = $params['module'].'.'.$params['controller'].'.'.$params['action'];
         if ($this->Url()->getRouter()->hasRoute($routeName)) {
             unset($params['module'], $params['controller'], $params['action']);
         } else {
-            $routeName = $params['module'] . '.default';
+            $routeName = $params['module'].'.default';
         }
 
         return $this->Url()->assemble($routeName, $params);
@@ -751,6 +760,7 @@ abstract class RecordManager
 
     /**
      * @param $name
+     *
      * @return mixed
      */
     public function getHelper($name)
@@ -768,6 +778,7 @@ abstract class RecordManager
 
     /**
      * @param Request|array $request
+     *
      * @return mixed
      */
     public function requestFilters($request)
@@ -823,7 +834,7 @@ abstract class RecordManager
     {
         if ($this->isNamespaced()) {
             $base = $this->getNamespacePath();
-            $namespaceClass = $base . '\Filters\FilterManager';
+            $namespaceClass = $base.'\Filters\FilterManager';
             /** @var Psr4Class $loader */
             $loader = app('autoloader')->getPsr4ClassLoader();
             $loader->load($namespaceClass);
@@ -843,9 +854,6 @@ abstract class RecordManager
         return app('kernel')->getRequest();
     }
 
-    /**
-     *
-     */
     public function initFilters()
     {
         $this->getFilterManager()->init();
@@ -853,7 +861,9 @@ abstract class RecordManager
 
     /**
      * @param $query
+     *
      * @return mixed
+     *
      * @internal param array $filters
      */
     public function filter($query)
@@ -865,6 +875,7 @@ abstract class RecordManager
 
     /**
      * @param SelectQuery $query
+     *
      * @return SelectQuery
      */
     public function filterQuery($query)
@@ -879,6 +890,7 @@ abstract class RecordManager
 
     /**
      * @param Record $item
+     *
      * @return bool|false|Record
      */
     public function exists(Record $item)
@@ -937,9 +949,10 @@ abstract class RecordManager
     }
 
     /**
-     * Finds one Record using params array
+     * Finds one Record using params array.
      *
      * @param array $params
+     *
      * @return Record|false
      */
     public function findOneByParams(array $params = [])
@@ -954,9 +967,10 @@ abstract class RecordManager
     }
 
     /**
-     * Finds Records using params array
+     * Finds Records using params array.
      *
      * @param array $params
+     *
      * @return mixed
      */
     public function findByParams($params = [])
@@ -971,11 +985,11 @@ abstract class RecordManager
      */
     public function getAll()
     {
-        if (!$this->getRegistry()->exists("all")) {
-            $this->getRegistry()->set("all", $this->findAll());
+        if (!$this->getRegistry()->exists('all')) {
+            $this->getRegistry()->set('all', $this->findAll());
         }
 
-        return $this->getRegistry()->get("all");
+        return $this->getRegistry()->get('all');
     }
 
     /**
@@ -988,6 +1002,7 @@ abstract class RecordManager
 
     /**
      * @param int $count
+     *
      * @return mixed
      */
     public function findLast($count = 9)
@@ -998,9 +1013,11 @@ abstract class RecordManager
     }
 
     /**
-     * Inserts a Record into the database
-     * @param Record $model
+     * Inserts a Record into the database.
+     *
+     * @param Record     $model
      * @param array|bool $onDuplicate
+     *
      * @return mixed
      */
     public function insert($model, $onDuplicate = false)
@@ -1014,6 +1031,7 @@ abstract class RecordManager
     /**
      * @param $model
      * @param $onDuplicate
+     *
      * @return InsertQuery
      */
     public function insertQuery($model, $onDuplicate)
@@ -1032,6 +1050,7 @@ abstract class RecordManager
 
     /**
      * @param Record $model
+     *
      * @return array
      */
     public function getQueryModelData($model)
@@ -1075,8 +1094,10 @@ abstract class RecordManager
     }
 
     /**
-     * Updates a Record's database entry
+     * Updates a Record's database entry.
+     *
      * @param Record $model
+     *
      * @return bool|Result
      */
     public function update(Record $model)
@@ -1092,6 +1113,7 @@ abstract class RecordManager
 
     /**
      * @param Record $model
+     *
      * @return bool|UpdateQuery
      */
     public function updateQuery(Record $model)
@@ -1126,8 +1148,10 @@ abstract class RecordManager
     }
 
     /**
-     * Saves a Record's database entry
+     * Saves a Record's database entry.
+     *
      * @param Record $model
+     *
      * @return mixed
      */
     public function save(Record $model)
@@ -1162,7 +1186,7 @@ abstract class RecordManager
     }
 
     /**
-     * Delete a Record's database entry
+     * Delete a Record's database entry.
      *
      * @param mixed|Record $input
      */
@@ -1192,8 +1216,10 @@ abstract class RecordManager
     }
 
     /**
-     * Delete a Record's database entry
+     * Delete a Record's database entry.
+     *
      * @param array $params
+     *
      * @return $this
      */
     public function deleteByParams($params = [])
@@ -1205,7 +1231,7 @@ abstract class RecordManager
         if (isset($where)) {
             if (is_array($where)) {
                 foreach ($where as $condition) {
-                    $condition = (array)$condition;
+                    $condition = (array) $condition;
                     $query->where($condition[0], $condition[1]);
                 }
             } else {
@@ -1227,9 +1253,11 @@ abstract class RecordManager
     }
 
     /**
-     * Returns paginated results
+     * Returns paginated results.
+     *
      * @param Paginator $paginator
-     * @param array $params
+     * @param array     $params
+     *
      * @return mixed
      */
     public function paginate(Paginator $paginator, $params = [])
@@ -1250,15 +1278,17 @@ abstract class RecordManager
     }
 
     /**
-     * Checks the registry before fetching from the database
+     * Checks the registry before fetching from the database.
+     *
      * @param mixed $primary
+     *
      * @return Record
      */
     public function findOne($primary)
     {
         $item = $this->getRegistry()->get($primary);
         if (!$item) {
-            $all = $this->getRegistry()->get("all");
+            $all = $this->getRegistry()->get('all');
             if ($all) {
                 $item = $all[$primary];
             }
@@ -1279,6 +1309,7 @@ abstract class RecordManager
     /**
      * @param Query $query
      * @param array $params
+     *
      * @return bool
      */
     public function findOneByQuery($query, $params = [])
@@ -1294,16 +1325,19 @@ abstract class RecordManager
 
     /**
      * @param bool|array $where
+     *
      * @return int
      */
     public function count($where = false)
     {
-        return $this->countByParams(["where" => $where]);
+        return $this->countByParams(['where' => $where]);
     }
 
     /**
-     * Counts all the Record entries in the database
+     * Counts all the Record entries in the database.
+     *
      * @param array $params
+     *
      * @return int
      */
     public function countByParams($params = [])
@@ -1316,8 +1350,10 @@ abstract class RecordManager
     }
 
     /**
-     * Counts all the Record entries in the database
+     * Counts all the Record entries in the database.
+     *
      * @param Query $query
+     *
      * @return int
      */
     public function countByQuery($query)
@@ -1329,7 +1365,7 @@ abstract class RecordManager
         if ($result->numRows()) {
             $row = $result->fetchResult();
 
-            return (int)$row['count'];
+            return (int) $row['count'];
         }
 
         return false;
@@ -1337,6 +1373,7 @@ abstract class RecordManager
 
     /**
      * @param $data
+     *
      * @return mixed
      */
     public function cleanData($data)
@@ -1345,7 +1382,8 @@ abstract class RecordManager
     }
 
     /**
-     * The name of the field used as a foreign key in other tables
+     * The name of the field used as a foreign key in other tables.
+     *
      * @return string
      */
     public function getPrimaryFK()
@@ -1377,7 +1415,7 @@ abstract class RecordManager
     {
         $singularize = inflector()->singularize($this->getController());
 
-        return $this->getPrimaryKey()."_".inflector()->underscore($singularize);
+        return $this->getPrimaryKey().'_'.inflector()->underscore($singularize);
     }
 
     /**
@@ -1389,7 +1427,8 @@ abstract class RecordManager
     }
 
     /**
-     * The name of the field used as a foreign key in other tables
+     * The name of the field used as a foreign key in other tables.
+     *
      * @return string
      */
     public function getUrlPK()
@@ -1403,6 +1442,7 @@ abstract class RecordManager
 
     /**
      * @param $name
+     *
      * @return bool
      */
     public function hasField($name)
@@ -1433,7 +1473,9 @@ abstract class RecordManager
 
     /**
      * Get a specified relationship.
-     * @param  string $relation
+     *
+     * @param string $relation
+     *
      * @return null|Relation
      */
     public function getRelation($relation)
@@ -1444,7 +1486,8 @@ abstract class RecordManager
     }
 
     /**
-     * Check if the model needs to initRelations
+     * Check if the model needs to initRelations.
+     *
      * @return void
      */
     protected function checkInitRelations()
@@ -1467,8 +1510,8 @@ abstract class RecordManager
      */
     protected function initRelationsType($type)
     {
-        if (property_exists($this, '_' . $type)) {
-            $array = $this->{'_' . $type};
+        if (property_exists($this, '_'.$type)) {
+            $array = $this->{'_'.$type};
             $this->initRelationsFromArray($type, $array);
         }
     }
@@ -1489,7 +1532,8 @@ abstract class RecordManager
     /**
      * @param string $type
      * @param string $name
-     * @param array $params
+     * @param array  $params
+     *
      * @return void
      */
     protected function initRelation($type, $name, $params)
@@ -1501,6 +1545,7 @@ abstract class RecordManager
 
     /**
      * @param string $type
+     *
      * @return \Nip\Records\Relations\Relation
      */
     public function newRelation($type)
@@ -1515,6 +1560,7 @@ abstract class RecordManager
 
     /**
      * @param string $type
+     *
      * @return string
      */
     public function getRelationClass($type)
@@ -1553,7 +1599,9 @@ abstract class RecordManager
 
     /**
      * Determine if the given relation is loaded.
-     * @param  string $key
+     *
+     * @param string $key
+     *
      * @return bool
      */
     public function hasRelation($key)
@@ -1565,8 +1613,10 @@ abstract class RecordManager
 
     /**
      * Set the specific relationship in the model.
-     * @param  string $relation
-     * @param  mixed $value
+     *
+     * @param string $relation
+     * @param mixed  $value
+     *
      * @return $this
      */
     public function setRelation($relation, $value)
@@ -1580,6 +1630,7 @@ abstract class RecordManager
     /**
      * @param Record $from
      * @param Record $to
+     *
      * @return Record
      */
     public function cloneRelations($from, $to)
@@ -1606,6 +1657,7 @@ abstract class RecordManager
 
     /**
      * Get all the loaded relations for the instance.
+     *
      * @return array
      */
     public function getRelations()
@@ -1617,7 +1669,9 @@ abstract class RecordManager
 
     /**
      * Set the entire relations array on the model.
-     * @param  array $relations
+     *
+     * @param array $relations
+     *
      * @return $this
      */
     public function setRelations(array $relations)
@@ -1628,7 +1682,7 @@ abstract class RecordManager
     }
 
     /**
-     * Sets model and database table from the class name
+     * Sets model and database table from the class name.
      */
     protected function inflect()
     {

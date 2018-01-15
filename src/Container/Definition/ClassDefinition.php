@@ -5,8 +5,7 @@ namespace Nip\Container\Definition;
 use ReflectionClass;
 
 /**
- * Class ClassDefinition
- * @package Nip\Container\Definition
+ * Class ClassDefinition.
  */
 class ClassDefinition extends AbstractDefinition implements DefinitionInterface
 {
@@ -15,12 +14,12 @@ class ClassDefinition extends AbstractDefinition implements DefinitionInterface
      */
     protected $methods = [];
 
-
     public function build(array $args = [])
     {
 //        $args = (empty($args)) ? $this->arguments : $args;
         $reflection = new ReflectionClass($this->concrete);
         $instance = $reflection->newInstanceArgs();
+
         return $instance;
     }
 }

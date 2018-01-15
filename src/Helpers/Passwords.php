@@ -1,19 +1,18 @@
 <?php
 
 /**
- * Class Nip_Helper_Passwords
+ * Class Nip_Helper_Passwords.
  */
 class Nip_Helper_Passwords extends Nip\Helpers\AbstractHelper
 {
-
     /**
      * @var string
      */
     protected $salt = null;
 
-
     /**
      * @param $password
+     *
      * @return string
      */
     public function hash($password)
@@ -35,6 +34,7 @@ class Nip_Helper_Passwords extends Nip\Helpers\AbstractHelper
 
     /**
      * @param $salt
+     *
      * @return $this
      */
     public function setSalt($salt)
@@ -57,14 +57,15 @@ class Nip_Helper_Passwords extends Nip\Helpers\AbstractHelper
     }
 
     /**
-     * @param int $length
-     * @param bool $use_upper
-     * @param bool $use_lower
-     * @param bool $use_number
+     * @param int    $length
+     * @param bool   $use_upper
+     * @param bool   $use_lower
+     * @param bool   $use_number
      * @param string $use_custom
+     *
      * @return string
      */
-    public function generate($length = 8, $use_upper = true, $use_lower = true, $use_number = true, $use_custom = "")
+    public function generate($length = 8, $use_upper = true, $use_lower = true, $use_number = true, $use_custom = '')
     {
         $lower = implode('', range('a', 'z'));
         $upper = strtoupper($lower);
@@ -94,7 +95,7 @@ class Nip_Helper_Passwords extends Nip\Helpers\AbstractHelper
 
         $password = '';
         for ($x = 1; $x <= $length; $x++) {
-            $password .= $seed{rand(0, $seed_length - 1)};
+            $password .= $seed[rand(0, $seed_length - 1)];
         }
 
         return $password;

@@ -2,13 +2,12 @@
 
 namespace Nip\Records\Collections;
 
+use Nip\Records\Collections\Collection as RecordCollection;
 use Nip\Records\Record as Record;
 use Nip\Records\Relations\HasOneOrMany as Relation;
-use Nip\Records\Collections\Collection as RecordCollection;
 
 class Associated extends RecordCollection
 {
-
     /**
      * @var Relation
      */
@@ -66,5 +65,4 @@ class Associated extends RecordCollection
     {
         $this->_item = $item;
     }
-
 }

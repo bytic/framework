@@ -2,20 +2,20 @@
 
 class Nip_Form_Renderer_DisplayGroup
 {
-   
     /**
      * @var Nip_Form_DisplayGroup
      */
     protected $_group;
 
-
     /**
-     * @param  Nip_Form_DisplayGroup $form
+     * @param Nip_Form_DisplayGroup $form
+     *
      * @return Nip_Form_Renderer_DisplayGroup
      */
     public function setGroup(Nip_Form_DisplayGroup $group)
     {
         $this->_group = $group;
+
         return $this;
     }
 
@@ -26,21 +26,23 @@ class Nip_Form_Renderer_DisplayGroup
     {
         return $this->_group;
     }
-    
+
     public function render()
     {
         $return = '<fieldset'.$this->renderAttributes().'>';
-        $return .= '<legend>' . $this->getGroup()->getLegend() . '</legend>';
+        $return .= '<legend>'.$this->getGroup()->getLegend().'</legend>';
 
         $renderer = clone $this->getGroup()->getForm()->getRenderer();
         $renderer->setElements($this->getGroup()->toArray());
         $return .= $renderer->renderElements();
         $return .= '</fieldset>';
+
         return $return;
-    }    
-    
-    public function renderAttributes($overrides = array()) {
-        $attribs = $this->getGroup()->getAttribs();        
+    }
+
+    public function renderAttributes($overrides = [])
+    {
+        $attribs = $this->getGroup()->getAttribs();
         $elementAttribs = $this->getElementAttribs();
         $return = '';
         foreach ($attribs as $name => $value) {
@@ -48,14 +50,15 @@ class Nip_Form_Renderer_DisplayGroup
                 if (in_array($name, array_keys($overrides))) {
                     $value = $overrides[$name];
                 }
-                $return .= ' ' . $name . '="' . $value . '"';
+                $return .= ' '.$name.'="'.$value.'"';
             }
         }
+
         return $return;
     }
 
-    public function getElementAttribs() {
-        return array('id', 'style', 'class');
+    public function getElementAttribs()
+    {
+        return ['id', 'style', 'class'];
     }
-
 }

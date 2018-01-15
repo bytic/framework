@@ -3,16 +3,15 @@
 namespace Nip\Router\Parsers;
 
 /**
- * Class Standard
- * @package Nip\Router\Parsers
+ * Class Standard.
  */
 class Standard extends Dynamic
 {
-
     protected $map = ':controller/:action';
 
     /**
      * @param array $params
+     *
      * @return mixed|string
      */
     public function assemble($params = [])
@@ -40,7 +39,7 @@ class Standard extends Dynamic
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected function postMatch()
     {

@@ -2,7 +2,6 @@
 
 class Nip_Form_Element_Checkbox extends Nip_Form_Element_Input_Abstract
 {
-
     protected $_type = 'checkbox';
 
     public function init()
@@ -13,16 +12,19 @@ class Nip_Form_Element_Checkbox extends Nip_Form_Element_Input_Abstract
 
     /**
      * @param $request
+     *
      * @return $this
      */
     public function getDataFromRequest($request)
     {
         $this->setChecked($request != null);
+
         return parent::getDataFromRequest($request);
     }
 
     /**
      * @param $checked
+     *
      * @return $this
      */
     public function setChecked($checked)
@@ -32,11 +34,13 @@ class Nip_Form_Element_Checkbox extends Nip_Form_Element_Input_Abstract
         } else {
             $this->delAttrib('checked');
         }
+
         return $this;
     }
 
     /**
      * @param $data
+     *
      * @return $this
      */
     public function getDataFromModel($value)
@@ -45,6 +49,7 @@ class Nip_Form_Element_Checkbox extends Nip_Form_Element_Input_Abstract
         if ($inputValue == null && $value) {
             $this->setChecked(true);
         }
+
         return parent::getDataFromModel($value);
     }
 

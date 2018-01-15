@@ -4,18 +4,17 @@ use Locale as PhpLocale;
 
 class Nip_Locale
 {
-
     protected $_supported;
     protected $_data = [];
     protected $_default = 'en_US';
     protected $_current;
 
     /**
-     * Singleton pattern
+     * Singleton pattern.
      *
      * @return self
      */
-    static public function instance()
+    public static function instance()
     {
         static $instance;
         if (!($instance instanceof self)) {
@@ -36,20 +35,22 @@ class Nip_Locale
                 }
             }
         }
+
         return $this->_supported;
     }
 
-    public function getOption($path = array(), $locale = false)
+    public function getOption($path = [], $locale = false)
     {
         $data = $this->getData($locale);
         $value = $data;
         $pathFlat = '';
         foreach ($path as $key) {
             $pathFlat .= $key;
-            if (isset ($value[$key])) {
+            if (isset($value[$key])) {
                 $value = $value[$key];
             } else {
-                trigger_error("invalid path [{$pathFlat}] for " . __CLASS__ . "->" . __METHOD__, E_USER_WARNING);
+                trigger_error("invalid path [{$pathFlat}] for ".__CLASS__.'->'.__METHOD__, E_USER_WARNING);
+
                 return false;
             }
         }
@@ -120,24 +121,24 @@ class Nip_Locale
 
     protected function _getDataFile($name)
     {
-        return $this->getDataFolder() . $name . '.php';
+        return $this->getDataFolder().$name.'.php';
     }
 
     protected function getDataFolder()
     {
-        return dirname(__FILE__) . '/locale/data/';
+        return dirname(__FILE__).'/locale/data/';
     }
 
-    protected function _getDataFromFile($name, $data = array())
+    protected function _getDataFromFile($name, $data = [])
     {
         $file = $this->_getDataFile($name);
 
         if (is_file($file)) {
             include $file;
-            if (isset ($_import)) {
+            if (isset($_import)) {
                 $data = $this->_getDataFromFile($_import);
             }
-            if (isset ($_data)) {
+            if (isset($_data)) {
                 $data = \Nip\HelperBroker::get('Arrays')->merge_distinct($data, $_data);
             }
         } else {
@@ -146,5 +147,4 @@ class Nip_Locale
 
         return $data;
     }
-
 }

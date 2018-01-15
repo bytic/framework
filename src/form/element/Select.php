@@ -2,7 +2,6 @@
 
 class Nip_Form_Element_Select extends Nip_Form_Element_Abstract
 {
-
     protected $_type = 'select';
     protected $_optionsElements = [];
     protected $_values = [];
@@ -13,15 +12,15 @@ class Nip_Form_Element_Select extends Nip_Form_Element_Abstract
     public function addOptionsArray($options, $valueKey, $labelKey)
     {
         foreach ($options as $key => $option) {
-            $option = (object)$option;
+            $option = (object) $option;
 
             $oValue = $option->$valueKey;
             $oLabel = $option->$labelKey;
             $oDisabled = $option->disabled;
 
-            $atribs = array(
+            $atribs = [
                 'label' => $oLabel,
-            );
+            ];
 
             if ($oDisabled) {
                 $atribs['disabled'] = 'disabled';
@@ -80,6 +79,7 @@ class Nip_Form_Element_Select extends Nip_Form_Element_Abstract
 
     /**
      * @deprecated to stop confusion from select options and element options
+     *
      * @return array
      */
     public function getOptions()
@@ -97,12 +97,10 @@ class Nip_Form_Element_Select extends Nip_Form_Element_Abstract
 
     public function setValue($value)
     {
-
         if (in_array($value, $this->_values)) {
             return parent::setValue($value);
         }
 
         return false;
     }
-
 }

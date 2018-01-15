@@ -6,9 +6,7 @@ use Nip\Mail\Message;
 use Nip\Mail\Traits\MailableTrait;
 
 /**
- * Class RecordTrait
- * @package Nip\Mail\Models\Mailable
- *
+ * Class RecordTrait.
  */
 trait RecordTrait
 {

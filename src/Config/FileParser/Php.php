@@ -7,14 +7,13 @@ use Nip\Config\Exception\ParseException;
 use Nip\Config\Exception\UnsupportedFormatException;
 
 /**
- * Class Php
- * @package Nip\Config\FileParser
+ * Class Php.
  */
 class Php extends AbstractFileParser
 {
     /**
-     * {@inheritDoc}
-     * Loads a PHP file and gets its' contents as an array
+     * {@inheritdoc}
+     * Loads a PHP file and gets its' contents as an array.
      *
      * @throws ParseException             If the PHP file throws an exception
      * @throws UnsupportedFormatException If the PHP file does not return an array
@@ -29,7 +28,7 @@ class Php extends AbstractFileParser
         } catch (Exception $exception) {
             throw new ParseException(
                 [
-                    'message' => 'PHP file threw an exception',
+                    'message'   => 'PHP file threw an exception',
                     'exception' => $exception,
                 ]
             );
@@ -49,7 +48,7 @@ class Php extends AbstractFileParser
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getSupportedExtensions()
     {

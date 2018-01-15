@@ -9,8 +9,7 @@ use Nip\Records\Relations\Relation;
 use Nip\Utility\Traits\NameWorksTrait;
 
 /**
- * Class Row
- * @package Nip\Records\_Abstract
+ * Class Row.
  *
  * @method \Nip_Helper_Url URL()
  */
@@ -29,25 +28,24 @@ abstract class Record extends \Nip_Object
     protected $_dbData = [];
     protected $_helpers = [];
 
-
     /**
      * The loaded relationships for the model.
+     *
      * @var array
      */
     protected $relations = [];
 
-
     /**
-     * Overloads Ucfirst() helper
+     * Overloads Ucfirst() helper.
      *
      * @param string $name
-     * @param array $arguments
+     * @param array  $arguments
+     *
      * @return mixed
      */
     public function __call($name, $arguments)
     {
-
-        if (substr($name, 0, 3) == "get") {
+        if (substr($name, 0, 3) == 'get') {
             $relation = $this->getRelation(substr($name, 3));
             if ($relation) {
                 return $relation->getResults();
@@ -59,11 +57,11 @@ abstract class Record extends \Nip_Object
         }
 
         trigger_error("Call to undefined method $name", E_USER_ERROR);
-        return null;
     }
 
     /**
      * @param $relationName
+     *
      * @return Relation|HasMany|null
      */
     public function getRelation($relationName)
@@ -77,6 +75,7 @@ abstract class Record extends \Nip_Object
 
     /**
      * @param $key
+     *
      * @return bool
      */
     public function hasRelation($key)
@@ -157,19 +156,23 @@ abstract class Record extends \Nip_Object
 
     /**
      * @param string $class
-     * @return mixed
+     *
      * @throws Exception
+     *
+     * @return mixed
      */
     protected function getManagerInstance($class)
     {
         if (class_exists($class)) {
             return call_user_func([$class, 'instance']);
         }
-        throw new Exception('invalid manager name [' . $class . ']');
+
+        throw new Exception('invalid manager name ['.$class.']');
     }
 
     /**
      * @param string $relationName
+     *
      * @return Relation|null
      */
     public function newRelation($relationName)
@@ -182,6 +185,7 @@ abstract class Record extends \Nip_Object
 
     /**
      * @param $name
+     *
      * @return \Nip\Helpers\AbstractHelper
      */
     public function getHelper($name)
@@ -197,6 +201,7 @@ abstract class Record extends \Nip_Object
         if ($this->_name == null) {
             $this->_name = inflector()->unclassify(get_class($this));
         }
+
         return $this->_name;
     }
 
@@ -256,6 +261,7 @@ abstract class Record extends \Nip_Object
     public function update()
     {
         $return = $this->getManager()->update($this);
+
         return $return;
     }
 
@@ -273,7 +279,7 @@ abstract class Record extends \Nip_Object
     {
         $relations = $this->getRelations();
         foreach ($relations as $relation) {
-            /** @var Relation $relation */
+            /* @var Relation $relation */
             $relation->save();
         }
     }
@@ -297,6 +303,7 @@ abstract class Record extends \Nip_Object
     public function isInDB()
     {
         $pk = $this->getManager()->getPrimaryKey();
+
         return $this->{$pk} > 0;
     }
 
@@ -322,6 +329,7 @@ abstract class Record extends \Nip_Object
     public function toArray()
     {
         $vars = get_object_vars($this);
+
         return $vars['_data'];
     }
 
@@ -331,6 +339,7 @@ abstract class Record extends \Nip_Object
     public function toApiArray()
     {
         $data = $this->toArray();
+
         return $data;
     }
 
@@ -381,6 +390,7 @@ abstract class Record extends \Nip_Object
 
     /**
      * @param self $from
+     *
      * @return self
      */
     public function cloneRelations($from)

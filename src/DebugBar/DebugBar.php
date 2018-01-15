@@ -10,7 +10,6 @@ use Nip\Http\Response\Response;
 
 abstract class DebugBar extends DebugBarGeneric
 {
-
     /**
      * True when booted.
      *
@@ -18,12 +17,11 @@ abstract class DebugBar extends DebugBarGeneric
      */
     protected $booted = false;
     /**
-     * True when enabled, false disabled an null for still unknown
+     * True when enabled, false disabled an null for still unknown.
      *
      * @var bool
      */
     protected $enabled = false;
-
 
     /**
      * Enable the DebugBar and boot, if not already booted.
@@ -51,7 +49,7 @@ abstract class DebugBar extends DebugBarGeneric
     }
 
     /**
-     * Disable the DebugBar
+     * Disable the DebugBar.
      */
     public function disable()
     {
@@ -59,14 +57,16 @@ abstract class DebugBar extends DebugBarGeneric
     }
 
     /**
-     * Check if the DebugBar is enabled
-     * @return boolean
+     * Check if the DebugBar is enabled.
+     *
+     * @return bool
      */
     public function isEnabled()
     {
         if ($this->enabled === null) {
             $this->enabled = true;
         }
+
         return $this->enabled;
     }
 
@@ -81,7 +81,8 @@ abstract class DebugBar extends DebugBarGeneric
     }
 
     /**
-     * Injects the web debug toolbar
+     * Injects the web debug toolbar.
+     *
      * @param Response $response
      */
     public function injectDebugBar(Response $response)
@@ -89,13 +90,13 @@ abstract class DebugBar extends DebugBarGeneric
         $content = $response->getContent();
 
         $renderer = $this->getJavascriptRenderer();
-        $renderedContent = $this->generateAssetsContent() . $renderer->render();
+        $renderedContent = $this->generateAssetsContent().$renderer->render();
 
         $pos = strripos($content, '</body>');
         if (false !== $pos) {
-            $content = substr($content, 0, $pos) . $renderedContent . substr($content, $pos);
+            $content = substr($content, 0, $pos).$renderedContent.substr($content, $pos);
         } else {
-            $content = $content . $renderedContent;
+            $content = $content.$renderedContent;
         }
         // Update the new content and reset the content length
         $response->setContent($content);
@@ -118,7 +119,7 @@ abstract class DebugBar extends DebugBarGeneric
         if (defined('FONTS_URL')) {
             $content = str_replace('../fonts/', FONTS_URL, $content);
         }
+
         return $content;
     }
-
 }

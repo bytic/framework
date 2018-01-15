@@ -6,12 +6,10 @@ use Swift_Message;
 use Swift_Mime_Message;
 
 /**
- * Class Message
- * @package Nip\Mail
+ * Class Message.
  */
 class Message extends Swift_Message implements Swift_Mime_Message
 {
-
     protected $mergeTags = [];
     protected $custom_args = [];
 

@@ -4,7 +4,6 @@ namespace Nip\Helpers\View;
 
 class TinyMCE extends AbstractHelper
 {
-
     protected $_enabled = false;
     protected $_base = 'tinymce';
 
@@ -17,9 +16,9 @@ class TinyMCE extends AbstractHelper
     {
         if ($this->_enabled) {
             $this->getView()->Scripts()->setPack(false)
-                ->add($this->getBase() . '/jquery.tinymce.min.js', 'tinymce')
-                ->add($this->getBase() . '/tinymce.min.js', 'tinymce')
-                ->add($this->getBase() . '/init.js', 'tinymce');
+                ->add($this->getBase().'/jquery.tinymce.min.js', 'tinymce')
+                ->add($this->getBase().'/tinymce.min.js', 'tinymce')
+                ->add($this->getBase().'/init.js', 'tinymce');
         }
 
         return $this->getView()->Scripts()->render('tinymce');
@@ -34,5 +33,4 @@ class TinyMCE extends AbstractHelper
     {
         $this->_base = $base;
     }
-
 }

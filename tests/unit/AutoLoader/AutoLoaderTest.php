@@ -7,12 +7,10 @@ use Nip\AutoLoader\AutoLoader;
 use Nip\Tests\Unit\AbstractTest;
 
 /**
- * Class ContainerTest
- * @package Nip\Tests\Unit\Container
+ * Class ContainerTest.
  */
 class AutoLoaderTest extends AbstractTest
 {
-
     /**
      * @var AutoLoader
      */

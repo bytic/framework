@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Nip Framework
+ * Nip Framework.
  *
  * LICENSE
  *
@@ -9,42 +9,46 @@
  * with this package in the file LICENSE.txt.
  *
  * @category   Nip
+ *
  * @copyright  2009 Nip Framework
+ *
  * @version    SVN: $Id: Flash.php 14 2009-04-13 11:24:22Z victor.stanciu $
  */
-
-class Nip_Flash {
-
+class Nip_Flash
+{
     protected $previous = [];
     protected $next = [];
-	protected $session_var	= 'flash-data';
+    protected $session_var = 'flash-data';
 
+    public function __construct()
+    {
+        $this->read();
+    }
 
-	public function __construct() {
-		$this->read();
-	}
+    public function read()
+    {
+        $data = $_SESSION[$this->session_var];
+        if (!is_null($data)) {
+            if (is_array($data)) {
+                $this->previous = $data;
+            }
+            unset($_SESSION[$this->session_var]);
+        }
+    }
 
-	public function read() {
-		$data = $_SESSION[$this->session_var];
-		if (!is_null($data)) {
-			if (is_array($data)) {
-				$this->previous = $data;
-			}
-			unset($_SESSION[$this->session_var]);
-		}
-	}
+    /**
+     * Returns static instance.
+     *
+     * @return self
+     */
+    public static function &instance()
+    {
+        static $instance;
+        if (!($instance instanceof self)) {
+            $instance = new self();
+        }
 
-	/**
-	 * Returns static instance
-	 *
-	 * @return self
-	 */
-	static public function &instance() {
-		static $instance;
-		if (!($instance instanceof self)) {
-			$instance = new self();
-		}
-		return $instance;
+        return $instance;
     }
 
     public function has($var)
@@ -77,5 +81,5 @@ class Nip_Flash {
     protected function clear()
     {
         $this->next = [];
-	}
+    }
 }

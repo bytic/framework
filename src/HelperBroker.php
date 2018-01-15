@@ -5,8 +5,7 @@ namespace Nip;
 use Nip\Helpers\AbstractHelper;
 
 /**
- * Class HelperBroker
- * @package Nip
+ * Class HelperBroker.
  */
 class HelperBroker
 {
@@ -17,6 +16,7 @@ class HelperBroker
 
     /**
      * @param $name
+     *
      * @return AbstractHelper
      */
     public static function get($name)
@@ -27,7 +27,8 @@ class HelperBroker
     }
 
     /**
-     * Singleton
+     * Singleton.
+     *
      * @return self
      */
     public static function instance()
@@ -42,6 +43,7 @@ class HelperBroker
 
     /**
      * @param $name
+     *
      * @return AbstractHelper
      */
     public function getByName($name)
@@ -56,6 +58,7 @@ class HelperBroker
 
     /**
      * @param $name
+     *
      * @return string
      */
     public static function getNameKey($name)
@@ -65,6 +68,7 @@ class HelperBroker
 
     /**
      * @param $name
+     *
      * @return bool
      */
     public function hasHelper($name)
@@ -84,18 +88,20 @@ class HelperBroker
 
     /**
      * @param $name
+     *
      * @return AbstractHelper
      */
     public function generateHelper($name)
     {
         $class = $this->getHelperClass($name);
-        $helper = new $class;
+        $helper = new $class();
 
         return $helper;
     }
 
     /**
      * @param $name
+     *
      * @return string
      */
     public function getHelperClass($name)

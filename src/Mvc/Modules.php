@@ -5,12 +5,10 @@ namespace Nip\Mvc;
 use ArrayAccess;
 
 /**
- * Class Modules
- * @package Nip\Mvc
+ * Class Modules.
  */
 class Modules implements ArrayAccess
 {
-
     protected $modules = [];
 
     /**
@@ -40,7 +38,8 @@ class Modules implements ArrayAccess
     /**
      * Determine if a given offset exists.
      *
-     * @param  string $key
+     * @param string $key
+     *
      * @return bool
      */
     public function offsetExists($key)
@@ -50,6 +49,7 @@ class Modules implements ArrayAccess
 
     /**
      * @param $name
+     *
      * @return bool
      */
     public function hasModule($name)
@@ -67,6 +67,7 @@ class Modules implements ArrayAccess
 
     /**
      * @param $name
+     *
      * @return string
      */
     public function getViewPath($name)
@@ -76,6 +77,7 @@ class Modules implements ArrayAccess
 
     /**
      * @param $name
+     *
      * @return string
      */
     public function getModuleDirectory($name)
@@ -94,7 +96,8 @@ class Modules implements ArrayAccess
     /**
      * Get the value at a given offset.
      *
-     * @param  string $key
+     * @param string $key
+     *
      * @return mixed
      */
     public function offsetGet($key)
@@ -105,8 +108,9 @@ class Modules implements ArrayAccess
     /**
      * Set the value at a given offset.
      *
-     * @param  string $key
-     * @param  mixed $value
+     * @param string $key
+     * @param mixed  $value
+     *
      * @return void
      */
     public function offsetSet($key, $value)
@@ -117,7 +121,8 @@ class Modules implements ArrayAccess
     /**
      * Unset the value at a given offset.
      *
-     * @param  string $key
+     * @param string $key
+     *
      * @return void
      */
     public function offsetUnset($key)

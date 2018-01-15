@@ -10,8 +10,7 @@ use Nip_Form_Element_Abstract as ElementAbstract;
 use Nip_Form_Renderer_Abstract as AbstractRenderer;
 
 /**
- * Class AbstractForm
- *
+ * Class AbstractForm.
  */
 abstract class AbstractForm
 {
@@ -61,21 +60,23 @@ abstract class AbstractForm
 
     /**
      * @param $action
+     *
      * @return AbstractForm
      */
     public function setAction($action)
     {
-        return $this->setAttrib('action', (string)$action);
+        return $this->setAttrib('action', (string) $action);
     }
 
     /**
      * @param $key
      * @param $value
+     *
      * @return $this
      */
     public function setAttrib($key, $value)
     {
-        $key = (string)$key;
+        $key = (string) $key;
         $this->_attribs[$key] = $value;
 
         return $this;
@@ -87,9 +88,10 @@ abstract class AbstractForm
 
     /**
      * @param $name
-     * @param bool $label
+     * @param bool   $label
      * @param string $type
-     * @param bool $isRequired
+     * @param bool   $isRequired
+     *
      * @return $this
      */
     public function add($name, $label = false, $type = 'input', $isRequired = false)
@@ -106,6 +108,7 @@ abstract class AbstractForm
 
     /**
      * @param $type
+     *
      * @return ElementAbstract
      */
     public function getNewElement($type)
@@ -117,6 +120,7 @@ abstract class AbstractForm
 
     /**
      * @param $type
+     *
      * @return string
      */
     public function getElementClassName($type)
@@ -126,6 +130,7 @@ abstract class AbstractForm
 
     /**
      * @param $className
+     *
      * @return ElementAbstract
      */
     public function getNewElementByClass($className)
@@ -137,6 +142,7 @@ abstract class AbstractForm
 
     /**
      * @param ElementAbstract $element
+     *
      * @return ElementAbstract
      */
     public function initNewElement($element)
@@ -148,6 +154,7 @@ abstract class AbstractForm
 
     /**
      * @param ElementAbstract $element
+     *
      * @return $this
      */
     public function addElement(ElementAbstract $element)
@@ -162,6 +169,7 @@ abstract class AbstractForm
 
     /**
      * @param $name
+     *
      * @return ElementAbstract|null
      */
     public function __get($name)
@@ -170,12 +178,11 @@ abstract class AbstractForm
         if ($element) {
             return $element;
         }
-
-        return null;
     }
 
     /**
      * @param $name
+     *
      * @return ElementAbstract
      */
     public function getElement($name)
@@ -183,8 +190,6 @@ abstract class AbstractForm
         if (array_key_exists($name, $this->_elements)) {
             return $this->_elements[$name];
         }
-
-        return null;
     }
 
     /**
@@ -192,6 +197,7 @@ abstract class AbstractForm
      * @param $name
      * @param bool $label
      * @param bool $isRequired
+     *
      * @return $this
      */
     public function addCustom($className, $name, $label = false, $isRequired = false)
@@ -208,6 +214,7 @@ abstract class AbstractForm
 
     /**
      * @param $name
+     *
      * @return $this
      */
     public function removeElement($name)
@@ -225,8 +232,10 @@ abstract class AbstractForm
     /**
      * Add a display group
      * Groups named elements for display purposes.
+     *
      * @param array $elements
      * @param $name
+     *
      * @return $this
      */
     public function addDisplayGroup(array $elements, $name)
@@ -244,7 +253,7 @@ abstract class AbstractForm
             trigger_error('No valid elements specified for display group');
         }
 
-        $name = (string)$name;
+        $name = (string) $name;
         $group->setLegend($name);
 
         $this->_displayGroups[$name] = $group;
@@ -271,8 +280,6 @@ abstract class AbstractForm
         if (array_key_exists($name, $this->_displayGroups)) {
             return $this->_displayGroups[$name];
         }
-
-        return null;
     }
 
     /**
@@ -285,8 +292,9 @@ abstract class AbstractForm
 
     /**
      * @param $name
-     * @param bool $label
+     * @param bool   $label
      * @param string $type
+     *
      * @return $this
      */
     public function addButton($name, $label = false, $type = 'button')
@@ -298,8 +306,9 @@ abstract class AbstractForm
 
     /**
      * @param $name
-     * @param bool $label
+     * @param bool   $label
      * @param string $type
+     *
      * @return mixed
      */
     protected function newButton($name, $label = false, $type = 'button')
@@ -309,11 +318,13 @@ abstract class AbstractForm
         $button = new $class($this);
         $button->setName($name)
             ->setLabel($label);
+
         return $button;
     }
 
     /**
      * @param $name
+     *
      * @return ElementAbstract
      */
     public function getButton($name)
@@ -321,12 +332,11 @@ abstract class AbstractForm
         if (array_key_exists($name, $this->_buttons)) {
             return $this->_buttons[$name];
         }
-
-        return null;
     }
 
     /**
      * @param $name
+     *
      * @return bool
      */
     public function hasElement($name)
@@ -336,6 +346,7 @@ abstract class AbstractForm
 
     /**
      * @param $label
+     *
      * @return ElementAbstract
      */
     public function getElementByLabel($label)
@@ -343,14 +354,13 @@ abstract class AbstractForm
         if (array_key_exists($label, $this->_elementsLabel)) {
             return $this->_elements[$this->_elementsLabel[$label]];
         }
-
-        return null;
     }
 
     /**
      * @param $element
      * @param $neighbour
      * @param string $type
+     *
      * @return $this
      */
     public function setElementOrder($element, $neighbour, $type = 'bellow')
@@ -384,6 +394,7 @@ abstract class AbstractForm
 
     /**
      * @param bool $params
+     *
      * @return array
      */
     public function findElements($params = false)
@@ -398,7 +409,7 @@ abstract class AbstractForm
             if (isset($params['attribs']) && is_array($params['attribs'])) {
                 foreach ($params['attribs'] as $name => $value) {
                     if ($element->getAttrib($name) != $value) {
-                        continue(2);
+                        continue 2;
                     }
                 }
             }
@@ -411,11 +422,12 @@ abstract class AbstractForm
     /**
      * @param $key
      * @param $value
+     *
      * @return $this
      */
     public function setOption($key, $value)
     {
-        $key = (string)$key;
+        $key = (string) $key;
         $this->_options[$key] = $value;
 
         return $this;
@@ -423,13 +435,14 @@ abstract class AbstractForm
 
     /**
      * @param $key
+     *
      * @return mixed|null
      */
     public function getOption($key)
     {
-        $key = (string)$key;
+        $key = (string) $key;
         if (!isset($this->_options[$key])) {
-            return null;
+            return;
         }
 
         return $this->_options[$key];
@@ -452,13 +465,14 @@ abstract class AbstractForm
 
     /**
      * @param $key
+     *
      * @return mixed|null
      */
     public function getAttrib($key)
     {
-        $key = (string)$key;
+        $key = (string) $key;
         if (!isset($this->_attribs[$key])) {
-            return null;
+            return;
         }
 
         return $this->_attribs[$key];
@@ -486,6 +500,7 @@ abstract class AbstractForm
 
     /**
      * @param $class
+     *
      * @return bool
      */
     public function hasClass($class)
@@ -502,7 +517,8 @@ abstract class AbstractForm
     }
 
     /**
-     * @param  array $attribs
+     * @param array $attribs
+     *
      * @return $this
      */
     public function setAttribs(array $attribs)
@@ -523,7 +539,8 @@ abstract class AbstractForm
     }
 
     /**
-     * @param  array $attribs
+     * @param array $attribs
+     *
      * @return $this
      */
     public function addAttribs(array $attribs)
@@ -537,6 +554,7 @@ abstract class AbstractForm
 
     /**
      * @param $key
+     *
      * @return bool
      */
     public function removeAttrib($key)
@@ -552,6 +570,7 @@ abstract class AbstractForm
 
     /**
      * @param $method
+     *
      * @return AbstractForm
      */
     public function setMethod($method)
@@ -679,13 +698,14 @@ abstract class AbstractForm
      */
     public function getErrors()
     {
-        $errors = array_merge((array)$this->getMessagesType('error'), $this->getElementsErrors());
+        $errors = array_merge((array) $this->getMessagesType('error'), $this->getElementsErrors());
 
         return $errors;
     }
 
     /**
      * @param string $type
+     *
      * @return mixed
      */
     public function getMessagesType($type = 'error')
@@ -715,6 +735,7 @@ abstract class AbstractForm
 
     /**
      * @param $message
+     *
      * @return $this
      */
     public function addError($message)
@@ -727,6 +748,7 @@ abstract class AbstractForm
     /**
      * @param $message
      * @param string $type
+     *
      * @return $this
      */
     public function addMessage($message, $type = 'error')
@@ -749,6 +771,7 @@ abstract class AbstractForm
 
     /**
      * @param $name
+     *
      * @return mixed
      */
     public function getMessageTemplate($name)
@@ -756,9 +779,9 @@ abstract class AbstractForm
         return $this->_messageTemplates[$name];
     }
 
-
     /**
      * @param $type
+     *
      * @return $this
      */
     public function setRendererType($type)
@@ -770,6 +793,7 @@ abstract class AbstractForm
 
     /**
      * @param string $type
+     *
      * @return AbstractRenderer
      */
     public function getNewRenderer($type = 'basic')
@@ -784,6 +808,7 @@ abstract class AbstractForm
 
     /**
      * @param $key
+     *
      * @return mixed
      */
     public function getCache($key)
@@ -802,6 +827,7 @@ abstract class AbstractForm
 
     /**
      * @param $key
+     *
      * @return bool
      */
     public function isCache($key)
@@ -824,7 +850,7 @@ abstract class AbstractForm
     {
         $backtrace = debug_backtrace();
         if ($backtrace[1]['class'] == 'Monolog\Formatter\NormalizerFormatter') {
-            return null;
+            return;
         }
         trigger_error('form __toString', E_USER_WARNING);
 
@@ -878,5 +904,4 @@ abstract class AbstractForm
 
         return $data;
     }
-
 }

@@ -7,8 +7,7 @@ use Countable;
 use Iterator;
 
 /**
- * Class Repository
- * @package Nip\Config
+ * Class Repository.
  */
 class Config implements Countable, Iterator, ArrayAccess
 {
@@ -38,11 +37,11 @@ class Config implements Countable, Iterator, ArrayAccess
      * Create a new configuration repository.
      *
      * @param array $array
-     * @param bool $allowModifications
+     * @param bool  $allowModifications
      */
     public function __construct(array $array = [], $allowModifications = false)
     {
-        $this->allowModifications = (bool)$allowModifications;
+        $this->allowModifications = (bool) $allowModifications;
 
         foreach ($array as $key => $value) {
             $this->setDataItem($key, $value);
@@ -52,6 +51,7 @@ class Config implements Countable, Iterator, ArrayAccess
     /**
      * @param $name
      * @param $value
+     *
      * @return $this
      */
     protected function setDataItem($name, $value)
@@ -70,6 +70,7 @@ class Config implements Countable, Iterator, ArrayAccess
 
     /**
      * @param $name
+     *
      * @return string
      */
     public function __get($name)
@@ -80,8 +81,9 @@ class Config implements Countable, Iterator, ArrayAccess
     /**
      * Retrieve a value and return $default if there is no element set.
      *
-     * @param  string $key
-     * @param  mixed $default
+     * @param string $key
+     * @param mixed  $default
+     *
      * @return mixed
      */
     public function get($key, $default = null)
@@ -97,6 +99,7 @@ class Config implements Countable, Iterator, ArrayAccess
 
     /**
      * @param $key
+     *
      * @return mixed|null
      */
     public function getByKey($key)
@@ -104,14 +107,13 @@ class Config implements Countable, Iterator, ArrayAccess
         if ($this->hasByKey($key)) {
             return $this->data[$key];
         }
-
-        return null;
     }
 
     /**
      * Determine if the given configuration value exists.
      *
-     * @param  string $key
+     * @param string $key
+     *
      * @return bool
      */
     public function hasByKey($key)
@@ -121,6 +123,7 @@ class Config implements Countable, Iterator, ArrayAccess
 
     /**
      * @param $path
+     *
      * @return string
      */
     protected function getByPath($path)
@@ -131,7 +134,7 @@ class Config implements Countable, Iterator, ArrayAccess
             if ($value->hasByKey($segment)) {
                 $value = $value->getByKey($segment);
             } else {
-                return null;
+                return;
             }
         }
 
@@ -140,6 +143,7 @@ class Config implements Countable, Iterator, ArrayAccess
 
     /**
      * @param $key
+     *
      * @return bool
      */
     public function __isset($key)
@@ -150,7 +154,8 @@ class Config implements Countable, Iterator, ArrayAccess
     /**
      * Determine if the given configuration value exists.
      *
-     * @param  string $key
+     * @param string $key
+     *
      * @return bool
      */
     public function has($key)
@@ -164,6 +169,7 @@ class Config implements Countable, Iterator, ArrayAccess
 
     /**
      * @param $path
+     *
      * @return bool
      */
     public function hasByPath($path)
@@ -178,13 +184,14 @@ class Config implements Countable, Iterator, ArrayAccess
             }
         }
 
-        return ($value !== null);
+        return $value !== null;
     }
 
     /**
      * Determine if the given configuration option exists.
      *
-     * @param  string $key
+     * @param string $key
+     *
      * @return bool
      */
     public function offsetExists($key)
@@ -195,7 +202,8 @@ class Config implements Countable, Iterator, ArrayAccess
     /**
      * Get a configuration option.
      *
-     * @param  string $key
+     * @param string $key
+     *
      * @return mixed
      */
     public function offsetGet($key)
@@ -206,8 +214,9 @@ class Config implements Countable, Iterator, ArrayAccess
     /**
      * Set a configuration option.
      *
-     * @param  string $key
-     * @param  mixed $value
+     * @param string $key
+     * @param mixed  $value
+     *
      * @return void
      */
     public function offsetSet($key, $value)
@@ -218,8 +227,10 @@ class Config implements Countable, Iterator, ArrayAccess
     /**
      * @param $name
      * @param $value
-     * @return $this
+     *
      * @throws Exception\RuntimeException
+     *
+     * @return $this
      */
     public function set($name, $value)
     {
@@ -243,7 +254,8 @@ class Config implements Countable, Iterator, ArrayAccess
     /**
      * Unset a configuration option.
      *
-     * @param  string $key
+     * @param string $key
+     *
      * @return void
      */
     public function offsetUnset($key)
@@ -253,12 +265,14 @@ class Config implements Countable, Iterator, ArrayAccess
 
     /**
      * @param string $path
+     *
      * @return $this
      */
     public function mergeFile($path)
     {
         $data = Factory::fromFile($path, false);
         $config = new self($data, $this->allowModifications);
+
         return $this->merge($config);
     }
 
@@ -270,7 +284,8 @@ class Config implements Countable, Iterator, ArrayAccess
      * - Items in $merge with INTEGER keys will be appended.
      * - Items in $merge with STRING keys will overwrite current values.
      *
-     * @param  self $merge
+     * @param self $merge
+     *
      * @return $this
      */
     public function merge(self $merge)
@@ -326,6 +341,7 @@ class Config implements Countable, Iterator, ArrayAccess
      * count(): defined by Countable interface.
      *
      * @see    Countable::count()
+     *
      * @return int
      */
     public function count()
@@ -337,6 +353,7 @@ class Config implements Countable, Iterator, ArrayAccess
      * current(): defined by Iterator interface.
      *
      * @see    Iterator::current()
+     *
      * @return mixed
      */
     public function current()
@@ -350,6 +367,7 @@ class Config implements Countable, Iterator, ArrayAccess
      * next(): defined by Iterator interface.
      *
      * @see    Iterator::next()
+     *
      * @return void
      */
     public function next()
@@ -366,6 +384,7 @@ class Config implements Countable, Iterator, ArrayAccess
      * rewind(): defined by Iterator interface.
      *
      * @see    Iterator::rewind()
+     *
      * @return void
      */
     public function rewind()
@@ -378,17 +397,19 @@ class Config implements Countable, Iterator, ArrayAccess
      * valid(): defined by Iterator interface.
      *
      * @see    Iterator::valid()
+     *
      * @return bool
      */
     public function valid()
     {
-        return ($this->key() !== null);
+        return $this->key() !== null;
     }
 
     /**
      * key(): defined by Iterator interface.
      *
      * @see    Iterator::key()
+     *
      * @return mixed
      */
     public function key()

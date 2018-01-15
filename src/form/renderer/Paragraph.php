@@ -1,7 +1,9 @@
 <?php
-class Nip_Form_Renderer_Paragraph extends Nip_Form_Renderer_Abstract {
 
-    public function renderElements() {
+class Nip_Form_Renderer_Paragraph extends Nip_Form_Renderer_Abstract
+{
+    public function renderElements()
+    {
         $return = '';
 
         $renderRows = $this->renderRows();
@@ -12,12 +14,14 @@ class Nip_Form_Renderer_Paragraph extends Nip_Form_Renderer_Abstract {
         return $return;
     }
 
-    public function renderRows() {
+    public function renderRows()
+    {
         $elements = $this->getElements();
         $return = '';
         foreach ($elements as $element) {
             $return .= $this->renderRow($element);
         }
+
         return $return;
     }
 
@@ -27,18 +31,18 @@ class Nip_Form_Renderer_Paragraph extends Nip_Form_Renderer_Abstract {
         if (!$element->isRendered()) {
             $return .= '<p class="row row-'.$element->getUniqueId().($element->isError() ? ' error' : '').'">';
 
-                $return .= $this->renderLabel($element);
+            $return .= $this->renderLabel($element);
 
-                $class = "value " . ($element->getType() == 'input' ? 'input' : '');
-                $return .= '<span class="'.$class.'">';
-                $return .= $element->renderElement();
-                $return .= '</span>';
+            $class = 'value '.($element->getType() == 'input' ? 'input' : '');
+            $return .= '<span class="'.$class.'">';
+            $return .= $element->renderElement();
+            $return .= '</span>';
 
-                $return .= $element->renderErrors();
+            $return .= $element->renderErrors();
 
             $return .= '</p>';
         }
+
         return $return;
     }
-
 }

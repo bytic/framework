@@ -3,8 +3,7 @@
 namespace Nip\Container;
 
 /**
- * Class ContainerAwareTrait
- * @package Nip\Container
+ * Class ContainerAwareTrait.
  */
 trait ContainerAwareTrait
 {
@@ -30,12 +29,14 @@ trait ContainerAwareTrait
     /**
      * Set a container.
      *
-     * @param  Container|ContainerInterface $container
+     * @param Container|ContainerInterface $container
+     *
      * @return $this
      */
     public function setContainer(ContainerInterface $container)
     {
         $this->container = $container;
+
         return $this;
     }
 

@@ -5,10 +5,9 @@ namespace Nip\Tests\Unit;
 use Codeception\TestCase\Test;
 
 /**
- * Class AbstractTest
+ * Class AbstractTest.
  */
 class AbstractTest extends Test
 {
-
     protected $object;
 }

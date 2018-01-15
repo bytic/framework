@@ -4,8 +4,8 @@ namespace Nip\Rest;
 
 class Client
 {
-    const METHOD_POST = "post";
-    const METOD_GET = "get";
+    const METHOD_POST = 'post';
+    const METOD_GET = 'get';
 
     protected $_url;
     protected $_params = [];
@@ -25,7 +25,7 @@ class Client
         $this->_url = $_url;
     }
 
-    public function __call($name, $arguments = array())
+    public function __call($name, $arguments = [])
     {
         $this->_params[$name] = $arguments[0];
     }
@@ -44,7 +44,7 @@ class Client
         $ch = curl_init();
         $params = http_build_query($this->_params);
 
-        curl_setopt($ch, CURLOPT_URL, $this->_url . ($this->getMethod() == self::METOD_GET ? '?' . $params : ''));
+        curl_setopt($ch, CURLOPT_URL, $this->_url.($this->getMethod() == self::METOD_GET ? '?'.$params : ''));
         if ($this->getMethod() == self::METHOD_POST) {
             curl_setopt($ch, CURLOPT_POST, 1);
             curl_setopt($ch, CURLOPT_POSTFIELDS, $params);
@@ -59,8 +59,9 @@ class Client
     public function getMethod()
     {
         if (!$this->_method) {
-            $this->_method = "post";
+            $this->_method = 'post';
         }
+
         return $this->_method;
     }
 

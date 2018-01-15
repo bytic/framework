@@ -9,12 +9,10 @@ use Nip\Http\Response\Response;
 use Nip\Request;
 
 /**
- * Class Dispatcher
- * @package Nip\Dispatcher
+ * Class Dispatcher.
  */
 class Dispatcher
 {
-
     /**
      * @var null|Request
      */
@@ -28,6 +26,7 @@ class Dispatcher
 
     /**
      * @param $controller
+     *
      * @return mixed
      */
     public static function reverseControllerName($controller)
@@ -37,6 +36,7 @@ class Dispatcher
 
     /**
      * @param $name
+     *
      * @return mixed
      */
     public static function formatActionName($name)
@@ -49,8 +49,10 @@ class Dispatcher
 
     /**
      * @param Request|null $request
-     * @return null|Response
+     *
      * @throws Exception
+     *
+     * @return null|Response
      */
     public function dispatch(Request $request = null)
     {
@@ -105,8 +107,10 @@ class Dispatcher
 
     /**
      * @param Request $request
-     * @return Controller|null
+     *
      * @throws Exception
+     *
+     * @return Controller|null
      */
     public function generateController($request)
     {
@@ -122,6 +126,7 @@ class Dispatcher
                 return $this->newController($classicClass);
             }
         }
+
         throw new Exception(
             'Error finding a valid controller ['.$namespaceClass.']['.$classicClass.'] for ['.$request->getMCA().']'
         );
@@ -129,6 +134,7 @@ class Dispatcher
 
     /**
      * @param $name
+     *
      * @return mixed
      */
     public function formatModuleName($name)
@@ -140,6 +146,7 @@ class Dispatcher
 
     /**
      * @param $name
+     *
      * @return mixed
      */
     public function formatControllerName($name)
@@ -151,6 +158,7 @@ class Dispatcher
 
     /**
      * @param $controller
+     *
      * @return mixed
      */
     public function getControllerName($controller)
@@ -160,12 +168,13 @@ class Dispatcher
 
     /**
      * @param $class
+     *
      * @return Controller
      */
     public function newController($class)
     {
         $controller = new $class();
-        /** @var Controller $controller */
+        /* @var Controller $controller */
         $controller->setDispatcher($this);
 
         return $controller;
@@ -181,8 +190,6 @@ class Dispatcher
 //        $this->getFrontController()->getTrace()->add($params);
         $this->setErrorController();
         $this->forward('index');
-
-        return;
     }
 
     /**
@@ -198,10 +205,11 @@ class Dispatcher
     }
 
     /**
-     * @param bool $action
-     * @param bool $controller
-     * @param bool $module
+     * @param bool  $action
+     * @param bool  $controller
+     * @param bool  $module
      * @param array $params
+     *
      * @throws ForwardException
      */
     public function forward($action = false, $controller = false, $module = false, $params = [])
@@ -219,7 +227,7 @@ class Dispatcher
             $this->getRequest()->attributes->add($params);
         }
 
-        throw new ForwardException;
+        throw new ForwardException();
     }
 
     /**
@@ -233,6 +241,7 @@ class Dispatcher
     /**
      * @param $module
      * @param $controller
+     *
      * @return string
      */
     protected function generateFullControllerNameNamespace($module, $controller)
@@ -240,7 +249,7 @@ class Dispatcher
         $name = app()->get('kernel')->getRootNamespace().'Modules\\';
         $module = $module == 'Default' ? 'Frontend' : $module;
         $name .= $module.'\Controllers\\';
-        $name .= str_replace('_', '\\', $controller)."Controller";
+        $name .= str_replace('_', '\\', $controller).'Controller';
 
         return $name;
     }
@@ -273,10 +282,11 @@ class Dispatcher
     /**
      * @param $module
      * @param $controller
+     *
      * @return string
      */
     protected function generateFullControllerNameString($module, $controller)
     {
-        return $module."_".$controller."Controller";
+        return $module.'_'.$controller.'Controller';
     }
 }

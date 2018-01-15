@@ -3,11 +3,13 @@
 namespace Nip\Helpers\View;
 
 /**
- * Nip Framework
+ * Nip Framework.
  *
  * @category   Nip
+ *
  * @copyright  2009 Nip Framework
  * @license    http://www.opensource.org/licenses/mit-license.php The MIT License
+ *
  * @version    SVN: $Id: Meta.php 60 2009-04-28 14:50:04Z victor.stanciu $
  */
 class FacebookMeta extends AbstractHelper
@@ -23,18 +25,18 @@ class FacebookMeta extends AbstractHelper
     public $author;
     public $publisher;
 
-    protected $_tags = array(
-        'title' => array('prefix' => 'og'),
-        'site_name' => array('prefix' => 'og'),
-        'url' => array('prefix' => 'og'),
-        'description' => array('prefix' => 'og'),
-        'image' => array('prefix' => 'og'),
-        'app_id' => array('prefix' => 'fb'),
-        'type' => array('prefix' => 'og', 'default' => 'website'),
-        'locale' => array('prefix' => 'og'),
-        'author' => array('prefix' => 'og'),
-        'publisher' => array('prefix' => 'article', 'default' => 'https://www.facebook.com/Galantom'),
-    );
+    protected $_tags = [
+        'title'       => ['prefix' => 'og'],
+        'site_name'   => ['prefix' => 'og'],
+        'url'         => ['prefix' => 'og'],
+        'description' => ['prefix' => 'og'],
+        'image'       => ['prefix' => 'og'],
+        'app_id'      => ['prefix' => 'fb'],
+        'type'        => ['prefix' => 'og', 'default' => 'website'],
+        'locale'      => ['prefix' => 'og'],
+        'author'      => ['prefix' => 'og'],
+        'publisher'   => ['prefix' => 'article', 'default' => 'https://www.facebook.com/Galantom'],
+    ];
 
     public function __toString()
     {
@@ -56,9 +58,9 @@ class FacebookMeta extends AbstractHelper
         $value = $this->getValue($field);
         if ($value) {
             $options = $this->getFieldOptions($field);
-            return '<meta property="' . $options['prefix'] . ':' . $field . '" content="' . $value . '" />';
+
+            return '<meta property="'.$options['prefix'].':'.$field.'" content="'.$value.'" />';
         }
-        return null;
     }
 
     public function getValue($field)
@@ -69,6 +71,7 @@ class FacebookMeta extends AbstractHelper
     public function getDefaultValue($field)
     {
         $options = $this->getFieldOptions($field);
+
         return isset($options['default']) ? $options['default'] : null;
     }
 
@@ -76,5 +79,4 @@ class FacebookMeta extends AbstractHelper
     {
         return $this->_tags[$field];
     }
-
 }

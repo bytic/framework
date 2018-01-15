@@ -5,8 +5,7 @@ namespace Nip\Config;
 use Nip\Config\Loaders\FileLoader;
 
 /**
- * Class Factory
- * @package Nip\Config
+ * Class Factory.
  */
 class Factory
 {
@@ -14,8 +13,10 @@ class Factory
      * @param $filename
      * @param bool $returnConfigObject
      * @param bool $useIncludePath
-     * @return mixed|Config
+     *
      * @throws Exception\RuntimeException
+     *
+     * @return mixed|Config
      */
     public static function fromFile($filename, $returnConfigObject = false, $useIncludePath = false)
     {

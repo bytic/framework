@@ -4,17 +4,14 @@ namespace Nip\Mail\Traits;
 
 use Nip\Mail\Mailer;
 
-
 /**
- * Class MailerAwareTrait
- * @package Nip\Mail\Traits
+ * Class MailerAwareTrait.
  */
 trait MailerAwareTrait
 {
     /**
      * @var Mailer|null
      */
-
     protected $mailer = null;
 
     /**

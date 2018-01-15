@@ -5,8 +5,7 @@ namespace Nip\Container\ServiceProvider;
 use Nip\Container\ContainerAwareTrait;
 
 /**
- * Class AbstractServiceProvider
- * @package Nip\Container
+ * Class AbstractServiceProvider.
  *
  * @inspiration https://github.com/thephpleague/container/blob/master/src/ServiceProvider/AbstractServiceProvider.php
  */
@@ -16,6 +15,7 @@ abstract class AbstractServiceProvider implements ServiceProviderInterface
 
     /**
      * @param null|string $service
+     *
      * @return bool
      */
     public function isProviding($service)

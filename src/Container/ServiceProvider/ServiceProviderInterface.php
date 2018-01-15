@@ -5,11 +5,9 @@ namespace Nip\Container\ServiceProvider;
 use Nip\Container\ContainerAwareInterface;
 
 /**
- * Class AbstractServiceProvider
- * @package Nip\Container
+ * Class AbstractServiceProvider.
  *
  * @inspiration https://github.com/thephpleague/container/blob/master/src/ServiceProvider/AbstractServiceProvider.php
- *
  */
 interface ServiceProviderInterface extends ContainerAwareInterface
 {
@@ -25,8 +23,9 @@ interface ServiceProviderInterface extends ContainerAwareInterface
      * Returns a boolean if checking whether this provider provides a specific
      * service or returns an array of provided services if no argument passed.
      *
-     * @param  string $service
-     * @return boolean|array
+     * @param string $service
+     *
+     * @return bool|array
      */
     public function isProviding($service);
 

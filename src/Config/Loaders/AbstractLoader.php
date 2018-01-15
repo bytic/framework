@@ -5,8 +5,7 @@ namespace Nip\Config\Loaders;
 use Nip\Config\Config;
 
 /**
- * Class AbstractLoader
- * @package Nip\Config\Loaders
+ * Class AbstractLoader.
  */
 abstract class AbstractLoader
 {
@@ -97,7 +96,7 @@ abstract class AbstractLoader
     abstract protected function getData();
 
     /**
-     * @return boolean
+     * @return bool
      */
     public function returnConfigObject()
     {
@@ -105,7 +104,7 @@ abstract class AbstractLoader
     }
 
     /**
-     * @param boolean $useIncludePath
+     * @param bool $useIncludePath
      */
     public function setUseIncludePath($useIncludePath)
     {
@@ -113,7 +112,7 @@ abstract class AbstractLoader
     }
 
     /**
-     * @return boolean
+     * @return bool
      */
     public function useIncludePath()
     {
@@ -121,7 +120,7 @@ abstract class AbstractLoader
     }
 
     /**
-     * @param boolean $returnConfigObject
+     * @param bool $returnConfigObject
      */
     public function setReturnConfigObject($returnConfigObject)
     {

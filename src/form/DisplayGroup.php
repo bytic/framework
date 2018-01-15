@@ -4,12 +4,13 @@ use Nip\Collection;
 use Nip\Form\AbstractForm;
 
 /**
- * Class Nip_Form_DisplayGroup
+ * Class Nip_Form_DisplayGroup.
  */
 class Nip_Form_DisplayGroup extends Collection
 {
     /**
-     * Group attributes
+     * Group attributes.
+     *
      * @var array
      */
     protected $_attribs = [];
@@ -28,7 +29,8 @@ class Nip_Form_DisplayGroup extends Collection
     }
 
     /**
-     * @param  AbstractForm $form
+     * @param AbstractForm $form
+     *
      * @return Nip_Form_DisplayGroup
      */
     public function setForm(AbstractForm $form)
@@ -40,6 +42,7 @@ class Nip_Form_DisplayGroup extends Collection
 
     /**
      * @param Nip_Form_Element_Abstract $element
+     *
      * @return $this
      */
     public function addElement(Nip_Form_Element_Abstract $element)
@@ -51,21 +54,23 @@ class Nip_Form_DisplayGroup extends Collection
 
     /**
      * @param $legend
+     *
      * @return Nip_Form_DisplayGroup
      */
     public function setLegend($legend)
     {
-        return $this->setAttrib('legend', (string)$legend);
+        return $this->setAttrib('legend', (string) $legend);
     }
 
     /**
      * @param $key
      * @param $value
+     *
      * @return $this
      */
     public function setAttrib($key, $value)
     {
-        $key = (string)$key;
+        $key = (string) $key;
         $this->_attribs[$key] = $value;
 
         return $this;
@@ -81,13 +86,14 @@ class Nip_Form_DisplayGroup extends Collection
 
     /**
      * @param $key
+     *
      * @return mixed|null
      */
     public function getAttrib($key)
     {
-        $key = (string)$key;
+        $key = (string) $key;
         if (!isset($this->_attribs[$key])) {
-            return null;
+            return;
         }
 
         return $this->_attribs[$key];
@@ -103,6 +109,7 @@ class Nip_Form_DisplayGroup extends Collection
 
     /**
      * @param array $attribs
+     *
      * @return Nip_Form_DisplayGroup
      */
     public function setAttribs(array $attribs)
@@ -124,6 +131,7 @@ class Nip_Form_DisplayGroup extends Collection
 
     /**
      * @param array $attribs
+     *
      * @return $this
      */
     public function addAttribs(array $attribs)
@@ -137,6 +145,7 @@ class Nip_Form_DisplayGroup extends Collection
 
     /**
      * @param $key
+     *
      * @return bool
      */
     public function removeAttrib($key)

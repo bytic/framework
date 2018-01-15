@@ -3,8 +3,7 @@
 namespace Nip\Router\Parsers;
 
 /**
- * Class AbstractParser
- * @package Nip\Router\Parsers
+ * Class AbstractParser.
  */
 abstract class AbstractParser
 {
@@ -45,7 +44,8 @@ abstract class AbstractParser
 
     /**
      * AbstractParser constructor.
-     * @param bool $map
+     *
+     * @param bool  $map
      * @param array $params
      */
     public function __construct($map = false, $params = [])
@@ -56,7 +56,6 @@ abstract class AbstractParser
             $this->parseMap();
         }
 
-
         if ($params) {
             $this->setParams($params);
         }
@@ -65,7 +64,7 @@ abstract class AbstractParser
 
     protected function parseMap()
     {
-        $this->setParts(explode("/", $this->map));
+        $this->setParts(explode('/', $this->map));
     }
 
     public function init()
@@ -74,6 +73,7 @@ abstract class AbstractParser
 
     /**
      * @param $uri
+     *
      * @return bool
      */
     public function match($uri)
@@ -93,6 +93,7 @@ abstract class AbstractParser
 
     /**
      * @param array $params
+     *
      * @return mixed|string
      */
     public function assemble($params = [])
@@ -101,8 +102,8 @@ abstract class AbstractParser
 
         if ($params) {
             foreach ($params as $key => $value) {
-                if (stristr($return, ":".$key) !== false) {
-                    $return = str_replace(":".$key, $value, $return);
+                if (stristr($return, ':'.$key) !== false) {
+                    $return = str_replace(':'.$key, $value, $return);
                     unset($params[$key]);
                 }
                 if (array_key_exists($key, $this->params)) {
@@ -110,7 +111,7 @@ abstract class AbstractParser
                 }
             }
             if ($params) {
-                $return .= "?".http_build_query($params);
+                $return .= '?'.http_build_query($params);
             }
         }
 
@@ -118,7 +119,7 @@ abstract class AbstractParser
         if ($this->params) {
             foreach ($this->params as $key => $value) {
                 if (is_string($value)) {
-                    $return = str_replace(":".$key, $value, $return);
+                    $return = str_replace(':'.$key, $value, $return);
                 }
             }
         }
@@ -145,6 +146,7 @@ abstract class AbstractParser
 
     /**
      * @param $params
+     *
      * @return array
      */
     public function stripEmptyParams($params)
@@ -206,6 +208,7 @@ abstract class AbstractParser
     /**
      * @param $name
      * @param $value
+     *
      * @return $this
      */
     public function setParam($name, $value)
@@ -217,6 +220,7 @@ abstract class AbstractParser
 
     /**
      * @param $key
+     *
      * @return mixed|null
      */
     public function getParam($key)
@@ -226,6 +230,7 @@ abstract class AbstractParser
 
     /**
      * @param $key
+     *
      * @return bool
      */
     public function hasParam($key)

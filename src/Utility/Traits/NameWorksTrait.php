@@ -3,14 +3,12 @@
 namespace Nip\Utility\Traits;
 
 /**
- * Class NameWorksTrait
- * @package Nip\Utility\Traits
+ * Class NameWorksTrait.
  */
 trait NameWorksTrait
 {
-
     /**
-     * @var null|boolean
+     * @var null|bool
      */
     protected $className = null;
 
@@ -20,7 +18,7 @@ trait NameWorksTrait
     protected $classNameParts = null;
 
     /**
-     * @var null|boolean
+     * @var null|bool
      */
     protected $classFirstName = null;
 
@@ -30,7 +28,7 @@ trait NameWorksTrait
     protected $namespacePath = null;
 
     /**
-     * @var null|boolean
+     * @var null|bool
      */
     protected $isNamespaced = null;
 
@@ -68,10 +66,11 @@ trait NameWorksTrait
     public function getNamespaceParentFolder()
     {
         if (!$this->isNamespaced()) {
-            return null;
+            return;
         }
         $parts = $this->getClassNameParts();
         array_pop($parts);
+
         return end($parts);
     }
 
@@ -97,6 +96,7 @@ trait NameWorksTrait
         if ($this->classNameParts === null) {
             $this->initClassNameParts();
         }
+
         return $this->classNameParts;
     }
 
@@ -123,6 +123,7 @@ trait NameWorksTrait
         if ($this->namespacePath === null) {
             $this->initNamespacePath();
         }
+
         return $this->namespacePath;
     }
 
@@ -154,4 +155,3 @@ trait NameWorksTrait
         $this->classFirstName = array_pop($parts);
     }
 }
-

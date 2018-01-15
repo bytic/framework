@@ -3,8 +3,7 @@
 namespace Nip\Config;
 
 /**
- * Class ConfigAwareTrait
- * @package Nip\Config
+ * Class ConfigAwareTrait.
  */
 trait ConfigAwareTrait
 {
@@ -35,7 +34,8 @@ trait ConfigAwareTrait
     /**
      * Set a container.
      *
-     * @param  Config $config
+     * @param Config $config
+     *
      * @return $this
      */
     public function setConfig($config)

@@ -2,15 +2,14 @@
 
 class Nip_Registry
 {
-
     protected $_registry;
 
     /**
-     * Singleton
+     * Singleton.
      *
      * @return self
      */
-    static public function instance()
+    public static function instance()
     {
         static $instance;
         if (!($instance instanceof self)) {
@@ -21,8 +20,9 @@ class Nip_Registry
     }
 
     /**
-     * @return boolean
      * @param string $id
+     *
+     * @return bool
      */
     public function exists($id)
     {
@@ -38,8 +38,9 @@ class Nip_Registry
     }
 
     /**
-     * @return mixed
      * @param string $id
+     *
+     * @return mixed
      */
     public function get($id)
     {
@@ -48,11 +49,10 @@ class Nip_Registry
 
     /**
      * @param string $id
-     * @param mixed $value
+     * @param mixed  $value
      */
     public function set($id, $value)
     {
         $this->_registry[$id] = $value;
     }
-
 }

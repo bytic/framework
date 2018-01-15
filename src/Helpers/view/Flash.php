@@ -6,7 +6,6 @@ use Nip_Flash_Messages;
 
 class Flash extends AbstractHelper
 {
-
     public function hasKey($key)
     {
         return Nip_Flash_Messages::instance()->has($key);
@@ -30,7 +29,7 @@ class Flash extends AbstractHelper
     public function getData($key)
     {
         $this->data = Nip_Flash_Messages::instance()->get($key);
+
         return $this->data;
     }
-
 }

@@ -4,7 +4,6 @@ namespace Nip\Database\Adapters\Profiler;
 
 class Profiler extends \Nip_Profiler
 {
-
     public $filterTypes = null;
 
     public function newProfile($id)
@@ -23,11 +22,12 @@ class Profiler extends \Nip_Profiler
     {
         if (is_array($this->filterTypes) && in_array($profile->type, $this->filterTypes)) {
             $this->deleteProfile($profile);
+
             return false;
         }
+
         return true;
     }
-
 
     public function setFilterQueryType($queryTypes = null)
     {

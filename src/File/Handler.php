@@ -1,19 +1,20 @@
 <?php
 
 /**
- * Nip Framework
+ * Nip Framework.
  *
  * @category   Nip
+ *
  * @copyright  2009 Nip Framework
  * @license    http://www.opensource.org/licenses/mit-license.php The MIT License
+ *
  * @version    SVN: $Id: Handler.php 70 2009-04-29 11:47:12Z victor.stanciu $
  */
 class Nip_File_Handler
 {
-    const MODE_READ = "r";
-    const MODE_WRITE = "w";
-    const MODE_APPEND = "a";
-
+    const MODE_READ = 'r';
+    const MODE_WRITE = 'w';
+    const MODE_APPEND = 'a';
 
     /**
      * @var string
@@ -37,6 +38,7 @@ class Nip_File_Handler
 
     /**
      * Nip_File_Handler constructor.
+     *
      * @param bool $data
      */
     public function __construct($data = false)
@@ -51,15 +53,17 @@ class Nip_File_Handler
     /**
      * @param $name
      * @param $arguments
+     *
      * @return $this
      */
     public function __call($name, $arguments)
     {
         if (substr($name, 0, 3) == 'set') {
-            $name = str_replace("set", "", $name);
-            $name{0} = strtolower($name{0});
+            $name = str_replace('set', '', $name);
+            $name[0] = strtolower($name[0]);
 
             $this->$name = $arguments[0];
+
             return $this;
         } else {
             trigger_error("Method [$name] not defined", E_USER_ERROR);
@@ -71,7 +75,7 @@ class Nip_File_Handler
      */
     public function upload($upload)
     {
-        move_uploaded_file($upload["tmp_name"], $this->path);
+        move_uploaded_file($upload['tmp_name'], $this->path);
     }
 
     /**
@@ -87,16 +91,17 @@ class Nip_File_Handler
      */
     public function gzip()
     {
-        if (function_exists("gzencode")) {
+        if (function_exists('gzencode')) {
             $this->data = gzencode($this->data, 9, FORCE_GZIP);
         } else {
             return false;
         }
+
         return $this;
     }
 
     /**
-     * @param bool $data
+     * @param bool   $data
      * @param string $mode
      */
     public function write($data = false, $mode = self::MODE_APPEND)
@@ -122,11 +127,13 @@ class Nip_File_Handler
 
     /**
      * @param string $mode
+     *
      * @return $this
      */
     public function open($mode = self::MODE_READ)
     {
         $this->handle = fopen($this->path, $mode);
+
         return $this;
     }
 
@@ -139,12 +146,11 @@ class Nip_File_Handler
             fclose($this->handle);
             $this->handle = null;
         } else {
-            trigger_error("Attempting to close an unopened file", E_USER_WARNING);
+            trigger_error('Attempting to close an unopened file', E_USER_WARNING);
         }
 
         return $this;
     }
-
 
     /**
      * @return null|string
@@ -154,9 +160,9 @@ class Nip_File_Handler
         if ($this->url === null) {
             $this->initUrl();
         }
+
         return $this->url;
     }
-
 
     public function initUrl()
     {
@@ -171,6 +177,7 @@ class Nip_File_Handler
         if ($this->path === null) {
             $this->initPath();
         }
+
         return $this->path;
     }
 
@@ -178,5 +185,4 @@ class Nip_File_Handler
     {
         $this->path = '';
     }
-
 }

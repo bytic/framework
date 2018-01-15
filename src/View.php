@@ -3,7 +3,7 @@
 namespace Nip;
 
 /**
- * Class View
+ * Class View.
  *
  * @method Helpers\View\Breadcrumbs Breadcrumbs()
  * @method Helpers\View\Doctype Doctype()
@@ -18,7 +18,6 @@ namespace Nip;
  * @method Helpers\View\StyleSheets StyleSheets()
  * @method Helpers\View\TinyMCE TinyMCE()
  * @method Helpers\View\Url Url()
- *
  */
 class View
 {
@@ -31,7 +30,7 @@ class View
     protected $basePath = null;
 
     /**
-     * Singleton
+     * Singleton.
      *
      * @return self
      */
@@ -48,6 +47,7 @@ class View
     /**
      * @param $name
      * @param $arguments
+     *
      * @return mixed|null
      */
     public function __call($name, $arguments)
@@ -57,11 +57,11 @@ class View
         } else {
             trigger_error("Call to undefined method $name", E_USER_ERROR);
         }
-        return null;
     }
 
     /**
      * @param $name
+     *
      * @return mixed
      */
     public function getHelper($name)
@@ -83,13 +83,14 @@ class View
 
     /**
      * @param $name
+     *
      * @return Helpers\View\AbstractHelper
      */
     public function newHelper($name)
     {
         $class = $this->getHelperClass($name);
         $helper = new $class();
-        /** @var \Nip\Helpers\View\AbstractHelper $helper */
+        /* @var \Nip\Helpers\View\AbstractHelper $helper */
         $helper->setView($this);
 
         return $helper;
@@ -97,15 +98,17 @@ class View
 
     /**
      * @param $name
+     *
      * @return string
      */
     public function getHelperClass($name)
     {
-        return '\Nip\Helpers\View\\' . $name;
+        return '\Nip\Helpers\View\\'.$name;
     }
 
     /**
      * @param $name
+     *
      * @return mixed|null
      */
     public function __get($name)
@@ -116,6 +119,7 @@ class View
     /**
      * @param $name
      * @param $value
+     *
      * @return View
      */
     public function __set($name, $value)
@@ -124,7 +128,8 @@ class View
     }
 
     /**
-     * @param  string $name
+     * @param string $name
+     *
      * @return mixed|null
      */
     public function get($name)
@@ -132,12 +137,13 @@ class View
         if ($this->has($name)) {
             return $this->data[$name];
         } else {
-            return null;
+            return;
         }
     }
 
     /**
      * @param string $name
+     *
      * @return bool
      */
     public function has($name)
@@ -147,17 +153,20 @@ class View
 
     /**
      * @param string $name
-     * @param mixed $value
+     * @param mixed  $value
+     *
      * @return $this
      */
     public function set($name, $value)
     {
         $this->data[$name] = $value;
+
         return $this;
     }
 
     /**
      * @param $name
+     *
      * @return bool
      */
     public function __isset($name)
@@ -176,12 +185,14 @@ class View
     /**
      * @param string $name
      * @param string $appended
+     *
      * @return View
      */
     public function append($name, $appended)
     {
         $value = $this->has($name) ? $this->get($name) : '';
         $value .= $appended;
+
         return $this->set($name, $value);
     }
 
@@ -196,6 +207,7 @@ class View
 
     /**
      * @param $view
+     *
      * @return bool
      */
     public function existPath($view)
@@ -209,17 +221,18 @@ class View
      * Otherwise to caller file location.
      *
      * @param string $view
+     *
      * @return string
      */
     protected function buildPath($view)
     {
         if ($view[0] == '/') {
-            return $this->getBasePath() . ltrim($view, "/") . '.php';
+            return $this->getBasePath().ltrim($view, '/').'.php';
         } else {
             $backtrace = debug_backtrace();
             $caller = $backtrace[3]['file'];
 
-            return dirname($caller) . "/" . $view . ".php";
+            return dirname($caller).'/'.$view.'.php';
         }
     }
 
@@ -237,6 +250,7 @@ class View
 
     /**
      * @param $path
+     *
      * @return $this
      */
     public function setBasePath($path)
@@ -259,6 +273,7 @@ class View
         if (defined('VIEWS_PATH')) {
             return VIEWS_PATH;
         }
+
         return false;
     }
 
@@ -268,7 +283,7 @@ class View
     public function render($block = 'default')
     {
         if (!empty($this->blocks[$block])) {
-            $this->load("/" . $this->blocks[$block]);
+            $this->load('/'.$this->blocks[$block]);
         } else {
             trigger_error("No $block block", E_USER_ERROR);
         }
@@ -278,7 +293,8 @@ class View
      *
      * @param $view
      * @param array $variables
-     * @param bool $return
+     * @param bool  $return
+     *
      * @return string|null
      */
     public function load($view, $variables = [], $return = false)
@@ -295,6 +311,7 @@ class View
     /**
      * @param $view
      * @param array $variables
+     *
      * @return string
      */
     public function getContents($view, $variables = [])
@@ -306,14 +323,16 @@ class View
         unset($view, $variables);
         ob_start();
         /** @noinspection PhpIncludeInspection */
-        include($path);
+        include $path;
         $html = ob_get_contents();
         ob_end_clean();
+
         return $html;
     }
 
     /**
      * @param string $block
+     *
      * @return bool
      */
     public function isBlock($block = 'default')
@@ -322,9 +341,10 @@ class View
     }
 
     /**
-     * Assigns variables in bulk in the current scope
+     * Assigns variables in bulk in the current scope.
      *
      * @param array $array
+     *
      * @return $this
      */
     public function assign($array = [])
@@ -334,6 +354,7 @@ class View
                 $this->set($key, $value);
             }
         }
+
         return $this;
     }
 

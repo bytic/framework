@@ -3,8 +3,7 @@
 namespace Nip\Staging;
 
 /**
- * Class StagingAwareTrait
- * @package Nip\Staging
+ * Class StagingAwareTrait.
  */
 trait StagingAwareTrait
 {
@@ -30,7 +29,8 @@ trait StagingAwareTrait
     /**
      * Set a container.
      *
-     * @param  Staging $staging
+     * @param Staging $staging
+     *
      * @return $this
      */
     public function setStaging($staging)

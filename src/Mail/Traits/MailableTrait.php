@@ -6,8 +6,7 @@ use Nip\Mail\Mailer;
 use Nip\Mail\Message;
 
 /**
- * Class MailableTrait
- * @package Nip\Mail\Traits
+ * Class MailableTrait.
  */
 trait MailableTrait
 {
@@ -56,7 +55,7 @@ trait MailableTrait
     }
 
     /**
-     * @param Mailer $mailer
+     * @param Mailer  $mailer
      * @param Message $message
      */
     protected function beforeSend($mailer, $message)
@@ -64,9 +63,9 @@ trait MailableTrait
     }
 
     /**
-     * @param Mailer $mailer
+     * @param Mailer  $mailer
      * @param Message $message
-     * @param int $recipients
+     * @param int     $recipients
      */
     protected function afterSend($mailer, $message, $recipients)
     {

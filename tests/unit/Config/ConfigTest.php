@@ -6,18 +6,15 @@ use Nip\Config\Config;
 use Nip\Tests\Unit\AbstractTest;
 
 /**
- * Class ApplicationTest
+ * Class ApplicationTest.
  */
 class ConfigTest extends AbstractTest
 {
-
     /**
      * @var Config
      */
     protected $config;
 
-    /**
-     */
     public function setUp()
     {
         parent::setUp();

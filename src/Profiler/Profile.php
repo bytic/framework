@@ -4,10 +4,9 @@ namespace Nip\Profiler;
 
 class Profile
 {
-
     public $id = null;
     public $name = null;
-    public $columns = array('type', 'time', 'memory');
+    public $columns = ['type', 'time', 'memory'];
 
     protected $startedMicrotime = null;
     protected $endedMicrotime = null;
@@ -17,7 +16,6 @@ class Profile
 
     protected $time = null;
     protected $memory = null;
-
 
     public function __construct($id)
     {
@@ -34,18 +32,15 @@ class Profile
         $this->name = $name;
     }
 
-
     public function __get($name)
     {
         return $this->$name;
     }
 
-
     public function __set($name, $value)
     {
         $this->$name = $value;
     }
-
 
     public function start()
     {
@@ -74,7 +69,6 @@ class Profile
         $this->time = $this->calculateElapsedSecs();
         $this->memory = $this->calculateUsedMemory();
     }
-
 
     public function hasEnded()
     {
@@ -105,14 +99,13 @@ class Profile
         return $this->time;
     }
 
-
     public function calculateUsedMemory()
     {
         if (null === $this->endedMemory) {
             return false;
         }
 
-        return number_format(($this->endedMemory - $this->startedMemory) / 1024) . ' KB';
+        return number_format(($this->endedMemory - $this->startedMemory) / 1024).' KB';
     }
 
     public function getMemory()

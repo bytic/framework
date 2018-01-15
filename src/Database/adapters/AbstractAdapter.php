@@ -5,21 +5,20 @@ namespace Nip\Database\Adapters;
 use Nip\Database\Adapters\Profiler\Profiler;
 
 /**
- * Class AbstractAdapter
- * @package Nip\Database\Adapters
+ * Class AbstractAdapter.
  */
 abstract class AbstractAdapter
 {
-
     /**
      * @var null|Profiler
      */
     protected $_profiler = null;
 
     /**
-     * Executes SQL query
+     * Executes SQL query.
      *
      * @param string $sql
+     *
      * @return mixed
      */
     public function execute($sql)
@@ -97,5 +96,4 @@ abstract class AbstractAdapter
     abstract public function lastInsertID();
 
     abstract public function affectedRows();
-
 }

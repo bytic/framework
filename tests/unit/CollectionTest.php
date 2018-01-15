@@ -6,12 +6,10 @@ use Nip\Collection as Collection;
 use stdClass;
 
 /**
- * Class CollectionTest
- * @package Nip\Tests\Unit
+ * Class CollectionTest.
  */
 class CollectionTest extends \Codeception\TestCase\Test
 {
-
     /**
      * @var Collection
      */
@@ -24,8 +22,8 @@ class CollectionTest extends \Codeception\TestCase\Test
         $this->collection['first'] = new stdClass();
         static::assertEquals(1, count($this->collection));
 
-        $this->collection['luke'] = "Luke Skywalker";
-        static::assertEquals("Luke Skywalker", $this->collection["luke"]);
+        $this->collection['luke'] = 'Luke Skywalker';
+        static::assertEquals('Luke Skywalker', $this->collection['luke']);
 
         $this->collection['third'] = new stdClass();
         static::assertEquals(3, count($this->collection));
@@ -33,9 +31,9 @@ class CollectionTest extends \Codeception\TestCase\Test
 
     public function testRemove()
     {
-        $this->collection[] = "Darth Vader";
-        $this->collection[] = "Luke Skywalker";
-        $this->collection[] = "Han Solo";
+        $this->collection[] = 'Darth Vader';
+        $this->collection[] = 'Luke Skywalker';
+        $this->collection[] = 'Han Solo';
 
         static::assertEquals(3, count($this->collection));
 
@@ -46,9 +44,9 @@ class CollectionTest extends \Codeception\TestCase\Test
     public function testIterate()
     {
         $items = [
-            "darth" => "Darth Vader",
-            "luke" => "Luke Skywalker",
-            "han" => "Han Solo"
+            'darth' => 'Darth Vader',
+            'luke'  => 'Luke Skywalker',
+            'han'   => 'Han Solo',
         ];
         foreach ($items as $key => $value) {
             $this->collection[$key] = $value;
@@ -61,13 +59,13 @@ class CollectionTest extends \Codeception\TestCase\Test
 
     public function testArrayAccess()
     {
-        $this->collection[] = "Darth Vader";
-        $this->collection[] = "Luke Skywalker";
-        $this->collection[] = "Han Solo";
+        $this->collection[] = 'Darth Vader';
+        $this->collection[] = 'Luke Skywalker';
+        $this->collection[] = 'Han Solo';
 
-        static::assertEquals("Darth Vader", $this->collection->rewind());
-        static::assertEquals("Luke Skywalker", $this->collection->next());
-        static::assertEquals("Han Solo", $this->collection->end());
+        static::assertEquals('Darth Vader', $this->collection->rewind());
+        static::assertEquals('Luke Skywalker', $this->collection->next());
+        static::assertEquals('Han Solo', $this->collection->end());
     }
 
     protected function _before()

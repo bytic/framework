@@ -5,14 +5,12 @@ namespace Nip\AutoLoader;
 use Nip\Container\ServiceProvider\AbstractSignatureServiceProvider;
 
 /**
- * Class AutoLoaderServiceProvider
- * @package Nip\AutoLoader
+ * Class AutoLoaderServiceProvider.
  */
 class AutoLoaderServiceProvider extends AbstractSignatureServiceProvider
 {
-
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function register()
     {
@@ -34,7 +32,7 @@ class AutoLoaderServiceProvider extends AbstractSignatureServiceProvider
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function provides()
     {

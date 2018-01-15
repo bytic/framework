@@ -1,12 +1,12 @@
 <?php
+
 namespace Nip\Container\ServiceProvider;
 
 use Nip\Container\ContainerAwareInterface;
 use Nip\Container\ContainerAwareTrait;
 
 /**
- * Class ServiceProviderAggregate
- * @package Nip\Container\ServiceProvider
+ * Class ServiceProviderAggregate.
  */
 class ProviderRepository implements ProviderRepositoryInterface
 {
@@ -28,7 +28,7 @@ class ProviderRepository implements ProviderRepositoryInterface
     public function add($provider)
     {
         if (is_string($provider) && class_exists($provider)) {
-            $provider = new $provider;
+            $provider = new $provider();
         }
 
         if ($provider instanceof ContainerAwareInterface) {
@@ -39,11 +39,12 @@ class ProviderRepository implements ProviderRepositoryInterface
             foreach ($provider->provides() as $service) {
                 $this->providers[$service] = $provider;
             }
+
             return $this;
         }
 
         throw new \InvalidArgumentException(
-            'A service provider must be a fully qualified class name or instance ' .
+            'A service provider must be a fully qualified class name or instance '.
             'of (\Nip\Container\ServiceProvider\ServiceProviderInterface)'
         );
     }

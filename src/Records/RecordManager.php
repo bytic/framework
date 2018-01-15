@@ -3,8 +3,7 @@
 namespace Nip\Records;
 
 /**
- * Class RecordManager
- * @package Nip\Records
+ * Class RecordManager.
  */
 class RecordManager extends AbstractModels\RecordManager
 {

@@ -1,18 +1,16 @@
 <?php
 
-
 namespace Nip\Database\Query\Condition;
 
 use Nip\Database\Query\AbstractQuery as Query;
 
 class Condition
 {
-
     protected $_string;
     protected $_values;
     protected $_query;
 
-    public function __construct($string, $values = array())
+    public function __construct($string, $values = [])
     {
         $this->_string = $string;
         $this->_values = $values;
@@ -29,10 +27,11 @@ class Condition
     }
 
     /**
-     * Parses $string and replaces all instances of "?" with corresponding $values
+     * Parses $string and replaces all instances of "?" with corresponding $values.
      *
      * @param string $string
-     * @param array $values
+     * @param array  $values
+     *
      * @return string
      */
     public function parseString($string, $values)
@@ -41,7 +40,7 @@ class Condition
         $pos = 0;
         $offset = 0;
 
-        while (($pos = strpos($string, "?", $offset)) !== false) {
+        while (($pos = strpos($string, '?', $offset)) !== false) {
             $positions[] = $pos;
             $offset = $pos + 1;
         }
@@ -49,7 +48,7 @@ class Condition
         $count = count($positions);
 
         if ($count == 1) {
-            $values = array($values);
+            $values = [$values];
         }
 
         for ($i = 0; $i < $count; $i++) {
@@ -64,7 +63,7 @@ class Condition
                         unset($value[$key]);
                     }
                 }
-                $value = "(" . implode(", ", $value) . ")";
+                $value = '('.implode(', ', $value).')';
             } elseif (is_numeric($value)) {
             } else {
                 $value = $this->getQuery()->getManager()->getAdapter()->quote($values[$i]);
@@ -77,7 +76,7 @@ class Condition
 
     protected function parseValueQuery($value)
     {
-        return "(".$value->assemble().")";
+        return '('.$value->assemble().')';
     }
 
     /**
@@ -90,6 +89,7 @@ class Condition
 
     /**
      * @param Query $query
+     *
      * @return $this
      */
     public function setQuery($query)
@@ -113,5 +113,4 @@ class Condition
     {
         return strpos($condition, ' AND ') || strpos($condition, ' OR ') ? '('.$condition.')' : $condition;
     }
-
 }

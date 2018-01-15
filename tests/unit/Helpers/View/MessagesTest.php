@@ -2,7 +2,6 @@
 
 namespace Nip\Tests\Unit\Helpers\View;
 
-use Mockery as m;
 use Nip\Helpers\View\Messages;
 
 class MessagesTest extends \Codeception\TestCase\Test

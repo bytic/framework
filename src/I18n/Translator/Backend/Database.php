@@ -5,7 +5,7 @@ namespace Nip\I18n\Translator\Backend;
 use Nip\Database\Connection;
 
 /**
- * Nip Framework
+ * Nip Framework.
  *
  * CREATE TABLE `i18n` (
  * `slug` VARCHAR( 255 ) NOT NULL ,
@@ -15,13 +15,14 @@ use Nip\Database\Connection;
  * ) ENGINE = MYISAM COMMENT = 'I18n data'
  *
  * @category   Nip
+ *
  * @copyright  2009 Nip Framework
  * @license    http://www.opensource.org/licenses/mit-license.php The MIT License
+ *
  * @version    SVN: $Id$
  */
 class Database extends AbstractBackend
 {
-
     /**
      * @var Connection
      */
@@ -30,9 +31,10 @@ class Database extends AbstractBackend
     protected $dictionary = [];
 
     /**
-     * Adds a language to the dictionary
+     * Adds a language to the dictionary.
      *
      * @param string $language
+     *
      * @return I18n
      */
     public function addLanguage($language)
@@ -42,7 +44,7 @@ class Database extends AbstractBackend
         /* @var $results \Nip\Database\Result */
         $results = $this->getDb()->newSelect()
             ->from($this->table)
-            ->where(["language", $language])
+            ->where(['language', $language])
             ->execute();
 
         if ($results->numRows()) {
@@ -63,7 +65,8 @@ class Database extends AbstractBackend
     }
 
     /**
-     * Sets DB wrapper
+     * Sets DB wrapper.
+     *
      * @param Connection $db
      */
     public function setDb($db)
@@ -72,9 +75,11 @@ class Database extends AbstractBackend
     }
 
     /**
-     * Returns dictionary entry for $slug in $language
-     * @param string $slug
+     * Returns dictionary entry for $slug in $language.
+     *
+     * @param string      $slug
      * @param string|bool $language
+     *
      * @return string
      */
     protected function doTranslation($slug, $language = false)

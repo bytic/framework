@@ -1,19 +1,20 @@
 <?php
 
 /**
- * Class Nip_Form_Renderer_Elements_RadioGroup
+ * Class Nip_Form_Renderer_Elements_RadioGroup.
  */
-class Nip_Form_Renderer_Elements_RadioGroup extends Nip_Form_Renderer_Elements_Input_Group {
-
+class Nip_Form_Renderer_Elements_RadioGroup extends Nip_Form_Renderer_Elements_Input_Group
+{
     /**
      * @return string
      */
-    public function generateElement() {
+    public function generateElement()
+    {
         $this->_checkValue();
 
         return parent::generateElement();
     }
-    
+
     protected function _checkValue()
     {
         if (!$this->getElement()->getValue()) {
@@ -22,7 +23,6 @@ class Nip_Form_Renderer_Elements_RadioGroup extends Nip_Form_Renderer_Elements_I
                 $element = reset($elements);
                 $this->getElement()->setValue($element->getValue());
             }
-        }        
+        }
     }
-
 }

@@ -4,13 +4,13 @@ namespace Nip\Database\Metadata;
 
 class Manager
 {
-
     protected $_connection;
     protected $_cache;
 
     public function setConnection($wrapper)
     {
         $this->_connection = $wrapper;
+
         return $this;
     }
 
@@ -28,6 +28,7 @@ class Manager
         if (!is_array($data)) {
             return trigger_error("Cannot load metadata for table [$table]", E_USER_ERROR);
         }
+
         return $data;
     }
 

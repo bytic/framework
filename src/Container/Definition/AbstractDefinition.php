@@ -3,12 +3,10 @@
 namespace Nip\Container\Definition;
 
 /**
- * Class AbstractDefinition
- * @package Nip\Container\Definition
+ * Class AbstractDefinition.
  */
 abstract class AbstractDefinition implements DefinitionInterface
 {
-
     /**
      * @var string
      */
@@ -19,7 +17,7 @@ abstract class AbstractDefinition implements DefinitionInterface
     protected $concrete;
 
     /**
-     * @var boolean
+     * @var bool
      */
     protected $shared = false;
 
@@ -31,12 +29,13 @@ abstract class AbstractDefinition implements DefinitionInterface
      */
     public function __construct($alias, $concrete)
     {
-        $this->alias     = $alias;
-        $this->concrete  = $concrete;
+        $this->alias = $alias;
+        $this->concrete = $concrete;
     }
 
     /**
      * Whether this service is shared.
+     *
      * @return bool
      */
     public function isShared()
@@ -48,11 +47,13 @@ abstract class AbstractDefinition implements DefinitionInterface
      * Sets if the service must be shared or not.
      *
      * @param bool $shared Whether the service must be shared or not
+     *
      * @return $this The current instance
      */
     public function setShared($shared)
     {
         $this->shared = (bool) $shared;
+
         return $this;
     }
 }

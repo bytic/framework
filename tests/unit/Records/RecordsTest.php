@@ -10,8 +10,7 @@ use Nip\Request;
 use Nip\Tests\Unit\AbstractTest;
 
 /**
- * Class RecordsTest
- * @package Nip\Tests\Unit\Records
+ * Class RecordsTest.
  */
 class RecordsTest extends AbstractTest
 {
@@ -58,14 +57,15 @@ class RecordsTest extends AbstractTest
     public function providerGetController()
     {
         return [
-            ["notifications-tables", "Notifications_Tables"],
-            ["notifications-tables", "Notifications\\Tables\\Tables"],
-            ["notifications-tables", "App\\Models\\Notifications\\Tables\\Tables"],
+            ['notifications-tables', 'Notifications_Tables'],
+            ['notifications-tables', 'Notifications\\Tables\\Tables'],
+            ['notifications-tables', 'App\\Models\\Notifications\\Tables\\Tables'],
         ];
     }
 
     /**
      * @dataProvider providerGetController
+     *
      * @param $controller
      * @param $class
      */
@@ -143,7 +143,7 @@ class RecordsTest extends AbstractTest
         $request = new Request();
         $params = [
             'title' => 'Test title',
-            'name' => 'Test name',
+            'name'  => 'Test name',
         ];
         $request->query->add($params);
 
@@ -167,16 +167,17 @@ class RecordsTest extends AbstractTest
     public function providerGetPrimaryFK()
     {
         return [
-            ["id_user", "Users"],
-            ["id_race_entry", "RaceEntries"],
-            ["id_notifications_table", "Notifications_Tables"],
-            ["id_notifications_table", "Notifications\\Tables\\Tables"],
-            ["id_notifications_table", "App\\Models\\Notifications\\Tables\\Tables"],
+            ['id_user', 'Users'],
+            ['id_race_entry', 'RaceEntries'],
+            ['id_notifications_table', 'Notifications_Tables'],
+            ['id_notifications_table', 'Notifications\\Tables\\Tables'],
+            ['id_notifications_table', 'App\\Models\\Notifications\\Tables\\Tables'],
         ];
     }
 
     /**
      * @dataProvider providerGetPrimaryFK
+     *
      * @param $primaryFK
      * @param $class
      */

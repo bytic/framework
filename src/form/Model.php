@@ -3,11 +3,10 @@
 use Nip\Records\AbstractModels\Record as Record;
 
 /**
- * Class Nip_Form_Model
+ * Class Nip_Form_Model.
  */
 class Nip_Form_Model extends Nip_Form
 {
-
     /**
      * @var Record
      */
@@ -15,6 +14,7 @@ class Nip_Form_Model extends Nip_Form
 
     /**
      * @param $name
+     *
      * @return $this
      */
     public function addModelError($name)
@@ -22,7 +22,7 @@ class Nip_Form_Model extends Nip_Form
         return $this->addError($this->getModelMessage($name));
     }
 
-    public function getModelMessage($name, $variables = array())
+    public function getModelMessage($name, $variables = [])
     {
         return $this->getModel()->getManager()->getMessage('form.'.$name, $variables);
     }
@@ -37,6 +37,7 @@ class Nip_Form_Model extends Nip_Form
 
     /**
      * @param Record $model
+     *
      * @return $this
      */
     public function setModel(Record $model)
@@ -63,15 +64,17 @@ class Nip_Form_Model extends Nip_Form
      * @param $input
      * @param $name
      * @param array $variables
+     *
      * @return $this
      */
-    public function addInputModelError($input, $name, $variables = array())
+    public function addInputModelError($input, $name, $variables = [])
     {
         return $this->$input->addError($this->getModelMessage($name, $variables));
     }
 
     /**
      * @param $name
+     *
      * @return mixed
      */
     public function getModelLabel($name)

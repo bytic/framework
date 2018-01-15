@@ -2,12 +2,10 @@
 
 class Nip_File_Exception extends Exception
 {
-
 }
 
 class Nip_File extends Nip_Object
 {
-
     protected $_path;
     protected $_name;
     protected $_extension;
@@ -31,6 +29,7 @@ class Nip_File extends Nip_Object
         } else {
             throw new Nip_File_Exception("Cannot move $this->_path file to $target");
         }
+
         return $this;
     }
 
@@ -46,11 +45,13 @@ class Nip_File extends Nip_Object
         } else {
             throw new Nip_File_Exception("Cannot copy $this->_path file to $target");
         }
+
         return $this;
     }
 
     /**
      * @param string $target
+     *
      * @return Nip_Process
      */
     public function unzip($target)
@@ -71,17 +72,17 @@ class Nip_File extends Nip_Object
             $filename = $this->getName();
         }
         if (!$contentType) {
-            $contentType = "application/force-download";
+            $contentType = 'application/force-download';
         }
 
-        header("Pragma: public");
-        header("Expires: 0");
-        header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
-        header("Cache-Control: private", false);
+        header('Pragma: public');
+        header('Expires: 0');
+        header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
+        header('Cache-Control: private', false);
         header("Content-Type: $contentType");
         header("Content-Disposition: attachment; filename=\"$filename\"");
         header("Content-Length: {$this->getSize()}");
-        header("Content-Transfer-Encoding: binary");
+        header('Content-Transfer-Encoding: binary');
 
         readfile($this->getPath());
         exit();
@@ -97,6 +98,7 @@ class Nip_File extends Nip_Object
         $this->_name = basename($path);
         $this->_extension = pathinfo($path, PATHINFO_EXTENSION);
         $this->_path = $path;
+
         return $this;
     }
 
@@ -129,15 +131,14 @@ class Nip_File extends Nip_Object
     {
         if (function_exists('mime_content_type')) {
             return mime_content_type($this->getPath());
-
         } elseif (function_exists('finfo_open')) {
             $finfo = finfo_open(FILEINFO_MIME);
             $mimetype = finfo_file($finfo, $this->getPath());
             finfo_close($finfo);
+
             return $mimetype;
         }
 
-        return "unknown";
+        return 'unknown';
     }
-
 }

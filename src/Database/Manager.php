@@ -5,12 +5,10 @@ namespace Nip\Database;
 use Nip\Application as Bootstrap;
 
 /**
- * Class Manager
- * @package Nip\Database
+ * Class Manager.
  */
 class Manager
 {
-
     /**
      * @var Bootstrap
      */
@@ -20,6 +18,7 @@ class Manager
 
     /**
      * @param $config
+     *
      * @return Connection
      */
     public function newConnectionFromConfig($config)
@@ -30,6 +29,7 @@ class Manager
             $config->user,
             $config->password,
             $config->name);
+
         return $connection;
     }
 
@@ -39,11 +39,11 @@ class Manager
      * @param $user
      * @param $password
      * @param $database
+     *
      * @return Connection
      */
     public function createNewConnection($adapter, $host, $user, $password, $database)
     {
-
         try {
             $connection = $this->newConnection();
 
@@ -52,11 +52,10 @@ class Manager
 
             $connection->connect($host, $user, $password, $database);
             $this->initNewConnection($connection);
-
         } catch (Exception $e) {
             echo '<h1>Error connecting to database</h1>';
             if (app()->get('staging')->getStage()->inTesting()) {
-                echo '<h4>' . $e->getMessage() . '</h4>';
+                echo '<h4>'.$e->getMessage().'</h4>';
                 $e->log();
             }
             die();
