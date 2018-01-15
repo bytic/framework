@@ -5,12 +5,18 @@ namespace Nip\Database\Metadata;
 use Nip\Cache\Manager as CacheManager;
 use Nip\Database\Connection;
 
+/**
+ * Class Cache
+ * @package Nip\Database\Metadata
+ */
 class Cache extends CacheManager
 {
-
-    protected $_ttl = 10 * 24 * 60 * 60;
-    protected $_active = true;
     protected $_metadata;
+
+    public function __construct()
+    {
+        $this->setTtl(10 * 24 * 60 * 60);
+    }
 
     public function describeTable($table)
     {

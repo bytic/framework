@@ -21,27 +21,29 @@ class CacheManager extends \Nip\Cache\Manager
      */
     public function __construct()
     {
-        $this->_active = (app('kernel')->getRequest()->getModuleName() == 'default');
+        $this->setActive((app('kernel')->getRequest()->getModuleName() == 'default'));
     }
 
     /**
      * @param $cacheId
+     *
      * @return string
      */
     public function filePath($cacheId)
     {
         $cacheId = $this->getCacheId($cacheId);
 
-        return $this->cachePath().$cacheId.'.php';
+        return $this->cachePath() . $cacheId . '.php';
     }
 
     /**
      * @param bool $type
+     *
      * @return string
      */
     public function getCacheId($type = false)
     {
-        $cacheId = $this->getManager()->getController().'-'.$type;
+        $cacheId = $this->getManager()->getController() . '-' . $type;
 
         return $cacheId;
     }
@@ -56,6 +58,7 @@ class CacheManager extends \Nip\Cache\Manager
 
     /**
      * @param Records $manager
+     *
      * @return $this
      */
     public function setManager($manager)
@@ -70,6 +73,6 @@ class CacheManager extends \Nip\Cache\Manager
      */
     public function cachePath()
     {
-        return parent::cachePath().'/records/';
+        return parent::cachePath() . '/records/';
     }
 }
