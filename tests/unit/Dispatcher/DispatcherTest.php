@@ -6,12 +6,10 @@ use Nip\Dispatcher\Dispatcher;
 use Nip\Tests\Unit\AbstractTest;
 
 /**
- * Class DispatcherTest
- * @package Nip\Tests\Unit\Dispatcher
+ * Class DispatcherTest.
  */
 class DispatcherTest extends AbstractTest
 {
-
     /**
      * @var Dispatcher
      */

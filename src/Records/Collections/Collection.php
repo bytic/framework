@@ -8,8 +8,7 @@ use Nip\Records\AbstractModels\Record as Record;
 use Nip\Records\AbstractModels\RecordManager as Records;
 
 /**
- * Class Collection
- * @package Nip\Records\Collections
+ * Class Collection.
  */
 class Collection extends AbstractCollection
 {
@@ -19,7 +18,6 @@ class Collection extends AbstractCollection
      * @var Records
      */
     protected $_manager = null;
-
 
     /**
      * @param $relations
@@ -37,6 +35,7 @@ class Collection extends AbstractCollection
 
     /**
      * @param $name
+     *
      * @return Collection
      */
     public function loadRelation($name)
@@ -44,11 +43,13 @@ class Collection extends AbstractCollection
         $relation = $this->getRelation($name);
         $results = $relation->getEagerResults($this);
         $relation->match($this, $results);
+
         return $results;
     }
 
     /**
      * @param $name
+     *
      * @return \Nip\Records\Relations\Relation|null
      */
     public function getRelation($name)
@@ -70,6 +71,7 @@ class Collection extends AbstractCollection
 
     /**
      * @param Records $manager
+     *
      * @return $this
      */
     public function setManager(Records $manager)
@@ -109,17 +111,19 @@ class Collection extends AbstractCollection
 
     /**
      * @param Record $record
-     * @param null $index
+     * @param null   $index
      */
     public function add(Record $record, $index = null)
     {
         $index = $this->getRecordKey($record, $index);
+
         return $this->offsetSet($index, $record);
     }
 
     /**
      * @param Record $record
-     * @param null $index
+     * @param null   $index
+     *
      * @return bool|mixed|null
      */
     public function getRecordKey(Record $record, $index = null)
@@ -133,6 +137,7 @@ class Collection extends AbstractCollection
                 $index = null;
             }
         }
+
         return $index;
     }
 
@@ -146,6 +151,7 @@ class Collection extends AbstractCollection
 
     /**
      * @param $key
+     *
      * @return mixed
      */
     public function setIndexKey($key)
@@ -155,6 +161,7 @@ class Collection extends AbstractCollection
 
     /**
      * @param Record $record
+     *
      * @return bool
      */
     public function has(Record $record)
@@ -178,9 +185,10 @@ class Collection extends AbstractCollection
 
     /**
      * When $each is true, each record gets it's delete() method called.
-     * Otherwise, a delete query is built for the entire collection
+     * Otherwise, a delete query is built for the entire collection.
      *
      * @param bool $each
+     *
      * @return $this
      */
     public function delete($each = false)
@@ -194,7 +202,7 @@ class Collection extends AbstractCollection
                 $pk = $this->getManager()->getPrimaryKey();
                 $pk_list = HelperBroker::get('Arrays')->pluck($this, $pk);
 
-                $query = $this->getManager()->newQuery("delete");
+                $query = $this->getManager()->newQuery('delete');
                 $query->where("$pk IN ?", $pk_list);
                 $query->execute();
             }

@@ -8,7 +8,6 @@ class NameWorksTraitTest extends \Codeception\TestCase\Test
 {
     use NameWorksTrait;
 
-
     public function testGetClassName()
     {
         self::assertSame('Nip\Tests\Unit\Utility\Traits\NameWorksTraitTest', $this->getClassName());

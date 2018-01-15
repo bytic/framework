@@ -10,12 +10,10 @@ use Nip\Records\Collections\Collection;
 use Nip\Records\Collections\Collection as RecordCollection;
 
 /**
- * Class HasOneOrMany
- * @package Nip\Records\Relations
+ * Class HasOneOrMany.
  */
 abstract class HasOneOrMany extends Relation
 {
-
     /**
      * @var string
      */
@@ -32,6 +30,7 @@ abstract class HasOneOrMany extends Relation
                 $this->saveResult($item);
             }
         }
+
         return true;
     }
 
@@ -70,7 +69,7 @@ abstract class HasOneOrMany extends Relation
     {
         $class = $this->getCollectionClass();
         $collection = new $class();
-        /** @var AssociatedCollection $collection */
+        /* @var AssociatedCollection $collection */
         $collection->initFromRelation($this);
 
         return $collection;
@@ -102,18 +101,21 @@ abstract class HasOneOrMany extends Relation
 
     /** @noinspection PhpMissingParentCallCommonInspection
      * @param RecordCollection $collection
+     *
      * @return Query
      */
     public function getEagerQuery(RecordCollection $collection)
     {
         $fkList = $this->getEagerFkList($collection);
         $query = $this->newQuery();
-        $query->where($this->getFK() . ' IN ?', $fkList);
+        $query->where($this->getFK().' IN ?', $fkList);
+
         return $query;
     }
 
     /** @noinspection PhpMissingParentCallCommonInspection
      * @param RecordCollection $collection
+     *
      * @return array
      */
     public function getEagerFkList(RecordCollection $collection)
@@ -125,9 +127,10 @@ abstract class HasOneOrMany extends Relation
     }
 
     /**
-     * @param array $dictionary
+     * @param array      $dictionary
      * @param Collection $collection
-     * @param Record $record
+     * @param Record     $record
+     *
      * @return AssociatedCollection
      */
     public function getResultsFromCollectionDictionary($dictionary, $collection, $record)
@@ -141,6 +144,7 @@ abstract class HasOneOrMany extends Relation
                 $collection->add($record);
             }
         }
+
         return $collection;
     }
 
@@ -148,6 +152,7 @@ abstract class HasOneOrMany extends Relation
      * Build model dictionary keyed by the relation's foreign key.
      *
      * @param RecordCollection $collection
+     *
      * @return array
      */
     protected function buildDictionary(RecordCollection $collection)
@@ -157,6 +162,7 @@ abstract class HasOneOrMany extends Relation
         foreach ($collection as $record) {
             $dictionary[$record->{$pk}][] = $record;
         }
+
         return $dictionary;
     }
 

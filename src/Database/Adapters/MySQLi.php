@@ -4,16 +4,16 @@ namespace Nip\Database\Adapters;
 
 class MySQLi extends AbstractAdapter implements AdapterInterface
 {
-
     protected $_connection;
 
     /**
-     * Connects to MySQL server
+     * Connects to MySQL server.
      *
      * @param string $host
      * @param string $user
      * @param string $password
      * @param string $database
+     *
      * @return resource
      */
     public function connect($host = false, $user = false, $password = false, $database = false, $newLink = false)
@@ -22,11 +22,12 @@ class MySQLi extends AbstractAdapter implements AdapterInterface
 
         if ($this->_connection) {
             if ($this->selectDatabase($database)) {
-                $this->query("SET CHARACTER SET utf8");
-                $this->query("SET NAMES utf8");
+                $this->query('SET CHARACTER SET utf8');
+                $this->query('SET NAMES utf8');
+
                 return $this->_connection;
             } else {
-                $message = 'Cannot select database ' . $database;
+                $message = 'Cannot select database '.$database;
             }
         } else {
             $message = mysqli_error();
@@ -39,7 +40,6 @@ class MySQLi extends AbstractAdapter implements AdapterInterface
         return false;
     }
 
-
     public function selectDatabase($database)
     {
         return mysqli_select_db($this->_connection, $database);
@@ -47,6 +47,7 @@ class MySQLi extends AbstractAdapter implements AdapterInterface
 
     /**
      * @param $sql
+     *
      * @return bool|\mysqli_result
      */
     public function query($sql)
@@ -86,9 +87,9 @@ class MySQLi extends AbstractAdapter implements AdapterInterface
 
     public function describeTable($table)
     {
-        $return = array('fields' => array(), 'indexes' => array());
+        $return = ['fields' => [], 'indexes' => []];
 
-        $result = $this->execute('SHOW INDEX IN ' . $table);
+        $result = $this->execute('SHOW INDEX IN '.$table);
         if (mysqli_num_rows($result)) {
             while ($row = $this->fetchAssoc($result)) {
                 if (!$return['indexes'][$row['Key_name']]) {
@@ -101,16 +102,16 @@ class MySQLi extends AbstractAdapter implements AdapterInterface
             }
         }
 
-        $result = $this->execute('DESCRIBE ' . $table);
+        $result = $this->execute('DESCRIBE '.$table);
         if (mysqli_num_rows($result)) {
             while ($row = $this->fetchAssoc($result)) {
-                $return['fields'][$row['Field']] = array(
-                    'field' => $row['Field'],
-                    'type' => $row['Type'],
-                    'primary' => ($return['indexes']['PRIMARY']['fields'][0] == $row['Field']),
-                    'default' => $row['Default'],
-                    'auto_increment' => ($row['Extra'] === 'auto_increment')
-                );
+                $return['fields'][$row['Field']] = [
+                    'field'          => $row['Field'],
+                    'type'           => $row['Type'],
+                    'primary'        => ($return['indexes']['PRIMARY']['fields'][0] == $row['Field']),
+                    'default'        => $row['Default'],
+                    'auto_increment' => ($row['Extra'] === 'auto_increment'),
+                ];
             }
         }
 
@@ -126,12 +127,12 @@ class MySQLi extends AbstractAdapter implements AdapterInterface
     {
         $return = [];
 
-        $result = $this->execute("SHOW FULL TABLES");
+        $result = $this->execute('SHOW FULL TABLES');
         if ($this->numRows($result)) {
             while ($row = $this->fetchArray($result)) {
-                $return[$row[0]] = array(
-                    "type" => $row[1] == "BASE TABLE" ? "table" : "view"
-                );
+                $return[$row[0]] = [
+                    'type' => $row[1] == 'BASE TABLE' ? 'table' : 'view',
+                ];
             }
         }
 
@@ -151,6 +152,7 @@ class MySQLi extends AbstractAdapter implements AdapterInterface
     public function quote($value)
     {
         $value = $this->cleanData($value);
+
         return is_numeric($value) ? $value : "'$value'";
     }
 
@@ -168,5 +170,4 @@ class MySQLi extends AbstractAdapter implements AdapterInterface
     {
         mysqli_close($this->_connection);
     }
-
 }

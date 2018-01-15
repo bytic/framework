@@ -1,37 +1,41 @@
 <?php
 
 /**
- * Nip Framework
+ * Nip Framework.
  *
  * @category   Nip
+ *
  * @copyright  2009 Nip Framework
  * @license    http://www.opensource.org/licenses/mit-license.php The MIT License
  */
-
-abstract class Nip_Service_Maps_Provider_Abstract {
-
+abstract class Nip_Service_Maps_Provider_Abstract
+{
     protected $_service;
     protected $_container;
 
     protected $_scripts = [];
 
-    public function render() {
+    public function render()
+    {
         $return = '';
         $return .= $this->initContainer();
         $return .= $this->generateScript();
         $return .= $this->loadScript();
+
         return $return;
     }
 
-    public function initContainer() {
+    public function initContainer()
+    {
         $service = $this->getService();
-        $this->_container = array(
-            'id' => $service->getParam('container_id') ? $service->getParam('container_id') : 'map_canvas',
-            'width' => $service->getParam('container_width') ? $service->getParam('container_width') : '700',
+        $this->_container = [
+            'id'     => $service->getParam('container_id') ? $service->getParam('container_id') : 'map_canvas',
+            'width'  => $service->getParam('container_width') ? $service->getParam('container_width') : '700',
             'height' => $service->getParam('container_height') ? $service->getParam('container_height') : '500',
-        );
+        ];
 
         $html = '<div id="'.$this->_container['id'].'" style="width: '.$this->_container['width'].'px; height: '.$this->_container['height'].'px;">&nbsp;</div> ';
+
         return $html;
     }
 
@@ -50,24 +54,28 @@ abstract class Nip_Service_Maps_Provider_Abstract {
         return $this;
     }
 
-    public function generateScript() {
+    public function generateScript()
+    {
         $return .= '<script type="text/javascript">';
         $return .= $this->initMapScript();
         $return .= $this->renderObjects();
         $return .= $this->renderScripts();
         $return .= $this->postMapScript();
         $return .= '</script>';
+
         return $return;
     }
 
-    public function renderObjects() {
+    public function renderObjects()
+    {
         $objects = $this->getService()->getObjects();
         $return = '';
         foreach ($objects as $object) {
             $type = $object->getType();
-            $method = 'render' . inflector()->camelize($type);
+            $method = 'render'.inflector()->camelize($type);
             $return .= $this->$method($object);
         }
+
         return $return;
     }
 
@@ -93,5 +101,4 @@ abstract class Nip_Service_Maps_Provider_Abstract {
 
         return $return;
     }
-
 }

@@ -5,12 +5,10 @@ namespace Nip\I18n\Translator\Backend;
 use Nip\I18n\Translator;
 
 /**
- * Class AbstractBackend
- * @package Nip\I18n\Translator\Backend
+ * Class AbstractBackend.
  */
 abstract class AbstractBackend
 {
-
     /**
      * @var Translator
      */
@@ -49,9 +47,11 @@ abstract class AbstractBackend
     }
 
     /**
-     * Returns dictionary entry for $slug in $language
-     * @param string $slug
+     * Returns dictionary entry for $slug in $language.
+     *
+     * @param string      $slug
      * @param string|bool $language
+     *
      * @return string
      */
     public function translate($slug, $language = false)
@@ -61,13 +61,15 @@ abstract class AbstractBackend
             return $return;
         }
 
-        trigger_error("Dictionary entry for [" . $slug . "][" . $language . "] does not exist.", E_USER_WARNING);
+        trigger_error('Dictionary entry for ['.$slug.']['.$language.'] does not exist.', E_USER_WARNING);
+
         return $slug;
     }
 
     /**
      * @param $slug
      * @param bool $language
+     *
      * @return mixed
      */
     abstract protected function doTranslation($slug, $language = false);
@@ -75,12 +77,13 @@ abstract class AbstractBackend
     /**
      * @param $slug
      * @param bool $language
+     *
      * @return bool
      */
     public function hasTranslation($slug, $language = false)
     {
         $return = $this->doTranslation($slug, $language);
 
-        return (bool)$return;
+        return (bool) $return;
     }
 }

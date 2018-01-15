@@ -4,7 +4,6 @@ namespace Nip\Utility;
 
 class Time
 {
-
     protected $_value = null;
     protected $_parts = null;
     protected $_seconds = null;
@@ -58,7 +57,7 @@ class Time
 
     public function parsePartsFromString()
     {
-        list ($h, $m, $s) = explode(':', $this->_value);
+        list($h, $m, $s) = explode(':', $this->_value);
 
         $this->setHoursPart($h);
         $this->setMinutesPart($m);
@@ -115,7 +114,6 @@ class Time
 
         $seconds = round($seconds, 2);
         $this->setSecondsPart($seconds);
-
     }
 
     public function getSeconds()
@@ -148,12 +146,12 @@ class Time
         $return = '';
 
         $hours = $this->getHoursPart();
-        if ($hours OR $return) {
+        if ($hours or $return) {
             $return .= ($return ? ' ' : '').str_pad($hours, 2, 0, STR_PAD_LEFT).'h';
         }
 
         $minutes = $this->getMinutesPart();
-        if ($minutes OR $return) {
+        if ($minutes or $return) {
             $return .= ($return ? ' ' : '').str_pad($minutes, 2, 0, STR_PAD_LEFT).'m';
         }
 

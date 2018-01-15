@@ -1,9 +1,11 @@
 <?php
-class Nip_Form_Element_CheckboxGroup extends Nip_Form_Element_Input_Group {
 
+class Nip_Form_Element_CheckboxGroup extends Nip_Form_Element_Input_Group
+{
     protected $_type = 'checkboxGroup';
 
-    public function getValue($requester = 'abstract') {
+    public function getValue($requester = 'abstract')
+    {
         $elements = $this->getElements();
         $data = [];
         if ($elements) {
@@ -13,14 +15,17 @@ class Nip_Form_Element_CheckboxGroup extends Nip_Form_Element_Input_Group {
                 }
             }
         }
+
         return $data;
     }
 
-    public function setValue($value) {
+    public function setValue($value)
+    {
         return $this->getDataFromRequest($value);
     }
 
-    public function getDataFromRequest($request) {
+    public function getDataFromRequest($request)
+    {
 //        var_dump($request);
         if (is_array($request)) {
             $elements = $this->getElements();
@@ -32,21 +37,24 @@ class Nip_Form_Element_CheckboxGroup extends Nip_Form_Element_Input_Group {
                 $element->setChecked(false);
             }
         }
+
         return $this;
     }
 
-    public function getNewElement() {
+    public function getNewElement()
+    {
         $element = $this->getForm()->getNewElement('checkbox');
         $name = $this->getName();
         if (!strpos($name, '[]')) {
-            $name = $name .'[]';
+            $name = $name.'[]';
         }
         $element->setName($name);
+
         return $element;
     }
 
-    public function isRequestArray() {
+    public function isRequestArray()
+    {
         return true;
     }
-
 }

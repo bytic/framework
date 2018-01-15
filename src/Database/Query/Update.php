@@ -3,18 +3,16 @@
 namespace Nip\Database\Query;
 
 /**
- * Class Update
- * @package Nip\Database\Query
+ * Class Update.
  */
 class Update extends AbstractQuery
 {
-
     /**
      * @return string
      */
     public function assemble()
     {
-        $query = "UPDATE ".$this->protect($this->getTable())." SET ".$this->parseUpdate();
+        $query = 'UPDATE '.$this->protect($this->getTable()).' SET '.$this->parseUpdate();
 
         $query .= $this->assembleWhere();
         $query .= $this->assembleLimit();
@@ -51,6 +49,6 @@ class Update extends AbstractQuery
             }
         }
 
-        return implode(", ", $fields);
+        return implode(', ', $fields);
     }
 }

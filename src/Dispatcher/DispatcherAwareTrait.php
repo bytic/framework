@@ -6,8 +6,7 @@ use Nip\Http\Response\Response;
 use Nip\Request;
 
 /**
- * Class ConfigAwareTrait
- * @package Nip\Config
+ * Class ConfigAwareTrait.
  */
 trait DispatcherAwareTrait
 {
@@ -18,6 +17,7 @@ trait DispatcherAwareTrait
 
     /**
      * @param Request|null $request
+     *
      * @return Response|null
      */
     public function dispatchRequest(Request $request = null)
@@ -39,6 +39,7 @@ trait DispatcherAwareTrait
 
     /**
      * @param bool|Dispatcher $dispatcher
+     *
      * @return $this
      */
     public function setDispatcher($dispatcher = false)

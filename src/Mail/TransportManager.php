@@ -8,8 +8,7 @@ use Nip\Mail\Transport\SendgridTransport;
 use Swift_SmtpTransport as SmtpTransport;
 
 /**
- * Class TransportManager
- * @package Nip\Mail
+ * Class TransportManager.
  */
 class TransportManager
 {
@@ -65,6 +64,7 @@ class TransportManager
         if (isset($config['stream'])) {
             $transport->setStreamOptions($config['stream']);
         }
+
         return $transport;
     }
 }

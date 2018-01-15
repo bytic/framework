@@ -8,10 +8,7 @@ use Nip\Application;
 use Psr\Log\LoggerInterface as PsrLoggerInterface;
 
 /**
- * Class Manager
- *
- * @package Nip\Logger
- *
+ * Class Manager.
  */
 class Manager implements PsrLoggerInterface
 {
@@ -20,7 +17,6 @@ class Manager implements PsrLoggerInterface
      *
      * @var array
      */
-
     const EMERGENCY = MonologLogger::EMERGENCY;
     const ALERT = MonologLogger::ALERT;
     const CRITICAL = MonologLogger::CRITICAL;
@@ -30,44 +26,45 @@ class Manager implements PsrLoggerInterface
     const INFO = MonologLogger::INFO;
     const DEBUG = MonologLogger::DEBUG;
     /**
-     * Map native PHP errors to level
+     * Map native PHP errors to level.
      *
      * @var array
      */
     public static $errorLevelMap = [
-        E_NOTICE => self::NOTICE,
-        E_USER_NOTICE => self::NOTICE,
-        E_WARNING => self::WARNING,
-        E_CORE_WARNING => self::WARNING,
-        E_USER_WARNING => self::WARNING,
-        E_ERROR => self::WARNING,
-        E_USER_ERROR => self::ERROR,
-        E_CORE_ERROR => self::ERROR,
+        E_NOTICE            => self::NOTICE,
+        E_USER_NOTICE       => self::NOTICE,
+        E_WARNING           => self::WARNING,
+        E_CORE_WARNING      => self::WARNING,
+        E_USER_WARNING      => self::WARNING,
+        E_ERROR             => self::WARNING,
+        E_USER_ERROR        => self::ERROR,
+        E_CORE_ERROR        => self::ERROR,
         E_RECOVERABLE_ERROR => self::ERROR,
-        E_PARSE => self::ERROR,
-        E_COMPILE_ERROR => self::ERROR,
-        E_COMPILE_WARNING => self::ERROR,
-        E_STRICT => self::DEBUG,
-        E_DEPRECATED => self::DEBUG,
-        E_USER_DEPRECATED => self::DEBUG,
+        E_PARSE             => self::ERROR,
+        E_COMPILE_ERROR     => self::ERROR,
+        E_COMPILE_WARNING   => self::ERROR,
+        E_STRICT            => self::DEBUG,
+        E_DEPRECATED        => self::DEBUG,
+        E_USER_DEPRECATED   => self::DEBUG,
     ];
 
     /**
-     * Registered error handler
+     * Registered error handler.
      *
      * @var bool
      */
     protected static $registeredErrorHandler = false;
 
     /**
-     * Registered exception handler
+     * Registered exception handler.
      *
      * @var bool
      */
     protected static $registeredExceptionHandler = false;
 
     /**
-     * container for the Monolog instance
+     * container for the Monolog instance.
+     *
      * @var \Monolog\Logger
      */
     protected $monolog = null;
@@ -78,8 +75,7 @@ class Manager implements PsrLoggerInterface
     protected $bootstrap;
 
     /**
-     * Unregister error handler
-     *
+     * Unregister error handler.
      */
     public static function unregisterErrorHandler()
     {
@@ -88,7 +84,7 @@ class Manager implements PsrLoggerInterface
     }
 
     /**
-     * Unregister exception handler
+     * Unregister exception handler.
      */
     public static function unregisterExceptionHandler()
     {
@@ -143,13 +139,15 @@ class Manager implements PsrLoggerInterface
 
     /**
      * Register logging system as an error handler to log PHP errors
-     * Based on Zend Logger
+     * Based on Zend Logger.
      *
      * @param Manager $logger
-     * @return mixed  Returns result of set_error_handler
+     *
      * @throws Exception if logger is null
+     *
+     * @return mixed Returns result of set_error_handler
      */
-    public static function registerErrorHandler(Manager $logger)
+    public static function registerErrorHandler(self $logger)
     {
         // Only register once per instance
         if (static::$registeredErrorHandler) {
@@ -159,7 +157,6 @@ class Manager implements PsrLoggerInterface
             throw new Exception('Invalid Logger specified');
         }
 
-
         $previous = set_error_handler([$logger, 'handleError']);
         static::$registeredErrorHandler = true;
 
@@ -168,13 +165,15 @@ class Manager implements PsrLoggerInterface
 
     /**
      * Register logging system as an exception handler to log PHP exceptions
-     * Based on Zend Logger
+     * Based on Zend Logger.
      *
      * @param Manager $logger
-     * @return bool
+     *
      * @throws Exception if logger is null
+     *
+     * @return bool
      */
-    public static function registerExceptionHandler(Manager $logger)
+    public static function registerExceptionHandler(self $logger)
     {
         // Only register once per instance
         if (static::$registeredExceptionHandler) {
@@ -236,7 +235,8 @@ class Manager implements PsrLoggerInterface
      * System is unusable.
      *
      * @param string $message
-     * @param array $context
+     * @param array  $context
+     *
      * @return null
      */
     public function emergency($message, array $context = [])
@@ -245,9 +245,10 @@ class Manager implements PsrLoggerInterface
     }
 
     /**
-     * @param mixed $level
+     * @param mixed  $level
      * @param string $message
-     * @param array $context
+     * @param array  $context
+     *
      * @return bool|void
      */
     public function log($level, $message, array $context = [])
@@ -258,9 +259,10 @@ class Manager implements PsrLoggerInterface
     /**
      * Write a message to Monolog.
      *
-     * @param  string $level
-     * @param  string $message
-     * @param  array $context
+     * @param string $level
+     * @param string $message
+     * @param array  $context
+     *
      * @return bool
      */
     protected function writeLog($level, $message, $context)
@@ -275,7 +277,8 @@ class Manager implements PsrLoggerInterface
      * trigger the SMS alerts and wake you up.
      *
      * @param string $message
-     * @param array $context
+     * @param array  $context
+     *
      * @return null
      */
     public function alert($message, array $context = [])
@@ -289,7 +292,8 @@ class Manager implements PsrLoggerInterface
      * Example: Application component unavailable, unexpected exception.
      *
      * @param string $message
-     * @param array $context
+     * @param array  $context
+     *
      * @return null
      */
     public function critical($message, array $context = [])
@@ -302,7 +306,8 @@ class Manager implements PsrLoggerInterface
      * be logged and monitored.
      *
      * @param string $message
-     * @param array $context
+     * @param array  $context
+     *
      * @return null
      */
     public function error($message, array $context = [])
@@ -317,7 +322,8 @@ class Manager implements PsrLoggerInterface
      * that are not necessarily wrong.
      *
      * @param string $message
-     * @param array $context
+     * @param array  $context
+     *
      * @return null
      */
     public function warning($message, array $context = [])
@@ -329,7 +335,8 @@ class Manager implements PsrLoggerInterface
      * Normal but significant events.
      *
      * @param string $message
-     * @param array $context
+     * @param array  $context
+     *
      * @return null
      */
     public function notice($message, array $context = [])
@@ -343,7 +350,8 @@ class Manager implements PsrLoggerInterface
      * Example: User logs in, SQL logs.
      *
      * @param string $message
-     * @param array $context
+     * @param array  $context
+     *
      * @return null
      */
     public function info($message, array $context = [])
@@ -355,7 +363,8 @@ class Manager implements PsrLoggerInterface
      * Detailed debug information.
      *
      * @param string $message
-     * @param array $context
+     * @param array  $context
+     *
      * @return null
      */
     public function debug($message, array $context = [])
@@ -368,6 +377,7 @@ class Manager implements PsrLoggerInterface
      * @param $message
      * @param $file
      * @param $line
+     *
      * @return bool
      */
     public function handleError($level, $message, $file, $line)
@@ -379,14 +389,14 @@ class Manager implements PsrLoggerInterface
             if (isset($errorLevelMap[$level])) {
                 $level = $errorLevelMap[$level];
             } else {
-                $level = Manager::INFO;
+                $level = self::INFO;
             }
             $trace = debug_backtrace();
 
             $this->log($level, $message, [
                 'errno' => $level,
-                'file' => $file,
-                'line' => $line,
+                'file'  => $file,
+                'line'  => $line,
                 'trace' => $trace,
             ]);
         }
@@ -396,6 +406,7 @@ class Manager implements PsrLoggerInterface
 
     /**
      * @private
+     *
      * @param \Throwable $e
      */
     public function handleException(\Throwable $e)
@@ -403,22 +414,22 @@ class Manager implements PsrLoggerInterface
         $errorLevelMap = static::$errorLevelMap;
         $logMessages = [];
         do {
-            $level = Manager::ERROR;
+            $level = self::ERROR;
             if ($e instanceof ErrorException && isset($errorLevelMap[$e->getSeverity()])) {
                 $level = $errorLevelMap[$e->getSeverity()];
             }
             $extra = [
-                'file' => $e->getFile(),
-                'line' => $e->getLine(),
+                'file'  => $e->getFile(),
+                'line'  => $e->getLine(),
                 'trace' => $e->getTrace(),
             ];
             if (isset($e->xdebug_message)) {
                 $extra['xdebug'] = $e->xdebug_message;
             }
             $logMessages[] = [
-                'level' => $level,
+                'level'   => $level,
                 'message' => $e->getMessage(),
-                'extra' => $extra,
+                'extra'   => $extra,
             ];
             $e = $e->getPrevious();
         } while ($e);

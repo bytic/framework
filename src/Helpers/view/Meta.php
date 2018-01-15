@@ -6,16 +6,17 @@ use Nip\Config\Config;
 use stdClass;
 
 /**
- * Nip Framework
+ * Nip Framework.
  *
  * @category   Nip
+ *
  * @copyright  2009 Nip Framework
  * @license    http://www.opensource.org/licenses/mit-license.php The MIT License
+ *
  * @version    SVN: $Id: Meta.php 60 2009-04-28 14:50:04Z victor.stanciu $
  */
 class Meta extends AbstractHelper
 {
-
     public $charset = 'utf-8';
     public $language = 'en';
 
@@ -27,8 +28,8 @@ class Meta extends AbstractHelper
 
     public $title = false;
     public $titleComponents = [
-        'base' => false,
-        'elements' => [],
+        'base'      => false,
+        'elements'  => [],
         'separator' => ' - ',
 
     ];
@@ -45,9 +46,9 @@ class Meta extends AbstractHelper
     public function populateFromConfig($config)
     {
         $this->setTitleBase($config->get('title'));
-        $this->authors = explode(",", $config->get('authors'));
+        $this->authors = explode(',', $config->get('authors'));
         $this->description = $config->get('description');
-        $this->addKeywords(explode(",", $config->get('keywords')));
+        $this->addKeywords(explode(',', $config->get('keywords')));
         $this->copyright = $config->get('copyright');
         $this->robots = $config->get('robots');
         $this->verify_v1 = $config->get('verify_v1');
@@ -55,6 +56,7 @@ class Meta extends AbstractHelper
 
     /**
      * @param $base
+     *
      * @return $this
      */
     public function setTitleBase($base)
@@ -76,6 +78,7 @@ class Meta extends AbstractHelper
 
     /**
      * @param $keywords
+     *
      * @return $this
      */
     public function addKeywords($keywords)
@@ -94,6 +97,7 @@ class Meta extends AbstractHelper
 
     /**
      * @param $title
+     *
      * @return $this
      */
     public function appendTitle($title)
@@ -106,6 +110,7 @@ class Meta extends AbstractHelper
 
     /**
      * @param $title
+     *
      * @return $this
      */
     public function prependTitle($title)
@@ -142,6 +147,7 @@ class Meta extends AbstractHelper
 
     /**
      * @param $description
+     *
      * @return $this
      */
     public function setDescription($description)
@@ -155,6 +161,7 @@ class Meta extends AbstractHelper
 
     /**
      * @param array $feeds
+     *
      * @return $this
      */
     public function addFeeds(array $feeds)
@@ -169,6 +176,7 @@ class Meta extends AbstractHelper
     /**
      * @param $url
      * @param string $title
+     *
      * @return $this
      */
     public function addFeed($url, $title = 'Rss')
@@ -203,7 +211,7 @@ class Meta extends AbstractHelper
                         content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0"/>';
 
         if ($this->authors) {
-            $return[] = '<meta name="author" content="'.implode(", ", $this->authors).'" />';
+            $return[] = '<meta name="author" content="'.implode(', ', $this->authors).'" />';
         }
         if ($this->publisher) {
             $return[] = '<meta name="publisher" content="'.$this->publisher.'" />';
@@ -215,7 +223,7 @@ class Meta extends AbstractHelper
         $return[] = '<meta name="robots" content="'.$this->robots.'" />';
 
         if ($this->keywords) {
-            $return[] = '<meta name="keywords" content="'.implode(",", $this->keywords).'" />';
+            $return[] = '<meta name="keywords" content="'.implode(',', $this->keywords).'" />';
         }
 
         if (!empty($this->description)) {

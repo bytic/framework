@@ -5,10 +5,8 @@ namespace Nip\Http\Response;
 use Symfony\Component\HttpFoundation\JsonResponse as BaseJsonResponse;
 
 /**
- * Class JsonResponse
- * @package Nip\Http\Response
+ * Class JsonResponse.
  */
 class JsonResponse extends BaseJsonResponse
 {
-
 }

@@ -5,12 +5,10 @@ namespace Nip\Helpers\View;
 use Nip\Config\ConfigAwareTrait;
 
 /**
- * Class GoogleAnalytics
- * @package Nip\Helpers\View
+ * Class GoogleAnalytics.
  */
 class GoogleAnalytics extends AbstractHelper
 {
-
     use ConfigAwareTrait;
 
     public $transactions = null;
@@ -18,15 +16,16 @@ class GoogleAnalytics extends AbstractHelper
     protected $UA = null;
 
     protected $domain = null;
-    
+
     protected $page;
 
     protected $operations = [];
-    
+
     protected $flashMemory = null;
 
     /**
      * @param array $data
+     *
      * @see http://code.google.com/apis/analytics/docs/gaJS/gaJSApiEcommerce.html
      */
     public function addTransaction($data = [])
@@ -39,7 +38,7 @@ class GoogleAnalytics extends AbstractHelper
 
         $this->transactions[$order->orderId] = $order;
 
-        $this->getFlashMemory()->add("analytics.transactions", $this->transactions);
+        $this->getFlashMemory()->add('analytics.transactions', $this->transactions);
     }
 
     /**
@@ -68,8 +67,8 @@ class GoogleAnalytics extends AbstractHelper
     }
 
     /**
-     *
      * @param array $data
+     *
      * @see http://code.google.com/apis/analytics/docs/gaJS/gaJSApiEcommerce.html
      */
     public function addTransactionItem($data = [])
@@ -82,7 +81,7 @@ class GoogleAnalytics extends AbstractHelper
 
         $this->transactions[$item->orderId]->items[] = $item;
 
-        $this->getFlashMemory()->add("analytics.transactions", json_encode($this->transactions));
+        $this->getFlashMemory()->add('analytics.transactions', json_encode($this->transactions));
     }
 
     /**
@@ -101,10 +100,10 @@ class GoogleAnalytics extends AbstractHelper
         $return .= 'var _gaq = _gaq || [];';
 
         foreach ($this->operations as $operation) {
-            $return .= "_gaq.push([";
+            $return .= '_gaq.push([';
             $return .= "'{$operation[0]}'";
             if (isset($operation[1]) && $operation[1] !== null) {
-                $return .= ",";
+                $return .= ',';
                 $params = [];
                 if (is_array($operation[1])) {
                     foreach ($operation[1] as $param) {
@@ -116,7 +115,7 @@ class GoogleAnalytics extends AbstractHelper
 
                 $return .= implode(',', $params);
             }
-            $return .= "]);";
+            $return .= ']);';
         }
 
         $return .= "(function() {
@@ -131,8 +130,9 @@ class GoogleAnalytics extends AbstractHelper
 
     /**
      * @param $method
-     * @param array $params
+     * @param array  $params
      * @param string $position
+     *
      * @return $this
      */
     public function addOperation($method, $params = [], $position = 'below')
@@ -229,7 +229,7 @@ class GoogleAnalytics extends AbstractHelper
     {
         $transactions = $this->getTransactions();
 
-        $prefix = $prefix ? $prefix . '.' : '';
+        $prefix = $prefix ? $prefix.'.' : '';
 
         if ($transactions) {
             foreach ($transactions as $transaction) {
@@ -241,7 +241,7 @@ class GoogleAnalytics extends AbstractHelper
                     $transaction->shipping,
                     $transaction->city,
                     $transaction->state,
-                    $transaction->country
+                    $transaction->country,
                 ]);
 
                 if ($transaction->items) {
@@ -252,12 +252,12 @@ class GoogleAnalytics extends AbstractHelper
                             $item->name,
                             $item->category,
                             $item->price,
-                            $item->quantity
+                            $item->quantity,
                         ]);
                     }
                 }
             }
-            $this->addOperation($prefix . '_trackTrans'); //submits transaction to the Analytics servers
+            $this->addOperation($prefix.'_trackTrans'); //submits transaction to the Analytics servers
         }
     }
 
@@ -275,11 +275,12 @@ class GoogleAnalytics extends AbstractHelper
 
     public function initTransactions()
     {
-        $this->transactions = json_decode($this->getFlashMemory()->get("analytics.transactions"));
+        $this->transactions = json_decode($this->getFlashMemory()->get('analytics.transactions'));
     }
 
     /**
      * @param $param
+     *
      * @return string
      */
     public function renderOperationParam($param)
@@ -287,6 +288,7 @@ class GoogleAnalytics extends AbstractHelper
         if (is_bool($param)) {
             return $param === true ? 'true' : 'false';
         }
+
         return "'{$param}'";
     }
 }

@@ -3,17 +3,17 @@
 namespace Nip\Http\Request;
 
 /**
- * Nip Framework
+ * Nip Framework.
  *
  * @category   Nip
+ *
  * @copyright  2009 Nip Framework
  * @license    http://www.opensource.org/licenses/mit-license.php The MIT License
+ *
  * @version    SVN: $Id: Http.php 135 2009-05-27 16:48:23Z victor.stanciu $
  */
-
 class Http
 {
-
     protected $request;
 
     /**
@@ -62,7 +62,7 @@ class Http
             // This is why we use urldecode and then normalize to
             // RFC 3986 with rawurlencode.
             $parts[] = isset($keyValuePair[1]) ?
-                rawurlencode(urldecode($keyValuePair[0])) . '=' . rawurlencode(urldecode($keyValuePair[1])) :
+                rawurlencode(urldecode($keyValuePair[0])).'='.rawurlencode(urldecode($keyValuePair[1])) :
                 rawurlencode(urldecode($keyValuePair[0]));
             $order[] = urldecode($keyValuePair[0]);
         }
@@ -81,9 +81,10 @@ class Http
     public function getUri()
     {
         if (null !== $qs = $this->getQueryString()) {
-            $qs = '?' . $qs;
+            $qs = '?'.$qs;
         }
-        return $this->getSchemeAndHttpHost() . $this->getBaseUrl() . $this->getRequest()->getPathInfo() . $qs;
+
+        return $this->getSchemeAndHttpHost().$this->getBaseUrl().$this->getRequest()->getPathInfo().$qs;
     }
 
     /**
@@ -135,7 +136,7 @@ class Http
      */
     public function getSchemeAndHttpHost()
     {
-        return $this->getScheme() . '://' . $this->getHttpHost();
+        return $this->getScheme().'://'.$this->getHttpHost();
     }
 
     /**
@@ -173,7 +174,7 @@ class Http
             return $this->getHost();
         }
 
-        return $this->getHost() . ':' . $port;
+        return $this->getHost().':'.$port;
     }
 
     /**
@@ -195,9 +196,9 @@ class Http
      * If your reverse proxy uses a different header name than "X-Forwarded-Host",
      * configure it via "setTrustedHeaderName()" with the "client-host" key.
      *
-     * @return string
-     *
      * @throws \UnexpectedValueException when the host name is invalid
+     *
+     * @return string
      */
     public function getHost()
     {
@@ -236,6 +237,7 @@ class Http
         if (null === $this->baseUrl) {
             $this->baseUrl = $this->prepareBaseUrl();
         }
+
         return $this->baseUrl;
     }
 
@@ -249,6 +251,7 @@ class Http
         if (null === $this->requestUri) {
             $this->requestUri = $this->prepareRequestUri();
         }
+
         return $this->requestUri;
     }
 
@@ -261,6 +264,7 @@ class Http
         if ($name) {
             if (substr_count($name, '.') > 1) {
                 $parts = explode('.', $name);
+
                 return reset($parts);
             }
         }
@@ -286,8 +290,10 @@ class Http
             if (substr_count($name, '.') > 1) {
                 $parts = explode('.', $name);
                 array_shift($parts);
+
                 return implode('.', $parts);
             }
+
             return $name;
         }
 
@@ -345,8 +351,8 @@ class Http
             $baseUrl = '';
             do {
                 $seg = $segs[$index];
-                $baseUrl = '/' . $seg . $baseUrl;
-                ++$index;
+                $baseUrl = '/'.$seg.$baseUrl;
+                $index++;
             } while ($last > $index && (false !== $pos = strpos($path, $baseUrl)) && 0 != $pos);
         }
         // Does the baseUrl have anything in common with the request_uri?
@@ -356,10 +362,10 @@ class Http
             return $prefix;
         }
         if ($baseUrl && false !== $prefix = $this->getUrlencodedPrefix($requestUri,
-                rtrim(dirname($baseUrl), '/' . DIRECTORY_SEPARATOR) . '/')
+                rtrim(dirname($baseUrl), '/'.DIRECTORY_SEPARATOR).'/')
         ) {
             // directory portion of $baseUrl matches
-            return rtrim($prefix, '/' . DIRECTORY_SEPARATOR);
+            return rtrim($prefix, '/'.DIRECTORY_SEPARATOR);
         }
         $truncatedRequestUri = $requestUri;
         if (false !== $pos = strpos($requestUri, '?')) {
@@ -376,7 +382,8 @@ class Http
         if (strlen($requestUri) >= strlen($baseUrl) && (false !== $pos = strpos($requestUri, $baseUrl)) && $pos !== 0) {
             $baseUrl = substr($requestUri, 0, $pos + strlen($baseUrl));
         }
-        return rtrim($baseUrl, '/' . DIRECTORY_SEPARATOR);
+
+        return rtrim($baseUrl, '/'.DIRECTORY_SEPARATOR);
     }
 
     /**
@@ -412,18 +419,20 @@ class Http
             // IIS 5.0, PHP as CGI
             $requestUri = $this->getRequest()->server->get('ORIG_PATH_INFO');
             if ('' != $this->getRequest()->server->get('QUERY_STRING')) {
-                $requestUri .= '?' . $this->getRequest()->server->get('QUERY_STRING');
+                $requestUri .= '?'.$this->getRequest()->server->get('QUERY_STRING');
             }
             $this->getRequest()->server->remove('ORIG_PATH_INFO');
         }
         // normalize the request URI to ease creating sub-requests from this request
         $this->getRequest()->server->set('REQUEST_URI', $requestUri);
+
         return $requestUri;
     }
 
     /**
      * @param $string
      * @param $prefix
+     *
      * @return bool
      */
     private function getUrlencodedPrefix($string, $prefix)

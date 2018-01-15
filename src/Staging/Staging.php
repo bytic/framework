@@ -6,17 +6,14 @@ use Nip\Config\Config;
 use Nip\Staging\Stage\Stage;
 
 /**
- * Class Staging
- * @package Nip\Staging
+ * Class Staging.
  */
 class Staging
 {
-
     /**
      * @var Stage
      */
     protected $stage;
-
 
     /**
      * @var Stage[]
@@ -94,11 +91,11 @@ class Staging
     {
         $config = new Config();
         if ($this->hasConfigFile('staging.ini')) {
-            $config->mergeFile($this->getConfigFolder() . 'staging.ini');
+            $config->mergeFile($this->getConfigFolder().'staging.ini');
         }
 
         if ($this->hasConfigFile('stage.ini')) {
-            $config->mergeFile($this->getConfigFolder() . 'stage.ini');
+            $config->mergeFile($this->getConfigFolder().'stage.ini');
         }
 
         return $config;
@@ -106,11 +103,12 @@ class Staging
 
     /**
      * @param $file
+     *
      * @return bool
      */
     protected function hasConfigFile($file)
     {
-        return is_file($this->getConfigFolder() . $file);
+        return is_file($this->getConfigFolder().$file);
     }
 
     /**
@@ -161,7 +159,7 @@ class Staging
             if (is_array($this->stages)) {
                 foreach ($this->stages as &$stage) {
                     if (strpos($stage, ',')) {
-                        $stage = array_map("trim", explode(',', $stage));
+                        $stage = array_map('trim', explode(',', $stage));
                     } else {
                         $stage = [trim($stage)];
                     }
@@ -175,15 +173,17 @@ class Staging
     /**
      * @param $key
      * @param $host
+     *
      * @return int
      */
     public function matchHost($key, $host)
     {
-        return preg_match('/^' . strtr($key, ['*' => '.*', '?' => '.?']) . '$/i', $host);
+        return preg_match('/^'.strtr($key, ['*' => '.*', '?' => '.?']).'$/i', $host);
     }
 
     /**
      * @param $name
+     *
      * @return $this
      */
     public function updateStage($name)
@@ -195,6 +195,7 @@ class Staging
 
     /**
      * @param $name
+     *
      * @return Stage
      */
     public function newStage($name)
@@ -213,6 +214,7 @@ class Staging
 
     /**
      * @param $name
+     *
      * @return bool
      */
     public function isInPublicStages($name)
@@ -222,6 +224,7 @@ class Staging
 
     /**
      * @param $name
+     *
      * @return bool
      */
     public function isInTestingStages($name)

@@ -7,12 +7,10 @@ use Nip_Form as Form;
 use Nip_Form_Element_Select as Select;
 
 /**
- * Class FormTest
- * @package Nip\Tests\Unit\Form
+ * Class FormTest.
  */
 class FormTest extends AbstractTest
 {
-
     /**
      * @var Form
      */

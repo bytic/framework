@@ -5,12 +5,10 @@ namespace Nip\Records\Filters\Column;
 use Nip\Database\Query\Select as SelectQuery;
 
 /**
- * Class BasicFilter
- * @package Nip\Records\Filters\Column
+ * Class BasicFilter.
  */
 class BasicFilter extends AbstractFilter implements FilterInterface
 {
-
     /**
      * @var string
      */

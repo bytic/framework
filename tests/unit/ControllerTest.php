@@ -5,8 +5,7 @@ namespace Nip\Tests\Unit;
 use Nip\Controller;
 
 /**
- * Class ControllerTest
- * @package Nip\Tests\Unit
+ * Class ControllerTest.
  */
 class ControllerTest extends AbstractTest
 {

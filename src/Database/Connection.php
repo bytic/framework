@@ -8,7 +8,6 @@ use Nip\Database\Query\Select as SelectQuery;
 
 class Connection
 {
-
     protected $_adapter = null;
 
     protected $_connection;
@@ -17,15 +16,15 @@ class Connection
     protected $_query;
     protected $_queries = [];
 
-
     /**
-     * Connects to SQL server
+     * Connects to SQL server.
      *
      * @param string $host
      * @param string $user
      * @param string $password
      * @param string $database
-     * @param bool $newLink
+     * @param bool   $newLink
+     *
      * @return static
      */
     public function connect($host, $user, $password, $database, $newLink = false)
@@ -71,6 +70,7 @@ class Connection
 
     /**
      * @param $name
+     *
      * @return AbstractAdapter
      */
     public function newAdapter($name)
@@ -112,9 +112,10 @@ class Connection
     }
 
     /**
-     * Prefixes table names
+     * Prefixes table names.
      *
      * @param string $table
+     *
      * @return string
      */
     public function tableName($table)
@@ -124,6 +125,7 @@ class Connection
 
     /**
      * @param string $type optional
+     *
      * @return SelectQuery
      */
     public function newSelect()
@@ -133,22 +135,24 @@ class Connection
 
     /**
      * @param string $type optional
+     *
      * @return AbstractQuery
      */
-    public function newQuery($type = "select")
+    public function newQuery($type = 'select')
     {
         $className = '\Nip\Database\Query\\'.inflector()->camelize($type);
         $query = new $className();
-        /** @var AbstractQuery $query */
+        /* @var AbstractQuery $query */
         $query->setManager($this);
 
         return $query;
     }
 
     /**
-     * Executes SQL query
+     * Executes SQL query.
      *
      * @param mixed|AbstractQuery $query
+     *
      * @return Result
      */
     public function execute($query)
@@ -165,7 +169,8 @@ class Connection
     }
 
     /**
-     * Gets the ID of the last inserted record
+     * Gets the ID of the last inserted record.
+     *
      * @return int
      */
     public function lastInsertID()
@@ -174,7 +179,8 @@ class Connection
     }
 
     /**
-     * Gets the number of rows affected by the last operation
+     * Gets the number of rows affected by the last operation.
+     *
      * @return int
      */
     public function affectedRows()
@@ -183,7 +189,7 @@ class Connection
     }
 
     /**
-     * Disconnects from server
+     * Disconnects from server.
      */
     public function disconnect()
     {
@@ -202,19 +208,19 @@ class Connection
     }
 
     /**
-     * Adds backticks to input
+     * Adds backticks to input.
      *
      * @param string $input
+     *
      * @return string
      */
     public function protect($input)
     {
-        return str_replace("`*`", "*", '`'.str_replace('.', '`.`', $input).'`');
+        return str_replace('`*`', '*', '`'.str_replace('.', '`.`', $input).'`');
     }
 
     public function getQueries()
     {
         return $this->_queries;
     }
-
 }

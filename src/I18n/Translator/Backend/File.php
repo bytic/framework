@@ -5,24 +5,26 @@ namespace Nip\I18n\Translator\Backend;
 use Nip_File_System as FileSystem;
 
 /**
- * Nip Framework
+ * Nip Framework.
  *
  * @category   Nip
+ *
  * @copyright  2009 Nip Framework
  * @license    http://www.opensource.org/licenses/mit-license.php The MIT License
+ *
  * @version    SVN: $Id$
  */
 class File extends AbstractBackend
 {
-
     protected $variableName = 'lang';
     protected $dictionary;
 
     /**
-     * Adds a language to the dictionary
+     * Adds a language to the dictionary.
      *
      * @param string $language
-     * @param string $path Path to file containing translations
+     * @param string $path     Path to file containing translations
+     *
      * @return $this
      */
     public function addLanguage($language, $path)
@@ -38,7 +40,7 @@ class File extends AbstractBackend
             $this->loadFile($language, $fromIncludePath);
         } else {
             trigger_error(
-                "Language file [".$language."][".$path."][".$fromIncludePath."] does not exist",
+                'Language file ['.$language.']['.$path.']['.$fromIncludePath.'] does not exist',
                 E_USER_ERROR
             );
         }
@@ -101,9 +103,11 @@ class File extends AbstractBackend
     }
 
     /**
-     * Returns dictionary entry for $slug in $language
-     * @param string $slug
+     * Returns dictionary entry for $slug in $language.
+     *
+     * @param string      $slug
      * @param string|bool $language
+     *
      * @return string|bool
      */
     protected function doTranslation($slug, $language = false)

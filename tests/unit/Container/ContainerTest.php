@@ -2,12 +2,10 @@
 
 namespace Nip\Tests\Unit\Container;
 
-use Mockery as m;
 use Nip\Container\Container;
 
 /**
- * Class ContainerTest
- * @package Nip\Tests\Unit\Container
+ * Class ContainerTest.
  */
 class ContainerTest extends \Codeception\Test\Unit
 {
@@ -15,7 +13,7 @@ class ContainerTest extends \Codeception\Test\Unit
 
     public function testSetsAndGetServiceDefaultNotShared()
     {
-        $container = new Container;
+        $container = new Container();
 
         $container->add('service', '\stdClass');
         static::assertTrue($container->has('service'));
@@ -30,7 +28,7 @@ class ContainerTest extends \Codeception\Test\Unit
 
     public function testSetsAndGetServiceShared()
     {
-        $container = new Container;
+        $container = new Container();
 
         $container->add('service', '\stdClass', true);
         static::assertTrue($container->has('service'));
@@ -48,17 +46,16 @@ class ContainerTest extends \Codeception\Test\Unit
      */
     public function testSetsAndGetInstanceAsShared()
     {
-        $container = new Container;
-        $class = new \stdClass;
+        $container = new Container();
+        $class = new \stdClass();
         $container->add('service', $class);
         static::assertTrue($container->has('service'));
         static::assertSame($container->get('service'), $class);
     }
 
-
     public function testSetAndGetServiceSharedOverwrite()
     {
-        $container = new Container;
+        $container = new Container();
 
         $container->add('service', '\Nip\Mvc\Modules', true);
         static::assertTrue($container->has('service'));
@@ -70,11 +67,9 @@ class ContainerTest extends \Codeception\Test\Unit
         $modules2 = $container->get('service');
         static::assertInstanceOf('\stdClass', $modules2, '->assert service overwrite');
 
-
-        $container->add('service', new \stdClass);
+        $container->add('service', new \stdClass());
         $modules3 = $container->get('service');
         static::assertInstanceOf('\stdClass', $modules3, '->assert service overwrite');
         static::assertNotSame($modules2, $modules3);
-
     }
 }

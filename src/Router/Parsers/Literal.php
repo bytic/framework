@@ -3,14 +3,13 @@
 namespace Nip\Router\Parsers;
 
 /**
- * Class Literal
- * @package Nip\Router\Parsers
+ * Class Literal.
  */
 class Literal extends AbstractParser
 {
-
     /**
      * @param $uri
+     *
      * @return bool
      */
     public function match($uri)
@@ -24,6 +23,7 @@ class Literal extends AbstractParser
 
     /** @noinspection PhpMissingParentCallCommonInspection
      * @param array $params
+     *
      * @return mixed|string
      */
     public function assemble($params = [])

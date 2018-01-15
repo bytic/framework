@@ -6,8 +6,7 @@ use Nip\Database\Query\Select;
 use Nip\Utility\Traits\HasRequestTrait;
 
 /**
- * Class AbstractFilter
- * @package Nip\Records\Filters
+ * Class AbstractFilter.
  */
 class AbstractFilter implements FilterInterface
 {
@@ -163,6 +162,7 @@ class AbstractFilter implements FilterInterface
 
     /**
      * @param $value
+     *
      * @return bool
      */
     public function isValidRequestValue($value)
@@ -172,6 +172,7 @@ class AbstractFilter implements FilterInterface
 
     /**
      * @param $value
+     *
      * @return string
      */
     public function cleanRequestValue($value)
@@ -194,5 +195,4 @@ class AbstractFilter implements FilterInterface
     {
         $this->manager = $manager;
     }
-
 }

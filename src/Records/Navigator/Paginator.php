@@ -4,7 +4,6 @@ use Nip\Database\Query\Select as SelectQuery;
 
 class Nip_Record_Paginator
 {
-
     /**
      * @var SelectQuery
      */
@@ -17,11 +16,12 @@ class Nip_Record_Paginator
 
     /**
      * @param SelectQuery $query
+     *
      * @return SelectQuery
      */
     public function paginate($query)
     {
-        $query->options("sql_calc_found_rows");
+        $query->options('sql_calc_found_rows');
         $query->limit($this->getLimitStart(), $this->getItemsPerPage());
 
         $this->setQuery($query);
@@ -48,7 +48,7 @@ class Nip_Record_Paginator
     public function count()
     {
         $query = $this->getQuery()->getManager()->newQuery();
-        $query->cols("FOUND_ROWS()");
+        $query->cols('FOUND_ROWS()');
 
         $result = $query->execute()->fetchResult();
 
@@ -69,6 +69,7 @@ class Nip_Record_Paginator
         if ($page) {
             $this->_page = $page;
         }
+
         return $this;
     }
 
@@ -87,6 +88,7 @@ class Nip_Record_Paginator
         if ($items > 0) {
             $this->_itemsPerPage = $items;
         }
+
         return $this;
     }
 

@@ -51,11 +51,11 @@ class BasicFilterTest extends \Codeception\TestCase\Test
 
     public function getValueFromRequestProvider()
     {
-        return array(
-            array('title', 'value', 'value'),
-            array('title', 'value', 'value'),
-            array('title2', 'value', false),
-        );
+        return [
+            ['title', 'value', 'value'],
+            ['title', 'value', 'value'],
+            ['title2', 'value', false],
+        ];
     }
 
     /**
@@ -75,18 +75,16 @@ class BasicFilterTest extends \Codeception\TestCase\Test
 
     public function testHasGetValueProvider()
     {
-        return array(
-            array('value', 'value', true),
-            array('value ', 'value', true),
-            array(' value ', 'value', true),
-            array('  ', false, false),
-        );
+        return [
+            ['value', 'value', true],
+            ['value ', 'value', true],
+            [' value ', 'value', true],
+            ['  ', false, false],
+        ];
     }
 
     protected function _before()
     {
         $this->_object = new BasicFilter();
     }
-
-
 }

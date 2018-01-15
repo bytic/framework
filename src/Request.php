@@ -6,44 +6,49 @@ use ByTIC\RequestDetective\RequestDetective;
 use Nip\Http\Request\Http;
 
 /**
- * Class Request
- * @package Nip
+ * Class Request.
  */
 class Request extends \Symfony\Component\HttpFoundation\Request implements \ArrayAccess
 {
-
     /**
      * Has the action been dispatched?
-     * @var boolean
+     *
+     * @var bool
      */
     protected $dispatched = false;
     /**
-     * Module
+     * Module.
+     *
      * @var string
      */
     protected $module;
     /**
-     * Module key for retrieving module from params
+     * Module key for retrieving module from params.
+     *
      * @var string
      */
     protected $moduleKey = 'module';
     /**
-     * Controller
+     * Controller.
+     *
      * @var string
      */
     protected $controller;
     /**
-     * Controller key for retrieving controller from params
+     * Controller key for retrieving controller from params.
+     *
      * @var string
      */
     protected $controllerKey = 'controller';
     /**
-     * Action
+     * Action.
+     *
      * @var string
      */
     protected $action;
     /**
-     * Action key for retrieving action from params
+     * Action key for retrieving action from params.
+     *
      * @var string
      */
     protected $actionKey = 'action';
@@ -53,11 +58,11 @@ class Request extends \Symfony\Component\HttpFoundation\Request implements \Arra
      */
     protected $http;
 
-
     /**
-     * Singleton
+     * Singleton.
      *
      * @param null $newInstance
+     *
      * @return static
      */
     public static function instance($newInstance = null)
@@ -77,6 +82,7 @@ class Request extends \Symfony\Component\HttpFoundation\Request implements \Arra
 
     /**
      * @param $name
+     *
      * @return mixed
      */
     public function __get($name)
@@ -85,12 +91,13 @@ class Request extends \Symfony\Component\HttpFoundation\Request implements \Arra
     }
 
     /**
-     * Set an action parameter
+     * Set an action parameter.
      *
      * A $value of null will unset the $key if it exists
      *
      * @param string $key
-     * @param mixed $value
+     * @param mixed  $value
+     *
      * @return self
      */
     public function setAttribute($key, $value)
@@ -101,7 +108,7 @@ class Request extends \Symfony\Component\HttpFoundation\Request implements \Arra
     }
 
     /**
-     * Retrieve the action key
+     * Retrieve the action key.
      *
      * @return string
      */
@@ -111,14 +118,15 @@ class Request extends \Symfony\Component\HttpFoundation\Request implements \Arra
     }
 
     /**
-     * Set the action key
+     * Set the action key.
      *
      * @param string $key
+     *
      * @return self
      */
     public function setActionKey($key)
     {
-        $this->actionKey = (string)$key;
+        $this->actionKey = (string) $key;
 
         return $this;
     }
@@ -136,11 +144,12 @@ class Request extends \Symfony\Component\HttpFoundation\Request implements \Arra
      */
     public function getMCA()
     {
-        return $this->getModuleName() . '.' . $this->getControllerName() . '.' . $this->getActionName();
+        return $this->getModuleName().'.'.$this->getControllerName().'.'.$this->getActionName();
     }
 
     /**
-     * Retrieve the module name
+     * Retrieve the module name.
+     *
      * @return string
      */
     public function getModuleName()
@@ -153,7 +162,7 @@ class Request extends \Symfony\Component\HttpFoundation\Request implements \Arra
     }
 
     /**
-     * Retrieve the module key
+     * Retrieve the module key.
      *
      * @return string
      */
@@ -163,20 +172,22 @@ class Request extends \Symfony\Component\HttpFoundation\Request implements \Arra
     }
 
     /**
-     * Set the module key
+     * Set the module key.
      *
      * @param string $key
+     *
      * @return $this
      */
     public function setModuleKey($key)
     {
-        $this->moduleKey = (string)$key;
+        $this->moduleKey = (string) $key;
 
         return $this;
     }
 
     /**
-     * Retrieve the controller name
+     * Retrieve the controller name.
+     *
      * @return string
      */
     public function getControllerName()
@@ -194,7 +205,7 @@ class Request extends \Symfony\Component\HttpFoundation\Request implements \Arra
     }
 
     /**
-     * Retrieve the controller key
+     * Retrieve the controller key.
      *
      * @return string
      */
@@ -204,20 +215,21 @@ class Request extends \Symfony\Component\HttpFoundation\Request implements \Arra
     }
 
     /**
-     * Set the controller key
+     * Set the controller key.
      *
      * @param string $key
+     *
      * @return self
      */
     public function setControllerKey($key)
     {
-        $this->controllerKey = (string)$key;
+        $this->controllerKey = (string) $key;
 
         return $this;
     }
 
     /**
-     * Retrieve the action name
+     * Retrieve the action name.
      *
      * @return string
      */
@@ -231,8 +243,10 @@ class Request extends \Symfony\Component\HttpFoundation\Request implements \Arra
     }
 
     /**
-     * Set the action name
+     * Set the action name.
+     *
      * @param string $value
+     *
      * @return self
      */
     public function setActionName($value)
@@ -254,6 +268,7 @@ class Request extends \Symfony\Component\HttpFoundation\Request implements \Arra
 
     /**
      * @param array $params
+     *
      * @return $this
      */
     public function setParams(array $params)
@@ -266,7 +281,8 @@ class Request extends \Symfony\Component\HttpFoundation\Request implements \Arra
     }
 
     /**
-     * Returns Http object
+     * Returns Http object.
+     *
      * @return Http
      */
     public function getHttp()
@@ -309,10 +325,10 @@ class Request extends \Symfony\Component\HttpFoundation\Request implements \Arra
 
     /**
      * Checks if requested URI matches $url parameter,
-     * and redirects to $url if not
+     * and redirects to $url if not.
      *
      * @param string $url
-     * @param int $code
+     * @param int    $code
      */
     public function checkURL($url, $code = 302)
     {
@@ -320,9 +336,9 @@ class Request extends \Symfony\Component\HttpFoundation\Request implements \Arra
         $request = parse_url($_SERVER['REQUEST_URI']);
 
         if ($components['path'] != $request['path']) {
-            $redirect = $url . ($request['query'] ? '?' . $request['query'] : '');
+            $redirect = $url.($request['query'] ? '?'.$request['query'] : '');
 
-            header("Location: " . $redirect, true, $code);
+            header('Location: '.$redirect, true, $code);
             exit();
         }
     }
@@ -332,15 +348,16 @@ class Request extends \Symfony\Component\HttpFoundation\Request implements \Arra
      */
     public function redirect($url)
     {
-        header("Location: " . $url);
+        header('Location: '.$url);
         exit();
     }
 
     /**
-     * @param bool $action
-     * @param bool $controller
-     * @param bool $module
+     * @param bool  $action
+     * @param bool  $controller
+     * @param bool  $module
      * @param array $params
+     *
      * @return $this
      */
     public function duplicateWithParams($action = false, $controller = false, $module = false, $params = [])
@@ -356,9 +373,10 @@ class Request extends \Symfony\Component\HttpFoundation\Request implements \Arra
     }
 
     /**
-     * Set the controller name to use
+     * Set the controller name to use.
      *
      * @param string $value
+     *
      * @return self
      */
     public function setControllerName($value)
@@ -371,8 +389,10 @@ class Request extends \Symfony\Component\HttpFoundation\Request implements \Arra
     }
 
     /**
-     * Set the module name to use
+     * Set the module name to use.
+     *
      * @param string $value
+     *
      * @return self
      */
     public function setModuleName($value)
@@ -386,6 +406,7 @@ class Request extends \Symfony\Component\HttpFoundation\Request implements \Arra
 
     /**
      * @param mixed $offset
+     *
      * @return bool
      */
     public function offsetExists($offset)
@@ -395,6 +416,7 @@ class Request extends \Symfony\Component\HttpFoundation\Request implements \Arra
 
     /**
      * @param mixed $offset
+     *
      * @return mixed
      */
     public function offsetGet($offset)
@@ -435,7 +457,8 @@ class Request extends \Symfony\Component\HttpFoundation\Request implements \Arra
     public function path()
     {
         $pattern = trim($this->getPathInfo(), '/');
-        return $pattern == '' ? '/' : '/' . $pattern;
+
+        return $pattern == '' ? '/' : '/'.$pattern;
     }
 
     /**
@@ -443,13 +466,14 @@ class Request extends \Symfony\Component\HttpFoundation\Request implements \Arra
      */
     protected function prepareRequestUri()
     {
-        if ((int)$this->server->get('REDIRECT_STATUS', '200') >= 400 && $this->server->has('REDIRECT_URL')) {
+        if ((int) $this->server->get('REDIRECT_STATUS', '200') >= 400 && $this->server->has('REDIRECT_URL')) {
             $requestUri = $this->server->get('REDIRECT_URL');
             $schemeAndHttpHost = $this->getSchemeAndHttpHost();
             if (strpos($requestUri, $schemeAndHttpHost) === 0) {
                 $requestUri = substr($requestUri, strlen($schemeAndHttpHost));
             }
             $this->server->set('REQUEST_URI', $requestUri);
+
             return $requestUri;
         }
 

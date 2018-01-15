@@ -5,12 +5,10 @@ namespace Nip\Utility\Traits;
 use Nip\Request;
 
 /**
- * Class HasRequest
- * @package Nip\Utility\Traits
+ * Class HasRequest.
  */
-trait HasRequestTrait
+trait HasRequest
 {
-
     /**
      * @var Request
      */
@@ -26,12 +24,13 @@ trait HasRequestTrait
 
     /**
      * @param Request $request
+     *
      * @return $this
      */
     public function setRequest($request)
     {
         $this->_request = $request;
+
         return $this;
     }
-
 }

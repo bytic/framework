@@ -3,8 +3,7 @@
 namespace Nip\Logger;
 
 /**
- * Class Exception
- * @package Nip\Logger
+ * Class Exception.
  */
 class Exception extends \Exception
 {

@@ -14,12 +14,10 @@ use Nip\Records\Collections\Collection as RecordCollection;
 use Nip_Helper_Arrays as ArraysHelper;
 
 /**
- * Class Relation
- * @package Nip\Records\Relations
+ * Class Relation.
  */
 abstract class Relation
 {
-
     /**
      * @var
      */
@@ -39,7 +37,6 @@ abstract class Relation
      * @var RecordManager
      */
     protected $manager = null;
-
 
     /**
      * @var RecordManager
@@ -90,6 +87,7 @@ abstract class Relation
 
     /**
      * @param $query
+     *
      * @return static
      */
     public function setQuery($query)
@@ -129,6 +127,7 @@ abstract class Relation
 
     /**
      * @param RecordManager $object
+     *
      * @return $this
      */
     public function setWith(RecordManager $object)
@@ -170,15 +169,16 @@ abstract class Relation
 
     /**
      * @param string $name
+     *
      * @throws Exception
      */
     public function setWithClass($name)
     {
-        $object = call_user_func([$name, "instance"]);
+        $object = call_user_func([$name, 'instance']);
         if (is_object($object) && $object instanceof RecordManager) {
             $this->setWith($object);
         } else {
-            throw new Exception("Cannot instance records [" . $name . "] in relation");
+            throw new Exception('Cannot instance records ['.$name.'] in relation');
         }
     }
 
@@ -243,6 +243,7 @@ abstract class Relation
 
     /**
      * @param Record $item
+     *
      * @return $this
      */
     public function setItem(Record $item)
@@ -254,6 +255,7 @@ abstract class Relation
 
     /**
      * @param $key
+     *
      * @return mixed
      */
     public function getParam($key)
@@ -263,6 +265,7 @@ abstract class Relation
 
     /**
      * @param $key
+     *
      * @return mixed
      */
     public function hasParam($key)
@@ -369,6 +372,7 @@ abstract class Relation
 
     /**
      * Get the results of the relationship.
+     *
      * @return Record|RecordCollection
      */
     public function getResults()
@@ -382,6 +386,7 @@ abstract class Relation
 
     /**
      * @param $results
+     *
      * @return null
      */
     public function setResults($results)
@@ -404,6 +409,7 @@ abstract class Relation
 
     /**
      * @param RecordCollection $collection
+     *
      * @return RecordCollection
      */
     public function getEagerResults($collection)
@@ -418,19 +424,21 @@ abstract class Relation
 
     /**
      * @param RecordCollection $collection
+     *
      * @return Query
      */
     public function getEagerQuery(RecordCollection $collection)
     {
         $fkList = $this->getEagerFkList($collection);
         $query = $this->newQuery();
-        $query->where($this->getWithPK() . ' IN ?', $fkList);
+        $query->where($this->getWithPK().' IN ?', $fkList);
 
         return $query;
     }
 
     /**
      * @param RecordCollection $collection
+     *
      * @return array
      */
     public function getEagerFkList(RecordCollection $collection)
@@ -506,6 +514,7 @@ abstract class Relation
      * Build model dictionary keyed by the relation's foreign key.
      *
      * @param RecordCollection $collection
+     *
      * @return array
      */
     abstract protected function buildDictionary(RecordCollection $collection);
@@ -514,6 +523,7 @@ abstract class Relation
      * @param $dictionary
      * @param $collection
      * @param $record
+     *
      * @return mixed
      */
     abstract public function getResultsFromCollectionDictionary($dictionary, $collection, $record);

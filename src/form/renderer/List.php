@@ -1,22 +1,28 @@
 <?php
-class Nip_Form_Renderer_List extends Nip_Form_Renderer_Abstract {
 
+class Nip_Form_Renderer_List extends Nip_Form_Renderer_Abstract
+{
     protected $_list = [];
 
-    public function setListAttrib($type, $value) {
+    public function setListAttrib($type, $value)
+    {
         $this->_list[$type] = $value;
+
         return $this;
     }
 
-    public function addClassName($name) {
-        $this->_list['class'] .= ' ' . $name;
+    public function addClassName($name)
+    {
+        $this->_list['class'] .= ' '.$name;
+
         return $this;
     }
 
-    public function renderElements() {
+    public function renderElements()
+    {
         $return = '<ul';
         foreach ($this->_list as $attrib => $value) {
-            $return .= ' '. $attrib .'="'. $value .'"';
+            $return .= ' '.$attrib.'="'.$value.'"';
         }
         $return .= '>';
 
@@ -25,29 +31,31 @@ class Nip_Form_Renderer_List extends Nip_Form_Renderer_Abstract {
             $return .= $renderRows;
         }
         $return .= '</ul>';
+
         return $return;
     }
 
-    public function renderRows() {
+    public function renderRows()
+    {
         $elements = $this->getElements();
         $return = '';
         foreach ($elements as $element) {
             if (!$element->isRendered()) {
                 $return .= '<li class="row">';
 
-					$return = $this->renderLabel($element);
-					
-                    $class = "value " . ($element->getType() == 'input' ? 'input' : '');
-                    $return .= '<span class="'.$class.'">';
-                    $return .= $element->renderElement();
-                    $return .= '</span>';
+                $return = $this->renderLabel($element);
 
-                    $return .= $element->renderErrors();
+                $class = 'value '.($element->getType() == 'input' ? 'input' : '');
+                $return .= '<span class="'.$class.'">';
+                $return .= $element->renderElement();
+                $return .= '</span>';
+
+                $return .= $element->renderErrors();
 
                 $return .= '</li>';
             }
         }
+
         return $return;
     }
-
 }

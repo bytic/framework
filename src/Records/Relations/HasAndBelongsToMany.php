@@ -8,12 +8,10 @@ use Nip\Database\Query\Select as SelectQuery;
 use Nip\Records\Collections\Collection as RecordCollection;
 
 /**
- * Class HasAndBelongsToMany
- * @package Nip\Records\Relations
+ * Class HasAndBelongsToMany.
  */
 class HasAndBelongsToMany extends HasOneOrMany
 {
-
     /**
      * @var string
      */
@@ -23,7 +21,6 @@ class HasAndBelongsToMany extends HasOneOrMany
      * @var null
      */
     protected $joinFields = null;
-
 
     /** @noinspection PhpMissingParentCallCommonInspection
      * @return SelectQuery
@@ -62,7 +59,7 @@ class HasAndBelongsToMany extends HasOneOrMany
      */
     public function getDB()
     {
-        return $this->getParam("link-db") == 'with' ? $this->getWith()->getDB() : parent::getDB();
+        return $this->getParam('link-db') == 'with' ? $this->getWith()->getDB() : parent::getDB();
     }
 
     /**
@@ -75,6 +72,7 @@ class HasAndBelongsToMany extends HasOneOrMany
 
     /**
      * @param AbstractQuery $query
+     *
      * @return AbstractQuery
      */
     public function populateQuerySpecific(AbstractQuery $query)
@@ -88,8 +86,10 @@ class HasAndBelongsToMany extends HasOneOrMany
     }
 
     /**
-     * Simple select query from the link table
+     * Simple select query from the link table.
+     *
      * @param bool $specific
+     *
      * @return SelectQuery
      */
     public function getLinkQuery($specific = true)
@@ -109,6 +109,7 @@ class HasAndBelongsToMany extends HasOneOrMany
 
     /** @noinspection PhpMissingParentCallCommonInspection
      * @param RecordCollection $collection
+     *
      * @return RecordCollection
      */
     public function getEagerResults($collection)
@@ -160,7 +161,8 @@ class HasAndBelongsToMany extends HasOneOrMany
     }
 
     /**
-     * Builds the name of a has-and-belongs-to-many association table
+     * Builds the name of a has-and-belongs-to-many association table.
+     *
      * @return string
      */
     public function getCrossTable()
@@ -168,7 +170,7 @@ class HasAndBelongsToMany extends HasOneOrMany
         $tables = [$this->getManager()->getTable(), $this->getWith()->getTable()];
         sort($tables);
 
-        return implode("-", $tables);
+        return implode('-', $tables);
     }
 
     /**
@@ -186,7 +188,7 @@ class HasAndBelongsToMany extends HasOneOrMany
     protected function initJoinFields()
     {
         $structure = $this->getDB()->describeTable($this->getTable());
-        $this->setJoinFields(array_keys($structure["fields"]));
+        $this->setJoinFields(array_keys($structure['fields']));
     }
 
     protected function deleteConnections()
@@ -204,14 +206,14 @@ class HasAndBelongsToMany extends HasOneOrMany
     protected function saveConnections()
     {
         if ($this->hasResults()) {
-            $query = $this->getDB()->newQuery("insert");
+            $query = $this->getDB()->newQuery('insert');
             $query->table($this->getTable());
             $results = $this->getResults();
 
             foreach ($results as $item) {
                 $data = [
                     $this->getManager()->getPrimaryFK() => $this->getItem()->{$this->getManager()->getPrimaryKey()},
-                    $this->getWith()->getPrimaryFK() => $item->{$this->getWith()->getPrimaryKey()},
+                    $this->getWith()->getPrimaryFK()    => $item->{$this->getWith()->getPrimaryKey()},
                 ];
                 foreach ($this->getJoinFields() as $field) {
                     if ($item->{"__$field"}) {

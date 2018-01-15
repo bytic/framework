@@ -3,8 +3,7 @@
 namespace Nip\Router\Parsers;
 
 /**
- * Class Regex
- * @package Nip\Router\Parsers
+ * Class Regex.
  */
 class Regex extends AbstractParser
 {
@@ -18,6 +17,7 @@ class Regex extends AbstractParser
 
     /**
      * @param $uri
+     *
      * @return bool
      */
     public function match($uri)
@@ -25,7 +25,7 @@ class Regex extends AbstractParser
         $return = parent::match($uri);
 
         if ($return) {
-            $match = preg_match_all("`^" . $this->getRegex() . "$`i", $uri, $matches);
+            $match = preg_match_all('`^'.$this->getRegex().'$`i', $uri, $matches);
 
             if ($match > 0) {
                 $variables = $this->getVariables();
@@ -34,6 +34,7 @@ class Regex extends AbstractParser
                         $this->matches[$variable] = $matches[$key + 1][0];
                     }
                 }
+
                 return true;
             }
         }
@@ -49,8 +50,8 @@ class Regex extends AbstractParser
         if (!$this->regex) {
             $map = $this->map;
             foreach ($this->params as $key => $value) {
-                if (stristr($map, ":" . $key) !== false) {
-                    $map = str_replace(":" . $key, "(" . $value . ")", $map);
+                if (stristr($map, ':'.$key) !== false) {
+                    $map = str_replace(':'.$key, '('.$value.')', $map);
 //                    unset($params[$key]);
                     $this->variables[] = $key;
                 }

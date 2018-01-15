@@ -2,14 +2,13 @@
 
 class Nip_Mailer
 {
-
     protected $_mail;
 
     public function __construct()
     {
         $this->_mail = new PHPMailer();
-        $this->_mail->CharSet = "UTF-8";
-//		$this->_mail->SMTPDebug = true;
+        $this->_mail->CharSet = 'UTF-8';
+        //		$this->_mail->SMTPDebug = true;
 
         $config = Nip_Config::instance()->parse(CONFIG_PATH.'smtp.ini');
         if ($config->SMTP->host) {
@@ -28,6 +27,7 @@ class Nip_Mailer
      * @param string $host
      * @param string $username
      * @param string $password
+     *
      * @return $this
      */
     public function authSMTP($host, $username, $password)
@@ -43,8 +43,9 @@ class Nip_Mailer
     }
 
     /**
-     * @param string $address
+     * @param string      $address
      * @param string|bool $name
+     *
      * @return $this
      */
     public function setFrom($address, $name = false)
@@ -63,7 +64,8 @@ class Nip_Mailer
     }
 
     /**
-     * Sets flag to show SMTP debugging information
+     * Sets flag to show SMTP debugging information.
+     *
      * @return $this
      */
     public function debugSMTP()
@@ -74,8 +76,9 @@ class Nip_Mailer
     }
 
     /**
-     * @param string $address
+     * @param string      $address
      * @param string|bool $name
+     *
      * @return $this
      */
     public function addTo($address, $name = false)
@@ -88,6 +91,7 @@ class Nip_Mailer
     /**
      * @param string $address
      * @param string $name
+     *
      * @return $this
      */
     public function addBCC($address, $name = '')
@@ -100,6 +104,7 @@ class Nip_Mailer
     /**
      * @param string $address
      * @param string $name
+     *
      * @return $this
      */
     public function addReplyTo($address, $name = false)
@@ -121,6 +126,7 @@ class Nip_Mailer
 
     /**
      * @param string $subject
+     *
      * @return $this
      */
     public function setSubject($subject)
@@ -131,10 +137,11 @@ class Nip_Mailer
     }
 
     /**
-     * Adds attachment
+     * Adds attachment.
      *
      * @param string $path
      * @param string $name
+     *
      * @return $this
      */
     public function addAttachment($path, $name = '')
@@ -155,7 +162,6 @@ class Nip_Mailer
         return $return;
     }
 
-
     public function setBody($body)
     {
         $this->_mail->Body = $body;
@@ -174,5 +180,4 @@ class Nip_Mailer
 
         return $this;
     }
-
 }

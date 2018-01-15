@@ -3,8 +3,7 @@
 namespace Nip\Http\Response;
 
 /**
- * Class ContainerAwareTrait
- * @package Nip\Container
+ * Class ContainerAwareTrait.
  */
 trait ResponseAwareTrait
 {
@@ -30,7 +29,8 @@ trait ResponseAwareTrait
     /**
      * Set a container.
      *
-     * @param  Response $response
+     * @param Response $response
+     *
      * @return $this
      */
     public function setResponse(Response $response)

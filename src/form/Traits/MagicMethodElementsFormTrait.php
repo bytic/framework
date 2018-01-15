@@ -5,8 +5,7 @@ namespace Nip\Form\Traits;
 use Nip\Form\AbstractForm;
 
 /**
- * Class MagicMethodElementsFormTrait
- * @package Nip\Form
+ * Class MagicMethodElementsFormTrait.
  *
  * @method addInput($name, $label = false, $isRequired = false)
  * @method addHidden($name, $label = false, $isRequired = false)
@@ -20,7 +19,6 @@ use Nip\Form\AbstractForm;
  */
 trait MagicMethodElementsFormTrait
 {
-
     protected $elementsTypes = [
         'input',
         'hidden',
@@ -46,6 +44,7 @@ trait MagicMethodElementsFormTrait
     /**
      * @param $name
      * @param $arguments
+     *
      * @return AbstractForm|self
      */
     public function __call($name, $arguments)
@@ -63,6 +62,7 @@ trait MagicMethodElementsFormTrait
     /**
      * @param $name
      * @param $arguments
+     *
      * @return mixed
      */
     protected function detectMagicMethodAddElements($name, $arguments)
@@ -82,6 +82,7 @@ trait MagicMethodElementsFormTrait
 
     /**
      * @param $name
+     *
      * @return bool
      */
     protected function isMagicMethodAddElements($name)
@@ -91,7 +92,8 @@ trait MagicMethodElementsFormTrait
 
     /**
      * @param $type
-     * @return boolean
+     *
+     * @return bool
      */
     public function isElementsType($type)
     {
@@ -117,6 +119,7 @@ trait MagicMethodElementsFormTrait
     /**
      * @param $type
      * @param $arguments
+     *
      * @return mixed
      */
     protected function magicMethodAddElement($type, $arguments)
@@ -130,6 +133,7 @@ trait MagicMethodElementsFormTrait
 
     /**
      * @param $arguments
+     *
      * @return mixed
      */
     protected function getElementNameFromMagicMethodArguments($arguments)
@@ -139,6 +143,7 @@ trait MagicMethodElementsFormTrait
 
     /**
      * @param $arguments
+     *
      * @return string|false
      */
     protected function getElementLabelFromMagicMethodArguments($arguments)
@@ -148,6 +153,7 @@ trait MagicMethodElementsFormTrait
 
     /**
      * @param $arguments
+     *
      * @return string|false
      */
     protected function getElementIsRequiredFromMagicMethodArguments($arguments)

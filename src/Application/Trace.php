@@ -4,11 +4,10 @@ namespace Nip\Application;
 
 class Trace
 {
-
     protected $_traces = [];
 
     /**
-     * Singleton
+     * Singleton.
      *
      * @return self
      */
@@ -16,7 +15,7 @@ class Trace
     {
         static $instance;
         if (!($instance instanceof self)) {
-            $instance = new self;
+            $instance = new self();
         }
 
         return $instance;
@@ -32,6 +31,7 @@ class Trace
             }
             $this->_traces[] = $trace;
         }
+
         return true;
     }
 
@@ -40,8 +40,9 @@ class Trace
         $output = '';
         $traces = $this->get();
         foreach ($traces as $trace) {
-            $output .= $trace['message'] . '<br />';
+            $output .= $trace['message'].'<br />';
         }
+
         return $output;
     }
 

@@ -3,8 +3,7 @@
 namespace Nip\Router\Parsers;
 
 /**
- * Class Dynamic
- * @package Nip\Router\Parsers
+ * Class Dynamic.
  */
 class Dynamic extends AbstractParser
 {
@@ -23,10 +22,10 @@ class Dynamic extends AbstractParser
     {
         $parts = $this->getParts();
         foreach ($parts as &$part) {
-            $variablesCount = substr_count($part, ":");
+            $variablesCount = substr_count($part, ':');
             if ($variablesCount >= 1) {
                 if ($variablesCount == 1 && strpos($part, ':') === 0) {
-                    $this->variables[] = str_replace(":", "", $part);
+                    $this->variables[] = str_replace(':', '', $part);
                 } else {
                     $variables = $this->getVariableFromPart($part);
                     $variables = array_merge($this->variables, $variables);
@@ -38,6 +37,7 @@ class Dynamic extends AbstractParser
 
     /**
      * @param $part
+     *
      * @return array
      */
     public function getVariableFromPart($part)
@@ -64,7 +64,7 @@ class Dynamic extends AbstractParser
                 }
             }
         }
-        if (!empty ($variable)) {
+        if (!empty($variable)) {
             $variables[] = $variable;
         }
 
@@ -89,6 +89,7 @@ class Dynamic extends AbstractParser
 
     /**
      * @param $uri
+     *
      * @return bool
      */
     public function match($uri)
@@ -99,7 +100,6 @@ class Dynamic extends AbstractParser
             if ($this->uri[strlen($this->uri) - 1] == '/') {
                 $this->uri = substr($this->uri, 0, -1);
             }
-
 
             if ($this->getVariableParts($uri)) {
                 if ($this->preMatch() === true) {
@@ -116,11 +116,12 @@ class Dynamic extends AbstractParser
 
     /**
      * @param $url
+     *
      * @return bool
      */
     public function getVariableParts($url)
     {
-        $this->uriParts = explode("/", $url);
+        $this->uriParts = explode('/', $url);
 
         foreach ($this->parts as $key => $part) {
             if (strpos($part, ':') !== false) {
@@ -152,16 +153,16 @@ class Dynamic extends AbstractParser
      */
     protected function parseParams()
     {
-        $uriParts = explode("/", $this->uri);
+        $uriParts = explode('/', $this->uri);
         foreach ($this->parts as $key => $part) {
-            if (strstr($part, ":") === false) {
+            if (strstr($part, ':') === false) {
                 // part is static - no named params
                 if ($uriParts[$key] != $part) {
                     // corresponding part in URI does not match
                     return false;
                 }
             } else {
-                $var = str_replace(":", "", $part);
+                $var = str_replace(':', '', $part);
                 $this->setParam($var, $uriParts[$key]);
             }
         }

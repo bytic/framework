@@ -26,7 +26,7 @@ class Terminal
 
     public function initHTML()
     {
-        require(dirname(__FILE__).'/Layout/header.html');
+        require dirname(__FILE__).'/Layout/header.html';
     }
 
     public function printHeader()
@@ -40,7 +40,6 @@ Running as <b>'.$this->getRunUser().'</b>.
     public function getRunUser()
     {
         if ($this->_RunUser === null) {
-
             $this->_RunUser = trim(shell_exec('whoami'));
         }
 

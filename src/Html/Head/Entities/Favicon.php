@@ -8,8 +8,7 @@ use Nip\Html\Head\Tags\LinkIcon;
 use Nip\Html\Head\Tags\Meta;
 
 /**
- * Class Favicon
- * @package Nip\Html\Head\Entities
+ * Class Favicon.
  */
 class Favicon extends AbstractEntity
 {
@@ -41,6 +40,7 @@ class Favicon extends AbstractEntity
 
     /**
      * @param $path
+     *
      * @return string
      */
     public function generateUrl($path)
@@ -83,7 +83,8 @@ class Favicon extends AbstractEntity
 
     /**
      * @param AbstractTag $tag
-     * @param null $name
+     * @param null        $name
+     *
      * @return $this
      */
     public function addTag($tag, $name = null)

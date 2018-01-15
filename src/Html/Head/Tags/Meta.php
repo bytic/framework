@@ -3,16 +3,15 @@
 namespace Nip\Html\Head\Tags;
 
 /**
- * Class Meta
- * @package Nip\Html\Head\Tags
+ * Class Meta.
  */
 class Meta extends AbstractTag
 {
-
     protected $element = 'meta';
 
     /**
      * @param $value
+     *
      * @return bool|$this
      */
     public function setName($value)
@@ -22,6 +21,7 @@ class Meta extends AbstractTag
 
     /**
      * @param $value
+     *
      * @return bool|$this
      */
     public function setContent($value)

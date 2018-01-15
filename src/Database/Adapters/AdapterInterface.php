@@ -4,32 +4,31 @@ namespace Nip\Database\Adapters;
 
 interface AdapterInterface
 {
+    public function execute($sql);
 
-	function execute($sql);
+    public function lastInsertID();
 
-	function lastInsertID();
+    public function affectedRows();
 
-	function affectedRows();
+    public function numRows($result);
 
-	function numRows($result);
+    public function fetchArray($result);
 
-	function fetchArray($result);
+    public function fetchAssoc($result);
 
-	function fetchAssoc($result);
+    public function fetchObject($result);
 
-	function fetchObject($result);
+    public function result($result, $row, $field);
 
-	function result($result, $row, $field);
+    public function freeResults($result);
 
-	function freeResults($result);
+    public function describeTable($table);
 
-	function describeTable($table);
+    public function quote($value);
 
-    function quote($value);
+    public function cleanData($data);
 
-	function cleanData($data);
+    public function error();
 
-	function error();
-
-	function disconnect();
+    public function disconnect();
 }

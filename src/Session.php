@@ -7,7 +7,6 @@ use Nip\Database\Result;
 
 class Session
 {
-
     protected $id;
     protected $_lifetime;
     protected $db;
@@ -16,21 +15,22 @@ class Session
     public function __construct()
     {
         $this->db = db();
-        $this->_lifetime = get_cfg_var("session.gc_maxlifetime");
+        $this->_lifetime = get_cfg_var('session.gc_maxlifetime');
 
-//		ini_set('session.save_handler', 'user');
+        //		ini_set('session.save_handler', 'user');
         register_shutdown_function('session_write_close');
     }
 
     public function init()
     {
         $id = $this->checkRequestId();
-//		$this->setHandlers();
+        //		$this->setHandlers();
         $this->start($id);
     }
 
     /**
-     * Gets the session ID from REQUEST
+     * Gets the session ID from REQUEST.
+     *
      * @return int
      */
     public function checkRequestId()
@@ -43,8 +43,9 @@ class Session
     }
 
     /**
-     * Starts the session, with optional session id
-     * @param string|boolean $id
+     * Starts the session, with optional session id.
+     *
+     * @param string|bool $id
      */
     protected function start($id = false)
     {
@@ -55,9 +56,9 @@ class Session
     }
 
     /**
-     * Restarts the session, with new optional session id
+     * Restarts the session, with new optional session id.
      *
-     * @param string|boolean $id
+     * @param string|bool $id
      */
     public function reinitialize($id = false)
     {
@@ -66,7 +67,8 @@ class Session
     }
 
     /**
-     * Overrides default session handling functions
+     * Overrides default session handling functions.
+     *
      * @return Session
      */
     protected function setHandlers()
@@ -94,8 +96,10 @@ class Session
     }
 
     /**
-     * Public method to return the session id
+     * Public method to return the session id.
+     *
      * @todo implement a verification method ( ex: adding another validation string in the sessionID )
+     *
      * @return int
      */
     public function getId()
@@ -104,9 +108,10 @@ class Session
     }
 
     /**
-     * Fetches session entry from database
+     * Fetches session entry from database.
      *
      * @param string $id
+     *
      * @return mixed
      */
     public function read($id)
@@ -129,9 +134,10 @@ class Session
     }
 
     /**
-     * Decodes data to be used
+     * Decodes data to be used.
      *
      * @param string $data
+     *
      * @return mixed
      */
     protected function decodeData($data)
@@ -140,10 +146,11 @@ class Session
     }
 
     /**
-     * Stores the surrent session in the database
+     * Stores the surrent session in the database.
      *
      * @param string $id
-     * @param mixed $data
+     * @param mixed  $data
+     *
      * @return int
      */
     public function write($id, $data)
@@ -162,9 +169,10 @@ class Session
     }
 
     /**
-     * Encodes data to be stored
+     * Encodes data to be stored.
      *
      * @param mixed $data
+     *
      * @return string
      */
     protected function encodeData($data)
@@ -173,14 +181,15 @@ class Session
     }
 
     /**
-     * Destroys current session and deletes it's entry from the database
+     * Destroys current session and deletes it's entry from the database.
      *
      * @param string $id
+     *
      * @return int
      */
     public function destroy($id)
     {
-        $query = $this->db->newQuery("delete");
+        $query = $this->db->newQuery('delete');
         $query->table($this->table);
         $query->where('id = ?', $id);
         $query->limit(1);
@@ -190,12 +199,13 @@ class Session
     }
 
     /**
-     * Garbage control. Called by PHP to remove expired entries from the database
+     * Garbage control. Called by PHP to remove expired entries from the database.
+     *
      * @return int
      */
     public function gc()
     {
-        $query = $this->db->newQuery("delete");
+        $query = $this->db->newQuery('delete');
         $query->table($this->table);
         $query->where('expires <= ?', time());
         $query->execute();
@@ -205,6 +215,7 @@ class Session
 
     /**
      * @param Connection $db
+     *
      * @return $this
      */
     public function setDB($db)
@@ -216,6 +227,7 @@ class Session
 
     /**
      * @param int $lifetime
+     *
      * @return $this
      */
     public function setLifetime($lifetime)
@@ -234,7 +246,7 @@ class Session
         }
 
         Cookie\Jar::instance()->setDefaults(
-            array('domain' => '.'.$domain)
+            ['domain' => '.'.$domain]
         );
     }
 

@@ -3,12 +3,10 @@
 namespace Nip\Records\Filters\Column;
 
 /**
- * Class AbstractFilter
- * @package Nip\Records\Filters\Column
+ * Class AbstractFilter.
  */
 class AbstractFilter extends \Nip\Records\Filters\AbstractFilter implements FilterInterface
 {
-
     protected $field;
 
     protected $dbName;
@@ -28,6 +26,7 @@ class AbstractFilter extends \Nip\Records\Filters\AbstractFilter implements Filt
 
     /**
      * @param mixed $field
+     *
      * @return self
      */
     public function setField($field)
@@ -51,5 +50,4 @@ class AbstractFilter extends \Nip\Records\Filters\AbstractFilter implements Filt
 
         return '`'.$table.'`.`'.$this->getField().'`';
     }
-
 }

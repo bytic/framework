@@ -6,7 +6,6 @@ use Nip\Database\Query\Select;
 
 class Union extends Select
 {
-
     protected $_query1;
     protected $_query2;
 
@@ -18,9 +17,9 @@ class Union extends Select
 
     public function assemble()
     {
-        $query = ($this->_query1 instanceof Union) ? "(" . $this->_query1 . ")" : $this->_query1;
-        $query .= " UNION ";
-        $query .= ($this->_query2 instanceof Union) ? "(" . $this->_query2 . ")" : $this->_query2;
+        $query = ($this->_query1 instanceof self) ? '('.$this->_query1.')' : $this->_query1;
+        $query .= ' UNION ';
+        $query .= ($this->_query2 instanceof self) ? '('.$this->_query2.')' : $this->_query2;
 
         $order = $this->parseOrder();
 
@@ -34,5 +33,4 @@ class Union extends Select
 
         return $query;
     }
-
 }

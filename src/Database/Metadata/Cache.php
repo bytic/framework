@@ -6,8 +6,7 @@ use Nip\Cache\Manager as CacheManager;
 use Nip\Database\Connection;
 
 /**
- * Class Cache
- * @package Nip\Database\Metadata
+ * Class Cache.
  */
 class Cache extends CacheManager
 {
@@ -79,5 +78,4 @@ class Cache extends CacheManager
     {
         return parent::cachePath().'/db-metadata/';
     }
-
 }

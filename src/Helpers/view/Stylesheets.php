@@ -3,22 +3,24 @@
 namespace Nip\Helpers\View;
 
 /**
- * Nip Framework
+ * Nip Framework.
  *
  * @category   Nip
+ *
  * @copyright  2009 Nip Framework
  * @license    http://www.opensource.org/licenses/mit-license.php The MIT License
+ *
  * @version    SVN: $Id: Stylesheets.php 138 2009-05-27 17:05:36Z victor.stanciu $
  */
-class StyleSheets extends AbstractHelper
+class Stylesheets extends AbstractHelper
 {
-
     protected $_files = [];
     protected $_pack = false;
 
     public function add($file, $condition = false)
     {
         $this->_files[$condition][$file] = $file;
+
         return $this;
     }
 
@@ -28,12 +30,14 @@ class StyleSheets extends AbstractHelper
             $this->_files[$condition] = [];
         }
         array_unshift($this->_files[$condition], $file);
+
         return $this;
     }
 
     public function remove($file, $condition = false)
     {
         unset($this->_files[$condition][$file]);
+
         return $this;
     }
 
@@ -81,23 +85,23 @@ class StyleSheets extends AbstractHelper
         if ($files) {
             $lastUpdated = 0;
             foreach ($files as $file) {
-                $path = STYLESHEETS_PATH.$file.".css";
+                $path = STYLESHEETS_PATH.$file.'.css';
                 if (file_exists($path)) {
                     $lastUpdated = max($lastUpdated, filemtime($path));
                 }
             }
 
-            $hash = md5(implode("", $files)).".".$lastUpdated;
+            $hash = md5(implode('', $files)).'.'.$lastUpdated;
 
-            $path = CACHE_PATH."stylesheets/".$hash;
-            if (!file_exists($path.".css")) {
-                $content = "";
+            $path = CACHE_PATH.'stylesheets/'.$hash;
+            if (!file_exists($path.'.css')) {
+                $content = '';
                 foreach ($files as $file) {
-                    $content .= file_get_contents(STYLESHEETS_PATH.$file.".css")."\r\n";
+                    $content .= file_get_contents(STYLESHEETS_PATH.$file.'.css')."\r\n";
                 }
 
                 $css = new csstidy();
-                $css->set_cfg('remove_last_;', TRUE);
+                $css->set_cfg('remove_last_;', true);
                 $css->load_template('highest_compression');
 
                 $css->parse($content);
@@ -105,13 +109,13 @@ class StyleSheets extends AbstractHelper
                 $content = $css->print->plain();
 
                 // Parse content to remove all but one ../ instance
-                $content = preg_replace("`url\((\.\.\/){1,}`i", "url(../", $content);
+                $content = preg_replace("`url\((\.\.\/){1,}`i", 'url(../', $content);
 
-                $file = new Nip_File_Handler(array("path" => $path.".css"));
+                $file = new Nip_File_Handler(['path' => $path.'.css']);
                 $file->write($content);
 
                 if ($file->gzip()) {
-                    $file->setPath($path.".gz")->write();
+                    $file->setPath($path.'.gz')->write();
                 }
             }
 
@@ -124,7 +128,7 @@ class StyleSheets extends AbstractHelper
     public function setPack($pack = true)
     {
         $this->_pack = $pack;
+
         return $this;
     }
-
 }

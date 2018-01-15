@@ -7,8 +7,7 @@ use Nip\Database\Connection;
 use Nip\Database\Query\Insert;
 
 /**
- * Class InsertTest
- * @package Nip\Tests\Unit\Database\Query
+ * Class InsertTest.
  */
 class InsertTest extends \Codeception\TestCase\Test
 {
@@ -24,11 +23,11 @@ class InsertTest extends \Codeception\TestCase\Test
 
     public function testOnDuplicate()
     {
-        $this->object->table("table");
-        $this->object->data(["id" => 3, "name" => "Lorem Ipsum"]);
+        $this->object->table('table');
+        $this->object->data(['id' => 3, 'name' => 'Lorem Ipsum']);
         $this->object->onDuplicate([
-            "id" => ["VALUES(`id`)", false],
-            "name" => ["VALUES(`name`)", false]
+            'id'   => ['VALUES(`id`)', false],
+            'name' => ['VALUES(`name`)', false],
         ]);
 
         static::assertEquals(
@@ -39,11 +38,11 @@ class InsertTest extends \Codeception\TestCase\Test
 
     public function testMultiple()
     {
-        $this->object->table("table");
+        $this->object->table('table');
 
         $items = [
-            ["name" => "Lorem Ipsum", "telephone" => 1234],
-            ["name" => "Dolor sit amet", "telephone" => 5678]
+            ['name' => 'Lorem Ipsum', 'telephone' => 1234],
+            ['name' => 'Dolor sit amet', 'telephone' => 5678],
         ];
 
         foreach ($items as $item) {

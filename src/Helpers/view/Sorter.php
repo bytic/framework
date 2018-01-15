@@ -4,43 +4,44 @@ namespace Nip\Helpers\View;
 
 class Sorter extends AbstractHelper
 {
-
     protected $_sorter;
     protected $_url;
 
     public function render($field, $label)
     {
-        $url = $this->getURL($field, "asc");
+        $url = $this->getURL($field, 'asc');
         if ($field == $this->getSorter()->getField()) {
             switch ($this->getSorter()->getType()) {
-                case "desc":
-                    $url = $this->getURL($field, "asc");
-                    $image = "arrow_up";
+                case 'desc':
+                    $url = $this->getURL($field, 'asc');
+                    $image = 'arrow_up';
                     break;
-                case "asc":
+                case 'asc':
                 default:
-                    $url = $this->getURL($field, "desc");
-                    $image = "arrow_down";
+                    $url = $this->getURL($field, 'desc');
+                    $image = 'arrow_down';
                     break;
             }
         }
         $return = "<a href=\"$url\">";
         if ($image) {
-            $return .= "<img src=\"" . Nip_Helper_URL::instance()->image("$image.gif") . "\" alt=\"\">";
+            $return .= '<img src="'.Nip_Helper_URL::instance()->image("$image.gif").'" alt="">';
         }
         $return .= $label;
-        $return .= "</a>";
+        $return .= '</a>';
 
         return $return;
     }
 
     /**
      * @param Nip_Record_Sorter $sorter
+     *
      * @return $this
      */
     public function setSorter($sorter)
     {
         $this->_sorter = $sorter;
+
         return $this;
     }
 
@@ -55,6 +56,7 @@ class Sorter extends AbstractHelper
     public function setURL($url)
     {
         $this->_url = html_entity_decode($url);
+
         return $this;
     }
 

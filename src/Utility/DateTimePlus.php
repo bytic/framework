@@ -13,12 +13,12 @@ use InvalidArgumentException;
 
 class DateTimePlus extends DateTime
 {
-
     ///////////////////////////////////////////////////////////////////
     ///////////////////////// GETTERS AND SETTERS /////////////////////
     ///////////////////////////////////////////////////////////////////
+
     /**
-     * Get a part of the Carbon object
+     * Get a part of the Carbon object.
      *
      * @param string $name
      *
@@ -29,21 +29,21 @@ class DateTimePlus extends DateTime
     public function __get($name)
     {
         switch (true) {
-            case array_key_exists($name, $formats = array(
-                'year' => 'Y',
-                'yearIso' => 'o',
-                'month' => 'n',
-                'day' => 'j',
-                'hour' => 'G',
-                'minute' => 'i',
-                'second' => 's',
-                'micro' => 'u',
-                'dayOfWeek' => 'w',
-                'dayOfYear' => 'z',
-                'weekOfYear' => 'W',
+            case array_key_exists($name, $formats = [
+                'year'        => 'Y',
+                'yearIso'     => 'o',
+                'month'       => 'n',
+                'day'         => 'j',
+                'hour'        => 'G',
+                'minute'      => 'i',
+                'second'      => 's',
+                'micro'       => 'u',
+                'dayOfWeek'   => 'w',
+                'dayOfYear'   => 'z',
+                'weekOfYear'  => 'W',
                 'daysInMonth' => 't',
-                'timestamp' => 'U',
-            )):
+                'timestamp'   => 'U',
+            ]):
                 return (int) $this->format($formats[$name]);
             case $name === 'weekOfMonth':
                 return (int) ceil($this->day / static::DAYS_PER_WEEK);
@@ -69,8 +69,9 @@ class DateTimePlus extends DateTime
                 throw new InvalidArgumentException(sprintf("Unknown getter '%s'", $name));
         }
     }
+
     /**
-     * Check if an attribute exists on the object
+     * Check if an attribute exists on the object.
      *
      * @param string $name
      *
@@ -83,13 +84,14 @@ class DateTimePlus extends DateTime
         } catch (InvalidArgumentException $e) {
             return false;
         }
+
         return true;
     }
 
     /**
-     * Set a part of the Date object
+     * Set a part of the Date object.
      *
-     * @param string $name
+     * @param string                   $name
      * @param string|int|\DateTimeZone $value
      *
      * @throws InvalidArgumentException
@@ -127,74 +129,87 @@ class DateTimePlus extends DateTime
         }
     }
 
-
     /**
-     * Set the instance's year
+     * Set the instance's year.
+     *
      * @param int $value
+     *
      * @return static
      */
     public function year($value)
     {
         $this->year = $value;
+
         return $this;
     }
 
     /**
-     * Set the instance's month
+     * Set the instance's month.
+     *
      * @param int $value
+     *
      * @return static
      */
     public function month($value)
     {
         $this->month = $value;
+
         return $this;
     }
 
     /**
-     * Set the instance's day
+     * Set the instance's day.
      *
      * @param int $value
+     *
      * @return static
      */
     public function day($value)
     {
         $this->day = $value;
+
         return $this;
     }
 
     /**
-     * Set the instance's hour
+     * Set the instance's hour.
      *
      * @param int $value
+     *
      * @return static
      */
     public function hour($value)
     {
         $this->hour = $value;
+
         return $this;
     }
 
     /**
-     * Set the instance's minute
+     * Set the instance's minute.
      *
      * @param int $value
+     *
      * @return static
      */
     public function minute($value)
     {
         $this->minute = $value;
+
         return $this;
     }
 
     /**
-     * Set the instance's second
+     * Set the instance's second.
      *
      * @param int $value
+     *
      * @return static
      */
     public function second($value)
     {
         $this->second = $value;
+
         return $this;
     }
 
@@ -210,12 +225,13 @@ class DateTimePlus extends DateTime
             return static::instance($dt);
         }
         $errors = static::getLastErrors();
+
         throw new InvalidArgumentException(implode(PHP_EOL, $errors['errors']));
     }
 
     /**
-     * Modify date to this year 
-     *     
+     * Modify date to this year.
+     *
      * @return static
      */
     public function currentYear()
@@ -225,7 +241,9 @@ class DateTimePlus extends DateTime
 
     /**
      * Create a DatePlus instance from a DateTime one.
+     *
      * @param \DateTime $dt
+     *
      * @return static
      */
     public static function instance(DateTime $dt)
@@ -233,6 +251,7 @@ class DateTimePlus extends DateTime
         if ($dt instanceof static) {
             return clone $dt;
         }
+
         return new static($dt->format('Y-m-d H:i:s.u'), $dt->getTimeZone());
     }
 }

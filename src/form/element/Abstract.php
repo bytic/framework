@@ -3,11 +3,10 @@
 use Nip\Form\AbstractForm;
 
 /**
- * Class Nip_Form_Element_Abstract
+ * Class Nip_Form_Element_Abstract.
  */
 abstract class Nip_Form_Element_Abstract implements Nip_Form_Element_Interface
 {
-
     protected $_form;
 
     protected $_attribs;
@@ -48,7 +47,7 @@ abstract class Nip_Form_Element_Abstract implements Nip_Form_Element_Interface
      */
     public function setAttrib($key, $value)
     {
-        $key = (string)$key;
+        $key = (string) $key;
         $this->_attribs[$key] = $value;
 
         return $this;
@@ -61,9 +60,9 @@ abstract class Nip_Form_Element_Abstract implements Nip_Form_Element_Interface
 
     public function getAttrib($key)
     {
-        $key = (string)$key;
+        $key = (string) $key;
         if (!isset($this->_attribs[$key])) {
-            return null;
+            return;
         }
 
         return $this->_attribs[$key];
@@ -110,12 +109,13 @@ abstract class Nip_Form_Element_Abstract implements Nip_Form_Element_Interface
     protected function generateUniqueId()
     {
         $name = $this->getName();
-        $registeredNames = (array)$this->getForm()->getCache('elements_names');
+        $registeredNames = (array) $this->getForm()->getCache('elements_names');
         if (in_array($name, $registeredNames)) {
             $name = uniqid($name);
         }
         $registeredNames[] = $name;
         $this->getForm()->setCache('elements_names', $registeredNames);
+
         return $name;
     }
 
@@ -134,6 +134,7 @@ abstract class Nip_Form_Element_Abstract implements Nip_Form_Element_Interface
 
     /**
      * @param AbstractForm $form
+     *
      * @return $this
      */
     public function setForm(AbstractForm $form)
@@ -160,6 +161,7 @@ abstract class Nip_Form_Element_Abstract implements Nip_Form_Element_Interface
     /**
      * @param $data
      * @param string $source
+     *
      * @return Nip_Form_Element_Abstract
      */
     public function getData($data, $source = 'abstract')
@@ -173,6 +175,7 @@ abstract class Nip_Form_Element_Abstract implements Nip_Form_Element_Interface
 
     /**
      * @param $data
+     *
      * @return $this
      */
     public function getDataFromModel($data)
@@ -184,6 +187,7 @@ abstract class Nip_Form_Element_Abstract implements Nip_Form_Element_Interface
 
     /**
      * @param $value
+     *
      * @return $this
      */
     public function setValue($value)
@@ -195,6 +199,7 @@ abstract class Nip_Form_Element_Abstract implements Nip_Form_Element_Interface
 
     /**
      * @param $request
+     *
      * @return $this
      */
     public function getDataFromRequest($request)
@@ -207,22 +212,24 @@ abstract class Nip_Form_Element_Abstract implements Nip_Form_Element_Interface
 
     /**
      * @param $isRequired
+     *
      * @return $this
      */
     public function setRequired($isRequired)
     {
-        $this->_isRequired = (bool)$isRequired;
+        $this->_isRequired = (bool) $isRequired;
 
         return $this;
     }
 
     /**
      * @param $isRendered
+     *
      * @return $this
      */
     public function setRendered($isRendered)
     {
-        $this->_isRendered = (bool)$isRendered;
+        $this->_isRendered = (bool) $isRendered;
 
         return $this;
     }
@@ -232,7 +239,7 @@ abstract class Nip_Form_Element_Abstract implements Nip_Form_Element_Interface
      */
     public function isRendered()
     {
-        return (bool)$this->_isRendered;
+        return (bool) $this->_isRendered;
     }
 
     /**
@@ -276,7 +283,7 @@ abstract class Nip_Form_Element_Abstract implements Nip_Form_Element_Interface
             $message = $this->getForm()->getMessageTemplate('no-'.$this->getName());
             if (!$message) {
                 $translateSlug = 'general.form.errors.required';
-                $message = app('translator')->translate($translateSlug, array('label' => $this->getLabel()));
+                $message = app('translator')->translate($translateSlug, ['label' => $this->getLabel()]);
                 if ($message == $translateSlug) {
                     $message = $message ? $message : 'The field `'.$this->getLabel().'` is mandatory.';
                 }
@@ -290,11 +297,12 @@ abstract class Nip_Form_Element_Abstract implements Nip_Form_Element_Interface
      */
     public function isRequired()
     {
-        return (bool)$this->_isRequired;
+        return (bool) $this->_isRequired;
     }
 
     /**
      * @param string $requester
+     *
      * @return null
      */
     public function getValue($requester = 'abstract')
@@ -312,6 +320,7 @@ abstract class Nip_Form_Element_Abstract implements Nip_Form_Element_Interface
 
     /**
      * @param $message
+     *
      * @return $this
      */
     public function addError($message)
@@ -355,11 +364,12 @@ abstract class Nip_Form_Element_Abstract implements Nip_Form_Element_Interface
 
     /**
      * @param $key
+     *
      * @return bool
      */
     public function delAttrib($key)
     {
-        $key = (string)$key;
+        $key = (string) $key;
         unset($this->_attribs[$key]);
 
         return true;
@@ -374,7 +384,8 @@ abstract class Nip_Form_Element_Abstract implements Nip_Form_Element_Interface
     }
 
     /**
-     * @param  array $attribs
+     * @param array $attribs
+     *
      * @return Nip_Form_Element_Abstract
      */
     public function setAttribs(array $attribs)
@@ -395,7 +406,8 @@ abstract class Nip_Form_Element_Abstract implements Nip_Form_Element_Interface
     }
 
     /**
-     * @param  array $attribs
+     * @param array $attribs
+     *
      * @return Nip_Form_Element_Abstract
      */
     public function addAttribs(array $attribs)
@@ -424,11 +436,12 @@ abstract class Nip_Form_Element_Abstract implements Nip_Form_Element_Interface
     /**
      * @param $key
      * @param $value
+     *
      * @return $this
      */
     public function setOption($key, $value)
     {
-        $key = (string)$key;
+        $key = (string) $key;
         $this->_options[$key] = $value;
 
         return $this;
@@ -436,13 +449,14 @@ abstract class Nip_Form_Element_Abstract implements Nip_Form_Element_Interface
 
     /**
      * @param $key
+     *
      * @return null
      */
     public function getOption($key)
     {
-        $key = (string)$key;
+        $key = (string) $key;
         if (!isset($this->_options[$key])) {
-            return null;
+            return;
         }
 
         return $this->_options[$key];
@@ -450,6 +464,7 @@ abstract class Nip_Form_Element_Abstract implements Nip_Form_Element_Interface
 
     /**
      * @param string $type
+     *
      * @return mixed
      */
     public function newDecorator($type = '')
@@ -463,8 +478,9 @@ abstract class Nip_Form_Element_Abstract implements Nip_Form_Element_Interface
 
     /**
      * @param Nip_Form_Decorator_Elements_Abstract $decorator
-     * @param string $position
-     * @param bool $name
+     * @param string                               $position
+     * @param bool                                 $name
+     *
      * @return $this
      */
     public function attachDecorator(
@@ -481,6 +497,7 @@ abstract class Nip_Form_Element_Abstract implements Nip_Form_Element_Interface
 
     /**
      * @param $position
+     *
      * @return mixed
      */
     public function getDecoratorsByPosition($position)
@@ -491,6 +508,7 @@ abstract class Nip_Form_Element_Abstract implements Nip_Form_Element_Interface
     /**
      * @param $name
      * @param bool $position
+     *
      * @return bool
      */
     public function getDecorator($name, $position = false)
@@ -511,12 +529,13 @@ abstract class Nip_Form_Element_Abstract implements Nip_Form_Element_Interface
     /**
      * @param $name
      * @param bool $position
+     *
      * @return $this
      */
     public function removeDecorator($name, $position = false)
     {
         if ($position) {
-            unset ($this->_decorators[$position][$name]);
+            unset($this->_decorators[$position][$name]);
         } else {
             foreach ($this->_decorators as $position => $decorators) {
                 if (isset($decorators[$name])) {
@@ -569,5 +588,4 @@ abstract class Nip_Form_Element_Abstract implements Nip_Form_Element_Interface
     {
         return $this->getRenderer()->renderErrors($this);
     }
-
 }

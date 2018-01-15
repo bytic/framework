@@ -6,12 +6,10 @@ use Nip\AutoLoader\Generators\ClassMap as Generator;
 use Nip\Utility\Text;
 
 /**
- * Class Psr4Class
- * @package Nip\AutoLoader\Loaders
+ * Class Psr4Class.
  */
 class ClassMap extends AbstractLoader
 {
-
     protected $directories = [];
 
     protected $directoriesMap = [];
@@ -22,12 +20,13 @@ class ClassMap extends AbstractLoader
     protected $map = null;
 
     /**
-     * @var boolean
+     * @var bool
      */
     protected $retry = false;
 
     /**
      * @param $dir
+     *
      * @return $this
      */
     public function addDirectory($dir)
@@ -37,9 +36,9 @@ class ClassMap extends AbstractLoader
         return $this;
     }
 
-
     /**
      * @param $class
+     *
      * @return null|string
      */
     public function getClassLocation($class)
@@ -50,6 +49,7 @@ class ClassMap extends AbstractLoader
     /**
      * @param $class
      * @param bool $retry
+     *
      * @return null|string
      */
     protected function getClassMapLocation($class, $retry = true)
@@ -69,8 +69,6 @@ class ClassMap extends AbstractLoader
 
             return $this->getClassMapLocation($class, false);
         }
-
-        return null;
     }
 
     protected function checkMapInit()
@@ -103,6 +101,7 @@ class ClassMap extends AbstractLoader
 
     /**
      * @param $dir
+     *
      * @return string
      */
     protected function getCachePath($dir)
@@ -114,6 +113,7 @@ class ClassMap extends AbstractLoader
 
     /**
      * @param $dir
+     *
      * @return string
      */
     public function getCacheName($dir)
@@ -123,6 +123,7 @@ class ClassMap extends AbstractLoader
 
     /**
      * @param $filePath
+     *
      * @return bool
      */
     protected function readCacheFile($filePath)
@@ -160,7 +161,7 @@ class ClassMap extends AbstractLoader
     }
 
     /**
-     * @return boolean
+     * @return bool
      */
     public function isRetry()
     {
@@ -168,7 +169,7 @@ class ClassMap extends AbstractLoader
     }
 
     /**
-     * @param boolean $retry
+     * @param bool $retry
      */
     public function setRetry($retry)
     {
@@ -184,6 +185,7 @@ class ClassMap extends AbstractLoader
 
     /**
      * @param $dir
+     *
      * @return bool
      */
     protected function hasMapFile($dir)

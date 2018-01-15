@@ -9,14 +9,12 @@ use Nip\Container\Exception\NotFoundException;
 use Nip\Container\ServiceProvider\ProviderRepository;
 
 /**
- * Class Container
- * @package Nip\Container
+ * Class Container.
  *
  * @inspiration https://github.com/laravel/framework/blob/2a38acf7ee2882d831a3b9a1361a710e70ffa31e/src/Illuminate/Container/Container.php
  */
 class Container implements ArrayAccess, ContainerInterface
 {
-
     /**
      * The current globally available container (if any).
      *
@@ -51,10 +49,11 @@ class Container implements ArrayAccess, ContainerInterface
     /**
      * Set the shared instance of the container.
      *
-     * @param  Container $container
+     * @param Container $container
+     *
      * @return void
      */
-    public static function setInstance(Container $container)
+    public static function setInstance(self $container)
     {
         static::$instance = $container;
     }
@@ -62,8 +61,9 @@ class Container implements ArrayAccess, ContainerInterface
     /**
      * Register a shared binding in the container.
      *
-     * @param  string|array $abstract
-     * @param  \Closure|string|null $concrete
+     * @param string|array         $abstract
+     * @param \Closure|string|null $concrete
+     *
      * @return void
      */
     public function singleton($abstract, $concrete = null)
@@ -75,6 +75,7 @@ class Container implements ArrayAccess, ContainerInterface
      * @param $id
      * @param null $concrete
      * @param bool $share
+     *
      * @return ClassDefinition|null
      */
     public function add($id, $concrete = null, $share = false)
@@ -89,18 +90,21 @@ class Container implements ArrayAccess, ContainerInterface
         if ($definition instanceof DefinitionInterface) {
             $definition->setShared($share);
             $this->definitions[$id] = $definition;
+
             return $definition;
         }
 
         // dealing with a value that cannot build a definition
         $this->instances[$id] = $concrete;
+
         return $concrete;
     }
 
     /**
      * Drop all of the stale instances and aliases.
      *
-     * @param  string $id
+     * @param string $id
+     *
      * @return void
      */
     protected function dropStaleInstances($id)
@@ -111,6 +115,7 @@ class Container implements ArrayAccess, ContainerInterface
     /**
      * @param $id
      * @param $concrete
+     *
      * @return ClassDefinition
      */
     public function newDefinition($id, $concrete)
@@ -127,7 +132,8 @@ class Container implements ArrayAccess, ContainerInterface
 
     /**
      * @param string $id
-     * @param array $args
+     * @param array  $args
+     *
      * @return bool|mixed|object
      */
     public function get($id, array $args = [])
@@ -151,6 +157,7 @@ class Container implements ArrayAccess, ContainerInterface
     /**
      * @param $id
      * @param array $args
+     *
      * @return bool|mixed
      */
     protected function getFromThisContainer($id, array $args = [])
@@ -165,6 +172,7 @@ class Container implements ArrayAccess, ContainerInterface
             if ($definition->isShared()) {
                 $this->instances[$id] = $instance;
             }
+
             return $instance;
         }
 
@@ -173,6 +181,7 @@ class Container implements ArrayAccess, ContainerInterface
 
     /**
      * @param $id
+     *
      * @return bool
      */
     protected function hasInstance($id)
@@ -182,6 +191,7 @@ class Container implements ArrayAccess, ContainerInterface
 
     /**
      * @param $id
+     *
      * @return bool
      */
     protected function hasDefinition($id)
@@ -191,6 +201,7 @@ class Container implements ArrayAccess, ContainerInterface
 
     /**
      * @param $id
+     *
      * @return DefinitionInterface
      */
     public function getDefinition($id)
@@ -206,6 +217,7 @@ class Container implements ArrayAccess, ContainerInterface
         if ($this->providers === null) {
             $this->initProviders();
         }
+
         return $this->providers;
     }
 
@@ -219,12 +231,13 @@ class Container implements ArrayAccess, ContainerInterface
 
     public function initProviders()
     {
-        $providers = (new ProviderRepository)->setContainer($this);
+        $providers = (new ProviderRepository())->setContainer($this);
         $this->setProviders($providers);
     }
 
     /**
      * @param string $id
+     *
      * @return bool
      */
     public function has($id)
@@ -244,7 +257,8 @@ class Container implements ArrayAccess, ContainerInterface
     /**
      * Determine if a given offset exists.
      *
-     * @param  string $key
+     * @param string $key
+     *
      * @return bool
      */
     public function offsetExists($key)
@@ -254,7 +268,8 @@ class Container implements ArrayAccess, ContainerInterface
     /**
      * Get the value at a given offset.
      *
-     * @param  string $key
+     * @param string $key
+     *
      * @return mixed
      */
     public function offsetGet($key)
@@ -264,8 +279,9 @@ class Container implements ArrayAccess, ContainerInterface
     /**
      * Set the value at a given offset.
      *
-     * @param  string $key
-     * @param  mixed $value
+     * @param string $key
+     * @param mixed  $value
+     *
      * @return void
      */
     public function offsetSet($key, $value)
@@ -275,7 +291,8 @@ class Container implements ArrayAccess, ContainerInterface
     /**
      * Unset the value at a given offset.
      *
-     * @param  string $key
+     * @param string $key
+     *
      * @return void
      */
     public function offsetUnset($key)
@@ -285,7 +302,8 @@ class Container implements ArrayAccess, ContainerInterface
     /**
      * Dynamically access container services.
      *
-     * @param  string $key
+     * @param string $key
+     *
      * @return mixed
      */
     public function __get($key)
@@ -296,8 +314,9 @@ class Container implements ArrayAccess, ContainerInterface
     /**
      * Dynamically set container services.
      *
-     * @param  string $key
-     * @param  mixed $value
+     * @param string $key
+     * @param mixed  $value
+     *
      * @return void
      */
     public function __set($key, $value)
@@ -307,11 +326,13 @@ class Container implements ArrayAccess, ContainerInterface
 
     /**
      * @param $provider
+     *
      * @return $this
      */
     public function addServiceProvider($provider)
     {
         $this->getProviders()->add($provider);
+
         return $this;
     }
 }

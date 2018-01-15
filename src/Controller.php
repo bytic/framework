@@ -12,8 +12,7 @@ use Nip_Flash_Messages as FlashMessages;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
- * Class Controller
- * @package Nip
+ * Class Controller.
  *
  * @method \Nip_Helper_Url Url()
  * @method \Nip_Helper_Arrays Arrays()
@@ -47,7 +46,7 @@ class Controller
      */
     public function __construct()
     {
-        $name       = str_replace("Controller", "", get_class($this));
+        $name = str_replace('Controller', '', get_class($this));
         $this->name = inflector()->unclassify($name);
     }
 
@@ -81,7 +80,7 @@ class Controller
      */
     public function getClassName()
     {
-        return str_replace("Controller", "", get_class($this));
+        return str_replace('Controller', '', get_class($this));
     }
 
     /**
@@ -98,12 +97,13 @@ class Controller
     }
 
     /**
-     * Returns the request Object
+     * Returns the request Object.
+     *
      * @return Request
      */
     public function getRequest()
     {
-        if ( ! $this->request instanceof Request) {
+        if (!$this->request instanceof Request) {
             $this->request = new Request();
         }
 
@@ -127,7 +127,7 @@ class Controller
      */
     public function populateFromRequest(Request $request)
     {
-        $this->name   = $request->getControllerName();
+        $this->name = $request->getControllerName();
         $this->action = $request->getActionName();
     }
 
@@ -151,11 +151,11 @@ class Controller
 
                 return $this->getResponse();
             } else {
-                throw new NotFoundHttpException('Controller method [' . $action . '] not found for ' . get_class($this));
+                throw new NotFoundHttpException('Controller method ['.$action.'] not found for '.get_class($this));
             }
         }
 
-        throw new NotFoundHttpException('No action specified for ' . get_class($this));
+        throw new NotFoundHttpException('No action specified for '.get_class($this));
     }
 
     /**
@@ -169,7 +169,7 @@ class Controller
     }
 
     /**
-     * Called before action
+     * Called before action.
      */
     protected function parseRequest()
     {
@@ -177,7 +177,7 @@ class Controller
     }
 
     /**
-     * Called before $this->action
+     * Called before $this->action.
      */
     protected function beforeAction()
     {
@@ -185,7 +185,7 @@ class Controller
     }
 
     /**
-     * Called after $this->action
+     * Called after $this->action.
      */
     protected function afterAction()
     {
@@ -193,9 +193,9 @@ class Controller
     }
 
     /**
-     * @param bool $action
-     * @param bool $controller
-     * @param bool $module
+     * @param bool  $action
+     * @param bool  $controller
+     * @param bool  $module
      * @param array $params
      *
      * @return mixed
@@ -211,7 +211,7 @@ class Controller
     }
 
     /**
-     * @param self $controller
+     * @param self    $controller
      * @param Request $newRequest
      *
      * @return Controller
@@ -261,9 +261,9 @@ class Controller
     }
 
     /**
-     * @param bool $action
-     * @param bool $controller
-     * @param bool $module
+     * @param bool  $action
+     * @param bool  $controller
+     * @param bool  $module
      * @param array $params
      */
     protected function forward($action = false, $controller = false, $module = false, $params = [])
@@ -275,7 +275,7 @@ class Controller
      * @param $message
      * @param $url
      * @param string $type
-     * @param bool $name
+     * @param bool   $name
      */
     protected function flashRedirect($message, $url, $type = 'success', $name = false)
     {
@@ -329,10 +329,10 @@ class Controller
     {
         switch ($code) {
             case '301':
-                header("HTTP/1.1 301 Moved Permanently");
+                header('HTTP/1.1 301 Moved Permanently');
                 break;
         }
-        header("Location: " . $url);
+        header('Location: '.$url);
         exit();
     }
 }

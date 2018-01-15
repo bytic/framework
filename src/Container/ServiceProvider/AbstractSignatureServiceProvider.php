@@ -6,8 +6,7 @@ use Nip\Container\ServiceProvider\AbstractServiceProvider as AbstractProvider;
 use Nip\Container\ServiceProvider\SignatureServiceProviderInterface as AbstractInterface;
 
 /**
- * Class AbstractSignatureServiceProvider
- * @package Nip\Container\ServiceProvider
+ * Class AbstractSignatureServiceProvider.
  */
 abstract class AbstractSignatureServiceProvider extends AbstractProvider implements AbstractInterface
 {
@@ -22,6 +21,7 @@ abstract class AbstractSignatureServiceProvider extends AbstractProvider impleme
     public function withSignature($signature)
     {
         $this->signature = $signature;
+
         return $this;
     }
 

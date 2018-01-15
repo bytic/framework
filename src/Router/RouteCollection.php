@@ -9,12 +9,10 @@ use IteratorAggregate;
 use Nip\Router\Route\Route;
 
 /**
- * Class RouteCollection
- * @package Nip\Router
+ * Class RouteCollection.
  */
 class RouteCollection implements Countable, IteratorAggregate, ArrayAccess
 {
-
     protected $routes = [];
 
     /**
@@ -62,6 +60,7 @@ class RouteCollection implements Countable, IteratorAggregate, ArrayAccess
 
     /**
      * @param mixed $offset
+     *
      * @return bool
      */
     public function offsetExists($offset)
@@ -71,6 +70,7 @@ class RouteCollection implements Countable, IteratorAggregate, ArrayAccess
 
     /**
      * @param $route
+     *
      * @return bool
      */
     public function has($route)
@@ -82,6 +82,7 @@ class RouteCollection implements Countable, IteratorAggregate, ArrayAccess
 
     /**
      * @param mixed $offset
+     *
      * @return Route|null
      */
     public function offsetGet($offset)
@@ -91,6 +92,7 @@ class RouteCollection implements Countable, IteratorAggregate, ArrayAccess
 
     /**
      * @param $route
+     *
      * @return null|Route
      */
     public function get($route)
@@ -99,8 +101,6 @@ class RouteCollection implements Countable, IteratorAggregate, ArrayAccess
         if ($this->has($name)) {
             return $this->routes[$name];
         }
-
-        return null;
     }
 
     /**
@@ -114,7 +114,7 @@ class RouteCollection implements Countable, IteratorAggregate, ArrayAccess
 
     /**
      * @param Route $route
-     * @param null $name
+     * @param null  $name
      */
     public function add(Route $route, $name = null)
     {

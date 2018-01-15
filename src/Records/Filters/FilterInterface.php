@@ -4,7 +4,6 @@ namespace Nip\Records\Filters;
 
 interface FilterInterface
 {
-
     public function getName();
 
     public function getValue();
@@ -12,5 +11,4 @@ interface FilterInterface
     public function getManager();
 
     public function setManager($field);
-
 }

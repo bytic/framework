@@ -5,8 +5,8 @@ namespace Nip\Inflector;
 use Nip\Utility\Traits\SingletonTrait;
 
 /**
- * Class Inflector
- * @package Nip\Inflector
+ * Class Inflector.
+ *
  * @based on https://github.com/cakephp/cakephp/blob/master/src/Utility/Inflector.php
  */
 class Inflector
@@ -14,65 +14,65 @@ class Inflector
     use SingletonTrait;
 
     protected $plural = [
-        '/(s)tatus$/i' => '\1tatuses',
-        '/(quiz)$/i' => '\1zes',
-        '/^(ox)$/i' => '\1\2en',
-        '/([m|l])ouse$/i' => '\1ice',
-        '/(matr|vert|ind)(ix|ex)$/i' => '\1ices',
-        '/(x|ch|ss|sh)$/i' => '\1es',
-        '/([^aeiouy]|qu)y$/i' => '\1ies',
-        '/(hive)$/i' => '\1s',
-        '/(chef)$/i' => '\1s',
-        '/(?:([^f])fe|([lre])f)$/i' => '\1\2ves',
-        '/sis$/i' => 'ses',
-        '/([ti])um$/i' => '\1a',
-        '/(p)erson$/i' => '\1eople',
-        '/(?<!u)(m)an$/i' => '\1en',
-        '/(c)hild$/i' => '\1hildren',
-        '/(buffal|tomat)o$/i' => '\1\2oes',
+        '/(s)tatus$/i'                                                       => '\1tatuses',
+        '/(quiz)$/i'                                                         => '\1zes',
+        '/^(ox)$/i'                                                          => '\1\2en',
+        '/([m|l])ouse$/i'                                                    => '\1ice',
+        '/(matr|vert|ind)(ix|ex)$/i'                                         => '\1ices',
+        '/(x|ch|ss|sh)$/i'                                                   => '\1es',
+        '/([^aeiouy]|qu)y$/i'                                                => '\1ies',
+        '/(hive)$/i'                                                         => '\1s',
+        '/(chef)$/i'                                                         => '\1s',
+        '/(?:([^f])fe|([lre])f)$/i'                                          => '\1\2ves',
+        '/sis$/i'                                                            => 'ses',
+        '/([ti])um$/i'                                                       => '\1a',
+        '/(p)erson$/i'                                                       => '\1eople',
+        '/(?<!u)(m)an$/i'                                                    => '\1en',
+        '/(c)hild$/i'                                                        => '\1hildren',
+        '/(buffal|tomat)o$/i'                                                => '\1\2oes',
         '/(alumn|bacill|cact|foc|fung|nucle|radi|stimul|syllab|termin)us$/i' => '\1i',
-        '/us$/i' => 'uses',
-        '/(alias)$/i' => '\1es',
-        '/(ax|cris|test)is$/i' => '\1es',
-        '/s$/' => 's',
-        '/^$/' => '',
-        '/$/' => 's',
+        '/us$/i'                                                             => 'uses',
+        '/(alias)$/i'                                                        => '\1es',
+        '/(ax|cris|test)is$/i'                                               => '\1es',
+        '/s$/'                                                               => 's',
+        '/^$/'                                                               => '',
+        '/$/'                                                                => 's',
     ];
     protected $singular = [
-        '/(s)tatuses$/i' => '\1\2tatus',
-        '/^(.*)(menu)s$/i' => '\1\2',
-        '/(quiz)zes$/i' => '\\1',
-        '/(matr)ices$/i' => '\1ix',
-        '/(vert|ind)ices$/i' => '\1ex',
-        '/^(ox)en/i' => '\1',
-        '/(alias)(es)*$/i' => '\1',
+        '/(s)tatuses$/i'                                                          => '\1\2tatus',
+        '/^(.*)(menu)s$/i'                                                        => '\1\2',
+        '/(quiz)zes$/i'                                                           => '\\1',
+        '/(matr)ices$/i'                                                          => '\1ix',
+        '/(vert|ind)ices$/i'                                                      => '\1ex',
+        '/^(ox)en/i'                                                              => '\1',
+        '/(alias)(es)*$/i'                                                        => '\1',
         '/(alumn|bacill|cact|foc|fung|nucle|radi|stimul|syllab|termin|viri?)i$/i' => '\1us',
-        '/([ftw]ax)es/i' => '\1',
-        '/(cris|ax|test)es$/i' => '\1is',
-        '/(shoe)s$/i' => '\1',
-        '/(o)es$/i' => '\1',
-        '/ouses$/' => 'ouse',
-        '/([^a])uses$/' => '\1us',
-        '/([m|l])ice$/i' => '\1ouse',
-        '/(x|ch|ss|sh)es$/i' => '\1',
-        '/(m)ovies$/i' => '\1\2ovie',
-        '/(s)eries$/i' => '\1\2eries',
-        '/([^aeiouy]|qu)ies$/i' => '\1y',
-        '/(tive)s$/i' => '\1',
-        '/(hive)s$/i' => '\1',
-        '/(drive)s$/i' => '\1',
-        '/([le])ves$/i' => '\1f',
-        '/([^rfoa])ves$/i' => '\1fe',
-        '/(^analy)ses$/i' => '\1sis',
-        '/(analy|diagno|^ba|(p)arenthe|(p)rogno|(s)ynop|(t)he)ses$/i' => '\1\2sis',
-        '/([ti])a$/i' => '\1um',
-        '/(p)eople$/i' => '\1\2erson',
-        '/(m)en$/i' => '\1an',
-        '/(c)hildren$/i' => '\1\2hild',
-        '/(n)ews$/i' => '\1\2ews',
-        '/eaus$/' => 'eau',
-        '/^(.*us)$/' => '\\1',
-        '/s$/i' => ''
+        '/([ftw]ax)es/i'                                                          => '\1',
+        '/(cris|ax|test)es$/i'                                                    => '\1is',
+        '/(shoe)s$/i'                                                             => '\1',
+        '/(o)es$/i'                                                               => '\1',
+        '/ouses$/'                                                                => 'ouse',
+        '/([^a])uses$/'                                                           => '\1us',
+        '/([m|l])ice$/i'                                                          => '\1ouse',
+        '/(x|ch|ss|sh)es$/i'                                                      => '\1',
+        '/(m)ovies$/i'                                                            => '\1\2ovie',
+        '/(s)eries$/i'                                                            => '\1\2eries',
+        '/([^aeiouy]|qu)ies$/i'                                                   => '\1y',
+        '/(tive)s$/i'                                                             => '\1',
+        '/(hive)s$/i'                                                             => '\1',
+        '/(drive)s$/i'                                                            => '\1',
+        '/([le])ves$/i'                                                           => '\1f',
+        '/([^rfoa])ves$/i'                                                        => '\1fe',
+        '/(^analy)ses$/i'                                                         => '\1sis',
+        '/(analy|diagno|^ba|(p)arenthe|(p)rogno|(s)ynop|(t)he)ses$/i'             => '\1\2sis',
+        '/([ti])a$/i'                                                             => '\1um',
+        '/(p)eople$/i'                                                            => '\1\2erson',
+        '/(m)en$/i'                                                               => '\1an',
+        '/(c)hildren$/i'                                                          => '\1\2hild',
+        '/(n)ews$/i'                                                              => '\1\2ews',
+        '/eaus$/'                                                                 => 'eau',
+        '/^(.*us)$/'                                                              => '\\1',
+        '/s$/i'                                                                   => '',
     ];
     protected $uncountable = [
         '.*[nrlm]ese',
@@ -105,50 +105,50 @@ class Inflector
         'sea[- ]bass',
         'series',
         'species',
-        'weather'
+        'weather',
     ];
     protected $irregular = [
-        'atlas' => 'atlases',
-        'beef' => 'beefs',
-        'brief' => 'briefs',
-        'brother' => 'brothers',
-        'cafe' => 'cafes',
-        'child' => 'children',
-        'cookie' => 'cookies',
-        'corpus' => 'corpuses',
-        'cow' => 'cows',
+        'atlas'     => 'atlases',
+        'beef'      => 'beefs',
+        'brief'     => 'briefs',
+        'brother'   => 'brothers',
+        'cafe'      => 'cafes',
+        'child'     => 'children',
+        'cookie'    => 'cookies',
+        'corpus'    => 'corpuses',
+        'cow'       => 'cows',
         'criterion' => 'criteria',
-        'ganglion' => 'ganglions',
-        'genie' => 'genies',
-        'genus' => 'genera',
-        'graffito' => 'graffiti',
-        'hoof' => 'hoofs',
-        'loaf' => 'loaves',
-        'man' => 'men',
-        'money' => 'monies',
-        'mongoose' => 'mongooses',
-        'move' => 'moves',
-        'mythos' => 'mythoi',
-        'niche' => 'niches',
-        'numen' => 'numina',
-        'occiput' => 'occiputs',
-        'octopus' => 'octopuses',
-        'opus' => 'opuses',
-        'ox' => 'oxen',
-        'penis' => 'penises',
-        'person' => 'people',
-        'sex' => 'sexes',
+        'ganglion'  => 'ganglions',
+        'genie'     => 'genies',
+        'genus'     => 'genera',
+        'graffito'  => 'graffiti',
+        'hoof'      => 'hoofs',
+        'loaf'      => 'loaves',
+        'man'       => 'men',
+        'money'     => 'monies',
+        'mongoose'  => 'mongooses',
+        'move'      => 'moves',
+        'mythos'    => 'mythoi',
+        'niche'     => 'niches',
+        'numen'     => 'numina',
+        'occiput'   => 'occiputs',
+        'octopus'   => 'octopuses',
+        'opus'      => 'opuses',
+        'ox'        => 'oxen',
+        'penis'     => 'penises',
+        'person'    => 'people',
+        'sex'       => 'sexes',
         'soliloquy' => 'soliloquies',
-        'testis' => 'testes',
-        'trilby' => 'trilbys',
-        'turf' => 'turfs',
-        'potato' => 'potatoes',
-        'hero' => 'heroes',
-        'tooth' => 'teeth',
-        'goose' => 'geese',
-        'foot' => 'feet',
-        'foe' => 'foes',
-        'sieve' => 'sieves'
+        'testis'    => 'testes',
+        'trilby'    => 'trilbys',
+        'turf'      => 'turfs',
+        'potato'    => 'potatoes',
+        'hero'      => 'heroes',
+        'tooth'     => 'teeth',
+        'goose'     => 'geese',
+        'foot'      => 'feet',
+        'foe'       => 'foes',
+        'sieve'     => 'sieves',
     ];
 
     protected $dictionary;
@@ -161,7 +161,7 @@ class Inflector
     public function __construct()
     {
         if (defined('CACHE_PATH')) {
-            $this->cacheFile = CACHE_PATH . 'inflector.php';
+            $this->cacheFile = CACHE_PATH.'inflector.php';
         }
         $this->readCache();
     }
@@ -170,9 +170,9 @@ class Inflector
     {
         if ($this->isCached()) {
             /** @noinspection PhpIncludeInspection */
-            include($this->cacheFile);
+            include $this->cacheFile;
 
-            /** @noinspection PhpUndefinedVariableInspection */
+            /* @noinspection PhpUndefinedVariableInspection */
             if ($inflector) {
                 foreach ($inflector as $type => $words) {
                     if ($words) {
@@ -204,7 +204,7 @@ class Inflector
      */
     public function hasCacheFile()
     {
-        return ($this->cacheFile && file_exists($this->cacheFile));
+        return $this->cacheFile && file_exists($this->cacheFile);
     }
 
     /**
@@ -232,14 +232,15 @@ class Inflector
     public function writeCache()
     {
         if ($this->dictionary && $this->cacheFile) {
-            $file = new \Nip_File_Handler(["path" => $this->cacheFile]);
-            $data = '<?php $inflector = ' . var_export($this->dictionary, true) . ";";
+            $file = new \Nip_File_Handler(['path' => $this->cacheFile]);
+            $data = '<?php $inflector = '.var_export($this->dictionary, true).';';
             $file->rewrite($data);
         }
     }
 
     /**
      * @param $word
+     *
      * @return mixed
      */
     public function unclassify($word)
@@ -250,13 +251,14 @@ class Inflector
     /**
      * @param $name
      * @param $word
+     *
      * @return mixed
      */
     public function doInflection($name, $word)
     {
         if (!isset($this->dictionary[$name][$word])) {
             $this->toCache = true;
-            $method = "do" . ucfirst($name);
+            $method = 'do'.ucfirst($name);
             $this->dictionary[$name][$word] = $this->$method($word);
         }
 
@@ -265,6 +267,7 @@ class Inflector
 
     /**
      * @param $word
+     *
      * @return mixed
      */
     public function singularize($word)
@@ -274,6 +277,7 @@ class Inflector
 
     /**
      * @param $word
+     *
      * @return mixed
      */
     public function camelize($word)
@@ -283,6 +287,7 @@ class Inflector
 
     /**
      * @param $word
+     *
      * @return mixed
      */
     public function classify($word)
@@ -293,6 +298,7 @@ class Inflector
     /**
      * @param $name
      * @param $arguments
+     *
      * @return mixed
      */
     public function __call($name, $arguments)
@@ -304,6 +310,7 @@ class Inflector
 
     /**
      * @param $word
+     *
      * @return bool|mixed
      */
     protected function doPluralize($word)
@@ -317,8 +324,8 @@ class Inflector
         }
 
         foreach ($this->irregular as $_plural => $_singular) {
-            if (preg_match('/(' . $_plural . ')$/i', $word, $arr)) {
-                return preg_replace('/(' . $_plural . ')$/i', substr($arr[0], 0, 1) . substr($_singular, 1), $word);
+            if (preg_match('/('.$_plural.')$/i', $word, $arr)) {
+                return preg_replace('/('.$_plural.')$/i', substr($arr[0], 0, 1).substr($_singular, 1), $word);
             }
         }
 
@@ -333,6 +340,7 @@ class Inflector
 
     /**
      * @param $word
+     *
      * @return mixed
      */
     protected function doSingularize($word)
@@ -345,8 +353,8 @@ class Inflector
         }
 
         foreach ($this->irregular as $_plural => $_singular) {
-            if (preg_match('/(' . $_singular . ')$/i', $word, $arr)) {
-                return preg_replace('/(' . $_singular . ')$/i', substr($arr[0], 0, 1) . substr($_plural, 1), $word);
+            if (preg_match('/('.$_singular.')$/i', $word, $arr)) {
+                return preg_replace('/('.$_singular.')$/i', substr($arr[0], 0, 1).substr($_plural, 1), $word);
             }
         }
 
@@ -361,6 +369,7 @@ class Inflector
 
     /**
      * @param $word
+     *
      * @return mixed
      */
     protected function doCamelize($word)
@@ -370,6 +379,7 @@ class Inflector
 
     /**
      * @param $word
+     *
      * @return mixed
      */
     protected function doHyphenize($word)
@@ -381,6 +391,7 @@ class Inflector
 
     /**
      * @param $word
+     *
      * @return string
      */
     protected function doUnderscore($word)
@@ -396,6 +407,7 @@ class Inflector
      * Converts "Person" to "people"
      *
      * @param string $class_name Class name for getting related table_name.
+     *
      * @return string plural_table_name
      */
     protected function doTableize($class_name)
@@ -405,6 +417,7 @@ class Inflector
 
     /**
      * @param $word
+     *
      * @return mixed
      */
     public function pluralize($word)
@@ -414,6 +427,7 @@ class Inflector
 
     /**
      * @param $word
+     *
      * @return mixed
      */
     public function underscore($word)
@@ -422,54 +436,57 @@ class Inflector
     }
 
     /**
-     * Converts lowercase string to underscored camelize class format
+     * Converts lowercase string to underscored camelize class format.
      *
      * @param string $string
+     *
      * @return string
      */
     protected function doClassify($string)
     {
-        $parts = explode("-", $string);
-        $parts = array_map([$this, "camelize"], $parts);
+        $parts = explode('-', $string);
+        $parts = array_map([$this, 'camelize'], $parts);
 
-        return implode("_", $parts);
+        return implode('_', $parts);
     }
 
     /**
-     * Reverses classify()
+     * Reverses classify().
      *
      * @param string $string
+     *
      * @return string
      */
     protected function doUnclassify($string)
     {
         $string = str_replace('\\', '_', $string);
-        $parts = explode("_", $string);
-        $parts = array_map([$this, "underscore"], $parts);
+        $parts = explode('_', $string);
+        $parts = array_map([$this, 'underscore'], $parts);
 
-        return implode("-", $parts);
+        return implode('-', $parts);
     }
 
     /**
      * @param $number
+     *
      * @return string
      */
     protected function doOrdinalize($number)
     {
         if (in_array(($number % 100), range(11, 13))) {
-            return $number . 'th';
+            return $number.'th';
         } else {
             switch (($number % 10)) {
                 case 1:
-                    return $number . 'st';
+                    return $number.'st';
                     break;
                 case 2:
-                    return $number . 'nd';
+                    return $number.'nd';
                     break;
                 case 3:
-                    return $number . 'rd';
+                    return $number.'rd';
                 default:
-                    return $number . 'th';
+                    return $number.'th';
                     break;
             }
         }

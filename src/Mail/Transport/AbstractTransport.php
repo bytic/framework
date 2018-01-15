@@ -6,8 +6,7 @@ use Swift_Events_EventListener;
 use Swift_Transport as SwiftTransport;
 
 /**
- * Class AbstractTransport
- * @package Nip\Mail\Transport
+ * Class AbstractTransport.
  */
 abstract class AbstractTransport implements SwiftTransport
 {
@@ -45,7 +44,8 @@ abstract class AbstractTransport implements SwiftTransport
     /**
      * Register a plug-in with the transport.
      *
-     * @param  \Swift_Events_EventListener $plugin
+     * @param \Swift_Events_EventListener $plugin
+     *
      * @return void
      */
     public function registerPlugin(Swift_Events_EventListener $plugin)

@@ -8,8 +8,7 @@ use Nip\Records\Filters\Column\AbstractFilter as AbstractColumnFilter;
 use Nip\Utility\Traits\HasRequestTrait;
 
 /**
- * Class FilterManager
- * @package Nip\Records\Filters
+ * Class FilterManager.
  */
 class FilterManager
 {
@@ -28,7 +27,7 @@ class FilterManager
     protected $recordManager = null;
 
     /**
-     * Init filter Manager, init default filters
+     * Init filter Manager, init default filters.
      */
     public function init()
     {
@@ -88,6 +87,7 @@ class FilterManager
 
     /**
      * @param SelectQuery $query
+     *
      * @return SelectQuery
      */
     public function filterQuery($query)
@@ -104,12 +104,13 @@ class FilterManager
 
     /**
      * @param mixed $type
+     *
      * @return AbstractFilter|AbstractColumnFilter ;
      */
     public function newFilter($type)
     {
         $class = $this->getFilterClass($type);
-        $filter = new $class;
+        $filter = new $class();
 
         return $filter;
     }
@@ -152,5 +153,4 @@ class FilterManager
     {
         $this->recordManager = $recordManager;
     }
-
 }

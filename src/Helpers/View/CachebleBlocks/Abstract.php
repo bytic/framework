@@ -6,12 +6,10 @@ use Nip\Filesystem\Exception\IOException;
 use Nip_File_System as FileSystem;
 
 /**
- * Class AbstractBlock
- * @package Nip\Helpers\View\CachebleBlocks
+ * Class AbstractBlock.
  */
 class AbstractBlock
 {
-
     protected $_name;
 
     /** $_model Nip_Record */
@@ -23,6 +21,7 @@ class AbstractBlock
 
     /**
      * @param $name
+     *
      * @return $this
      */
     public function setName($name)
@@ -34,6 +33,7 @@ class AbstractBlock
 
     /**
      * @param $model
+     *
      * @return $this
      */
     public function setModel($model)
@@ -45,6 +45,7 @@ class AbstractBlock
 
     /**
      * @param $manager
+     *
      * @return $this
      */
     public function setManager($manager)
@@ -72,7 +73,7 @@ class AbstractBlock
     {
         $fileName = str_replace('/', '+', $this->_viewPath);
 
-        return $this->cachePath() . $fileName . '.html';
+        return $this->cachePath().$fileName.'.html';
     }
 
     /**
@@ -85,6 +86,7 @@ class AbstractBlock
 
     /**
      * @param $ttl
+     *
      * @return bool
      */
     public function valid($ttl)
@@ -112,7 +114,7 @@ class AbstractBlock
     {
         $file = $this->filePath();
         $filesystem = FileSystem::instance();
-        $content = $this->_manager->getView()->load($this->_viewPath, array(), true);
+        $content = $this->_manager->getView()->load($this->_viewPath, [], true);
 
         $dir = dirname($file);
         if (!is_dir($dir)) {
@@ -130,9 +132,9 @@ class AbstractBlock
 
             return true;
         } else {
-            $message = "Cannot open CachebleBlocks file for writing: ";
+            $message = 'Cannot open CachebleBlocks file for writing: ';
             if (app()->get('staging')->getStage()->inTesting()) {
-                $message .= " [ " . $file . " ] ";
+                $message .= ' [ '.$file.' ] ';
             }
             die($message);
         }

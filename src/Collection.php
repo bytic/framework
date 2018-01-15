@@ -8,8 +8,7 @@ use Countable;
 use IteratorAggregate;
 
 /**
- * Class Collection
- * @package Nip
+ * Class Collection.
  */
 class Collection implements Countable, IteratorAggregate, ArrayAccess
 {
@@ -18,13 +17,14 @@ class Collection implements Countable, IteratorAggregate, ArrayAccess
 
     /**
      * Collection constructor.
+     *
      * @param array $items
      */
     public function __construct($items = [])
     {
         if (is_array($items)) {
             $this->items = $items;
-        } elseif ($items instanceof Collection) {
+        } elseif ($items instanceof self) {
             $this->items = $items->toArray();
         }
     }
@@ -58,6 +58,7 @@ class Collection implements Countable, IteratorAggregate, ArrayAccess
 
     /**
      * @param $index
+     *
      * @return bool
      */
     public function exists($index)
@@ -67,6 +68,7 @@ class Collection implements Countable, IteratorAggregate, ArrayAccess
 
     /**
      * @param mixed $index
+     *
      * @return bool
      */
     public function offsetExists($index)
@@ -102,6 +104,7 @@ class Collection implements Countable, IteratorAggregate, ArrayAccess
     public function end()
     {
         $this->index = count($this->items);
+
         return end($this->items);
     }
 
@@ -119,12 +122,14 @@ class Collection implements Countable, IteratorAggregate, ArrayAccess
     public function next()
     {
         $this->index++;
+
         return next($this->items);
     }
 
     /**
      * @param $value
      * @param bool $index
+     *
      * @return $this
      */
     public function unshift($value, $index = false)
@@ -168,28 +173,33 @@ class Collection implements Countable, IteratorAggregate, ArrayAccess
     {
         ksort($this->items);
         $this->rewind();
+
         return $this;
     }
 
     /**
      * @param $callback
+     *
      * @return $this
      */
     public function usort($callback)
     {
         usort($this->items, $callback);
         $this->rewind();
+
         return $this;
     }
 
     /**
      * @param $callback
+     *
      * @return $this
      */
     public function uasort($callback)
     {
         uasort($this->items, $callback);
         $this->rewind();
+
         return $this;
     }
 
@@ -200,11 +210,13 @@ class Collection implements Countable, IteratorAggregate, ArrayAccess
     {
         shuffle($this->items);
         $this->rewind();
+
         return $this;
     }
 
     /**
      * @param $key
+     *
      * @return $this
      */
     public function keyBy($key)
@@ -216,6 +228,7 @@ class Collection implements Countable, IteratorAggregate, ArrayAccess
             $newItems[$aKey] = $item;
         }
         $this->setItems($newItems);
+
         return $this;
     }
 
@@ -229,6 +242,7 @@ class Collection implements Countable, IteratorAggregate, ArrayAccess
 
     /**
      * @param $index
+     *
      * @return mixed|null
      */
     public function getNth($index)
@@ -237,9 +251,9 @@ class Collection implements Countable, IteratorAggregate, ArrayAccess
         $index = $index - 1;
         if (isset($keys[$index])) {
             $key = $keys[$index];
+
             return $this->offsetGet($key);
         }
-        return null;
     }
 
     /**
@@ -252,6 +266,7 @@ class Collection implements Countable, IteratorAggregate, ArrayAccess
 
     /**
      * @param mixed $index
+     *
      * @return mixed|null
      */
     public function offsetGet($index)

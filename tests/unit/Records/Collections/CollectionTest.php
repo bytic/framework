@@ -5,7 +5,7 @@ namespace Nip\Tests\Unit\Records\Collections;
 use Nip\Records\Collections\Collection as RecordCollection;
 use Nip_Records;
 
-class RecordCollectionTest extends \Codeception\TestCase\Test
+class CollectionTest extends \Codeception\TestCase\Test
 {
     /**
      * @var \UnitTester
@@ -25,7 +25,7 @@ class RecordCollectionTest extends \Codeception\TestCase\Test
     {
     }
 
-//	public function setUp()
+    //	public function setUp()
 //	{
 //		$this->_collection = new RecordCollection();
 //		$this->_records = new Nip_Records();
@@ -41,7 +41,7 @@ class RecordCollectionTest extends \Codeception\TestCase\Test
 //
 //		$this->_collection[] = $this->_joe;
 //		$this->_collection[] = $this->_mac;
-//		
+//
 //		static::assertEquals(2, count($this->_collection));
 //
 //		$this->_collection->delete();

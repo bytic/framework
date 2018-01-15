@@ -6,23 +6,21 @@ use Nip\Config\Exception\RuntimeException;
 use Nip\Config\FileParser\AbstractFileParser;
 
 /**
- * Class FileLoader
- * @package Nip\Config\Loaders
+ * Class FileLoader.
  */
 class FileLoader extends AbstractLoader
 {
-
     /**
      * Registered config file extensions.
-     * key is extension, value is reader instance or plugin name
+     * key is extension, value is reader instance or plugin name.
      *
      * @var array
      */
     protected static $extensions = [
-        'ini' => 'Ini',
-        'php' => 'Php',
+        'ini'  => 'Ini',
+        'php'  => 'Php',
         'json' => 'Json',
-        'xml' => 'Xml',
+        'xml'  => 'Xml',
         'yaml' => 'Yaml',
     ];
     /**
@@ -80,6 +78,7 @@ class FileLoader extends AbstractLoader
 
     /**
      * @param $type
+     *
      * @return AbstractFileParser
      */
     protected function getFileParser($type)

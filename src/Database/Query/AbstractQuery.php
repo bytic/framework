@@ -7,12 +7,10 @@ use Nip\Database\Query\Condition\Condition;
 use Nip\Database\Result;
 
 /**
- * Class AbstractQuery
- * @package Nip\Database\Query
+ * Class AbstractQuery.
  *
  * @method $this setCols() setCols(array|string $cols = null)
  * @method $this setWhere() setWhere(array|string $cols = null)
- *
  * @method $this cols() cols(array|string $cols)
  * @method $this count() count(string $col, string $alias = null)
  * @method $this sum() sum(array|string $cols)
@@ -24,7 +22,6 @@ use Nip\Database\Result;
  */
 abstract class AbstractQuery
 {
-
     /**
      * @var Connection
      */
@@ -38,6 +35,7 @@ abstract class AbstractQuery
 
     /**
      * @param Connection $manager
+     *
      * @return $this
      */
     public function setManager(Connection $manager)
@@ -50,6 +48,7 @@ abstract class AbstractQuery
     /**
      * @param $name
      * @param $arguments
+     *
      * @return $this
      */
     public function __call($name, $arguments)
@@ -69,6 +68,7 @@ abstract class AbstractQuery
 
     /**
      * @param null $generated
+     *
      * @return bool
      */
     public function isGenerated($generated = null)
@@ -97,11 +97,12 @@ abstract class AbstractQuery
     /**
      * @param $string
      * @param array $values
+     *
      * @return $this
      */
     public function where($string, $values = [])
     {
-        /** @var Condition $this ->_parts[] */
+        /* @var Condition $this ->_parts[] */
         if ($string) {
             if (isset($this->parts['where']) && $this->parts['where'] instanceof Condition) {
                 $this->parts['where'] = $this->parts['where']->and_($this->getCondition($string, $values));
@@ -115,7 +116,8 @@ abstract class AbstractQuery
 
     /**
      * @param string $string
-     * @param array $values
+     * @param array  $values
+     *
      * @return Condition
      */
     public function getCondition($string, $values = [])
@@ -133,6 +135,7 @@ abstract class AbstractQuery
     /**
      * @param $start
      * @param bool $offset
+     *
      * @return $this
      */
     public function limit($start, $offset = false)
@@ -148,6 +151,7 @@ abstract class AbstractQuery
     /**
      * @param $string
      * @param array $values
+     *
      * @return $this
      */
     public function orWhere($string, $values = [])
@@ -166,6 +170,7 @@ abstract class AbstractQuery
     /**
      * @param $string
      * @param array $values
+     *
      * @return $this
      */
     public function having($string, $values = [])
@@ -182,9 +187,10 @@ abstract class AbstractQuery
     }
 
     /**
-     * Escapes data for safe use in SQL queries
+     * Escapes data for safe use in SQL queries.
      *
      * @param string $data
+     *
      * @return string
      */
     public function cleanData($data)
@@ -224,7 +230,7 @@ abstract class AbstractQuery
     public function getString()
     {
         if ($this->string === null) {
-            $this->string = (string)$this->assemble();
+            $this->string = (string) $this->assemble();
         }
 
         return $this->string;
@@ -245,6 +251,7 @@ abstract class AbstractQuery
 
     /**
      * @param $name
+     *
      * @return mixed|null
      */
     public function getPart($name)
@@ -254,6 +261,7 @@ abstract class AbstractQuery
 
     /**
      * @param $name
+     *
      * @return bool
      */
     public function hasPart($name)
@@ -263,6 +271,7 @@ abstract class AbstractQuery
 
     /**
      * @param $name
+     *
      * @return $this
      */
     protected function initPart($name)
@@ -276,6 +285,7 @@ abstract class AbstractQuery
     /**
      * @param $name
      * @param $value
+     *
      * @return $this
      */
     protected function addPart($name, $value)
@@ -317,7 +327,7 @@ abstract class AbstractQuery
     {
         if (isset($params['where']) && is_array($params['where'])) {
             foreach ($params['where'] as $condition) {
-                $condition = (array)$condition;
+                $condition = (array) $condition;
                 $this->where($condition[0], $condition[1]);
             }
         }
@@ -373,8 +383,6 @@ abstract class AbstractQuery
         if (!empty($where)) {
             return " WHERE $where";
         }
-
-        return null;
     }
 
     /**
@@ -382,7 +390,7 @@ abstract class AbstractQuery
      */
     protected function parseWhere()
     {
-        return is_object($this->parts['where']) ? (string)$this->parts['where'] : '';
+        return is_object($this->parts['where']) ? (string) $this->parts['where'] : '';
     }
 
     /**
@@ -394,13 +402,12 @@ abstract class AbstractQuery
         if (!empty($limit)) {
             return " LIMIT {$this->parts['limit']}";
         }
-
-        return null;
     }
 
     /**
      * @param $name
      * @param $value
+     *
      * @return $this
      */
     protected function setPart($name, $value)
@@ -417,7 +424,7 @@ abstract class AbstractQuery
     protected function getTable()
     {
         if (!is_array($this->parts['table']) && count($this->parts['table']) < 1) {
-            trigger_error("No Table defined", E_USER_WARNING);
+            trigger_error('No Table defined', E_USER_WARNING);
         }
 
         return reset($this->parts['table']);
@@ -429,14 +436,14 @@ abstract class AbstractQuery
     protected function parseHaving()
     {
         if (isset($this->parts['having'])) {
-            return (string)$this->parts['having'];
+            return (string) $this->parts['having'];
         }
 
         return '';
     }
 
     /**
-     * Parses ORDER BY entries
+     * Parses ORDER BY entries.
      *
      * @return string
      */
@@ -468,21 +475,23 @@ abstract class AbstractQuery
     }
 
     /**
-     * Adds backticks to input
+     * Adds backticks to input.
      *
      * @param string $input
+     *
      * @return string
      */
     protected function protect($input)
     {
-        return strpos($input, '(') !== false ? $input : str_replace("`*`", "*",
+        return strpos($input, '(') !== false ? $input : str_replace('`*`', '*',
             '`'.str_replace('.', '`.`', $input).'`');
     }
 
     /**
-     * Prefixes table names
+     * Prefixes table names.
      *
      * @param string $table
+     *
      * @return string
      */
     protected function tableName($table = '')
@@ -491,9 +500,10 @@ abstract class AbstractQuery
     }
 
     /**
-     * Removes backticks from input
+     * Removes backticks from input.
      *
      * @param string $input
+     *
      * @return string
      */
     protected function cleanProtected($input)

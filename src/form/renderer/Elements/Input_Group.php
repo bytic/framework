@@ -4,16 +4,17 @@ use Nip_Form_Element_Checkbox as Checkbox;
 use Nip_Form_Element_Input_Abstract as AbstractInput;
 
 /**
- * Class Nip_Form_Renderer_Elements_Input_Group
+ * Class Nip_Form_Renderer_Elements_Input_Group.
  */
-abstract class Nip_Form_Renderer_Elements_Input_Group extends Nip_Form_Renderer_Elements_Input_Abstract {
-
+abstract class Nip_Form_Renderer_Elements_Input_Group extends Nip_Form_Renderer_Elements_Input_Abstract
+{
     protected $_separator = '<br />';
 
     /** @noinspection PhpMissingParentCallCommonInspection
      * @return string
      */
-    public function generateElement() {
+    public function generateElement()
+    {
         $elements = $this->getElement()->getElements();
         $returnElements = [];
         $return = '';
@@ -21,11 +22,13 @@ abstract class Nip_Form_Renderer_Elements_Input_Group extends Nip_Form_Renderer_
             $returnElements[] = $this->renderChildElement($element);
         }
         $return .= implode($this->getSeparator(), $returnElements);
+
         return $return;
     }
 
     /**
      * @param AbstractInput|Checkbox $element
+     *
      * @return mixed
      */
     public function renderChildElement($element)
@@ -33,6 +36,7 @@ abstract class Nip_Form_Renderer_Elements_Input_Group extends Nip_Form_Renderer_
         if ($element->getValue() == $this->getElement()->getValue()) {
             $element->setChecked(true);
         }
+
         return $element->render();
     }
 
@@ -46,13 +50,13 @@ abstract class Nip_Form_Renderer_Elements_Input_Group extends Nip_Form_Renderer_
 
     /**
      * @param $separator
+     *
      * @return $this
      */
     public function setSeparator($separator)
     {
         $this->_separator = $separator;
+
         return $this;
     }
-    
-    
 }

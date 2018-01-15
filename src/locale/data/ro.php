@@ -2,12 +2,12 @@
 
 $_import = '_base';
 
-$_data['time'] = array(
-    'dateTimeFormat' => 'd/m/Y H:m',
-    'dateFormat' => 'd/m/Y',
+$_data['time'] = [
+    'dateTimeFormat'       => 'd/m/Y H:m',
+    'dateFormat'           => 'd/m/Y',
     'dateStringFormatMini' => '%d/%b/%y',
-    'dateStringFormat' => '%d %B %Y',
-    'dayDateStringFormat' => '%A, %d %B, %Y',
-    'firstWeekDay' => 0,
-    'timeFormat' => 'H:m',
-);
+    'dateStringFormat'     => '%d %B %Y',
+    'dayDateStringFormat'  => '%A, %d %B, %Y',
+    'firstWeekDay'         => 0,
+    'timeFormat'           => 'H:m',
+];

@@ -3,8 +3,7 @@
 namespace Nip\Container\ServiceProvider;
 
 /**
- * Interface BootableServiceProviderInterface
- * @package Nip\Container\ServiceProvider
+ * Interface BootableServiceProviderInterface.
  */
 interface BootableServiceProviderInterface extends ServiceProviderInterface
 {

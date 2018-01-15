@@ -1,15 +1,13 @@
 <?php
 
 /**
- * Nip Framework
+ * Nip Framework.
  */
-
 use Nip\Profiler\Adapters\AbstractAdapter;
 use Nip\Profiler\Profile;
 
 class Nip_Profiler
 {
-
     public $enabled = false;
 
     public $profiles = [];
@@ -21,7 +19,7 @@ class Nip_Profiler
     protected $writers = [];
 
     /**
-     * Singleton
+     * Singleton.
      *
      * @return Nip_Profiler
      */
@@ -37,11 +35,13 @@ class Nip_Profiler
 
     /**
      * @param bool $enabled
+     *
      * @return $this
      */
     public function setEnabled($enabled = false)
     {
-        $this->enabled = (boolean)$enabled;
+        $this->enabled = (bool) $enabled;
+
         return $this;
     }
 
@@ -51,7 +51,6 @@ class Nip_Profiler
 
         return $this;
     }
-
 
     public function start($profileName = false)
     {
@@ -66,6 +65,7 @@ class Nip_Profiler
 
         $this->profiles[$profileID] = $profile;
         $this->addRunningProces($profileID);
+
         return $profile;
     }
 
@@ -80,12 +80,12 @@ class Nip_Profiler
             return $name;
         }
         $profilesCount = count($this->getProfiles(null, true));
-        return 'profile' . $profilesCount;
+
+        return 'profile'.$profilesCount;
     }
 
     public function getProfiles($type = null, $showUnfinished = false)
     {
-
         $profiles = [];
         foreach ($this->profiles as $key => $profile) {
             if ($type === null) {
@@ -125,7 +125,6 @@ class Nip_Profiler
                 $this->outputWriters($profile);
             }
         }
-        return;
     }
 
     protected function endPreckeck($profileID)
@@ -137,6 +136,7 @@ class Nip_Profiler
         if ($profileID == false) {
             $profileID = $this->getLastRunningProces();
         }
+
         return $profileID;
     }
 
@@ -182,8 +182,10 @@ class Nip_Profiler
     {
         if ($profile && null !== $this->filterElapsedSecs && $profile->getElapsedSecs() < $this->filterElapsedSecs) {
             $this->deleteProfile($profile);
+
             return false;
         }
+
         return true;
     }
 
@@ -193,7 +195,6 @@ class Nip_Profiler
             trigger_error("Query handle '{$profile->profileID}' not found in profiler log.", E_USER_ERROR);
         }
         unset($this->profiles[$profile->profileID]);
-        return;
     }
 
     public function outputWriters($profile)
@@ -215,7 +216,7 @@ class Nip_Profiler
         if (null === $minimumSeconds) {
             $this->filterElapsedSecs = null;
         } else {
-            $this->filterElapsedSecs = (integer)$minimumSeconds;
+            $this->filterElapsedSecs = (int) $minimumSeconds;
         }
 
         return $this;
@@ -231,17 +232,19 @@ class Nip_Profiler
 
     /**
      * @param $name
+     *
      * @return AbstractAdapter
      */
     public function newWriter($name)
     {
         $class = $this->newWriterClass($name);
         $writer = new $class();
+
         return $writer;
     }
 
     public function newWriterClass($name)
     {
-        return 'Nip\Profiler\Adapters\\' . ucfirst($name);
+        return 'Nip\Profiler\Adapters\\'.ucfirst($name);
     }
 }

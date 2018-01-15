@@ -7,7 +7,6 @@ use Nip\Profiler\Profile;
 
 class DebugBar extends AbstractAdapter
 {
-
     /**
      * @var QueryCollector
      */
@@ -17,7 +16,6 @@ class DebugBar extends AbstractAdapter
     {
         $this->getCollector()->addQuery($profile);
     }
-
 
     /**
      * @return QueryCollector
@@ -34,5 +32,4 @@ class DebugBar extends AbstractAdapter
     {
         $this->collector = $colector;
     }
-
 }

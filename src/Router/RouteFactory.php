@@ -3,17 +3,16 @@
 namespace Nip\Router;
 
 /**
- * Class RouteCollection
- * @package Nip\Router
+ * Class RouteCollection.
  */
 class RouteFactory
 {
-
     /**
      * @param RouteCollection $collection
      * @param $name
      * @param $class
      * @param string $mapPrefix
+     *
      * @return mixed
      */
     public static function generateIndexRoute(
@@ -22,7 +21,7 @@ class RouteFactory
         $class,
         $mapPrefix = ''
     ) {
-        $params = ["controller" => "index", "action" => "index"];
+        $params = ['controller' => 'index', 'action' => 'index'];
         $map = '/';
 
         return self::generateLiteralRoute($collection, $name, $class, $mapPrefix, $map, $params);
@@ -34,7 +33,8 @@ class RouteFactory
      * @param $class
      * @param string $mapPrefix
      * @param string $map
-     * @param array $params
+     * @param array  $params
+     *
      * @return mixed
      */
     public static function generateLiteralRoute(
@@ -55,7 +55,8 @@ class RouteFactory
      * @param $name
      * @param $class
      * @param string $map
-     * @param array $params
+     * @param array  $params
+     *
      * @return mixed
      */
     public static function generateGenericRoute(
@@ -68,6 +69,7 @@ class RouteFactory
         $map = str_replace('//', '/', $map);
 
         $route = new $class($map, $params);
+
         return $collection->add($route, $name);
     }
 
@@ -77,7 +79,8 @@ class RouteFactory
      * @param $class
      * @param string $mapPrefix
      * @param string $map
-     * @param array $params
+     * @param array  $params
+     *
      * @return mixed
      */
     public static function generateStandardRoute(

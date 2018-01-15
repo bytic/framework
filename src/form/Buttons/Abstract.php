@@ -4,7 +4,6 @@ use Nip\Form\AbstractForm;
 
 abstract class Nip_Form_Button_Abstract
 {
-
     protected $_form;
     protected $_attribs;
     protected $_uniqueID;
@@ -36,9 +35,9 @@ abstract class Nip_Form_Button_Abstract
 
     public function getAttrib($key)
     {
-        $key = (string)$key;
+        $key = (string) $key;
         if (!isset($this->_attribs[$key])) {
-            return null;
+            return;
         }
 
         return $this->_attribs[$key];
@@ -49,7 +48,7 @@ abstract class Nip_Form_Button_Abstract
      */
     public function setAttrib($key, $value)
     {
-        $key = (string)$key;
+        $key = (string) $key;
         $this->_attribs[$key] = $value;
 
         return $this;
@@ -105,7 +104,7 @@ abstract class Nip_Form_Button_Abstract
 
     public function delAttrib($key)
     {
-        $key = (string)$key;
+        $key = (string) $key;
         unset($this->_attribs[$key]);
 
         return true;
@@ -117,7 +116,8 @@ abstract class Nip_Form_Button_Abstract
     }
 
     /**
-     * @param  array $attribs
+     * @param array $attribs
+     *
      * @return Nip_Form_Element_Abstract
      */
     public function setAttribs(array $attribs)
@@ -138,7 +138,8 @@ abstract class Nip_Form_Button_Abstract
     }
 
     /**
-     * @param  array $attribs
+     * @param array $attribs
+     *
      * @return Nip_Form_Element_Abstract
      */
     public function addAttribs(array $attribs)
@@ -184,6 +185,7 @@ abstract class Nip_Form_Button_Abstract
 
     /**
      * @param AbstractForm $form
+     *
      * @return $this
      */
     public function setForm(AbstractForm $form)

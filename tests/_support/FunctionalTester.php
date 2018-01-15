@@ -1,10 +1,10 @@
 <?php
 
-
 namespace Nip\Tests;
 
 /**
- * Inherited Methods
+ * Inherited Methods.
+ *
  * @method void wantToTest($text)
  * @method void wantTo($text)
  * @method void execute($callable)
@@ -17,12 +17,12 @@ namespace Nip\Tests;
  * @method \Codeception\Lib\Friend haveFriend($name, $actorClass = NULL)
  *
  * @SuppressWarnings(PHPMD)
-*/
+ */
 class FunctionalTester extends \Codeception\Actor
 {
     use \Nip\Tests\_generated\FunctionalTesterActions;
 
-   /**
-    * Define custom actions here
-    */
+    /*
+     * Define custom actions here
+     */
 }

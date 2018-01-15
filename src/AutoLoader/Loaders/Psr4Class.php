@@ -3,8 +3,7 @@
 namespace Nip\AutoLoader\Loaders;
 
 /**
- * Class Psr4Class
- * @package Nip\AutoLoader\Loaders
+ * Class Psr4Class.
  */
 class Psr4Class extends AbstractLoader
 {
@@ -26,6 +25,7 @@ class Psr4Class extends AbstractLoader
 
     /**
      * @param string $class
+     *
      * @return bool
      */
     public function getClassLocation($class)
@@ -50,7 +50,5 @@ class Psr4Class extends AbstractLoader
                 }
             }
         }
-
-        return null;
     }
 }

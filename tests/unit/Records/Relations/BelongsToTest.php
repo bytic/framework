@@ -47,5 +47,4 @@ class BelongsToTest extends \Codeception\TestCase\Test
     protected function _after()
     {
     }
-
 }

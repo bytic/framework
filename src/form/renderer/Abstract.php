@@ -6,7 +6,6 @@ use Nip\Helpers\View\Messages as MessagesHelper;
 
 abstract class Nip_Form_Renderer_Abstract
 {
-
     protected $_form;
 
     protected $_elements;
@@ -99,7 +98,8 @@ abstract class Nip_Form_Renderer_Abstract
     }
 
     /**
-     * The errors are rendered using the Errors View Helper
+     * The errors are rendered using the Errors View Helper.
+     *
      * @return string
      */
     public function renderMessages()
@@ -107,9 +107,8 @@ abstract class Nip_Form_Renderer_Abstract
         $return = '';
         $messages = $this->getForm()->getMessages();
         foreach ($messages as $type => $lines) {
-            if ($type == "error") {
+            if ($type == 'error') {
                 $return .= ErrorsHelper::render($lines);
-
             } else {
                 $return .= MessagesHelper::render($lines, $type);
             }
@@ -172,7 +171,7 @@ abstract class Nip_Form_Renderer_Abstract
             $return .= '<span class="required">*</span>';
         }
 
-        $return .= "</label>";
+        $return .= '</label>';
 
         return $return;
     }
@@ -218,5 +217,4 @@ abstract class Nip_Form_Renderer_Abstract
 
         return $renderer;
     }
-
 }

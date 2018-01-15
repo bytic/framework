@@ -1,16 +1,17 @@
 <?php
 
 /**
- * Nip Framework
+ * Nip Framework.
  *
  * @category   Nip
+ *
  * @copyright  2009 Nip Framework
  * @license    http://www.opensource.org/licenses/mit-license.php The MIT License
  */
-
-class Nip_Service_Maps_Provider_Google extends Nip_Service_Maps_Provider_Abstract {
-
-    public function loadScript() {
+class Nip_Service_Maps_Provider_Google extends Nip_Service_Maps_Provider_Abstract
+{
+    public function loadScript()
+    {
         $lazyLoading = $this->getService()->getParam('lazyLoading');
         if ($lazyLoading) {
             $html = '
@@ -28,22 +29,24 @@ class Nip_Service_Maps_Provider_Google extends Nip_Service_Maps_Provider_Abstrac
             $html .= '" type="text/javascript"></script>';
             $html .= '<script type="text/javascript">loadMap();</script>';
         }
-        
+
         return $html;
     }
 
-    protected function getScriptURL() {
-        return 'http://maps.google.com/maps?file=api&v=2&async=2&callback=loadMap&key=' . $this->getService()->getApiKey();
+    protected function getScriptURL()
+    {
+        return 'http://maps.google.com/maps?file=api&v=2&async=2&callback=loadMap&key='.$this->getService()->getApiKey();
     }
 
-    public function initMapScript() {
+    public function initMapScript()
+    {
         $html = '
             function loadMap() {
             if (GBrowserIsCompatible()) {
                 var map = new GMap2(document.getElementById("'.$this->_container['id'].'"));';
         $center = $this->getService()->getParam('center');
         if (is_array($center) && count($center) == 3) {
-            list($cLat,$cLng, $cZoom) = $center;
+            list($cLat, $cLng, $cZoom) = $center;
         } else {
             $cLat = '37.4419';
             $cLng = '-122.1419';
@@ -51,15 +54,19 @@ class Nip_Service_Maps_Provider_Google extends Nip_Service_Maps_Provider_Abstrac
         }
         $html .= 'map.setCenter(new GLatLng('.$cLat.','.$cLng.' ), '.$cZoom.');';
         $html .= 'map.setUIToDefault();';
+
         return $html;
     }
 
-    public function postMapScript() {
+    public function postMapScript()
+    {
         $html = '}}';
+
         return $html;
     }
 
-    public function renderSearch() {
+    public function renderSearch()
+    {
         $return = parent::renderSearch();
         $script = '
             geocoder = new GClientGeocoder();
@@ -80,24 +87,25 @@ class Nip_Service_Maps_Provider_Google extends Nip_Service_Maps_Provider_Abstrac
                 );
             });
             ';
-       $this->_scripts[] = $script;
+        $this->_scripts[] = $script;
 
         return $return;
     }
 
-    public function renderMarker($marker) {
+    public function renderMarker($marker)
+    {
         $html = '';
         if ($marker->latitude && $marker->longitude) {
             $html .= 'var latlng = new GLatLng('.$marker->latitude.', '.$marker->longitude.');';
         } else {
             $html .= 'var latlng = map.getCenter();';
         }
-        $options = array(
+        $options = [
             'draggable' => $marker->getParam('draggable'),
-        );
-        $html  .= 'var marker = new GMarker(latlng, ' . json_encode($options) . ');';
+        ];
+        $html .= 'var marker = new GMarker(latlng, '.json_encode($options).');';
         if ($marker->getParam('info')) {
-            $html  .= 'GEvent.addListener(marker, "click", function() {
+            $html .= 'GEvent.addListener(marker, "click", function() {
             marker.openInfoWindowHtml("'.$marker->getParam('info').'");
             });
             GEvent.addListener(marker, "dragstart", function() {
@@ -114,17 +122,18 @@ class Nip_Service_Maps_Provider_Google extends Nip_Service_Maps_Provider_Abstrac
                 }
                 });';
         }
-       
+
         $listeners = $marker->getListeners();
         foreach ($listeners as $type=>$functions) {
             foreach ($functions as $function) {
-                $html  .= 'GEvent.addListener(marker, "'.$type.'", function() {
+                $html .= 'GEvent.addListener(marker, "'.$type.'", function() {
                     '.$function.'
                 });
                 ';
             }
         }
-        $html  .= 'map.addOverlay(marker);';
+        $html .= 'map.addOverlay(marker);';
+
         return $html;
     }
 }

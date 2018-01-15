@@ -9,8 +9,7 @@ use Nip\Records\RecordManager as Records;
 use Nip\Tests\Unit\AbstractTest;
 
 /**
- * Class RecordTest
- * @package Nip\Tests\Unit\Records
+ * Class RecordTest.
  */
 class RecordTest extends AbstractTest
 {
@@ -30,13 +29,14 @@ class RecordTest extends AbstractTest
     public function providerGetManagerName()
     {
         return [
-            ["Notifications_Table", "Notifications_Tables"],
-            ["Donation", "Donations"],
+            ['Notifications_Table', 'Notifications_Tables'],
+            ['Donation', 'Donations'],
         ];
     }
 
     /**
      * @dataProvider providerGetManagerName
+     *
      * @param string $recordName
      * @param string $managerName
      */

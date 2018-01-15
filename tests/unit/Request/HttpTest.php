@@ -1,7 +1,7 @@
 <?php
 
 /**
- * From Symfony Symfony\Component\HttpFoundation\Tests\HttpTest class
+ * From Symfony Symfony\Component\HttpFoundation\Tests\HttpTest class.
  */
 
 namespace Nip\Tests\Unit\Request;
@@ -9,8 +9,7 @@ namespace Nip\Tests\Unit\Request;
 use Nip\Request;
 
 /**
- * Class HttpTest
- * @package Nip\Tests\Unit\Request
+ * Class HttpTest.
  */
 class HttpTest extends \Codeception\TestCase\Test
 {
@@ -41,8 +40,8 @@ class HttpTest extends \Codeception\TestCase\Test
                 '/fruit/strawberry/1234index.php/blah',
                 [
                     'SCRIPT_FILENAME' => 'E:/Sites/cc-new/public_html/fruit/index.php',
-                    'SCRIPT_NAME' => '/fruit/index.php',
-                    'PHP_SELF' => '/fruit/index.php',
+                    'SCRIPT_NAME'     => '/fruit/index.php',
+                    'PHP_SELF'        => '/fruit/index.php',
                 ],
                 '/fruit',
                 '/strawberry/1234index.php/blah',
@@ -51,8 +50,8 @@ class HttpTest extends \Codeception\TestCase\Test
                 '/fruit/strawberry/1234index.php/blah',
                 [
                     'SCRIPT_FILENAME' => 'E:/Sites/cc-new/public_html/index.php',
-                    'SCRIPT_NAME' => '/index.php',
-                    'PHP_SELF' => '/index.php',
+                    'SCRIPT_NAME'     => '/index.php',
+                    'PHP_SELF'        => '/index.php',
                 ],
                 '',
                 '/fruit/strawberry/1234index.php/blah',
@@ -61,8 +60,8 @@ class HttpTest extends \Codeception\TestCase\Test
                 '/foo%20bar/',
                 [
                     'SCRIPT_FILENAME' => '/home/John Doe/public_html/foo bar/app.php',
-                    'SCRIPT_NAME' => '/foo bar/app.php',
-                    'PHP_SELF' => '/foo bar/app.php',
+                    'SCRIPT_NAME'     => '/foo bar/app.php',
+                    'PHP_SELF'        => '/foo bar/app.php',
                 ],
                 '/foo%20bar',
                 '/',
@@ -71,8 +70,8 @@ class HttpTest extends \Codeception\TestCase\Test
                 '/foo%20bar/home',
                 [
                     'SCRIPT_FILENAME' => '/home/John Doe/public_html/foo bar/app.php',
-                    'SCRIPT_NAME' => '/foo bar/app.php',
-                    'PHP_SELF' => '/foo bar/app.php',
+                    'SCRIPT_NAME'     => '/foo bar/app.php',
+                    'PHP_SELF'        => '/foo bar/app.php',
                 ],
                 '/foo%20bar',
                 '/home',
@@ -81,8 +80,8 @@ class HttpTest extends \Codeception\TestCase\Test
                 '/foo%20bar/app.php/home',
                 [
                     'SCRIPT_FILENAME' => '/home/John Doe/public_html/foo bar/app.php',
-                    'SCRIPT_NAME' => '/foo bar/app.php',
-                    'PHP_SELF' => '/foo bar/app.php',
+                    'SCRIPT_NAME'     => '/foo bar/app.php',
+                    'PHP_SELF'        => '/foo bar/app.php',
                 ],
                 '/foo%20bar/app.php',
                 '/home',
@@ -91,8 +90,8 @@ class HttpTest extends \Codeception\TestCase\Test
                 '/foo%20bar/app.php/home%3Dbaz',
                 [
                     'SCRIPT_FILENAME' => '/home/John Doe/public_html/foo bar/app.php',
-                    'SCRIPT_NAME' => '/foo bar/app.php',
-                    'PHP_SELF' => '/foo bar/app.php',
+                    'SCRIPT_NAME'     => '/foo bar/app.php',
+                    'PHP_SELF'        => '/foo bar/app.php',
                 ],
                 '/foo%20bar/app.php',
                 '/home%3Dbaz',
@@ -101,8 +100,8 @@ class HttpTest extends \Codeception\TestCase\Test
                 '/foo/bar+baz',
                 [
                     'SCRIPT_FILENAME' => '/home/John Doe/public_html/foo/app.php',
-                    'SCRIPT_NAME' => '/foo/app.php',
-                    'PHP_SELF' => '/foo/app.php',
+                    'SCRIPT_NAME'     => '/foo/app.php',
+                    'PHP_SELF'        => '/foo/app.php',
                 ],
                 '/foo',
                 '/bar+baz',

@@ -6,17 +6,14 @@ use Nip\Request;
 use Nip\Router\Route\AbstractRoute as Route;
 
 /**
- * Class Router
- * @package Nip\Router
+ * Class Router.
  */
 class Router
 {
-
     /**
      * @var \Nip\Request
      */
     protected $request;
-
 
     /**
      * @var Route
@@ -30,15 +27,17 @@ class Router
 
     /**
      * @param $name
+     *
      * @return bool
      */
     public function connected($name)
     {
-        return ($this->getRoute($name) instanceof Route);
+        return $this->getRoute($name) instanceof Route;
     }
 
     /**
      * @param $name
+     *
      * @return Route
      */
     public function getRoute($name)
@@ -60,6 +59,7 @@ class Router
 
     /**
      * @param Request $request
+     *
      * @return array
      */
     public function route($request)
@@ -87,6 +87,7 @@ class Router
 
     /**
      * @param Route $route
+     *
      * @return $this
      */
     public function setCurrent($route)
@@ -99,6 +100,7 @@ class Router
     /**
      * @param $name
      * @param array $params
+     *
      * @return string
      */
     public function assembleFull($name, $params = [])
@@ -106,24 +108,24 @@ class Router
         $route = $this->getDefaultRoute($name, $params);
         if ($route) {
             $route->setRequest($this->getRequest());
+
             return $route->assembleFull($params);
         }
 
         trigger_error("Route \"$name\" not connected", E_USER_ERROR);
-
-        return null;
     }
 
     /**
      * @param $name
      * @param array $params
+     *
      * @return Route
      */
     public function getDefaultRoute($name, &$params = [])
     {
         $route = $this->getRoute($name);
         if (!$route) {
-            $parts = explode(".", $name);
+            $parts = explode('.', $name);
             $count = count($parts);
             if ($count <= 3) {
                 if (in_array(reset($parts), app('mvc.modules')->getNames())) {
@@ -156,6 +158,7 @@ class Router
     /**
      * @param $name
      * @param array $params
+     *
      * @return mixed|string
      */
     public function assemble($name, $params = [])
@@ -164,11 +167,11 @@ class Router
 
         if ($route) {
             $route->setRequest($this->getRequest());
+
             return $route->assemble($params);
         }
 
         trigger_error("Route \"$name\" not connected", E_USER_ERROR);
-        return null;
     }
 
     /**
@@ -181,6 +184,7 @@ class Router
 
     /**
      * @param $name
+     *
      * @return bool
      */
     public function hasRoute($name)

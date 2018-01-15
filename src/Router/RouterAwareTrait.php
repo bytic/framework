@@ -5,8 +5,7 @@ namespace Nip\Router;
 use Nip\Request;
 
 /**
- * Class ConfigAwareTrait
- * @package Nip\Router
+ * Class ConfigAwareTrait.
  */
 trait RouterAwareTrait
 {
@@ -17,6 +16,7 @@ trait RouterAwareTrait
 
     /**
      * @param bool|Request $request
+     *
      * @return array
      */
     public function route($request = false)
@@ -41,6 +41,7 @@ trait RouterAwareTrait
 
     /**
      * @param bool|Router $router
+     *
      * @return $this
      */
     public function setRouter($router = false)

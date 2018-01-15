@@ -3,12 +3,10 @@
 namespace Nip\Database\Query;
 
 /**
- * Class Truncate
- * @package Nip\Database\Query
+ * Class Truncate.
  */
 class Truncate extends AbstractQuery
 {
-
     /**
      * @return string
      */

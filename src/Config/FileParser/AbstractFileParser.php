@@ -3,20 +3,19 @@
 namespace Nip\Config\FileParser;
 
 /**
- * Class AbstractFileParser
- * @package Nip\Config\FileParser
+ * Class AbstractFileParser.
  */
 abstract class AbstractFileParser implements FileParserInterface
 {
     /**
-     * Path to the config file
+     * Path to the config file.
      *
      * @var string
      */
     protected $path;
 
     /**
-     * Sets the path to the config file
+     * Sets the path to the config file.
      *
      * @param string $path
      *
@@ -37,6 +36,7 @@ abstract class AbstractFileParser implements FileParserInterface
 
     /**
      * @param string $path
+     *
      * @return $this
      */
     public function setPath($path)

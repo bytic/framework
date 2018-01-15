@@ -1,11 +1,12 @@
 <?php
+
 namespace Nip\Cache;
+
 use Nip\Filesystem\Exception\IOException;
 use Nip_File_System as FileSystem;
 
 /**
- * Class Manager
- * @package Nip\Cache
+ * Class Manager.
  */
 class Manager
 {
@@ -21,13 +22,15 @@ class Manager
     public function get($cacheId)
     {
         if (!$this->valid($cacheId)) {
-            return null;
+            return;
         }
+
         return $this->getData($cacheId);
     }
 
     /**
      * @param $cacheId
+     *
      * @return bool
      */
     public function valid($cacheId)
@@ -38,6 +41,7 @@ class Manager
                 return true;
             }
         }
+
         return false;
     }
 
@@ -51,16 +55,19 @@ class Manager
 
     /**
      * @param $active
+     *
      * @return $this
      */
     public function setActive($active)
     {
         $this->active = $active;
+
         return $this;
     }
 
     /**
      * @param $cacheId
+     *
      * @return bool
      */
     public function exists($cacheId)
@@ -70,11 +77,12 @@ class Manager
 
     /**
      * @param $cacheId
+     *
      * @return string
      */
     public function filePath($cacheId)
     {
-        return $this->cachePath() . $cacheId . '.php';
+        return $this->cachePath().$cacheId.'.php';
     }
 
     /**
@@ -87,11 +95,12 @@ class Manager
 
     /**
      * @param $cacheId
+     *
      * @return mixed
      */
     public function getData($cacheId)
     {
-        if ( ! isset($this->data[$cacheId])) {
+        if (!isset($this->data[$cacheId])) {
             $this->data[$cacheId] = $this->loadData($cacheId);
         }
 
@@ -101,6 +110,7 @@ class Manager
     /**
      * @param $cacheId
      * @param bool $retry
+     *
      * @return bool|mixed
      */
     public function loadData($cacheId, $retry = true)
@@ -113,8 +123,10 @@ class Manager
                 return false;
             }
             $this->reload($cacheId);
+
             return $this->loadData($cacheId, false);
         }
+
         return $data;
     }
 
@@ -128,29 +140,34 @@ class Manager
     /**
      * @param $cacheId
      * @param $data
+     *
      * @return $this
      */
     public function set($cacheId, $data)
     {
         $this->data[$cacheId] = $data;
+
         return $this;
     }
 
     /**
      * @param $cacheId
      * @param $data
+     *
      * @return bool
      */
     public function saveData($cacheId, $data)
     {
         $file = $this->filePath($cacheId);
         $content = serialize($data);
+
         return $this->save($file, $content);
     }
 
     /**
      * @param $file
      * @param $content
+     *
      * @return bool
      */
     public function save($file, $content)
@@ -166,9 +183,10 @@ class Manager
             } catch (IOException $e) {
                 // discard chmod failure (some filesystem may not support it)
             }
+
             return true;
         } else {
-            $message = "Cannot open cache file for writing: ";
+            $message = 'Cannot open cache file for writing: ';
             //			if (!Nip_Staging::instance()->isPublic()) {
             //				$message .= " [ ".$this->cache_file." ] ";
             //			}

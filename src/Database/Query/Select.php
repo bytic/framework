@@ -5,8 +5,7 @@ namespace Nip\Database\Query;
 use Nip\Database\Query\Select\Union;
 
 /**
- * Class Select
- * @package Nip\Database\Query
+ * Class Select.
  *
  * @method $this options() options(string $option = null)
  * @method $this setFrom() setFrom(string $table = null)
@@ -14,10 +13,10 @@ use Nip\Database\Query\Select\Union;
  */
 class Select extends AbstractQuery
 {
-
     /**
      * @param $name
      * @param $arguments
+     *
      * @return $this
      */
     public function __call($name, $arguments)
@@ -33,7 +32,7 @@ class Select extends AbstractQuery
                 $input = [$input, $alias, $protected];
             }
 
-            $input[0] = strtoupper($name) . '(' . $this->protect($input[0]) . ')';
+            $input[0] = strtoupper($name).'('.$this->protect($input[0]).')';
 
             return $this->cols($input);
         }
@@ -42,12 +41,13 @@ class Select extends AbstractQuery
     }
 
     /**
-     * Inserts FULLTEXT statement into $this->select and $this->where
+     * Inserts FULLTEXT statement into $this->select and $this->where.
      *
-     * @param mixed $fields
+     * @param mixed  $fields
      * @param string $against
      * @param string $alias
-     * @param boolean $boolean_mode
+     * @param bool   $boolean_mode
+     *
      * @return $this
      */
     public function match($fields, $against, $alias, $boolean_mode = true)
@@ -67,18 +67,19 @@ class Select extends AbstractQuery
                 $match[] = $protected ? $this->protect($field) : $field;
             }
         }
-        $match = "MATCH(" . implode(",",
-                $match) . ") AGAINST ('" . $against . "'" . ($boolean_mode ? " IN BOOLEAN MODE" : "") . ")";
+        $match = 'MATCH('.implode(',',
+                $match).") AGAINST ('".$against."'".($boolean_mode ? ' IN BOOLEAN MODE' : '').')';
 
         return $this->cols([$match, $alias, false])->where([$match]);
     }
 
     /**
-     * Inserts JOIN entry for the last table inserted by $this->from()
+     * Inserts JOIN entry for the last table inserted by $this->from().
      *
-     * @param mixed $table the table to be joined, given as simple string or name - alias pair
-     * @param string|boolean $on
-     * @param string $type SQL join type (INNER, OUTER, LEFT INNER, etc.)
+     * @param mixed       $table the table to be joined, given as simple string or name - alias pair
+     * @param string|bool $on
+     * @param string      $type  SQL join type (INNER, OUTER, LEFT INNER, etc.)
+     *
      * @return $this
      */
     public function join($table, $on = false, $type = '')
@@ -99,10 +100,11 @@ class Select extends AbstractQuery
     }
 
     /**
-     * Sets the group paramater for the query
+     * Sets the group paramater for the query.
      *
      * @param array $fields
-     * @param boolean $rollup suport for modifier WITH ROLLUP
+     * @param bool  $rollup suport for modifier WITH ROLLUP
+     *
      * @return $this
      */
     public function group($fields, $rollup = false)
@@ -127,7 +129,7 @@ class Select extends AbstractQuery
 
         $order = $this->parseOrder();
 
-        $query = "SELECT";
+        $query = 'SELECT';
 
         if (!empty($options)) {
             $query .= " $options";
@@ -166,14 +168,13 @@ class Select extends AbstractQuery
     public function parseOptions()
     {
         if (!empty($this->parts['options'])) {
-            return implode(" ", array_map("strtoupper", $this->parts['options']));
+            return implode(' ', array_map('strtoupper', $this->parts['options']));
         }
-
-        return null;
     }
 
     /**
      * @param $query
+     *
      * @return Union
      */
     public function union($query)
@@ -182,7 +183,7 @@ class Select extends AbstractQuery
     }
 
     /**
-     * Parses SELECT entries
+     * Parses SELECT entries.
      *
      * @return string
      */
@@ -199,7 +200,7 @@ class Select extends AbstractQuery
                     $alias = isset($itemSelect[1]) ? $itemSelect[1] : false;
                     $protected = isset($itemSelect[2]) ? $itemSelect[2] : true;
 
-                    $selectParts[] = ($protected ? $this->protect($field) : $field) . (!empty($alias) ? ' AS ' . $this->protect($alias) : '');
+                    $selectParts[] = ($protected ? $this->protect($field) : $field).(!empty($alias) ? ' AS '.$this->protect($alias) : '');
                 } else {
                     $selectParts[] = $itemSelect;
                 }
@@ -210,7 +211,8 @@ class Select extends AbstractQuery
     }
 
     /**
-     * Parses FROM entries
+     * Parses FROM entries.
+     *
      * @return string
      */
     private function parseFrom()
@@ -227,28 +229,27 @@ class Select extends AbstractQuery
                         if (!$alias) {
                             trigger_error('Select statements in for need aliases defined', E_USER_ERROR);
                         }
-                        $parts[$key] = '(' . $table . ') AS ' . $this->protect($alias) . $this->parseJoin($alias);
+                        $parts[$key] = '('.$table.') AS '.$this->protect($alias).$this->parseJoin($alias);
                     } else {
-                        $parts[$key] = $this->protect($table) . ' AS ' . $this->protect((!empty($alias) ? $alias : $table)) . $this->parseJoin($alias);
+                        $parts[$key] = $this->protect($table).' AS '.$this->protect((!empty($alias) ? $alias : $table)).$this->parseJoin($alias);
                     }
                 } elseif (!strpos($item, ' ')) {
-                    $parts[] = $this->protect($item) . $this->parseJoin($item);
+                    $parts[] = $this->protect($item).$this->parseJoin($item);
                 } else {
                     $parts[] = $item;
                 }
             }
 
-            return implode(", ", array_unique($parts));
+            return implode(', ', array_unique($parts));
         }
-
-        return null;
     }
 
     /**
      * Parses JOIN entries for a given table
-     * Concatenates $this->join entries for input table
+     * Concatenates $this->join entries for input table.
      *
      * @param string $table table to build JOIN statement for
+     *
      * @return string
      */
     private function parseJoin($table)
@@ -265,26 +266,24 @@ class Select extends AbstractQuery
                 $joinAlias = isset($join[0][1]) ? $join[0][1] : false;
                 $joinOn = isset($join[1]) ? $join[1] : false;
 
-
                 $joinType = isset($join[2]) ? $join[2] : '';
 
-                $result .= ($joinType ? ' ' . strtoupper($joinType) : '') . ' JOIN ';
+                $result .= ($joinType ? ' '.strtoupper($joinType) : '').' JOIN ';
                 if (strpos($joinTable, '(') !== false) {
                     $result .= $joinTable;
                 } else {
                     $result .= $this->protect($joinTable);
                 }
-                $result .= (!empty($joinAlias) ? ' AS ' . $this->protect($joinAlias) : '');
+                $result .= (!empty($joinAlias) ? ' AS '.$this->protect($joinAlias) : '');
 
                 if ($joinOn) {
                     $result .= ' ON ';
                     if (is_array($joinOn)) {
-                        $result .= $this->protect($table . '.' . $joinOn[0]) . ' = ' . $this->protect($joinTable . '.' . $joinOn[1]);
+                        $result .= $this->protect($table.'.'.$joinOn[0]).' = '.$this->protect($joinTable.'.'.$joinOn[1]);
                     } else {
-                        $result .= '(' . $joinOn . ')';
+                        $result .= '('.$joinOn.')';
                     }
                 }
-
             }
         }
 
@@ -292,15 +291,16 @@ class Select extends AbstractQuery
     }
 
     /**
-     * Parses GROUP entries
+     * Parses GROUP entries.
      *
      * @uses $this->group['fields'] array with elements to group by
+     *
      * @return string
      */
     private function parseGroup()
     {
         $group = '';
-        if (isset ($this->parts['group']['fields'])) {
+        if (isset($this->parts['group']['fields'])) {
             if (is_array($this->parts['group']['fields'])) {
                 $groupFields = [];
                 foreach ($this->parts['group']['fields'] as $field) {
@@ -308,7 +308,7 @@ class Select extends AbstractQuery
                     $column = isset($field[0]) ? $field[0] : false;
                     $type = isset($field[1]) ? $field[1] : '';
 
-                    $groupFields[] = $this->protect($column) . ($type ? ' ' . strtoupper($type) : '');
+                    $groupFields[] = $this->protect($column).($type ? ' '.strtoupper($type) : '');
                 }
 
                 $group .= implode(', ', $groupFields);

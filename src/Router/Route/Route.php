@@ -3,8 +3,7 @@
 namespace Nip\Router\Route;
 
 /**
- * Class Route
- * @package Nip\Router\Route
+ * Class Route.
  */
 class Route extends AbstractRoute
 {

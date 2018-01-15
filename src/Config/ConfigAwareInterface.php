@@ -3,20 +3,19 @@
 namespace Nip\Config;
 
 /**
- * Interface ConfigAwareInterface
- * @package Nip\Config
+ * Interface ConfigAwareInterface.
  */
 interface ConfigAwareInterface
 {
     /**
-     * Set a container
+     * Set a container.
      *
      * @param Config $config
      */
     public function setConfig($config);
 
     /**
-     * Get the container
+     * Get the container.
      *
      * @return Config
      */

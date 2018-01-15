@@ -5,12 +5,10 @@ namespace Nip\Records\Relations;
 use Nip\Records\Collections\Collection as RecordCollection;
 
 /**
- * Class BelongsTo
- * @package Nip\Records\Relations
+ * Class BelongsTo.
  */
 class BelongsTo extends Relation
 {
-
     /**
      * @var string
      */
@@ -35,6 +33,7 @@ class BelongsTo extends Relation
      * @param $dictionary
      * @param $collection
      * @param $record
+     *
      * @return mixed
      */
     public function getResultsFromCollectionDictionary($dictionary, $collection, $record)
@@ -51,6 +50,7 @@ class BelongsTo extends Relation
      * Build model dictionary keyed by the relation's foreign key.
      *
      * @param RecordCollection $collection
+     *
      * @return array
      */
     protected function buildDictionary(RecordCollection $collection)

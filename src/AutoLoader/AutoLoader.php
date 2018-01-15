@@ -8,12 +8,10 @@ use Nip\AutoLoader\Loaders\ClassMap;
 use Nip\AutoLoader\Loaders\Psr4Class;
 
 /**
- * Class AutoLoader
- * @package Nip\AutoLoader
+ * Class AutoLoader.
  */
 class AutoLoader
 {
-
     /**
      * @var bool
      */
@@ -36,8 +34,10 @@ class AutoLoader
 
     /**
      * @param self $autoloader
-     * @return bool
+     *
      * @throws Exception
+     *
+     * @return bool
      */
     public static function registerHandler($autoloader)
     {
@@ -54,7 +54,7 @@ class AutoLoader
     }
 
     /**
-     * Singleton
+     * Singleton.
      *
      * @return self
      */
@@ -70,6 +70,7 @@ class AutoLoader
 
     /**
      * @param $dir
+     *
      * @return $this
      */
     public function addDirectory($dir)
@@ -89,6 +90,7 @@ class AutoLoader
 
     /**
      * @param $name
+     *
      * @return AbstractLoader
      */
     public function getLoader($name)
@@ -102,6 +104,7 @@ class AutoLoader
 
     /**
      * @param $name
+     *
      * @return bool
      */
     public function hasLoader($name)
@@ -120,18 +123,20 @@ class AutoLoader
 
     /**
      * @param $name
+     *
      * @return AbstractLoader
      */
     public function newLoader($name)
     {
         $class = $this->getLoaderClass($name);
-        $loader = new $class;
+        $loader = new $class();
 
         return $loader;
     }
 
     /**
      * @param $name
+     *
      * @return string
      */
     public function getLoaderClass($name)
@@ -152,6 +157,7 @@ class AutoLoader
     /**
      * @param $prefix
      * @param $baseDir
+     *
      * @return $this
      */
     public function addNamespace($prefix, $baseDir)
@@ -195,6 +201,7 @@ class AutoLoader
 
     /**
      * @param $path
+     *
      * @return $this
      */
     public function setCachePath($path)
@@ -206,6 +213,7 @@ class AutoLoader
 
     /**
      * @param $class
+     *
      * @return bool
      */
     public function isClass($class)
@@ -215,6 +223,7 @@ class AutoLoader
 
     /**
      * @param $class
+     *
      * @return null|string
      */
     public function getClassLocation($class)
@@ -226,8 +235,6 @@ class AutoLoader
                 return $path;
             }
         }
-
-        return null;
     }
 
     /**
@@ -240,6 +247,7 @@ class AutoLoader
 
     /**
      * @param $class
+     *
      * @return bool
      */
     public function autoload($class)
@@ -254,6 +262,7 @@ class AutoLoader
 
     /**
      * @param $class
+     *
      * @return bool
      */
     public function load($class)
@@ -278,6 +287,7 @@ class AutoLoader
 
     /**
      * @param $token
+     *
      * @return bool
      */
     public function hasIgnoreTokens($token)

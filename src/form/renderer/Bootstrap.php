@@ -2,7 +2,6 @@
 
 class Nip_Form_Renderer_Bootstrap extends Nip_Form_Renderer_Abstract
 {
-
     public function renderElements()
     {
         $return = '';
@@ -22,6 +21,7 @@ class Nip_Form_Renderer_Bootstrap extends Nip_Form_Renderer_Abstract
         foreach ($elements as $element) {
             $return .= $this->renderRow($element);
         }
+
         return $return;
     }
 
@@ -33,7 +33,7 @@ class Nip_Form_Renderer_Bootstrap extends Nip_Form_Renderer_Abstract
                 return $element->render();
             }
 
-            $return .= '<div class="form-group row-' . $element->getUniqueId() . ($element->isError() ? ' has-error' : '') . '">';
+            $return .= '<div class="form-group row-'.$element->getUniqueId().($element->isError() ? ' has-error' : '').'">';
 
             $renderLabel = $element->getOption('render_label');
             if ($renderLabel !== false) {
@@ -44,12 +44,12 @@ class Nip_Form_Renderer_Bootstrap extends Nip_Form_Renderer_Abstract
                 $class = $element->getType() == 'checkbox' ? 'col-sm-offset-3 col-sm-9' : 'col-sm-9';
             }
 
-            $return .= '<div class="' . $class . '">';
+            $return .= '<div class="'.$class.'">';
             $return .= $this->renderElement($element);
 
             $helpBlock = $element->getOption('form-help');
             if ($helpBlock) {
-                $return .= '<span class="help-block">' . $helpBlock . '</span>';
+                $return .= '<span class="help-block">'.$helpBlock.'</span>';
             }
 
             $return .= $element->renderErrors();
@@ -69,20 +69,22 @@ class Nip_Form_Renderer_Bootstrap extends Nip_Form_Renderer_Abstract
             $error = $element->isError();
         }
 
-        $return = '<label class="control-label' . ($this->getForm()->hasClass('form-horizontal') ? ' col-sm-3' : '') . ($error ? ' error' : '') . '">';
-        $return .= $label . ':';
+        $return = '<label class="control-label'.($this->getForm()->hasClass('form-horizontal') ? ' col-sm-3' : '').($error ? ' error' : '').'">';
+        $return .= $label.':';
 
         if ($required) {
             $return .= '<span class="required">*</span>';
         }
 
-        $return .= "</label>";
+        $return .= '</label>';
+
         return $return;
     }
 
     public function renderElement(Nip_Form_Element_Abstract $element)
     {
         $element->addClass('form-control');
+
         return $element->renderElement();
     }
 
@@ -93,14 +95,14 @@ class Nip_Form_Renderer_Bootstrap extends Nip_Form_Renderer_Abstract
 
         if ($buttons) {
             $return .= '<div class="form-group">
-                            <div class="' . ($this->getForm()->hasClass('form-horizontal') ? 'col-sm-offset-3 col-sm-9' : '') . '">';
+                            <div class="'.($this->getForm()->hasClass('form-horizontal') ? 'col-sm-offset-3 col-sm-9' : '').'">';
             foreach ($buttons as $button) {
-                $return .= $button->render() . "\n";
+                $return .= $button->render()."\n";
             }
             $return .= '</div>';
             $return .= '</div>';
         }
+
         return $return;
     }
-
 }

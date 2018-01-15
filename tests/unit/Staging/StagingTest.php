@@ -8,12 +8,10 @@ use Nip\Staging\Staging;
 use Nip\Tests\Unit\AbstractTest;
 
 /**
- * Class StagingTest
- * @package Nip\Tests\Unit
+ * Class StagingTest.
  */
 class StagingTest extends AbstractTest
 {
-
     /**
      * @var Staging
      */

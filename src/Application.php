@@ -29,8 +29,7 @@ use Whoops\Handler\PrettyPageHandler;
 use Whoops\Run as WhoopsRun;
 
 /**
- * Class Application
- * @package Nip
+ * Class Application.
  */
 class Application
 {
@@ -162,7 +161,8 @@ class Application
     }
 
     /**
-     * @param  LoggerManager $logger
+     * @param LoggerManager $logger
+     *
      * @return $this
      */
     public function setLogger($logger)
@@ -235,7 +235,7 @@ class Application
         $stage = $this->getStaging()->getStage();
         $pathInfo = $this->getRequest()->getHttp()->getBaseUrl();
 
-        $baseURL = $stage->getHTTP() . $stage->getHost() . $pathInfo;
+        $baseURL = $stage->getHTTP().$stage->getHost().$pathInfo;
         define('BASE_URL', $baseURL);
     }
 
@@ -308,7 +308,7 @@ class Application
 
             if ($domain != 'localhost') {
                 Cookie\Jar::instance()->setDefaults(
-                    ['domain' => '.' . $domain]
+                    ['domain' => '.'.$domain]
                 );
             }
             $this->sessionManager->init();
@@ -385,11 +385,13 @@ class Application
 
     /**
      * @param null|Request $request
+     *
      * @return Response
      */
     public function handleRequest($request = null)
     {
         $request = $request ? $request : $this->getRequest();
+
         try {
             ob_start();
             $this->preHandleRequest();
@@ -421,6 +423,7 @@ class Application
 
     /**
      * @param Request $request
+     *
      * @return bool
      */
     protected function isValidRequest($request)
@@ -438,6 +441,7 @@ class Application
 
     /**
      * @param Request $request
+     *
      * @return Response
      */
     protected function getResponseFromRequest($request)
@@ -454,7 +458,8 @@ class Application
 
     /**
      * @param Exception $e
-     * @param Request $request
+     * @param Request   $request
+     *
      * @return Response
      */
     protected function handleException(Request $request, Exception $e)
@@ -467,7 +472,8 @@ class Application
     /**
      * Report the exception to the exception handler.
      *
-     * @param  Exception $e
+     * @param Exception $e
+     *
      * @return void
      */
     protected function reportException(Exception $e)
@@ -476,8 +482,9 @@ class Application
     }
 
     /**
-     * @param Request $request
+     * @param Request   $request
      * @param Exception $e
+     *
      * @return Response
      */
     protected function renderException(Request $request, Exception $e)
@@ -487,7 +494,7 @@ class Application
 
             return $this->getResponseFromRequest($request);
         } else {
-            $whoops = new WhoopsRun;
+            $whoops = new WhoopsRun();
             $whoops->allowQuit(false);
             $whoops->writeToOutput(false);
             $whoops->pushHandler(new PrettyPageHandler());
@@ -498,8 +505,9 @@ class Application
 
     /** @noinspection PhpUnusedParameterInspection
      *
-     * @param Request $request
+     * @param Request  $request
      * @param Response $response
+     *
      * @return Response
      */
     public function filterResponse(Response $response, Request $request)
@@ -508,7 +516,7 @@ class Application
     }
 
     /**
-     * @param Request $request
+     * @param Request  $request
      * @param Response $response
      */
     public function terminate(Request $request, Response $response)
@@ -518,18 +526,20 @@ class Application
     /**
      * Throw an HttpException with the given data.
      *
-     * @param  int $code
-     * @param  string $message
-     * @param  array $headers
-     * @return void
+     * @param int    $code
+     * @param string $message
+     * @param array  $headers
      *
      * @throws HttpException
+     *
+     * @return void
      */
     public function abort($code, $message = '', array $headers = [])
     {
         if ($code == 404) {
             throw new NotFoundHttpException($message);
         }
+
         throw new HttpException($code, $message, null, $headers);
     }
 

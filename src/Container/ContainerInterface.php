@@ -3,8 +3,7 @@
 namespace Nip\Container;
 
 /**
- * Interface ContainerInterface
- * @package League\Container
+ * Interface ContainerInterface.
  */
 interface ContainerInterface extends ImmutableContainerInterface
 {

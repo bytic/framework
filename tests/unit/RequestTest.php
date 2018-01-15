@@ -6,12 +6,10 @@ use Nip\Request;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 /**
- * Class RequestTest
- * @package Nip\Tests\Unit
+ * Class RequestTest.
  */
 class RequestTest extends AbstractTest
 {
-
     /**
      * @var \Nip\Request
      */
@@ -111,18 +109,18 @@ class RequestTest extends AbstractTest
     {
         $_FILES = [
             'file1' => [
-                'name' => 'MyFile.txt',
-                'type' => 'text/plain',
+                'name'     => 'MyFile.txt',
+                'type'     => 'text/plain',
                 'tmp_name' => codecept_data_dir('Request/php1h4j1o'),
-                'error' => UPLOAD_ERR_OK,
-                'size' => 123,
+                'error'    => UPLOAD_ERR_OK,
+                'size'     => 123,
             ],
             'file2' => [
-                'name' => 'MyFile.jpg',
-                'type' => 'image/jpeg',
+                'name'     => 'MyFile.jpg',
+                'type'     => 'image/jpeg',
                 'tmp_name' => codecept_data_dir('Request/php1h4j1o'),
-                'error' => UPLOAD_ERR_OK,
-                'size' => 300,
+                'error'    => UPLOAD_ERR_OK,
+                'size'     => 300,
             ],
         ];
 

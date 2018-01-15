@@ -3,15 +3,14 @@
 namespace Nip\Helpers\View;
 
 /**
- * Class Errors
- * @package Nip\Helpers\View
+ * Class Errors.
  */
 class Errors extends AbstractHelper
 {
-
     /**
      * @param array $items
-     * @param bool $wrap
+     * @param bool  $wrap
+     *
      * @return string
      */
     public static function render($items = [], $wrap = true)
@@ -25,7 +24,7 @@ class Errors extends AbstractHelper
                     $return .= '<strong>';
                     $return .= translator()->translate('general.form.errors.explanation');
                     $return .= ':</strong>';
-                    $return .= "<ul>";
+                    $return .= '<ul>';
                 }
             }
 
@@ -36,9 +35,9 @@ class Errors extends AbstractHelper
 
             if ($wrap) {
                 if (count($items) > 1) {
-                    $return .= "</ul>";
+                    $return .= '</ul>';
                 }
-                $return .= "</div>";
+                $return .= '</div>';
             }
         }
 

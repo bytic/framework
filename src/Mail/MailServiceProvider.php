@@ -5,14 +5,12 @@ namespace Nip\Mail;
 use Nip\Container\ServiceProvider\AbstractSignatureServiceProvider;
 
 /**
- * Class MailServiceProvider
- * @package Nip\Mail
+ * Class MailServiceProvider.
  */
 class MailServiceProvider extends AbstractSignatureServiceProvider
 {
-
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function register()
     {
@@ -34,7 +32,7 @@ class MailServiceProvider extends AbstractSignatureServiceProvider
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function provides()
     {

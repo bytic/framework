@@ -17,7 +17,6 @@ class HelperBrokerTest extends \Codeception\TestCase\Test
         static::assertEquals('Nip_Helper_Url', $broker->getHelperClass('Url'));
         static::assertEquals('Nip_Helper_XML', $broker->getHelperClass('XML'));
         static::assertEquals('Nip_Helper_Passwords', $broker->getHelperClass('passwords'));
-
     }
 
     public function testGenerateHelper()
@@ -45,5 +44,4 @@ class HelperBrokerTest extends \Codeception\TestCase\Test
     protected function _after()
     {
     }
-
 }

@@ -4,9 +4,8 @@ namespace Nip\Helpers\View;
 
 class Scripts extends AbstractHelper
 {
-
     protected $_files = [];
-    protected $_defaultPlaceholder = "head";
+    protected $_defaultPlaceholder = 'head';
     protected $_pack = false;
 
     public function add($file, $placeholder = false)
@@ -67,7 +66,6 @@ class Scripts extends AbstractHelper
                 }
             }
 
-
             if ($external) {
                 foreach ($external as $file) {
                     $return .= $this->buildTag($file);
@@ -76,6 +74,7 @@ class Scripts extends AbstractHelper
 
             $return .= $this->pack($internal);
         }
+
         return $return;
     }
 
@@ -98,32 +97,32 @@ class Scripts extends AbstractHelper
             } else {
                 $lastUpdated = 0;
                 foreach ($files as $file) {
-                    $path = $this->getBasePath() . $file . ".js";
+                    $path = $this->getBasePath().$file.'.js';
                     if (file_exists($path)) {
                         $lastUpdated = max($lastUpdated, filemtime($path));
                     }
                 }
 
-                $hash = md5(implode("", $files)) . "." . $lastUpdated;
+                $hash = md5(implode('', $files)).'.'.$lastUpdated;
 
-                $path = CACHE_PATH . "scripts/" . $hash;
-                if (!file_exists($path . ".js")) {
-                    $content = "";
+                $path = CACHE_PATH.'scripts/'.$hash;
+                if (!file_exists($path.'.js')) {
+                    $content = '';
                     foreach ($files as $file) {
-                        $content .= file_get_contents($this->getBasePath() . $file . ".js") . "\r\n";
+                        $content .= file_get_contents($this->getBasePath().$file.'.js')."\r\n";
                     }
-                    $packer = new \JavaScriptPacker($content, "Normal", true, false);
+                    $packer = new \JavaScriptPacker($content, 'Normal', true, false);
                     $content = $packer->pack();
 
-                    $file = new \Nip_File_Handler(array("path" => $path . ".js"));
+                    $file = new \Nip_File_Handler(['path' => $path.'.js']);
                     $file->write($content);
 
                     if ($file->gzip()) {
-                        $file->setPath($path . ".gz")->write();
+                        $file->setPath($path.'.gz')->write();
                     }
                 }
 
-                return '<script type="text/javascript" src="' . $this->buildURL($hash) . '"></script>' . "\r\n";
+                return '<script type="text/javascript" src="'.$this->buildURL($hash).'"></script>'."\r\n";
             }
         }
 
@@ -133,7 +132,7 @@ class Scripts extends AbstractHelper
     public function buildURL($source)
     {
         return $this->getBaseUrl().$source.(in_array(\Nip_File_System::instance()->getExtension($source),
-            array("js", "php")) ? '' : '.js');
+            ['js', 'php']) ? '' : '.js');
     }
 
     public function getBaseUrl()
@@ -152,5 +151,4 @@ class Scripts extends AbstractHelper
 
         return $this;
     }
-
 }

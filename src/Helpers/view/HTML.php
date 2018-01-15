@@ -4,15 +4,14 @@ namespace Nip\Helpers\View;
 
 class HTML extends AbstractHelper
 {
-
-    public function booleanOptions($selected = "")
+    public function booleanOptions($selected = '')
     {
-        $return = "";
+        $return = '';
 
-        $return .= '<option value="0"'.($selected !== "" && $selected == '0' ? ' selected="selected"'
-                : '').'>'.translator()->translate("NO").'</option>';
+        $return .= '<option value="0"'.($selected !== '' && $selected == '0' ? ' selected="selected"'
+                : '').'>'.translator()->translate('NO').'</option>';
         $return .= '<option value="1"'.($selected == '1' ? ' selected="selected"'
-                : '').'>'.translator()->translate("YES").'</option>';
+                : '').'>'.translator()->translate('YES').'</option>';
 
         return $return;
     }
@@ -22,6 +21,7 @@ class HTML extends AbstractHelper
      * @param $string
      * @param $tree
      * @param bool $selected
+     *
      * @return bool|string
      */
     public function treeOptions($value, $string, $tree, $selected = false)
@@ -36,14 +36,15 @@ class HTML extends AbstractHelper
      * @param $value
      * @param $string
      * @param array $array
-     * @param int $level
+     * @param int   $level
+     *
      * @return array
      */
     public function optionTree(
         $tree,
         $value,
         $string,
-        $array = array(),
+        $array = [],
         $level = 0
     ) {
         if (is_array($tree)) {
@@ -55,12 +56,11 @@ class HTML extends AbstractHelper
                 $oString .= '|--';
 
                 $oString .= $page->$string;
-                $array[] = array(
-                    'value' => $page->$value,
-                    'string' => $oString,
+                $array[] = [
+                    'value'    => $page->$value,
+                    'string'   => $oString,
                     'disabled' => ($page->has_children == '1') ? false : true,
-                );
-
+                ];
 
                 if (is_array($page->children) && count($page->children) > 0) {
                     $array = $this->optionTree($page->children, $value, $string,
@@ -77,6 +77,7 @@ class HTML extends AbstractHelper
      * @param bool $value
      * @param bool $string
      * @param bool $selected
+     *
      * @return bool|string
      */
     public function options(
@@ -140,11 +141,9 @@ class HTML extends AbstractHelper
                     $oValue = $option->$value;
                     $oString = $option->$string;
                 } elseif (is_array($option)) {
-
                     $oValue = $option[$value];
                     $oString = $option[$string];
                 } else {
-
                     $oValue = $option;
                     $oString = $option;
                 }
@@ -158,7 +157,7 @@ class HTML extends AbstractHelper
         }
     }
 
-    public function unorderedList($items = array())
+    public function unorderedList($items = [])
     {
         $return = '<ul>';
 
@@ -173,9 +172,10 @@ class HTML extends AbstractHelper
 
     /**
      * @param array $attributes
+     *
      * @return string
      */
-    public function attributes($attributes = array())
+    public function attributes($attributes = [])
     {
         $return = [];
 
@@ -185,20 +185,21 @@ class HTML extends AbstractHelper
             }
         }
 
-        return " ".implode(" ", $return);
+        return ' '.implode(' ', $return);
     }
 
     /**
      * @param $buffer
+     *
      * @return mixed
      */
     public function compress($buffer)
     {
         // remove comments, tabs, spaces, newlines, etc.
-        $search = array(
-            "/ +/" => " ",
-            "/<!--(.*?)-->|[\t\r\n]|<!--|-->|\/\/ <!--|\/\/ -->|<!--\[CDATA\[|\/\/ \]\]-->|\]\]>|\/\/\]\]>|\/\/<!--\[CDATA\[/" => "",
-        );
+        $search = [
+            '/ +/'                                                                                                             => ' ',
+            "/<!--(.*?)-->|[\t\r\n]|<!--|-->|\/\/ <!--|\/\/ -->|<!--\[CDATA\[|\/\/ \]\]-->|\]\]>|\/\/\]\]>|\/\/<!--\[CDATA\[/" => '',
+        ];
 
         return preg_replace(array_keys($search), array_values($search), $buffer);
     }

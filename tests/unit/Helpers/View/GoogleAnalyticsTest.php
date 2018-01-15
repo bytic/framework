@@ -22,15 +22,15 @@ class GoogleAnalyticsTest extends \Codeception\TestCase\Test
 
     public function testAddOperation()
     {
-        $data = array(
+        $data = [
             'orderId' => 1,
-            'amount' => 100,
-        );
+            'amount'  => 100,
+        ];
         $this->_object->addTransaction($data);
 
-        $response = array(
-            1 => (object) $data
-        );
+        $response = [
+            1 => (object) $data,
+        ];
 
         static::assertEquals($this->_object->getTransactions(), $response);
     }

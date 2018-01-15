@@ -9,11 +9,10 @@ use Nip\Mvc\Modules;
 use Nip\Router\Router;
 
 /**
- * Class ApplicationTest
+ * Class ApplicationTest.
  */
 class ApplicationTest extends AbstractTest
 {
-
     /**
      * @var Application
      */
@@ -29,8 +28,6 @@ class ApplicationTest extends AbstractTest
         static::assertInstanceOf(Router::class, $this->application->getContainer()->get('router'));
     }
 
-    /**
-     */
     protected function setUp()
     {
         parent::setUp();
