@@ -127,17 +127,21 @@ class Nip_Form_Element_Texteditor extends Nip_Form_Element_Textarea
      */
     protected function filterHTML()
     {
-        $this->setValue($this->getInputFilter()->process($this->getValue()));
+        $this->setValue($this->getInputFilter()->purify($this->getValue()));
         return $this;
     }
 
     /**
-     * @return InputFilter
+     * @return HTMLPurifier
      */
     protected function getInputFilter()
     {
         if (!$this->inputFilter) {
-            $this->inputFilter = new InputFilter($this->allowedTags, $this->allowedAttributes, 0, 0, 1);
+            $config = HTMLPurifier_Config::createDefault();
+            $config->set('HTML.AllowedElements', $this->allowedTags);
+            $config->set('HTML.AllowedAttributes', $this->allowedAttributes);
+            $purifier          = new HTMLPurifier($config);
+            $this->inputFilter = $purifier;
         }
 
         return $this->inputFilter;
