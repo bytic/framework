@@ -24,7 +24,7 @@ class HandleExceptions extends AbstractBootstraper
         error_reporting(-1);
 
         if (config('app.debug')) {
-            Debug::enable(E_ALL, false);
+            Debug::enable(E_ALL, true);
         } else {
             Debug::enable(-1, false);
         }
