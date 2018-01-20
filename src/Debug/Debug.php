@@ -13,7 +13,7 @@ class Debug extends SymfonyDebug
 {
     private static $enabled = false;
 
-    /**
+    /** @noinspection PhpMissingParentCallCommonInspection
      * Enables the debug tools.
      *
      * This method registers an error handler and an exception handler.
@@ -41,13 +41,14 @@ class Debug extends SymfonyDebug
         if ('cli' !== PHP_SAPI) {
             ini_set('display_errors', 0);
             ExceptionHandler::register($displayErrors);
-        } elseif ($displayErrors && (!ini_get('log_errors') || ini_get('error_log'))) {
+        } elseif ($displayErrors && ( ! ini_get('log_errors') || ini_get('error_log'))) {
             // CLI - display errors only if they're not already logged to STDERR
             ini_set('display_errors', 1);
         }
 
         if ($displayErrors) {
             $handler = ErrorHandler::register(new ErrorHandler(new BufferingLogger()));
+            $handler->throwAt(E_COMPILE_ERROR | E_CORE_ERROR | E_ERROR | E_PARSE, true);
         } else {
             $handler = ErrorHandler::register();
             $handler->throwAt(0, true);

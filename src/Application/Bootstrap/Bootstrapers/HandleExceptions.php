@@ -26,7 +26,7 @@ class HandleExceptions extends AbstractBootstraper
         if (config('app.debug')) {
             Debug::enable(E_ALL, true);
         } else {
-            Debug::enable(-1, false);
+            Debug::enable(E_ALL & ~E_NOTICE, false);
         }
 
 //        $handler = set_error_handler('var_dump');
