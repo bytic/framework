@@ -70,6 +70,7 @@ abstract class DebugBar extends DebugBarGeneric
 
     /**
      * @param MonologLogger $monolog
+     * @throws \DebugBar\DebugBarException
      */
     public function addMonolog(MonologLogger $monolog)
     {
@@ -121,22 +122,25 @@ abstract class DebugBar extends DebugBarGeneric
         if (false !== $pos) {
             $content = substr($content, 0, $pos) . $renderedContent . substr($content, $pos);
         } else {
-            $content = $content . $renderedContent;
+            $content = '<body>'.$content.'</body>'.$renderedContent;
         }
         // Update the new content and reset the content length
         $response->setContent($content);
         $response->headers->remove('Content-Length');
     }
 
+    /**
+     * @return mixed|string
+     */
     protected function generateAssetsContent()
     {
         $renderer = $this->getJavascriptRenderer();
         ob_start();
         echo '<style>';
-        echo $renderer->dumpCssAssets();
+        $renderer->dumpCssAssets();
         echo '</style>';
         echo '<script type="text/javascript">';
-        echo $renderer->dumpJsAssets();
+        $renderer->dumpJsAssets();
         echo '</script>';
         echo '<script type="text/javascript">jQuery.noConflict(true);</script>';
         $content = ob_get_clean();
