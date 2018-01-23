@@ -66,6 +66,7 @@
       <path value="$PROJECT_DIR$/vendor/bytic/form" />
       <path value="$PROJECT_DIR$/vendor/bytic/view" />
       <path value="$PROJECT_DIR$/vendor/bytic/collections" />
+      <path value="$PROJECT_DIR$/vendor/bytic/container" />
     </include_path>
   </component>
   <component name="PhpProjectSharedConfiguration" php_language_level="7" />
