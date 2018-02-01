@@ -72,6 +72,7 @@ if (!function_exists('config')) {
         if (is_array($key)) {
             return app('config')->set($key);
         }
+
         return app('config')->get($key, $default);
     }
 }
@@ -91,6 +92,7 @@ if (!function_exists('request')) {
             return $request;
         }
         $value = $request->get($key);
+
         return $value ? $value : $default;
     }
 }
@@ -117,10 +119,12 @@ function translator()
     return app('translator');
 }
 
-/**
- * @return Nip\Inflector\Inflector
- */
-function inflector()
-{
-    return app('inflector');
+if (!function_exists('asset')) {
+    /**
+     * @return Nip\Inflector\Inflector
+     */
+    function inflector()
+    {
+        return app('inflector');
+    }
 }

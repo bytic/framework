@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-  "content-hash": "ae1c5492fa1efb38afbb83e015fb6bfd",
+  "content-hash": "55f895f55e2bf5bc301397de3ee54ab5",
     "packages": [
         {
           "name": "bytic/collections",
@@ -241,6 +241,52 @@
         "description": "Php Framework",
         "homepage": "https://github.com/bytic/http",
         "time": "2018-02-01T22:19:54+00:00"
+      },
+      {
+        "name": "bytic/inflector",
+        "version": "1.0.0",
+        "source": {
+          "type": "git",
+          "url": "https://github.com/bytic/inflector.git",
+          "reference": "2deb382c492fe7671e1c7ecdc72adf72a8dcddbe"
+        },
+        "dist": {
+          "type": "zip",
+          "url": "https://api.github.com/repos/bytic/inflector/zipball/2deb382c492fe7671e1c7ecdc72adf72a8dcddbe",
+          "reference": "2deb382c492fe7671e1c7ecdc72adf72a8dcddbe",
+          "shasum": ""
+        },
+        "require": {
+          "php": "^7.0"
+        },
+        "require-dev": {
+          "mockery/mockery": "^0.9",
+          "phpunit/phpunit": "^6.2",
+          "squizlabs/php_codesniffer": "^3.0"
+        },
+        "type": "library",
+        "autoload": {
+          "psr-4": {
+            "Nip\\Inflector\\": "src"
+          },
+          "classmap": [
+            "src"
+          ],
+          "files": []
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+          "MIT"
+        ],
+        "authors": [
+          {
+            "name": "Gabriel Solomon",
+            "email": "hello@gabrielsolomon.ro"
+          }
+        ],
+        "description": "Php Framework",
+        "homepage": "https://github.com/bytic/inflector",
+        "time": "2018-02-01T22:54:55+00:00"
       },
       {
         "name": "bytic/orm",
