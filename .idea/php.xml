@@ -72,6 +72,7 @@
       <path value="$PROJECT_DIR$/vendor/bytic/orm" />
       <path value="$PROJECT_DIR$/vendor/bytic/http" />
       <path value="$PROJECT_DIR$/vendor/bytic/inflector" />
+      <path value="$PROJECT_DIR$/vendor/bytic/router" />
     </include_path>
   </component>
   <component name="PhpProjectSharedConfiguration" php_language_level="7" />

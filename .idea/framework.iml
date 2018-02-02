@@ -13,6 +13,7 @@
       <excludeFolder url="file://$MODULE_DIR$/vendor/bytic/inflector" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/bytic/orm" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/bytic/request-detective" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/bytic/router" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/bytic/view" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/composer" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/container-interop/container-interop" />
