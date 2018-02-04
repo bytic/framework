@@ -34,6 +34,7 @@
   "require": {
     "php": "^7.0",
     "bytic/request-detective": "^1.0",
+    "bytic/controllers": "^1.0",
     "bytic/collections": "^1.0",
     "bytic/config": "^1.0",
     "bytic/container": "^1.0",
