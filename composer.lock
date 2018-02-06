@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-  "content-hash": "7d5fbbb3585565720a66f2eb2c6cdf92",
+  "content-hash": "fa18021b8c0505bd7c45cf1d6abfbe5a",
     "packages": [
         {
           "name": "bytic/collections",
@@ -282,16 +282,16 @@
         },
       {
         "name": "bytic/http",
-        "version": "1.0.2",
+        "version": "1.0.4",
         "source": {
           "type": "git",
           "url": "https://github.com/bytic/http.git",
-          "reference": "e8c486ba5dd48807163901433d97b72312d518a9"
+          "reference": "94c7fe6469c549a37ac7e196aa6fa8d7c2626454"
         },
         "dist": {
           "type": "zip",
-          "url": "https://api.github.com/repos/bytic/http/zipball/e8c486ba5dd48807163901433d97b72312d518a9",
-          "reference": "e8c486ba5dd48807163901433d97b72312d518a9",
+          "url": "https://api.github.com/repos/bytic/http/zipball/94c7fe6469c549a37ac7e196aa6fa8d7c2626454",
+          "reference": "94c7fe6469c549a37ac7e196aa6fa8d7c2626454",
           "shasum": ""
         },
         "require": {
@@ -330,7 +330,7 @@
         ],
         "description": "Php Framework",
         "homepage": "https://github.com/bytic/http",
-        "time": "2018-02-04T18:12:26+00:00"
+        "time": "2018-02-05T07:56:16+00:00"
       },
       {
         "name": "bytic/inflector",
@@ -521,6 +521,49 @@
           "homepage": "https://github.com/bytic/router",
           "time": "2018-02-02T10:52:50+00:00"
         },
+      {
+        "name": "bytic/utility",
+        "version": "1.0.0",
+        "source": {
+          "type": "git",
+          "url": "https://github.com/bytic/utility.git",
+          "reference": "3af5df2d60ed448f0f342fbf50370b2de8bde9fa"
+        },
+        "dist": {
+          "type": "zip",
+          "url": "https://api.github.com/repos/bytic/utility/zipball/3af5df2d60ed448f0f342fbf50370b2de8bde9fa",
+          "reference": "3af5df2d60ed448f0f342fbf50370b2de8bde9fa",
+          "shasum": ""
+        },
+        "require": {
+          "nesbot/carbon": "^1.22",
+          "php": "^7.0"
+        },
+        "require-dev": {
+          "mockery/mockery": "^0.9",
+          "phpunit/phpunit": "^6.2",
+          "squizlabs/php_codesniffer": "^3.0"
+        },
+        "type": "library",
+        "autoload": {
+          "psr-4": {
+            "Nip\\Utility\\": "src"
+          }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+          "MIT"
+        ],
+        "authors": [
+          {
+            "name": "Gabriel Solomon",
+            "email": "hello@gabrielsolomon.ro"
+          }
+        ],
+        "description": "Php Framework",
+        "homepage": "https://github.com/bytic/utility",
+        "time": "2018-02-06T10:31:23+00:00"
+      },
       {
         "name": "bytic/view",
         "version": "1.0.3",
