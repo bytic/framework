@@ -39,6 +39,7 @@
     "bytic/config": "^1.0",
     "bytic/container": "^1.0",
     "bytic/database": "^1.0",
+    "bytic/dispatcher": "^1.0",
     "bytic/form": "^1.0",
     "bytic/inflector": "^1.0",
     "bytic/http": "^1.0",

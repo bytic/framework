@@ -119,7 +119,7 @@ function translator()
     return app('translator');
 }
 
-if (!function_exists('asset')) {
+if (!function_exists('inflector')) {
     /**
      * @return Nip\Inflector\Inflector
      */
