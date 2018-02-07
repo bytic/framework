@@ -4,6 +4,10 @@ namespace Nip\Tests;
 
 use Nip\HelperBroker;
 
+/**
+ * Class HelperBrokerTest
+ * @package Nip\Tests
+ */
 class HelperBrokerTest extends \Nip\Tests\AbstractTest
 {
     /**
@@ -24,7 +28,7 @@ class HelperBrokerTest extends \Nip\Tests\AbstractTest
         $broker = new HelperBroker();
 
         static::assertInstanceOf('Nip_Helper_Url', $broker->generateHelper('Url'));
-        static::assertInstanceOf('Nip_Helper_XML', $broker->generateHelper('XML'));
+        static::assertInstanceOf('Nip_Helper_Xml', $broker->generateHelper('Xml'));
         static::assertInstanceOf('Nip_Helper_Passwords', $broker->generateHelper('passwords'));
     }
 
