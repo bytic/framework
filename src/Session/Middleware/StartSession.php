@@ -2,12 +2,13 @@
 
 namespace Nip\Session\Middleware;
 
-use Interop\Http\ServerMiddleware\DelegateInterface;
 use Nip\Cookie\Jar as CookieJar;
 use Nip\Http\ServerMiddleware\Middlewares\ServerMiddlewareInterface;
 use Nip\Request;
 use Nip\Session\SessionManager;
+use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 
 /**
  * Class StartSession
@@ -40,16 +41,15 @@ class StartSession implements ServerMiddlewareInterface
         $this->manager = $manager;
     }
 
-
     /**
      * @inheritdoc
      */
-    public function process(ServerRequestInterface $request, DelegateInterface $delegate)
+    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         $this->sessionHandled = true;
         $this->startSession($request);
 
-        return $delegate->process($request);
+        return $handler->handle($request);
     }
 
     /**
