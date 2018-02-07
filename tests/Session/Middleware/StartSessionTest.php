@@ -10,14 +10,12 @@ use Nip\Session\Middleware\StartSession;
 use Nip\Session\SessionManager;
 use Nip\Tests\AbstractTest;
 
-
 /**
  * Class DebugbarMiddlewareTest
  * @package Nip\DebugBar\Tests\Middleware
  */
 class StartSessionTest extends AbstractTest
 {
-
     public function testProcess()
     {
         $sessionManager = new SessionManager(new Application());
@@ -36,5 +34,4 @@ class StartSessionTest extends AbstractTest
 
         self::assertInstanceOf(Response::class, $response);
     }
-
 }
