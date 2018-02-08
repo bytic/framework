@@ -9,16 +9,16 @@ use Nip\Database\Result;
 /**
  * Class AbstractQuery.
  *
- * @method $this setCols() setCols(array|string $cols = null)
- * @method $this setWhere() setWhere(array|string $cols = null)
- * @method $this cols() cols(array|string $cols)
+ * @method $this setCols() setCols(array | string $cols = null)
+ * @method $this setWhere() setWhere(array | string $cols = null)
+ * @method $this cols() cols(array | string $cols)
  * @method $this count() count(string $col, string $alias = null)
- * @method $this sum() sum(array|string $cols)
- * @method $this from() from(array|string $from)
+ * @method $this sum() sum(array | string $cols)
+ * @method $this from() from(array | string $from)
  * @method $this data() data(array $data)
- * @method $this table() table(array|string $table)
- * @method $this order() order(array|string $order)\
- * @method $this group() group(array|string $group)\
+ * @method $this table() table(array | string $table)
+ * @method $this order() order(array | string $order)\
+ * @method $this group() group(array | string $group)\
  */
 abstract class AbstractQuery
 {
@@ -116,7 +116,7 @@ abstract class AbstractQuery
 
     /**
      * @param string $string
-     * @param array  $values
+     * @param array $values
      *
      * @return Condition
      */
@@ -230,7 +230,7 @@ abstract class AbstractQuery
     public function getString()
     {
         if ($this->string === null) {
-            $this->string = (string) $this->assemble();
+            $this->string = (string)$this->assemble();
         }
 
         return $this->string;
@@ -266,7 +266,7 @@ abstract class AbstractQuery
      */
     public function hasPart($name)
     {
-        return isset($this->parts[$name]) && count($this->parts[$name]);
+        return isset($this->parts[$name]) && is_array($this->parts[$name]) && count($this->parts[$name]);
     }
 
     /**
@@ -327,7 +327,7 @@ abstract class AbstractQuery
     {
         if (isset($params['where']) && is_array($params['where'])) {
             foreach ($params['where'] as $condition) {
-                $condition = (array) $condition;
+                $condition = (array)$condition;
                 $this->where($condition[0], $condition[1]);
             }
         }
@@ -390,7 +390,7 @@ abstract class AbstractQuery
      */
     protected function parseWhere()
     {
-        return is_object($this->parts['where']) ? (string) $this->parts['where'] : '';
+        return is_object($this->parts['where']) ? (string)$this->parts['where'] : '';
     }
 
     /**
@@ -436,7 +436,7 @@ abstract class AbstractQuery
     protected function parseHaving()
     {
         if (isset($this->parts['having'])) {
-            return (string) $this->parts['having'];
+            return (string)$this->parts['having'];
         }
 
         return '';
