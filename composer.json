@@ -14,6 +14,9 @@
     }
   ],
   "autoload": {
+    "psr-4": {
+      "Nip\\": "src/"
+    },
     "classmap": [
       "src"
     ],
@@ -22,6 +25,12 @@
       "src/functions/input.php",
       "src/functions/flash.php"
     ]
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Nip\\Tests\\": "tests/",
+      "Nip\\Fixtures\\": "tests/fixtures"
+    }
   },
   "require": {
     "php": ">=5.5.0",
@@ -39,7 +48,8 @@
     "ezyang/htmlpurifier": "^4.9"
   },
   "require-dev": {
-    "codeception/codeception": "^2.2",
-    "codeception/mockery-module": "^0.2"
+    "squizlabs/php_codesniffer": "^3.0",
+    "phpunit/phpunit": "^6.2",
+    "mockery/mockery": "^0.9"
   }
 }

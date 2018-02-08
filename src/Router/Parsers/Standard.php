@@ -16,7 +16,7 @@ class Standard extends Dynamic
      */
     public function assemble($params = [])
     {
-        if (!$params['action']) {
+        if (!isset($params['action'])) {
             $params['action'] = '';
         }
 

@@ -163,7 +163,7 @@ class Dynamic extends AbstractParser
                 }
             } else {
                 $var = str_replace(':', '', $part);
-                $this->setParam($var, $uriParts[$key]);
+                $this->setParam($var, isset($uriParts[$key]) ? $uriParts[$key] : null);
             }
         }
 
