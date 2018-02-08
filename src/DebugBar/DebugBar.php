@@ -8,6 +8,10 @@ use Monolog\Logger as MonologLogger;
 use Nip\DebugBar\Formatter\MonologFormatter;
 use Nip\Http\Response\Response;
 
+/**
+ * Class DebugBar
+ * @package Nip\DebugBar
+ */
 abstract class DebugBar extends DebugBarGeneric
 {
     /**

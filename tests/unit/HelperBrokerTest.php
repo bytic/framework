@@ -4,6 +4,10 @@ namespace Nip\Tests\Unit;
 
 use Nip\HelperBroker;
 
+/**
+ * Class HelperBrokerTest
+ * @package Nip\Tests\Unit
+ */
 class HelperBrokerTest extends \Codeception\TestCase\Test
 {
     /**
@@ -14,6 +18,7 @@ class HelperBrokerTest extends \Codeception\TestCase\Test
     public function testGetHelperClass()
     {
         $broker = new HelperBroker();
+        static::assertEquals('Nip_Helper_Url', $broker->getHelperClass('Url'));
         static::assertEquals('Nip_Helper_Url', $broker->getHelperClass('Url'));
         static::assertEquals('Nip_Helper_XML', $broker->getHelperClass('XML'));
         static::assertEquals('Nip_Helper_Passwords', $broker->getHelperClass('passwords'));

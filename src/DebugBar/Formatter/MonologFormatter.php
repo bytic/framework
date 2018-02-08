@@ -4,7 +4,11 @@ namespace Nip\DebugBar\Formatter;
 
 use Monolog\Formatter\HtmlFormatter;
 
-class Monolog extends HtmlFormatter
+/**
+ * Class MonologFormatter
+ * @package Nip\DebugBar\Formatter
+ */
+class MonologFormatter extends HtmlFormatter
 {
     public function format(array $record)
     {
