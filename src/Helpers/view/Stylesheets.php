@@ -12,7 +12,7 @@ namespace Nip\Helpers\View;
  *
  * @version    SVN: $Id: Stylesheets.php 138 2009-05-27 17:05:36Z victor.stanciu $
  */
-class Stylesheets extends AbstractHelper
+class StyleSheets extends AbstractHelper
 {
     protected $_files = [];
     protected $_pack = false;
