@@ -4,7 +4,11 @@ namespace Nip\Helpers\View;
 
 use Nip\HelperBroker;
 
-class URL extends AbstractHelper
+/**
+ * Class Url
+ * @package Nip\Helpers\View
+ */
+class Url extends AbstractHelper
 {
     public function __call($name, $arguments)
     {
