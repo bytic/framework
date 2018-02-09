@@ -56,6 +56,41 @@ class SelectTest extends AbstractTest
             $this->_object->assemble());
     }
 
+    public function testHasPart()
+    {
+        $this->_object->cols('id, name');
+        self::assertTrue($this->_object->hasPart('cols'));
+
+        $this->_object->setCols('id, name');
+        self::assertTrue($this->_object->hasPart('cols'));
+
+        $this->_object->limit('');
+        self::assertFalse($this->_object->hasPart('limit'));
+
+        $this->_object->limit('6');
+        self::assertTrue($this->_object->hasPart('limit'));
+
+        self::assertFalse($this->_object->hasPart('where'));
+    }
+
+    public function testLimit()
+    {
+        $this->_object->cols('id, name')->from('table x');
+        $this->_object->where('id = 5')->where("active = 'yes'");
+        $this->_object->limit(5);
+
+        static::assertEquals(
+            "SELECT id, name FROM table x WHERE id = 5 AND active = 'yes' LIMIT 5",
+            $this->_object->assemble()
+        );
+
+        $this->_object->limit(5, 10);
+        static::assertEquals(
+            "SELECT id, name FROM table x WHERE id = 5 AND active = 'yes' LIMIT 5,10",
+            $this->_object->assemble()
+        );
+    }
+
     public function testWhereOrWhere()
     {
         $this->_object->cols('id, name')->from('table x');

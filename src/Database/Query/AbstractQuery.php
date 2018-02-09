@@ -266,7 +266,17 @@ abstract class AbstractQuery
      */
     public function hasPart($name)
     {
-        return isset($this->parts[$name]) && is_array($this->parts[$name]) && count($this->parts[$name]);
+        if (!isset($this->parts[$name])) {
+            return false;
+        }
+        if (is_array($this->parts[$name]) && count($this->parts[$name]) < 1) {
+            return false;
+        }
+        if (is_string($this->parts[$name]) && empty($this->parts[$name])) {
+            return false;
+        }
+
+        return true;
     }
 
     /**
