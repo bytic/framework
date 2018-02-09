@@ -3,7 +3,6 @@
 namespace Nip\Utility;
 
 use DateTime;
-use DateTimeZone;
 use InvalidArgumentException;
 
 /**
@@ -219,7 +218,7 @@ class DateTimePlus extends DateTime
      * Parse a string into a new DateTime object according to the specified format
      * @inheritdoc
      */
-    public static function createFromFormat($format, $time, DateTimeZone $timezone = null)
+    public static function createFromFormat($format, $time, $timezone = null)
     {
         if ($timezone !== null) {
             $dt = parent::createFromFormat($format, $time, static::safeCreateDateTimeZone($timezone));
