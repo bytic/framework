@@ -2,8 +2,17 @@
 
 namespace Nip\Soap;
 
+/**
+ * Class Client
+ * @package Nip\Soap
+ */
 class Client extends \SoapClient
 {
+
+    /**
+     * SoapClient constructor
+     * @inheritdoc
+     */
     public function __construct($wsdl, $options)
     {
         $url = parse_url($wsdl);
@@ -14,7 +23,14 @@ class Client extends \SoapClient
         return parent::__construct($wsdl, $options);
     }
 
-    public function __doRequest($request, $location, $action, $version)
+    /**
+     * @param string $request
+     * @param string $location
+     * @param string $action
+     * @param int $version
+     * @return string
+     */
+    public function __doRequest($request, $location, $action, $version, $one_way = 0)
     {
         $parts = parse_url($location);
         if ($this->_port) {
@@ -22,11 +38,15 @@ class Client extends \SoapClient
         }
         $location = $this->buildLocation($parts);
 
-        $return = parent::__doRequest($request, $location, $action, $version);
+        $return = parent::__doRequest($request, $location, $action, $version, $one_way);
 
         return $return;
     }
 
+    /**
+     * @param array $parts
+     * @return string
+     */
     public function buildLocation($parts = [])
     {
         $location = '';
