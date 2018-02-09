@@ -1,9 +1,17 @@
 <?php
 
+/**
+ * Class Nip_Form_Element_CheckboxGroup
+ *
+ * @method Nip_Form_Element_Checkbox[] getElements()
+ */
 class Nip_Form_Element_CheckboxGroup extends Nip_Form_Element_Input_Group
 {
     protected $_type = 'checkboxGroup';
 
+    /**
+     * @inheritdoc
+     */
     public function getValue($requester = 'abstract')
     {
         $elements = $this->getElements();
@@ -19,21 +27,27 @@ class Nip_Form_Element_CheckboxGroup extends Nip_Form_Element_Input_Group
         return $data;
     }
 
+    /** @noinspection PhpMissingParentCallCommonInspection
+     * @inheritdoc
+     */
     public function setValue($value)
     {
         return $this->getDataFromRequest($value);
     }
 
+
+    /** @noinspection PhpMissingParentCallCommonInspection
+     * @inheritdoc
+     */
     public function getDataFromRequest($request)
     {
-//        var_dump($request);
+        $elements = $this->getElements();
         if (is_array($request)) {
-            $elements = $this->getElements();
-            foreach ($elements as $key=>$element) {
+            foreach ($elements as $key => $element) {
                 $element->setChecked(in_array($key, $request));
             }
         } else {
-            foreach ($elements as $key=>$element) {
+            foreach ($elements as $key => $element) {
                 $element->setChecked(false);
             }
         }
@@ -41,6 +55,9 @@ class Nip_Form_Element_CheckboxGroup extends Nip_Form_Element_Input_Group
         return $this;
     }
 
+    /**
+     * @return Nip_Form_Element_Abstract
+     */
     public function getNewElement()
     {
         $element = $this->getForm()->getNewElement('checkbox');
@@ -53,6 +70,9 @@ class Nip_Form_Element_CheckboxGroup extends Nip_Form_Element_Input_Group
         return $element;
     }
 
+    /**
+     * @return bool
+     */
     public function isRequestArray()
     {
         return true;

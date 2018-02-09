@@ -11,18 +11,27 @@ abstract class Nip_Form_Element_Input_Group extends Nip_Form_Element_Abstract
         return true;
     }
 
+    /**
+     * @return bool
+     */
     public function isRequestArray()
     {
         return false;
     }
 
+    /**
+     * @param $options
+     * @param $valueKey
+     * @param $labelKey
+     * @return $this
+     */
     public function addOptionsArray($options, $valueKey, $labelKey)
     {
         foreach ($options as $key => $option) {
             $option = (object) $option;
 
-            $oValue = $option->$valueKey;
-            $oLabel = $option->$labelKey;
+            $oValue = $option->{$valueKey};
+            $oLabel = $option->{$labelKey};
             $oDisabled = $option->disabled;
 
             if ($oDisabled) {
@@ -55,6 +64,10 @@ abstract class Nip_Form_Element_Input_Group extends Nip_Form_Element_Abstract
         trigger_error('No new element funtion defined for this group', E_USER_ERROR);
     }
 
+    /**
+     * @param Nip_Form_Element_Input_Abstract $element
+     * @return $this
+     */
     public function addElement(Nip_Form_Element_Input_Abstract $element)
     {
         $key = $element->getValue();
@@ -64,16 +77,26 @@ abstract class Nip_Form_Element_Input_Group extends Nip_Form_Element_Abstract
         return $this;
     }
 
+    /**
+     * @param $key
+     * @return mixed
+     */
     public function getElement($key)
     {
         return $this->_elements[$key];
     }
 
+    /**
+     * @return array
+     */
     public function getElements()
     {
         return $this->_elements;
     }
 
+    /**
+     * @return array
+     */
     public function getValues()
     {
         return $this->_values;
