@@ -26,7 +26,7 @@ class ConfigTest extends AbstractTest
         static::assertInstanceOf(Config::class, $this->config);
         static::assertEquals([], $this->config->toArray());
 
-        $this->config->mergeFile(TEST_FIXTURE_PATH.'\config\general.ini');
+        $this->config->mergeFile(TEST_FIXTURE_PATH.'/config/general.ini');
 
         static::assertInstanceOf(Config::class, $this->config);
         static::assertCount(6, $this->config->toArray());
