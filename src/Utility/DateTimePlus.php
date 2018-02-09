@@ -1,16 +1,18 @@
 <?php
 
-/*
- * Based on briannesbitt/Carbon
- * http://carbon.nesbot.com/
- */
-
 namespace Nip\Utility;
 
 use DateTime;
 use DateTimeZone;
 use InvalidArgumentException;
 
+/**
+ * Class DateTimePlus
+ * @package Nip\Utility
+ *
+ * Based on briannesbitt/Carbon
+ * http://carbon.nesbot.com/
+ */
 class DateTimePlus extends DateTime
 {
     ///////////////////////////////////////////////////////////////////
@@ -213,6 +215,10 @@ class DateTimePlus extends DateTime
         return $this;
     }
 
+    /**
+     * Parse a string into a new DateTime object according to the specified format
+     * @inheritdoc
+     */
     public static function createFromFormat($format, $time, DateTimeZone $timezone = null)
     {
         if ($timezone !== null) {
