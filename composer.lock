@@ -4,9 +4,57 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-  "content-hash": "4b66a9cad76d0e7a1b80c98e2dd49e9f",
+  "content-hash": "769e9a1e4cda374ece55f481f38ce780",
     "packages": [
         {
+          "name": "bytic/inflector",
+          "version": "0.9.2",
+          "source": {
+            "type": "git",
+            "url": "https://github.com/bytic/inflector.git",
+            "reference": "48d0e3913a20b5acc8da00adbbc94f28db67e2e9"
+          },
+          "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/bytic/inflector/zipball/48d0e3913a20b5acc8da00adbbc94f28db67e2e9",
+            "reference": "48d0e3913a20b5acc8da00adbbc94f28db67e2e9",
+            "shasum": ""
+          },
+          "require": {
+            "php": "^7.0"
+          },
+          "require-dev": {
+            "mockery/mockery": "^0.9",
+            "phpunit/phpunit": "^6.2",
+            "squizlabs/php_codesniffer": "^3.0"
+          },
+          "type": "library",
+          "autoload": {
+            "psr-4": {
+              "Nip\\Inflector\\": "src"
+            },
+            "classmap": [
+              "src"
+            ],
+            "files": [
+              "src/functions/application.php"
+            ]
+          },
+          "notification-url": "https://packagist.org/downloads/",
+          "license": [
+            "MIT"
+          ],
+          "authors": [
+            {
+              "name": "Gabriel Solomon",
+              "email": "hello@gabrielsolomon.ro"
+            }
+          ],
+          "description": "Php Framework",
+          "homepage": "https://github.com/bytic/inflector",
+          "time": "2018-02-09T20:54:33+00:00"
+        },
+      {
             "name": "bytic/request-detective",
             "version": "1.0.0",
             "source": {

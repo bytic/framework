@@ -44,14 +44,6 @@ function db()
 }
 
 /**
- * @return Nip\Inflector\Inflector
- */
-function inflector()
-{
-    return Nip\Inflector\Inflector::instance();
-}
-
-/**
  * @return \Nip\I18n\Translator
  */
 function translator()
