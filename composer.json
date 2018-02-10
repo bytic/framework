@@ -35,10 +35,10 @@
   "require": {
     "php": ">=5.5.0",
     "bytic/container": "^0.9",
+    "bytic/debugbar": "^0.9",
     "bytic/inflector": "^0.9",
     "bytic/request-detective": "^1.0",
     "nesbot/carbon": "^1.21",
-    "maximebf/debugbar": "^1.13",
     "html2text/html2text": "^4.0",
     "sendgrid/sendgrid": "^5.0",
     "swiftmailer/swiftmailer": "^5.4",
