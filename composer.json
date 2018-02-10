@@ -34,9 +34,9 @@
   },
   "require": {
     "php": ">=5.5.0",
+    "bytic/container": "^0.9",
     "bytic/inflector": "^0.9",
     "bytic/request-detective": "^1.0",
-    "container-interop/container-interop": "^1.1",
     "nesbot/carbon": "^1.21",
     "maximebf/debugbar": "^1.13",
     "html2text/html2text": "^4.0",
