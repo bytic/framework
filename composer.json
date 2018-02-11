@@ -36,6 +36,7 @@
     "php": ">=5.5.0",
     "bytic/cache": "^0.9",
     "bytic/container": "^0.9",
+    "bytic/database": "^0.9",
     "bytic/debugbar": "^0.9",
     "bytic/inflector": "^0.9",
     "bytic/filesystem": "^0.9",
