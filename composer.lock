@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-  "content-hash": "b1206da125f45d28fe30b529eb0bfcab",
+  "content-hash": "747e2afc23ca74a23e049091d8e37fc0",
     "packages": [
         {
           "name": "bytic/cache",
@@ -98,6 +98,48 @@
         "description": "Php Framework",
         "homepage": "https://github.com/ByTIC/collections",
         "time": "2018-01-22T16:25:24+00:00"
+      },
+      {
+        "name": "bytic/config",
+        "version": "0.9.0",
+        "source": {
+          "type": "git",
+          "url": "https://github.com/bytic/config.git",
+          "reference": "3c45b092fb4ffb26668df6f73aa606aef82df96c"
+        },
+        "dist": {
+          "type": "zip",
+          "url": "https://api.github.com/repos/bytic/config/zipball/3c45b092fb4ffb26668df6f73aa606aef82df96c",
+          "reference": "3c45b092fb4ffb26668df6f73aa606aef82df96c",
+          "shasum": ""
+        },
+        "require": {
+          "php": "^7.0"
+        },
+        "require-dev": {
+          "mockery/mockery": "^0.9",
+          "phpunit/phpunit": "^6.2",
+          "squizlabs/php_codesniffer": "^3.0"
+        },
+        "type": "library",
+        "autoload": {
+          "psr-4": {
+            "Nip\\Config\\": "src"
+          }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+          "MIT"
+        ],
+        "authors": [
+          {
+            "name": "Gabriel Solomon",
+            "email": "hello@gabrielsolomon.ro"
+          }
+        ],
+        "description": "Php Framework",
+        "homepage": "https://github.com/bytic/config",
+        "time": "2018-02-11T12:31:10+00:00"
       },
       {
         "name": "bytic/container",
