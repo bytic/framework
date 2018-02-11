@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-  "content-hash": "57fa0ca927f9125fcf909646b6742e09",
+  "content-hash": "5ebf85292b57abb8690683432ae9c447",
     "packages": [
         {
           "name": "bytic/container",
@@ -51,6 +51,50 @@
           "homepage": "https://github.com/ByTIC/view",
           "time": "2018-02-10T21:01:55+00:00"
         },
+      {
+        "name": "bytic/debugbar",
+        "version": "0.9.0",
+        "source": {
+          "type": "git",
+          "url": "https://github.com/bytic/debugbar.git",
+          "reference": "613134e9399e30023dc751d0ff95e09273d4b502"
+        },
+        "dist": {
+          "type": "zip",
+          "url": "https://api.github.com/repos/bytic/debugbar/zipball/613134e9399e30023dc751d0ff95e09273d4b502",
+          "reference": "613134e9399e30023dc751d0ff95e09273d4b502",
+          "shasum": ""
+        },
+        "require": {
+          "maximebf/debugbar": "^1.15",
+          "monolog/monolog": "^1.20",
+          "php": "^7.0"
+        },
+        "require-dev": {
+          "mockery/mockery": "^0.9",
+          "phpunit/phpunit": "^6.2",
+          "squizlabs/php_codesniffer": "^3.0"
+        },
+        "type": "library",
+        "autoload": {
+          "psr-4": {
+            "Nip\\DebugBar\\": "src"
+          }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+          "MIT"
+        ],
+        "authors": [
+          {
+            "name": "Gabriel Solomon",
+            "email": "hello@gabrielsolomon.ro"
+          }
+        ],
+        "description": "Php Framework",
+        "homepage": "https://github.com/bytic/debugbar",
+        "time": "2018-02-10T21:23:29+00:00"
+      },
       {
         "name": "bytic/inflector",
         "version": "0.9.3",
@@ -99,6 +143,52 @@
         "homepage": "https://github.com/bytic/inflector",
         "time": "2018-02-09T20:59:26+00:00"
         },
+      {
+        "name": "bytic/profiler",
+        "version": "0.9.0",
+        "source": {
+          "type": "git",
+          "url": "https://github.com/bytic/profiler.git",
+          "reference": "1c9d30a687a9ce61751df08bdba4d10b8e023469"
+        },
+        "dist": {
+          "type": "zip",
+          "url": "https://api.github.com/repos/bytic/profiler/zipball/1c9d30a687a9ce61751df08bdba4d10b8e023469",
+          "reference": "1c9d30a687a9ce61751df08bdba4d10b8e023469",
+          "shasum": ""
+        },
+        "require": {
+          "php": "^7.0"
+        },
+        "require-dev": {
+          "mockery/mockery": "^0.9",
+          "phpunit/phpunit": "^6.2",
+          "squizlabs/php_codesniffer": "^3.0"
+        },
+        "type": "library",
+        "autoload": {
+          "psr-4": {
+            "Nip\\Profiler\\": "src"
+          },
+          "classmap": [
+            "src"
+          ],
+          "files": []
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+          "MIT"
+        ],
+        "authors": [
+          {
+            "name": "Gabriel Solomon",
+            "email": "hello@gabrielsolomon.ro"
+          }
+        ],
+        "description": "Profiler module for bytic framework",
+        "homepage": "https://github.com/bytic/profiler",
+        "time": "2018-02-11T11:22:44+00:00"
+      },
       {
             "name": "bytic/request-detective",
             "version": "1.0.0",
