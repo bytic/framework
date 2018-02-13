@@ -43,6 +43,7 @@
     "bytic/http": "^0.9",
     "bytic/inflector": "^0.9",
     "bytic/filesystem": "^0.9",
+    "bytic/orm": "^0.9",
     "bytic/profiler": "^0.9",
     "bytic/request-detective": "^1.0",
     "bytic/utility": "^1.0",

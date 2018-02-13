@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "6684e3ad65b9ad3daa95fcffd5158db3",
+    "content-hash": "4a9c565c7e556babcf69faf16acefdd4",
     "packages": [
         {
             "name": "bytic/cache",
@@ -188,16 +188,16 @@
         },
         {
             "name": "bytic/database",
-            "version": "0.9.1",
+            "version": "0.9.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/bytic/database.git",
-                "reference": "a0f1f457a2422c40268521d6015bd0cb0ac75525"
+                "reference": "07033ada9a3be1dfa7b20f010e3ab320665ef18e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/bytic/database/zipball/a0f1f457a2422c40268521d6015bd0cb0ac75525",
-                "reference": "a0f1f457a2422c40268521d6015bd0cb0ac75525",
+                "url": "https://api.github.com/repos/bytic/database/zipball/07033ada9a3be1dfa7b20f010e3ab320665ef18e",
+                "reference": "07033ada9a3be1dfa7b20f010e3ab320665ef18e",
                 "shasum": ""
             },
             "require": {
@@ -235,7 +235,7 @@
             ],
             "description": "Php Framework",
             "homepage": "https://github.com/ByTIC/view",
-            "time": "2018-02-11T12:15:28+00:00"
+            "time": "2018-02-13T16:38:12+00:00"
         },
         {
             "name": "bytic/debugbar",
@@ -427,6 +427,58 @@
             "description": "Php Framework",
             "homepage": "https://github.com/bytic/inflector",
             "time": "2018-02-09T20:59:26+00:00"
+        },
+        {
+            "name": "bytic/orm",
+            "version": "0.9.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/bytic/orm.git",
+                "reference": "c14d51efe04001d31e0d28014c229772ca553a33"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/bytic/orm/zipball/c14d51efe04001d31e0d28014c229772ca553a33",
+                "reference": "c14d51efe04001d31e0d28014c229772ca553a33",
+                "shasum": ""
+            },
+            "require": {
+                "bytic/collections": "^1.0",
+                "bytic/container": "^0.9",
+                "bytic/database": "^0.9",
+                "bytic/http": "^0.9",
+                "bytic/inflector": "^0.9",
+                "bytic/utility": "^1.0",
+                "php": "^7.0"
+            },
+            "require-dev": {
+                "mockery/mockery": "^0.9",
+                "phpunit/phpunit": "^6.2",
+                "squizlabs/php_codesniffer": "^3.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Nip\\Records\\": "src"
+                },
+                "classmap": [
+                    "src"
+                ],
+                "files": []
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Gabriel Solomon",
+                    "email": "hello@gabrielsolomon.ro"
+                }
+            ],
+            "description": "Php Framework",
+            "homepage": "https://github.com/ByTIC/orm",
+            "time": "2018-02-13T18:07:13+00:00"
         },
         {
             "name": "bytic/profiler",
