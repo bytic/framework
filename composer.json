@@ -40,6 +40,7 @@
     "bytic/container": "^0.9",
     "bytic/database": "^0.9",
     "bytic/debugbar": "^0.9",
+    "bytic/http": "^0.9",
     "bytic/inflector": "^0.9",
     "bytic/filesystem": "^0.9",
     "bytic/profiler": "^0.9",
