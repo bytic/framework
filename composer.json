@@ -47,6 +47,7 @@
     "bytic/inflector": "^1.0",
     "bytic/http": "^1.0",
     "bytic/orm": "^1.0",
+    "bytic/profiler": "^1.0",
     "bytic/request-detective": "^1.0",
     "bytic/router": "^1.0",
     "bytic/utility": "^1.0",

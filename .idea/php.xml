@@ -84,6 +84,7 @@
       <path value="$PROJECT_DIR$/vendor/bytic/debugbar" />
       <path value="$PROJECT_DIR$/vendor/bytic/filesystem" />
       <path value="$PROJECT_DIR$/vendor/bytic/cache" />
+      <path value="$PROJECT_DIR$/vendor/bytic/profiler" />
     </include_path>
   </component>
   <component name="PhpProjectSharedConfiguration" php_language_level="7" />
