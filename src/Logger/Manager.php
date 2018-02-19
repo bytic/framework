@@ -2,16 +2,18 @@
 
 namespace Nip\Logger;
 
-use ErrorException;
 use Monolog\Logger as MonologLogger;
 use Nip\Application;
 use Psr\Log\LoggerInterface as PsrLoggerInterface;
+use Psr\Log\LoggerTrait;
 
 /**
  * Class Manager.
  */
 class Manager implements PsrLoggerInterface
 {
+    use LoggerTrait;
+
     /**
      * The Log levels.
      *
@@ -94,25 +96,7 @@ class Manager implements PsrLoggerInterface
 
     public function init()
     {
-        $this->initErrorReporting();
-        $this->initErrorDisplay();
-        $this->registerHandler();
         $this->initStreams();
-    }
-
-    public function initErrorReporting()
-    {
-        error_reporting(E_ALL ^ E_NOTICE);
-    }
-
-    public function initErrorDisplay()
-    {
-        if ($this->getBootstrap()->getStaging()->getStage()->inTesting()) {
-            ini_set('html_errors', 1);
-            ini_set('display_errors', 1);
-        } else {
-            ini_set('display_errors', 0);
-        }
     }
 
     /**
@@ -129,64 +113,6 @@ class Manager implements PsrLoggerInterface
     public function setBootstrap($bootstrap)
     {
         $this->bootstrap = $bootstrap;
-    }
-
-    public function registerHandler()
-    {
-        self::registerErrorHandler($this);
-        self::registerExceptionHandler($this);
-    }
-
-    /**
-     * Register logging system as an error handler to log PHP errors
-     * Based on Zend Logger.
-     *
-     * @param Manager $logger
-     *
-     * @throws Exception if logger is null
-     *
-     * @return mixed Returns result of set_error_handler
-     */
-    public static function registerErrorHandler(self $logger)
-    {
-        // Only register once per instance
-        if (static::$registeredErrorHandler) {
-            return false;
-        }
-        if ($logger === null) {
-            throw new Exception('Invalid Logger specified');
-        }
-
-        $previous = set_error_handler([$logger, 'handleError']);
-        static::$registeredErrorHandler = true;
-
-        return $previous;
-    }
-
-    /**
-     * Register logging system as an exception handler to log PHP exceptions
-     * Based on Zend Logger.
-     *
-     * @param Manager $logger
-     *
-     * @throws Exception if logger is null
-     *
-     * @return bool
-     */
-    public static function registerExceptionHandler(self $logger)
-    {
-        // Only register once per instance
-        if (static::$registeredExceptionHandler) {
-            return false;
-        }
-        if ($logger === null) {
-            throw new Exception('Invalid Logger specified');
-        }
-        set_exception_handler([$logger, 'handleException']);
-
-        static::$registeredExceptionHandler = true;
-
-        return true;
     }
 
     public function initStreams()
@@ -232,28 +158,11 @@ class Manager implements PsrLoggerInterface
     }
 
     /**
-     * System is unusable.
-     *
-     * @param string $message
-     * @param array  $context
-     *
-     * @return null
-     */
-    public function emergency($message, array $context = [])
-    {
-        return $this->log(self::EMERGENCY, $message, $context);
-    }
-
-    /**
-     * @param mixed  $level
-     * @param string $message
-     * @param array  $context
-     *
-     * @return bool|void
+     * @inheritdoc
      */
     public function log($level, $message, array $context = [])
     {
-        return $this->writeLog($level, $message, $context);
+        $this->writeLog($level, $message, $context);
     }
 
     /**
@@ -267,175 +176,6 @@ class Manager implements PsrLoggerInterface
      */
     protected function writeLog($level, $message, $context)
     {
-        return $this->getMonolog()->addRecord($level, $message, $context);
-    }
-
-    /**
-     * Action must be taken immediately.
-     *
-     * Example: Entire website down, database unavailable, etc. This should
-     * trigger the SMS alerts and wake you up.
-     *
-     * @param string $message
-     * @param array  $context
-     *
-     * @return null
-     */
-    public function alert($message, array $context = [])
-    {
-        return $this->log(self::ALERT, $message, $context);
-    }
-
-    /**
-     * Critical conditions.
-     *
-     * Example: Application component unavailable, unexpected exception.
-     *
-     * @param string $message
-     * @param array  $context
-     *
-     * @return null
-     */
-    public function critical($message, array $context = [])
-    {
-        return $this->log(self::CRITICAL, $message, $context);
-    }
-
-    /**
-     * Runtime errors that do not require immediate action but should typically
-     * be logged and monitored.
-     *
-     * @param string $message
-     * @param array  $context
-     *
-     * @return null
-     */
-    public function error($message, array $context = [])
-    {
-        return $this->log(self::ERROR, $message, $context);
-    }
-
-    /**
-     * Exceptional occurrences that are not errors.
-     *
-     * Example: Use of deprecated APIs, poor use of an API, undesirable things
-     * that are not necessarily wrong.
-     *
-     * @param string $message
-     * @param array  $context
-     *
-     * @return null
-     */
-    public function warning($message, array $context = [])
-    {
-        return $this->log(self::WARNING, $message, $context);
-    }
-
-    /**
-     * Normal but significant events.
-     *
-     * @param string $message
-     * @param array  $context
-     *
-     * @return null
-     */
-    public function notice($message, array $context = [])
-    {
-        return $this->log(self::NOTICE, $message, $context);
-    }
-
-    /**
-     * Interesting events.
-     *
-     * Example: User logs in, SQL logs.
-     *
-     * @param string $message
-     * @param array  $context
-     *
-     * @return null
-     */
-    public function info($message, array $context = [])
-    {
-        return $this->log(self::INFO, $message, $context);
-    }
-
-    /**
-     * Detailed debug information.
-     *
-     * @param string $message
-     * @param array  $context
-     *
-     * @return null
-     */
-    public function debug($message, array $context = [])
-    {
-        return $this->log(self::DEBUG, $message, $context);
-    }
-
-    /**
-     * @param $level
-     * @param $message
-     * @param $file
-     * @param $line
-     *
-     * @return bool
-     */
-    public function handleError($level, $message, $file, $line)
-    {
-        $iniLevel = error_reporting();
-        $errorLevelMap = static::$errorLevelMap;
-
-        if ($iniLevel & $level) {
-            if (isset($errorLevelMap[$level])) {
-                $level = $errorLevelMap[$level];
-            } else {
-                $level = self::INFO;
-            }
-            $trace = debug_backtrace();
-
-            $this->log($level, $message, [
-                'errno' => $level,
-                'file'  => $file,
-                'line'  => $line,
-                'trace' => $trace,
-            ]);
-        }
-
-        return true;
-    }
-
-    /**
-     * @private
-     *
-     * @param \Throwable $e
-     */
-    public function handleException(\Throwable $e)
-    {
-        $errorLevelMap = static::$errorLevelMap;
-        $logMessages = [];
-        do {
-            $level = self::ERROR;
-            if ($e instanceof ErrorException && isset($errorLevelMap[$e->getSeverity()])) {
-                $level = $errorLevelMap[$e->getSeverity()];
-            }
-            $extra = [
-                'file'  => $e->getFile(),
-                'line'  => $e->getLine(),
-                'trace' => $e->getTrace(),
-            ];
-            if (isset($e->xdebug_message)) {
-                $extra['xdebug'] = $e->xdebug_message;
-            }
-            $logMessages[] = [
-                'level'   => $level,
-                'message' => $e->getMessage(),
-                'extra'   => $extra,
-            ];
-            $e = $e->getPrevious();
-        } while ($e);
-
-        foreach (array_reverse($logMessages) as $logMessage) {
-            $this->log($logMessage['level'], $logMessage['message'], $logMessage['extra']);
-        }
+        return $this->getMonolog()->{$level}($message, $context);
     }
 }
