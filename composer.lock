@@ -8,16 +8,16 @@
     "packages": [
         {
             "name": "bytic/cache",
-            "version": "0.9.0",
+          "version": "0.9.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/bytic/cache.git",
-                "reference": "d9a7335ca6fbf2a8f7d2db0c35b7204c6aec4c60"
+              "reference": "8771497ea2cbb9b71605084dd7ea9a01ab8fac7d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/bytic/cache/zipball/d9a7335ca6fbf2a8f7d2db0c35b7204c6aec4c60",
-                "reference": "d9a7335ca6fbf2a8f7d2db0c35b7204c6aec4c60",
+              "url": "https://api.github.com/repos/bytic/cache/zipball/8771497ea2cbb9b71605084dd7ea9a01ab8fac7d",
+              "reference": "8771497ea2cbb9b71605084dd7ea9a01ab8fac7d",
                 "shasum": ""
             },
             "require": {
@@ -51,7 +51,7 @@
             ],
             "description": "Cache module for bytic framework",
             "homepage": "https://github.com/bytic/cache",
-            "time": "2018-02-11T11:54:46+00:00"
+          "time": "2018-02-13T20:22:24+00:00"
         },
         {
             "name": "bytic/collections",
@@ -430,29 +430,31 @@
         },
         {
             "name": "bytic/orm",
-            "version": "0.9.0",
+          "version": "0.9.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/bytic/orm.git",
-                "reference": "c14d51efe04001d31e0d28014c229772ca553a33"
+              "reference": "745a25a87de7bed22aab13d4fd4851a586e281a1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/bytic/orm/zipball/c14d51efe04001d31e0d28014c229772ca553a33",
-                "reference": "c14d51efe04001d31e0d28014c229772ca553a33",
+              "url": "https://api.github.com/repos/bytic/orm/zipball/745a25a87de7bed22aab13d4fd4851a586e281a1",
+              "reference": "745a25a87de7bed22aab13d4fd4851a586e281a1",
                 "shasum": ""
             },
             "require": {
+              "bytic/cache": "^0.9",
                 "bytic/collections": "^1.0",
                 "bytic/container": "^0.9",
                 "bytic/database": "^0.9",
                 "bytic/http": "^0.9",
                 "bytic/inflector": "^0.9",
                 "bytic/utility": "^1.0",
+              "league/pipeline": "^0.3",
                 "php": "^7.0"
             },
             "require-dev": {
-                "mockery/mockery": "^0.9",
+              "mockery/mockery": "^1.0",
                 "phpunit/phpunit": "^6.2",
                 "squizlabs/php_codesniffer": "^3.0"
             },
@@ -478,7 +480,7 @@
             ],
             "description": "Php Framework",
             "homepage": "https://github.com/ByTIC/orm",
-            "time": "2018-02-13T18:07:13+00:00"
+          "time": "2018-02-19T06:52:30+00:00"
         },
         {
             "name": "bytic/profiler",
@@ -534,6 +536,12 @@
                 "url": "https://github.com/ByTIC/RequestDetective.git",
                 "reference": "7c472b166ef0db63c258a3d255fd7bfea1cdd659"
             },
+          "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/ByTIC/request-detective/zipball/7c472b166ef0db63c258a3d255fd7bfea1cdd659",
+            "reference": "7c472b166ef0db63c258a3d255fd7bfea1cdd659",
+            "shasum": ""
+          },
             "require": {
                 "php": "^7.0",
                 "symfony/http-foundation": "^3.1"
@@ -547,6 +555,7 @@
                     "ByTIC\\RequestDetective\\": "src/"
                 }
             },
+          "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
@@ -783,6 +792,53 @@
             "time": "2017-05-15T01:50:59+00:00"
         },
         {
+          "name": "league/pipeline",
+          "version": "0.3.0",
+          "source": {
+            "type": "git",
+            "url": "https://github.com/thephpleague/pipeline.git",
+            "reference": "27dc18166c30d6429c75d1320f41e8238c59c3d4"
+          },
+          "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/thephpleague/pipeline/zipball/27dc18166c30d6429c75d1320f41e8238c59c3d4",
+            "reference": "27dc18166c30d6429c75d1320f41e8238c59c3d4",
+            "shasum": ""
+          },
+          "require": {
+            "php": ">=5.5"
+          },
+          "require-dev": {
+            "henrikbjorn/phpspec-code-coverage": "^1.0",
+            "phpspec/phpspec": "^2.2"
+          },
+          "type": "library",
+          "autoload": {
+            "psr-4": {
+              "League\\Pipeline\\": "src"
+            }
+          },
+          "notification-url": "https://packagist.org/downloads/",
+          "license": [
+            "MIT"
+          ],
+          "authors": [
+            {
+              "name": "Frank de Jonge",
+              "email": "info@frenky.net"
+            }
+          ],
+          "description": "A plug and play pipeline implementation.",
+          "keywords": [
+            "composition",
+            "design pattern",
+            "pattern",
+            "pipeline",
+            "sequential"
+          ],
+          "time": "2016-10-13T20:53:39+00:00"
+        },
+      {
             "name": "maximebf/debugbar",
             "version": "v1.15.0",
             "source": {
@@ -1480,32 +1536,32 @@
         },
         {
             "name": "symfony/debug",
-            "version": "v4.0.4",
+          "version": "v3.4.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/debug.git",
-                "reference": "c77bb31d0f6310a2ac11e657475d396a92e5dc54"
+              "reference": "53f6af2805daf52a43b393b93d2f24925d35c937"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/debug/zipball/c77bb31d0f6310a2ac11e657475d396a92e5dc54",
-                "reference": "c77bb31d0f6310a2ac11e657475d396a92e5dc54",
+              "url": "https://api.github.com/repos/symfony/debug/zipball/53f6af2805daf52a43b393b93d2f24925d35c937",
+              "reference": "53f6af2805daf52a43b393b93d2f24925d35c937",
                 "shasum": ""
             },
             "require": {
-                "php": "^7.1.3",
+              "php": "^5.5.9|>=7.0.8",
                 "psr/log": "~1.0"
             },
             "conflict": {
-                "symfony/http-kernel": "<3.4"
+              "symfony/http-kernel": ">=2.3,<2.3.24|~2.4.0|>=2.5,<2.5.9|>=2.6,<2.6.2"
             },
             "require-dev": {
-                "symfony/http-kernel": "~3.4|~4.0"
+              "symfony/http-kernel": "~2.8|~3.0|~4.0"
             },
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "4.0-dev"
+                  "dev-master": "3.4-dev"
                 }
             },
             "autoload": {
@@ -1532,34 +1588,34 @@
             ],
             "description": "Symfony Debug Component",
             "homepage": "https://symfony.com",
-            "time": "2018-01-18T22:19:33+00:00"
+          "time": "2018-01-18T22:16:57+00:00"
         },
         {
             "name": "symfony/event-dispatcher",
-            "version": "v4.0.4",
+          "version": "v3.4.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/event-dispatcher.git",
-                "reference": "74d33aac36208c4d6757807d9f598f0133a3a4eb"
+              "reference": "26b87b6bca8f8f797331a30b76fdae5342dc26ca"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/event-dispatcher/zipball/74d33aac36208c4d6757807d9f598f0133a3a4eb",
-                "reference": "74d33aac36208c4d6757807d9f598f0133a3a4eb",
+              "url": "https://api.github.com/repos/symfony/event-dispatcher/zipball/26b87b6bca8f8f797331a30b76fdae5342dc26ca",
+              "reference": "26b87b6bca8f8f797331a30b76fdae5342dc26ca",
                 "shasum": ""
             },
             "require": {
-                "php": "^7.1.3"
+              "php": "^5.5.9|>=7.0.8"
             },
             "conflict": {
-                "symfony/dependency-injection": "<3.4"
+              "symfony/dependency-injection": "<3.3"
             },
             "require-dev": {
                 "psr/log": "~1.0",
-                "symfony/config": "~3.4|~4.0",
-                "symfony/dependency-injection": "~3.4|~4.0",
-                "symfony/expression-language": "~3.4|~4.0",
-                "symfony/stopwatch": "~3.4|~4.0"
+              "symfony/config": "~2.8|~3.0|~4.0",
+              "symfony/dependency-injection": "~3.3|~4.0",
+              "symfony/expression-language": "~2.8|~3.0|~4.0",
+              "symfony/stopwatch": "~2.8|~3.0|~4.0"
             },
             "suggest": {
                 "symfony/dependency-injection": "",
@@ -1568,7 +1624,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "4.0-dev"
+                  "dev-master": "3.4-dev"
                 }
             },
             "autoload": {
@@ -1595,7 +1651,7 @@
             ],
             "description": "Symfony EventDispatcher Component",
             "homepage": "https://symfony.com",
-            "time": "2018-01-03T07:38:00+00:00"
+          "time": "2018-01-03T07:37:34+00:00"
         },
         {
             "name": "symfony/http-foundation",
@@ -1858,61 +1914,6 @@
             "time": "2018-01-30T19:27:44+00:00"
         },
         {
-            "name": "symfony/polyfill-php72",
-            "version": "v1.7.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/symfony/polyfill-php72.git",
-                "reference": "8eca20c8a369e069d4f4c2ac9895144112867422"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/symfony/polyfill-php72/zipball/8eca20c8a369e069d4f4c2ac9895144112867422",
-                "reference": "8eca20c8a369e069d4f4c2ac9895144112867422",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=5.3.3"
-            },
-            "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "1.7-dev"
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "Symfony\\Polyfill\\Php72\\": ""
-                },
-                "files": [
-                    "bootstrap.php"
-                ]
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Nicolas Grekas",
-                    "email": "p@tchwork.com"
-                },
-                {
-                    "name": "Symfony Community",
-                    "homepage": "https://symfony.com/contributors"
-                }
-            ],
-            "description": "Symfony polyfill backporting some PHP 7.2+ features to lower PHP versions",
-            "homepage": "https://symfony.com",
-            "keywords": [
-                "compatibility",
-                "polyfill",
-                "portable",
-                "shim"
-            ],
-            "time": "2018-01-31T17:43:24+00:00"
-        },
-        {
             "name": "symfony/translation",
             "version": "v3.4.4",
             "source": {
@@ -1982,22 +1983,21 @@
         },
         {
             "name": "symfony/var-dumper",
-            "version": "v4.0.4",
+          "version": "v3.4.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/var-dumper.git",
-                "reference": "6d63cc74f3e2d4961411ccb77389a00332653104"
+              "reference": "472a9849930cf21f73abdb02240f17cf5b5bd1a7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/var-dumper/zipball/6d63cc74f3e2d4961411ccb77389a00332653104",
-                "reference": "6d63cc74f3e2d4961411ccb77389a00332653104",
+              "url": "https://api.github.com/repos/symfony/var-dumper/zipball/472a9849930cf21f73abdb02240f17cf5b5bd1a7",
+              "reference": "472a9849930cf21f73abdb02240f17cf5b5bd1a7",
                 "shasum": ""
             },
             "require": {
-                "php": "^7.1.3",
-                "symfony/polyfill-mbstring": "~1.0",
-                "symfony/polyfill-php72": "~1.5"
+              "php": "^5.5.9|>=7.0.8",
+              "symfony/polyfill-mbstring": "~1.0"
             },
             "conflict": {
                 "phpunit/phpunit": "<4.8.35|<5.4.3,>=5.0"
@@ -2008,12 +2008,13 @@
             },
             "suggest": {
                 "ext-iconv": "To convert non-UTF-8 strings to UTF-8 (or symfony/polyfill-iconv in case ext-iconv cannot be used).",
-                "ext-intl": "To show region name in time zone dump"
+              "ext-intl": "To show region name in time zone dump",
+              "ext-symfony_debug": ""
             },
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "4.0-dev"
+                  "dev-master": "3.4-dev"
                 }
             },
             "autoload": {
@@ -2047,7 +2048,7 @@
                 "debug",
                 "dump"
             ],
-            "time": "2018-01-29T09:06:29+00:00"
+          "time": "2018-01-29T09:03:43+00:00"
         }
     ],
     "packages-dev": [
