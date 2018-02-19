@@ -645,7 +645,6 @@ abstract class AbstractForm
                     $data = is_array($request[$name]) ? $request[$name] : [$request[$name]];
                     $element->getData($data, 'request');
                 } else {
-                    $value = $request[$name];
                     if (strpos($name, '[') && strpos($name, ']')) {
                         $arrayPrimary = substr($name, 0, strpos($name, '['));
                         $arrayKeys = str_replace($arrayPrimary, '', $name);
@@ -655,6 +654,8 @@ abstract class AbstractForm
                         foreach ($arr_matches[1] as $dimension) {
                             $value = $value[$dimension];
                         }
+                    } else {
+                        $value = $request[$name];
                     }
                     $element->getData($value, 'request');
                 }
@@ -776,7 +777,7 @@ abstract class AbstractForm
      */
     public function getMessageTemplate($name)
     {
-        return $this->_messageTemplates[$name];
+        return isset($this->_messageTemplates[$name]) ? $this->_messageTemplates[$name] : null;
     }
 
     /**
