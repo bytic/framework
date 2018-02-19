@@ -2,57 +2,86 @@
 
 namespace Nip\Helpers\View;
 
+use Nip\Utility\Str;
+
 /**
- * Nip Framework.
+ * Nip Framework
  *
  * @category   Nip
- *
- * @copyright  2009 Nip Framework
  * @license    http://www.opensource.org/licenses/mit-license.php The MIT License
- *
- * @version    SVN: $Id: Stylesheets.php 138 2009-05-27 17:05:36Z victor.stanciu $
  */
-class StyleSheets extends AbstractHelper
+class Stylesheets extends AbstractHelper
 {
-    protected $_files = [];
+    /**
+     * @var array
+     */
+    protected $files = [];
     protected $_pack = false;
 
+
+    protected $rawStyles = [];
+
+    /**
+     * @param $file
+     * @param bool $condition
+     * @return $this
+     */
     public function add($file, $condition = false)
     {
-        $this->_files[$condition][$file] = $file;
+        $this->files[$condition][$file] = $file;
 
         return $this;
     }
 
+    /**
+     * @param $content
+     * @return $this
+     */
+    public function addRaw($content)
+    {
+        $this->rawStyles[] = $content;
+
+        return $this;
+    }
+
+    /**
+     * @param $file
+     * @param bool $condition
+     * @return $this
+     */
     public function prepend($file, $condition = false)
     {
-        if (!is_array($this->_files[$condition])) {
-            $this->_files[$condition] = [];
+        if (!isset($this->files[$condition]) || !is_array($this->files[$condition])) {
+            $this->files[$condition] = [];
         }
-        array_unshift($this->_files[$condition], $file);
+        array_unshift($this->files[$condition], $file);
 
         return $this;
     }
 
+    /**
+     * @param $file
+     * @param bool $condition
+     * @return $this
+     */
     public function remove($file, $condition = false)
     {
-        unset($this->_files[$condition][$file]);
+        unset($this->files[$condition][$file]);
 
         return $this;
     }
 
+    /**
+     * @return string
+     */
     public function __toString()
     {
         $return = '';
 
-        if ($this->_files) {
-            foreach ($this->_files as $condition => $files) {
-                if ($this->_pack) {
-                    $return .= $this->buildTag($this->pack($files), $condition);
-                } else {
-                    foreach ($files as $file) {
-                        $return .= $this->buildTag($file, $condition);
-                    }
+        if (count($this->files)) {
+            foreach ($this->files as $condition => $files) {
+                foreach ($files as $file) {
+                    $return .= $this->buildTag($file, $condition);
                 }
             }
         }
@@ -60,10 +89,30 @@ class StyleSheets extends AbstractHelper
         return $return;
     }
 
-    public function buildTag($path, $condition)
+    /**
+     * @return string
+     */
+    public function renderRaw()
+    {
+        $return = '';
+        if (count($this->rawStyles)) {
+            $return .= '<style type="text/css" media="screen">';
+            $return .= implode("\r\n", $this->rawStyles);
+            $return .= '</style>';
+        }
+
+        return $return;
+    }
+
+    /**
+     * @param $path
+     * @param $condition
+     * @return string
+     */
+    public function buildTag($path, $condition = null)
     {
         $return = '<link rel="stylesheet" type="text/css" media="screen" href="'.$this->buildURL($path).'" />';
-        if ($condition) {
+        if ($condition != null && !empty($condition)) {
             $return = '<!--[if '.$condition.']>'.$return.'<![endif]-->';
         }
         $return .= "\r\n";
@@ -71,9 +120,13 @@ class StyleSheets extends AbstractHelper
         return $return;
     }
 
+    /**
+     * @param $source
+     * @return string
+     */
     public function buildURL($source)
     {
-        if (preg_match('/https?:\/\//', $source)) {
+        if (Str::startsWith($source, ['http', 'https'])) {
             return $source;
         } else {
             return STYLESHEETS_URL.$source.'.css';

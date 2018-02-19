@@ -235,16 +235,16 @@
         },
         {
             "name": "bytic/database",
-            "version": "0.9.4",
+            "version": "0.9.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/bytic/database.git",
-                "reference": "139812cf5eed36557d0c635d92284459d0d19e7b"
+                "reference": "18715d441cdac22c77278189c6bc26865c3e6374"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/bytic/database/zipball/139812cf5eed36557d0c635d92284459d0d19e7b",
-                "reference": "139812cf5eed36557d0c635d92284459d0d19e7b",
+                "url": "https://api.github.com/repos/bytic/database/zipball/18715d441cdac22c77278189c6bc26865c3e6374",
+                "reference": "18715d441cdac22c77278189c6bc26865c3e6374",
                 "shasum": ""
             },
             "require": {
@@ -282,7 +282,7 @@
             ],
             "description": "Php Framework",
             "homepage": "https://github.com/ByTIC/view",
-            "time": "2018-02-19T10:12:34+00:00"
+            "time": "2018-02-19T14:50:46+00:00"
         },
         {
             "name": "bytic/debug",
@@ -329,16 +329,16 @@
         },
         {
             "name": "bytic/debugbar",
-            "version": "0.9.0",
+            "version": "0.9.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/bytic/debugbar.git",
-                "reference": "613134e9399e30023dc751d0ff95e09273d4b502"
+                "reference": "790b6afa49e3fc18cb240fcba83e4788edaa6d4d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/bytic/debugbar/zipball/613134e9399e30023dc751d0ff95e09273d4b502",
-                "reference": "613134e9399e30023dc751d0ff95e09273d4b502",
+                "url": "https://api.github.com/repos/bytic/debugbar/zipball/790b6afa49e3fc18cb240fcba83e4788edaa6d4d",
+                "reference": "790b6afa49e3fc18cb240fcba83e4788edaa6d4d",
                 "shasum": ""
             },
             "require": {
@@ -369,7 +369,7 @@
             ],
             "description": "Php Framework",
             "homepage": "https://github.com/bytic/debugbar",
-            "time": "2018-02-10T21:23:29+00:00"
+            "time": "2018-02-19T14:54:07+00:00"
         },
         {
             "name": "bytic/filesystem",
@@ -520,16 +520,16 @@
         },
         {
             "name": "bytic/orm",
-            "version": "0.9.2",
+            "version": "0.9.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/bytic/orm.git",
-                "reference": "745a25a87de7bed22aab13d4fd4851a586e281a1"
+                "reference": "7ed6d73d2b290143fc51bfdbbd6a6558b40ccec2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/bytic/orm/zipball/745a25a87de7bed22aab13d4fd4851a586e281a1",
-                "reference": "745a25a87de7bed22aab13d4fd4851a586e281a1",
+                "url": "https://api.github.com/repos/bytic/orm/zipball/7ed6d73d2b290143fc51bfdbbd6a6558b40ccec2",
+                "reference": "7ed6d73d2b290143fc51bfdbbd6a6558b40ccec2",
                 "shasum": ""
             },
             "require": {
@@ -570,7 +570,7 @@
             ],
             "description": "Php Framework",
             "homepage": "https://github.com/ByTIC/orm",
-            "time": "2018-02-19T06:52:30+00:00"
+            "time": "2018-02-19T15:21:12+00:00"
         },
         {
             "name": "bytic/profiler",
