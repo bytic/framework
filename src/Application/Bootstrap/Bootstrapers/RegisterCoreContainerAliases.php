@@ -5,10 +5,7 @@ namespace Nip\Application\Bootstrap\Bootstrapers;
 use Nip\Application;
 use Nip\Application\ApplicationInterface;
 use Nip\Container\Container;
-use Nip\Dispatcher\Dispatcher;
 use Nip\Http\Kernel\Kernel;
-use Nip\Http\Kernel\KernelInterface;
-use Nip\Router\Router;
 
 /**
  * Class RegisterCoreContainerAliases
@@ -27,19 +24,19 @@ class RegisterCoreContainerAliases extends AbstractBootstraper
         /** @var Container $container */
         $container = $app->getContainer();
 
-        $container->share('kernel', $app);
-        $container->share('app', $app);
-        $container->alias('app', Application::class);
-        $container->alias('app', ApplicationInterface::class);
+        $container->singleton('kernel', $app);
+        $container->singleton('app', $app);
+//        $container->alias('app', Application::class);
+//        $container->alias('app', ApplicationInterface::class);
 
-        $container->share('container', $container);
+        $container->singleton('container', $container);
 
-        $container->share('kernel.http', function () use ($container) {
+        $container->singleton('kernel.http', function () use ($container) {
             return $container->get(Kernel::class);
         });
-        $container->alias('kernel.http', KernelInterface::class);
-
-        $container->alias('router', Router::class);
-        $container->alias('dispatcher', Dispatcher::class);
+//        $container->alias('kernel.http', KernelInterface::class);
+//
+//        $container->alias('router', Router::class);
+//        $container->alias('dispatcher', Dispatcher::class);
     }
 }

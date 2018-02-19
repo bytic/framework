@@ -36,6 +36,7 @@
     "php": ">=5.5.0",
     "bytic/cache": "^0.9",
     "bytic/collections": "^1.0",
+    "bytic/controllers": "^0.9",
     "bytic/config": "^0.9",
     "bytic/container": "^0.9",
     "bytic/database": "^0.9",

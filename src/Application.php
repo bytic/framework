@@ -10,6 +10,7 @@ use Nip\Config\ConfigAwareTrait;
 use Nip\Container\Container;
 use Nip\Container\ContainerAliasBindingsTrait;
 use Nip\Database\Manager as DatabaseManager;
+use Nip\Debug\Debug;
 use Nip\Debug\ErrorHandler;
 use Nip\DebugBar\DataCollector\RouteCollector;
 use Nip\DebugBar\StandardDebugBar;
@@ -125,13 +126,16 @@ class Application
     {
         fix_input_quotes();
 
-        $this->getLogger()->init();
-        $this->getContainer()->get(ErrorHandler::class)->setDefaultLogger($this->getLogger());
-
         if ($this->getStaging()->getStage()->inTesting()) {
+            Debug::enable(E_ALL, true);
             $this->getDebugBar()->enable();
             $this->getDebugBar()->addMonolog($this->getLogger()->getMonolog());
+        } else {
+            Debug::enable(E_ALL & ~E_NOTICE, false);
         }
+
+        $this->getLogger()->init();
+        $this->getContainer()->get(ErrorHandler::class)->setDefaultLogger($this->getLogger());
     }
 
     /**

@@ -3,7 +3,6 @@
 namespace Nip\Application\Bootstrap\Bootstrapers;
 
 use Nip\Application;
-use Nip\Debug\Debug;
 
 /**
  * Class HandleExceptions
@@ -22,12 +21,12 @@ class HandleExceptions extends AbstractBootstraper
         $this->setApp($app);
 
         error_reporting(-1);
-
-        if ($app->getStaging()->getStage()->inTesting()) {
-            Debug::enable(E_ALL, true);
-        } else {
-            Debug::enable(E_ALL & ~E_NOTICE, false);
-        }
+//
+//        if ($app->getStaging()->getStage()->inTesting()) {
+//            Debug::enable(E_ALL, true);
+//        } else {
+//            Debug::enable(E_ALL & ~E_NOTICE, false);
+//        }
 
 //        $handler = set_error_handler('var_dump');
 //        $handler = is_array($handler) ? $handler[0] : null;
