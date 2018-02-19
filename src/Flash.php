@@ -27,7 +27,7 @@ class Nip_Flash
 
     public function read()
     {
-        $data = $_SESSION[$this->session_var];
+        $data = isset($_SESSION[$this->session_var]) ? $_SESSION[$this->session_var] : null;
         if (!is_null($data)) {
             if (is_array($data)) {
                 $this->previous = $data;
