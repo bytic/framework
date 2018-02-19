@@ -405,6 +405,7 @@ class Application
 
     public function preHandleRequest()
     {
+        $this->getContainer()->singleton('request', $this->getRequest());
     }
 
     public function preRouting()
@@ -468,7 +469,7 @@ class Application
      */
     protected function reportException(Exception $e)
     {
-        $this->getLogger()->handleException($e);
+        $this->getLogger()->error($e);
     }
 
     /**
