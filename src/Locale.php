@@ -58,10 +58,14 @@ class Nip_Locale
         return $value;
     }
 
+    /**
+     * @param bool $locale
+     * @return mixed
+     */
     public function getData($locale = false)
     {
         $locale = $locale ? $locale : $this->getCurrent();
-        if (!$this->_data[$locale]) {
+        if (!isset($this->_data[$locale])) {
             $data = $this->_getDataFromFile($locale);
             $this->_data[$locale] = $data;
         }
@@ -78,6 +82,9 @@ class Nip_Locale
         return $this->_current;
     }
 
+    /**
+     * @param $locale
+     */
     public function setCurrent($locale)
     {
         if ($this->isSupported($locale)) {
