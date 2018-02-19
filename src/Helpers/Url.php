@@ -3,13 +3,13 @@
 use Nip\Dispatcher\Dispatcher;
 
 /**
- * Class Nip_Helper_Url.
+ * Class Nip_Helper_Url
  */
 class Nip_Helper_Url extends Nip\Helpers\AbstractHelper
 {
     use \Nip\Router\RouterAwareTrait;
 
-    protected $_pieces = [];
+    protected $pieces = [];
 
     /**
      * Singleton.
@@ -26,20 +26,24 @@ class Nip_Helper_Url extends Nip\Helpers\AbstractHelper
         return $instance;
     }
 
+    /**
+     * @param $name
+     * @param $arguments
+     * @return $this|mixed
+     */
     public function __call($name, $arguments)
     {
         if ($name == ucfirst($name)) {
-            $this->_pieces[] = Dispatcher::reverseControllerName($name);
-
+            $this->pieces[] = Dispatcher::reverseControllerName($name);
             return $this;
         } else {
-            $this->_pieces[] = $name;
+            $this->pieces[] = $name;
         }
 
-        $name = $this->_pieces ? implode('.', $this->_pieces) : '';
-        $this->_pieces = [];
+        $name = $this->pieces ? implode(".", $this->pieces) : '';
+        $this->pieces = [];
 
-        return $this->assemble($name, $arguments[0]);
+        return $this->assemble($name, isset($arguments[0]) ? $arguments[0] : null);
     }
 
     /**
