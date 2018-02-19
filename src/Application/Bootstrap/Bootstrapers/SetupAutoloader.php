@@ -16,20 +16,17 @@ class SetupAutoloader extends AbstractBootstraper
      *
      * @param Application $app
      * @return void
+     * @throws \Nip\AutoLoader\Exception
      */
     public function bootstrap(Application $app)
     {
         AutoLoader::registerHandler($app->getAutoLoader());
 
-        $app->getAutoLoader()->setCachePath(
-            $app->storagePath().DIRECTORY_SEPARATOR
-            .'cache'.DIRECTORY_SEPARATOR."autoloader".DIRECTORY_SEPARATOR
-        );
-
+        $app->setupAutoLoaderCache();
         $app->setupAutoLoaderPaths();
 
-//        if ($this->getStaging()->getStage()->inTesting()) {
-        $app->getAutoLoader()->getClassMapLoader()->setRetry(true);
-//        }
+        if ($app->getStaging()->getStage()->inTesting()) {
+            $app->getAutoLoader()->getClassMapLoader()->setRetry(true);
+        }
     }
 }

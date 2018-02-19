@@ -3,13 +3,14 @@
 namespace Nip;
 
 use Exception;
-use Nip\AutoLoader\AutoLoader;
+use Nip\Application\Bootstrap\CoreBootstrapersTrait;
 use Nip\AutoLoader\AutoLoaderAwareTrait;
 use Nip\AutoLoader\AutoLoaderServiceProvider;
 use Nip\Config\ConfigAwareTrait;
 use Nip\Container\Container;
 use Nip\Container\ContainerAwareTrait;
 use Nip\Database\Manager as DatabaseManager;
+use Nip\Debug\ErrorHandler;
 use Nip\DebugBar\DataCollector\RouteCollector;
 use Nip\DebugBar\StandardDebugBar;
 use Nip\Dispatcher\DispatcherAwareTrait;
@@ -34,6 +35,7 @@ use Whoops\Run as WhoopsRun;
 class Application
 {
     use ContainerAwareTrait;
+    use CoreBootstrapersTrait;
     use ConfigAwareTrait;
     use AutoLoaderAwareTrait;
     use RouterAwareTrait;
@@ -85,21 +87,16 @@ class Application
     public function prepare()
     {
         $this->includeVendorAutoload();
-        $this->registerContainer();
+        $this->bootstrap();
+
         $this->registerServices();
         $this->setupRequest();
-        $this->setupAutoLoader();
         $this->setupErrorHandling();
         $this->setupURLConstants();
     }
 
     public function includeVendorAutoload()
     {
-    }
-
-    public function registerContainer()
-    {
-        $this->getContainer()->singleton('kernel', $this);
     }
 
     public function registerServices()
@@ -116,18 +113,6 @@ class Application
     {
     }
 
-    public function setupAutoLoader()
-    {
-        AutoLoader::registerHandler($this->getAutoLoader());
-
-        $this->setupAutoLoaderCache();
-        $this->setupAutoLoaderPaths();
-
-        if ($this->getStaging()->getStage()->inTesting()) {
-            $this->getAutoLoader()->getClassMapLoader()->setRetry(true);
-        }
-    }
-
     public function setupAutoLoaderCache()
     {
     }
@@ -141,6 +126,7 @@ class Application
         fix_input_quotes();
 
         $this->getLogger()->init();
+        $this->getContainer()->get(ErrorHandler::class)->setDefaultLogger($this->getLogger());
 
         if ($this->getStaging()->getStage()->inTesting()) {
             $this->getDebugBar()->enable();

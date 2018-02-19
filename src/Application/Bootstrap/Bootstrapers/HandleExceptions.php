@@ -23,7 +23,7 @@ class HandleExceptions extends AbstractBootstraper
 
         error_reporting(-1);
 
-        if (config('app.debug')) {
+        if ($app->getStaging()->getStage()->inTesting()) {
             Debug::enable(E_ALL, true);
         } else {
             Debug::enable(E_ALL & ~E_NOTICE, false);
