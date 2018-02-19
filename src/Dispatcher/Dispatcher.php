@@ -4,7 +4,7 @@ namespace Nip\Dispatcher;
 
 use Exception;
 use Nip\AutoLoader\AutoLoader;
-use Nip\Controller;
+use Nip\Controllers\Controller;
 use Nip\Http\Response\Response;
 use Nip\Request;
 
