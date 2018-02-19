@@ -4,6 +4,10 @@ namespace Nip\Application\Bootstrap\Bootstrapers;
 
 use Nip\Application;
 
+/**
+ * Class RegisterProviders
+ * @package Nip\Application\Bootstrap\Bootstrapers
+ */
 class RegisterProviders extends AbstractBootstraper
 {
     /**
@@ -14,6 +18,7 @@ class RegisterProviders extends AbstractBootstraper
      */
     public function bootstrap(Application $app)
     {
-        $app->registerConfiguredProviders();
+        $app->registerServices();
+//        $app->registerConfiguredProviders();
     }
 }

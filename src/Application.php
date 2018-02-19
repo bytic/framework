@@ -8,7 +8,7 @@ use Nip\AutoLoader\AutoLoaderAwareTrait;
 use Nip\AutoLoader\AutoLoaderServiceProvider;
 use Nip\Config\ConfigAwareTrait;
 use Nip\Container\Container;
-use Nip\Container\ContainerAwareTrait;
+use Nip\Container\ContainerAliasBindingsTrait;
 use Nip\Database\Manager as DatabaseManager;
 use Nip\Debug\ErrorHandler;
 use Nip\DebugBar\DataCollector\RouteCollector;
@@ -34,7 +34,7 @@ use Whoops\Run as WhoopsRun;
  */
 class Application
 {
-    use ContainerAwareTrait;
+    use ContainerAliasBindingsTrait;
     use CoreBootstrapersTrait;
     use ConfigAwareTrait;
     use AutoLoaderAwareTrait;
