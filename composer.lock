@@ -4,20 +4,20 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "d846ffa0ca06b0e0cb64e34f8a03dec3",
+    "content-hash": "9e5e6edc5ec28220c342617984993ac1",
     "packages": [
         {
             "name": "bytic/cache",
-            "version": "0.9.1",
+            "version": "0.9.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/bytic/cache.git",
-                "reference": "8771497ea2cbb9b71605084dd7ea9a01ab8fac7d"
+                "reference": "26c743d5cced72183760ec2b0b110d4469ee2d4a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/bytic/cache/zipball/8771497ea2cbb9b71605084dd7ea9a01ab8fac7d",
-                "reference": "8771497ea2cbb9b71605084dd7ea9a01ab8fac7d",
+                "url": "https://api.github.com/repos/bytic/cache/zipball/26c743d5cced72183760ec2b0b110d4469ee2d4a",
+                "reference": "26c743d5cced72183760ec2b0b110d4469ee2d4a",
                 "shasum": ""
             },
             "require": {
@@ -51,7 +51,7 @@
             ],
             "description": "Cache module for bytic framework",
             "homepage": "https://github.com/bytic/cache",
-            "time": "2018-02-13T20:22:24+00:00"
+            "time": "2018-02-19T12:01:27+00:00"
         },
         {
             "name": "bytic/collections",
@@ -188,16 +188,16 @@
         },
         {
             "name": "bytic/controllers",
-            "version": "0.9.2",
+            "version": "0.9.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/bytic/controllers.git",
-                "reference": "874f0a062c21b61f4238f61049e80f160153f996"
+                "reference": "0b2455c9e9b227f56d18f493b98f8de70748ada7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/bytic/controllers/zipball/874f0a062c21b61f4238f61049e80f160153f996",
-                "reference": "874f0a062c21b61f4238f61049e80f160153f996",
+                "url": "https://api.github.com/repos/bytic/controllers/zipball/0b2455c9e9b227f56d18f493b98f8de70748ada7",
+                "reference": "0b2455c9e9b227f56d18f493b98f8de70748ada7",
                 "shasum": ""
             },
             "require": {
@@ -231,7 +231,7 @@
             ],
             "description": "Php Framework",
             "homepage": "https://github.com/bytic/controllers",
-            "time": "2018-02-19T11:06:05+00:00"
+            "time": "2018-02-19T11:54:27+00:00"
         },
         {
             "name": "bytic/database",
@@ -661,6 +661,55 @@
                 "request"
             ],
             "time": "2017-04-06T15:24:50+00:00"
+        },
+        {
+            "name": "bytic/router",
+            "version": "0.9.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/bytic/router.git",
+                "reference": "8e362f1b4ef805eb1abf477e1a6c64941e9ab386"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/bytic/router/zipball/8e362f1b4ef805eb1abf477e1a6c64941e9ab386",
+                "reference": "8e362f1b4ef805eb1abf477e1a6c64941e9ab386",
+                "shasum": ""
+            },
+            "require": {
+                "bytic/http": "^0.9",
+                "bytic/inflector": "^0.9",
+                "bytic/utility": "^1.0",
+                "php": "^7.0"
+            },
+            "require-dev": {
+                "mockery/mockery": "^0.9",
+                "phpunit/phpunit": "^6.2",
+                "squizlabs/php_codesniffer": "^3.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Nip\\Router\\": "src"
+                },
+                "classmap": [
+                    "src"
+                ],
+                "files": []
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Gabriel Solomon",
+                    "email": "hello@gabrielsolomon.ro"
+                }
+            ],
+            "description": "Php Framework",
+            "homepage": "https://github.com/bytic/router",
+            "time": "2018-02-19T13:53:40+00:00"
         },
         {
             "name": "bytic/utility",

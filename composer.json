@@ -48,6 +48,7 @@
     "bytic/orm": "^0.9",
     "bytic/profiler": "^0.9",
     "bytic/request-detective": "^1.0",
+    "bytic/router": "^0.9",
     "bytic/utility": "^1.0",
     "html2text/html2text": "^4.0",
     "sendgrid/sendgrid": "^5.0",
