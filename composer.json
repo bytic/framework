@@ -42,6 +42,7 @@
     "bytic/database": "^0.9",
     "bytic/debug": "^0.9",
     "bytic/debugbar": "^0.9",
+    "bytic/helpers": "^0.9",
     "bytic/http": "^0.9",
     "bytic/inflector": "^0.9",
     "bytic/filesystem": "^0.9",
