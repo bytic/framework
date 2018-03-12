@@ -60,7 +60,7 @@ class ClassMap extends AbstractLoader
             return $this->map[$class];
         }
 
-        if ($this->isRetry()) {
+        if ($this->isRetry() === false) {
             return false;
         }
 
