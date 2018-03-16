@@ -14,6 +14,7 @@
       <excludeFolder url="file://$MODULE_DIR$/vendor/bytic/debugbar" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/bytic/dispatcher" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/bytic/form" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/bytic/helpers" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/bytic/http" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/bytic/inflector" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/bytic/orm" />

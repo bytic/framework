@@ -2,7 +2,8 @@
 
 namespace Nip\I18n\Translator\Backend;
 
-use Nip_File_System as FileSystem;
+use Nip\Filesystem\FileDisk;
+use League\Flysystem\Adapter\Local as LocalAdapter;
 
 /**
  * Nip Framework
@@ -17,6 +18,7 @@ class File extends AbstractBackend
     protected $variableName = 'lang';
     protected $dictionary;
 
+    protected $filesystem = null;
     protected $baseDirectory;
 
     /**
@@ -48,12 +50,13 @@ class File extends AbstractBackend
     public function addLanguage($language)
     {
         $directory = $this->compileLanguageDirectory($language);
+
         return $this->addLanguageFromPath($language, $directory);
     }
 
     protected function compileLanguageDirectory($lang)
     {
-        return $this->getBaseDirectory() . DIRECTORY_SEPARATOR . $lang;
+        return DIRECTORY_SEPARATOR . $lang;
     }
 
     /**
@@ -61,27 +64,34 @@ class File extends AbstractBackend
      *
      * @param string $language
      * @param string $path Path to file containing translations
+     *
      * @return $this
      */
     public function addLanguageFromPath($language, $path)
     {
         $this->languages[] = $language;
 
-        $resolvedIncludePath = stream_resolve_include_path($path);
-        $fromIncludePath = ($resolvedIncludePath !== false) ? $resolvedIncludePath : $path;
+        $filesystem = $this->getFilesystem();
+//        $resolvedIncludePath = stream_resolve_include_path($path);
+//        $fromIncludePath     = ($resolvedIncludePath !== false) ? $resolvedIncludePath : $path;
+        if ($filesystem->has($path)) {
+            $handler = $filesystem->get($path);
+            if ($handler->isDir()) {
+                $this->loadDirectory($language, $path);
 
-        if (is_dir($fromIncludePath)) {
-            $this->loadDirectory($language, $fromIncludePath);
-        } elseif (is_file($fromIncludePath)) {
-            $this->loadFile($language, $fromIncludePath);
-        } else {
-            trigger_error(
-                "Language file [" . $language . "][" . $path . "][" . $fromIncludePath . "] does not exist",
-                E_USER_ERROR
-            );
+                return $this;
+            } elseif ($handler->isFile()) {
+                $this->loadFile($language, $path);
+
+                return $this;
+
+            }
         }
 
-        return $this;
+        trigger_error(
+            "Language file [" . $language . "][" . $path . "][" . $this->getBaseDirectory() . "] does not exist",
+            E_USER_ERROR
+        );
     }
 
     /**
@@ -90,11 +100,13 @@ class File extends AbstractBackend
      */
     public function loadDirectory($language, $path)
     {
-        $files = FileSystem::instance()->scanDirectory($path, true, true);
+        $filesystem = $this->getFilesystem();
+        /** @var \SplFileInfo[] $files */
+        $files = $filesystem->listContents($path, true);
         if (is_array($files)) {
             foreach ($files as $file) {
-                if (FileSystem::instance()->getExtension($file) == 'php') {
-                    $this->loadFile($language, $file);
+                if ($file['extension'] == 'php') {
+                    $this->loadFile($language, $file['path']);
                 }
             }
         }
@@ -106,9 +118,12 @@ class File extends AbstractBackend
      */
     protected function loadFile($language, $path)
     {
-        if (file_exists($path)) {
+        $filesystem = $this->getFilesystem();
+        if ($filesystem->has($path)) {
             /** @noinspection PhpIncludeInspection */
-            $messages = include $path;
+            $content = $filesystem->get($path)->read();
+            $content = str_replace(['<?php','?>'],'', $content);
+            $messages = eval($content);
 
             if (is_array($messages)) {
                 $this->loadMessages($language, $messages);
@@ -139,8 +154,10 @@ class File extends AbstractBackend
 
     /**
      * Returns dictionary entry for $slug in $language
+     *
      * @param string $slug
      * @param string|bool $language
+     *
      * @return string|bool
      */
     protected function doTranslation($slug, $language = false)
@@ -150,5 +167,18 @@ class File extends AbstractBackend
         }
 
         return false;
+    }
+
+    /**
+     * @return FileDisk|null
+     */
+    protected function getFilesystem()
+    {
+        if ($this->filesystem === null) {
+            $adapter          = new LocalAdapter($this->getBaseDirectory());
+            $this->filesystem = new FileDisk($adapter);
+        }
+
+        return $this->filesystem;
     }
 }
