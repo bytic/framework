@@ -60,7 +60,7 @@ if (!function_exists('pr')) {
  */
 function db()
 {
-    return Container::getInstance()->get('database');
+    return Container::getInstance()->get('db.connection');
 }
 
 /**
