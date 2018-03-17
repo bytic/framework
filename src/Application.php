@@ -276,7 +276,7 @@ class Application
         $dbManager->setBootstrap($this);
 
         $connection = $dbManager->newConnectionFromConfig($stageConfig->get('DB'));
-        $this->getContainer()->set('database', $connection);
+        $this->getContainer()->set('db.connection', $connection);
 
         if ($this->getDebugBar()->isEnabled()) {
             $adapter = $connection->getAdapter();
