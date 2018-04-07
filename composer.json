@@ -51,6 +51,7 @@
     "bytic/profiler": "^1.0",
     "bytic/request-detective": "^1.0",
     "bytic/router": "^1.0",
+    "bytic/translation": "^1.0",
     "bytic/utility": "^1.0",
     "bytic/view": "^1.0",
     "psr/container": "^1.0",
