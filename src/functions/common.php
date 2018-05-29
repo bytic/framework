@@ -1,51 +1,5 @@
 <?php
 
-use Nip\Container\Container;
-
-if (!function_exists('app')) {
-    /**
-     * Get the available container instance.
-     *
-     * @param string $make
-     * @param array  $parameters
-     *
-     * @return mixed|Container
-     */
-    function app($make = null, $parameters = [])
-    {
-        if (is_null($make)) {
-            return Container::getInstance();
-        }
-
-        return Container::getInstance()->get($make, $parameters);
-    }
-}
-
-if (!function_exists('request')) {
-    /**
-     * Get an instance of the current request or an input item from the request.
-     *
-     * @param  array|string $key
-     * @param  mixed $default
-     * @return Nip\Request|string|array
-     */
-    function request($key = null, $default = null)
-    {
-        $request = app('request');
-        if (is_null($key)) {
-            return $request;
-        }
-        $value = $request->get($key);
-
-        return $value ? $value : $default;
-    }
-}
-
-function __shutdown()
-{
-    db()->disconnect();
-}
-
 if (!function_exists('pr')) {
     function pr($mixed)
     {
@@ -55,40 +9,24 @@ if (!function_exists('pr')) {
     }
 }
 
-/**
- * @return Nip\Database\Connection
- */
-function db()
-{
-    return Container::getInstance()->get('db.connection');
-}
-
-/**
- * @return \Nip\I18n\Translator
- */
-function translator()
-{
-    return app('translator');
-}
-
 function encode_url($input)
 {
     $chars = [
         '&#x102;' => 'a',
         '&#x103;' => 'a',
-        '&#xC2;'  => 'A',
-        '&#xE2;'  => 'a',
-        '&#xCE;'  => 'I',
-        '&#xEE;'  => 'i',
+        '&#xC2;' => 'A',
+        '&#xE2;' => 'a',
+        '&#xCE;' => 'I',
+        '&#xEE;' => 'i',
         '&#x218;' => 'S',
         '&#x219;' => 's',
         '&#x15E;' => 'S',
         '&#x15F;' => 's',
         '&#x21A;' => 'T',
         '&#x21B;' => 't',
-        '&#354;'  => 'T',
-        '&#355;'  => 't',
-        '&#039;'  => '',
+        '&#354;' => 'T',
+        '&#355;' => 't',
+        '&#039;' => '',
     ];
 
     foreach ($chars as $i => $v) {
@@ -114,7 +52,7 @@ function current_url()
 /**
  * Transforms a date's string representation into $format.
  *
- * @param string     $format
+ * @param string $format
  * @param string|int $datetime
  *
  * @return string/bool
@@ -130,7 +68,7 @@ function _date($datetime, $format = false)
 /**
  * Transforms a date's string representation into $format.
  *
- * @param string     $format
+ * @param string $format
  * @param string|int $datetime
  *
  * @return string/bool
@@ -147,7 +85,7 @@ function _strtotime($date, $format = false)
 /**
  * Transforms a date's string representation into $format.
  *
- * @param string     $format
+ * @param string $format
  * @param string|int $datetime
  *
  * @return string/bool
@@ -184,11 +122,11 @@ function max_upload()
 
     $unit = strtoupper(substr($post_max_size, -1));
     $multiplier = ($unit == 'M' ? 1048576 : ($unit == 'K' ? 1024 : ($unit == 'G' ? 1073741824 : 1)));
-    $post_max_size = ((int) $post_max_size) * $multiplier;
+    $post_max_size = ((int)$post_max_size) * $multiplier;
 
     $unit = strtoupper(substr($upload_max_filesize, -1));
     $multiplier = ($unit == 'M' ? 1048576 : ($unit == 'K' ? 1024 : ($unit == 'G' ? 1073741824 : 1)));
-    $upload_max_filesize = ((int) $upload_max_filesize) * $multiplier;
+    $upload_max_filesize = ((int)$upload_max_filesize) * $multiplier;
 
     return round((min($post_max_size, $upload_max_filesize) / 1048576), 2).'MB';
 }
@@ -263,11 +201,11 @@ function valid_cc_number($cc_number)
     $card_type = '';
     $card_regexes = [
         "/^4\d{12}(\d\d\d){0,1}$/" => 'visa',
-        "/^5[12345]\d{14}$/"       => 'mastercard',
-        "/^3[47]\d{13}$/"          => 'amex',
-        "/^6011\d{12}$/"           => 'discover',
-        "/^30[012345]\d{11}$/"     => 'diners',
-        "/^3[68]\d{12}$/"          => 'diners',
+        "/^5[12345]\d{14}$/" => 'mastercard',
+        "/^3[47]\d{13}$/" => 'amex',
+        "/^6011\d{12}$/" => 'discover',
+        "/^30[012345]\d{11}$/" => 'diners',
+        "/^3[68]\d{12}$/" => 'diners',
     ];
 
     foreach ($card_regexes as $regex => $type) {
@@ -360,15 +298,15 @@ if (!function_exists('money_format')) {
             $flags = [
                 'fillchar' => preg_match('/\=(.)/', $fmatch[1], $match) ?
                     $match[1] : ' ',
-                'nogroup'   => preg_match('/\^/', $fmatch[1]) > 0,
+                'nogroup' => preg_match('/\^/', $fmatch[1]) > 0,
                 'usesignal' => preg_match('/\+|\(/', $fmatch[1], $match) ?
                     $match[0] : '+',
                 'nosimbol' => preg_match('/\!/', $fmatch[1]) > 0,
-                'isleft'   => preg_match('/\-/', $fmatch[1]) > 0,
+                'isleft' => preg_match('/\-/', $fmatch[1]) > 0,
             ];
-            $width = trim($fmatch[2]) ? (int) $fmatch[2] : 0;
-            $left = trim($fmatch[3]) ? (int) $fmatch[3] : 0;
-            $right = trim($fmatch[4]) ? (int) $fmatch[4] : $locale['int_frac_digits'];
+            $width = trim($fmatch[2]) ? (int)$fmatch[2] : 0;
+            $left = trim($fmatch[3]) ? (int)$fmatch[3] : 0;
+            $right = trim($fmatch[4]) ? (int)$fmatch[4] : $locale['int_frac_digits'];
             $conversion = $fmatch[5];
 
             $positive = true;
@@ -448,14 +386,14 @@ if (!function_exists('json_decode')) {
         $val = null;
         static $lang_eq = ['true' => true, 'false' => false, 'null' => null];
         static $str_eq = [
-            'n'  => "\012",
-            'r'  => "\015",
+            'n' => "\012",
+            'r' => "\015",
             '\\' => '\\',
-            '"'  => '"',
-            'f'  => "\f",
-            'b'  => "\b",
-            't'  => "\t",
-            '/'  => '/',
+            '"' => '"',
+            'f' => "\f",
+            'b' => "\b",
+            't' => "\t",
+            '/' => '/',
         ];
 
         //-- flat char-wise parsing
@@ -547,15 +485,15 @@ if (!function_exists('json_decode')) {
                     $val = $uu[1];
                     $n += strlen($uu[0]) - 1;
                     if (strpos($val, '.')) {  // float
-                        $val = (float) $val;
+                        $val = (float)$val;
                     } elseif ($val[0] == '0') {  // oct
                         $val = octdec($val);
                     } else {
-                        $val = (int) $val;
+                        $val = (int)$val;
                     }
                     // exponent?
                     if (isset($uu[2])) {
-                        $val *= pow(10, (int) $uu[2]);
+                        $val *= pow(10, (int)$uu[2]);
                     }
                 } //-> boolean or null
                 elseif (preg_match("#^(true|false|null)\b#", substr($json, $n), $uu)) {
