@@ -40,6 +40,6 @@ class ViewTest extends AbstractTest
         static::assertInstanceOf(View::class, $view->Messages()->getView());
         static::assertInstanceOf(View::class, $view->Paginator()->getView());
         static::assertInstanceOf(View::class, $view->Scripts()->getView());
-        static::assertInstanceOf(View::class, $view->StyleSheets()->getView());
+        static::assertInstanceOf(View::class, $view->Stylesheets()->getView());
     }
 }
