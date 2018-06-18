@@ -41,6 +41,7 @@
     "bytic/config": "^0.9",
     "bytic/container": "^0.9",
     "bytic/database": "^0.9",
+    "bytic/dispatcher": "^0.9",
     "bytic/debug": "^0.9",
     "bytic/debugbar": "^0.9",
     "bytic/form": "^0.9",

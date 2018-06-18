@@ -1,10 +1,10 @@
 {
     "_readme": [
         "This file locks the dependencies of your project to a known state",
-        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
+      "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-  "content-hash": "c3d3bd303ee3a5ccf9fcbafdaf031453",
+  "content-hash": "d144a25cbb5f089e7a668aacf24c1a7c",
     "packages": [
         {
             "name": "bytic/cache",
@@ -372,6 +372,52 @@
             "time": "2018-02-19T14:54:07+00:00"
         },
         {
+          "name": "bytic/dispatcher",
+          "version": "0.9.0",
+          "source": {
+            "type": "git",
+            "url": "https://github.com/bytic/dispatcher.git",
+            "reference": "c608d057ee1791714e06c5350e530e7ed30258a1"
+          },
+          "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/bytic/dispatcher/zipball/c608d057ee1791714e06c5350e530e7ed30258a1",
+            "reference": "c608d057ee1791714e06c5350e530e7ed30258a1",
+            "shasum": ""
+          },
+          "require": {
+            "bytic/container": "^0.9",
+            "bytic/controllers": "^0.9",
+            "bytic/http": "^0.9",
+            "bytic/inflector": "^0.9",
+            "php": "^7.0"
+          },
+          "require-dev": {
+            "mockery/mockery": "^0.9",
+            "phpunit/phpunit": "^6.2",
+            "squizlabs/php_codesniffer": "^3.0"
+          },
+          "type": "library",
+          "autoload": {
+            "psr-4": {
+              "Nip\\Dispatcher\\": "src"
+            }
+          },
+          "notification-url": "https://packagist.org/downloads/",
+          "license": [
+            "MIT"
+          ],
+          "authors": [
+            {
+              "name": "Gabriel Solomon",
+              "email": "hello@gabrielsolomon.ro"
+            }
+          ],
+          "description": "Php Framework",
+          "homepage": "https://github.com/bytic/inflector",
+          "time": "2018-06-18T19:25:14+00:00"
+        },
+      {
             "name": "bytic/filesystem",
             "version": "0.9.0",
             "source": {
@@ -1294,16 +1340,16 @@
         },
         {
             "name": "nesbot/carbon",
-          "version": "1.29.2",
+          "version": "1.30.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/briannesbitt/Carbon.git",
-              "reference": "ed6aa898982f441ccc9b2acdec51490f2bc5d337"
+              "reference": "863a1a651ea324e1838da3a52753a4239b9d4bea"
             },
             "dist": {
                 "type": "zip",
-              "url": "https://api.github.com/repos/briannesbitt/Carbon/zipball/ed6aa898982f441ccc9b2acdec51490f2bc5d337",
-              "reference": "ed6aa898982f441ccc9b2acdec51490f2bc5d337",
+              "url": "https://api.github.com/repos/briannesbitt/Carbon/zipball/863a1a651ea324e1838da3a52753a4239b9d4bea",
+              "reference": "863a1a651ea324e1838da3a52753a4239b9d4bea",
                 "shasum": ""
             },
             "require": {
@@ -1338,7 +1384,7 @@
                 "datetime",
                 "time"
             ],
-          "time": "2018-05-29T15:23:46+00:00"
+          "time": "2018-06-15T11:52:26+00:00"
         },
         {
             "name": "oscarotero/middleland",
