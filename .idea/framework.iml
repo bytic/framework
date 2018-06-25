@@ -18,6 +18,7 @@
       <excludeFolder url="file://$MODULE_DIR$/vendor/bytic/helpers" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/bytic/http" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/bytic/inflector" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/bytic/locale" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/bytic/orm" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/bytic/profiler" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/bytic/request-detective" />
@@ -31,7 +32,6 @@
       <excludeFolder url="file://$MODULE_DIR$/vendor/filp/whoops" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/hamcrest/hamcrest-php" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/html2text/html2text" />
-      <excludeFolder url="file://$MODULE_DIR$/vendor/http-interop/http-middleware" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/league/container" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/league/flysystem" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/league/pipeline" />

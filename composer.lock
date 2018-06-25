@@ -4,7 +4,7 @@
       "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-  "content-hash": "4c851aa36ae97fde267738ac03355b25",
+  "content-hash": "7cef8d344b6f9ed1783e7f7c97fe955d",
     "packages": [
         {
           "name": "bytic/application",
@@ -709,34 +709,31 @@
             "time": "2018-02-02T10:44:54+00:00"
         },
         {
-          "name": "bytic/mail",
+          "name": "bytic/locale",
           "version": "1.0.0",
           "source": {
             "type": "git",
-            "url": "https://github.com/bytic/mail.git",
-            "reference": "62693c2db3d35c9fe3856a350137c840ec479b9a"
+            "url": "https://github.com/bytic/locale.git",
+            "reference": "008618205909e2443382219a304f1c34acd3b55c"
           },
           "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/bytic/mail/zipball/62693c2db3d35c9fe3856a350137c840ec479b9a",
-            "reference": "62693c2db3d35c9fe3856a350137c840ec479b9a",
+            "url": "https://api.github.com/repos/bytic/locale/zipball/008618205909e2443382219a304f1c34acd3b55c",
+            "reference": "008618205909e2443382219a304f1c34acd3b55c",
             "shasum": ""
           },
           "require": {
-            "html2text/html2text": "^4.0",
-            "php": "^7.0",
-            "sendgrid/sendgrid": "^5.0",
-            "swiftmailer/swiftmailer": "^5.4"
+            "php": "^7.0"
           },
           "require-dev": {
-            "mockery/mockery": "^0.9",
-            "phpunit/phpunit": "^6.2",
-            "squizlabs/php_codesniffer": "^3.0"
+            "mockery/mockery": "^1.1",
+            "phpunit/phpunit": "^7.2",
+            "squizlabs/php_codesniffer": "^3.3"
           },
           "type": "library",
           "autoload": {
             "psr-4": {
-              "Nip\\Mail\\": "src"
+              "Nip\\Locale\\": "src"
             }
           },
           "notification-url": "https://packagist.org/downloads/",
@@ -750,8 +747,53 @@
             }
           ],
           "description": "Php Framework",
-          "homepage": "https://github.com/bytic/mail",
-          "time": "2018-06-15T08:45:32+00:00"
+          "homepage": "https://github.com/bytic/locale",
+          "time": "2018-06-24T17:29:40+00:00"
+        },
+      {
+        "name": "bytic/mail",
+        "version": "1.0.0",
+        "source": {
+          "type": "git",
+          "url": "https://github.com/bytic/mail.git",
+          "reference": "62693c2db3d35c9fe3856a350137c840ec479b9a"
+        },
+        "dist": {
+          "type": "zip",
+          "url": "https://api.github.com/repos/bytic/mail/zipball/62693c2db3d35c9fe3856a350137c840ec479b9a",
+          "reference": "62693c2db3d35c9fe3856a350137c840ec479b9a",
+          "shasum": ""
+        },
+        "require": {
+          "html2text/html2text": "^4.0",
+          "php": "^7.0",
+          "sendgrid/sendgrid": "^5.0",
+          "swiftmailer/swiftmailer": "^5.4"
+        },
+        "require-dev": {
+          "mockery/mockery": "^0.9",
+          "phpunit/phpunit": "^6.2",
+          "squizlabs/php_codesniffer": "^3.0"
+        },
+        "type": "library",
+        "autoload": {
+          "psr-4": {
+            "Nip\\Mail\\": "src"
+          }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+          "MIT"
+        ],
+        "authors": [
+          {
+            "name": "Gabriel Solomon",
+            "email": "hello@gabrielsolomon.ro"
+          }
+        ],
+        "description": "Php Framework",
+        "homepage": "https://github.com/bytic/mail",
+        "time": "2018-06-15T08:45:32+00:00"
         },
       {
             "name": "bytic/orm",
@@ -857,24 +899,26 @@
         },
         {
             "name": "bytic/request-detective",
-            "version": "1.0.0",
+          "version": "1.0.1",
             "source": {
                 "type": "git",
-                "url": "https://github.com/ByTIC/request-detective.git",
-                "reference": "7c472b166ef0db63c258a3d255fd7bfea1cdd659"
+              "url": "https://github.com/bytic/request-detective.git",
+              "reference": "f6134d772a4a75ea07a6884a4690a9096f8ab306"
             },
           "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/ByTIC/request-detective/zipball/7c472b166ef0db63c258a3d255fd7bfea1cdd659",
-            "reference": "7c472b166ef0db63c258a3d255fd7bfea1cdd659",
+            "url": "https://api.github.com/repos/bytic/request-detective/zipball/f6134d772a4a75ea07a6884a4690a9096f8ab306",
+            "reference": "f6134d772a4a75ea07a6884a4690a9096f8ab306",
             "shasum": ""
           },
             "require": {
                 "php": "^7.0",
-                "symfony/http-foundation": "^3.1"
+              "symfony/http-foundation": "^3.1|^4.1"
             },
             "require-dev": {
-                "phpunit/phpunit": "^5.7"
+              "mockery/mockery": "^1.1",
+              "phpunit/phpunit": "^7.2",
+              "squizlabs/php_codesniffer": "^3.3"
             },
             "type": "library",
             "autoload": {
@@ -897,7 +941,7 @@
             "keywords": [
                 "request"
             ],
-            "time": "2017-04-06T15:24:50+00:00"
+          "time": "2018-06-24T12:26:14+00:00"
         },
         {
             "name": "bytic/router",
@@ -1258,59 +1302,6 @@
             "time": "2017-05-15T01:50:59+00:00"
         },
         {
-            "name": "http-interop/http-middleware",
-            "version": "0.4.1",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/http-interop/http-middleware.git",
-                "reference": "9a801fe60e70d5d608b61d56b2dcde29516c81b9"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/http-interop/http-middleware/zipball/9a801fe60e70d5d608b61d56b2dcde29516c81b9",
-                "reference": "9a801fe60e70d5d608b61d56b2dcde29516c81b9",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=5.3.0",
-                "psr/http-message": "^1.0"
-            },
-            "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "1.0.x-dev"
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "Interop\\Http\\ServerMiddleware\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "PHP-FIG",
-                    "homepage": "http://www.php-fig.org/"
-                }
-            ],
-            "description": "Common interface for HTTP server-side middleware",
-            "keywords": [
-                "factory",
-                "http",
-                "middleware",
-                "psr",
-                "psr-17",
-                "psr-7",
-                "request",
-                "response"
-            ],
-            "abandoned": "http-interop/http-server-middleware",
-            "time": "2017-01-14T15:23:42+00:00"
-        },
-        {
             "name": "league/container",
             "version": "2.4.1",
             "source": {
@@ -1647,16 +1638,16 @@
         },
         {
             "name": "nesbot/carbon",
-          "version": "1.30.0",
+          "version": "1.31.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/briannesbitt/Carbon.git",
-              "reference": "863a1a651ea324e1838da3a52753a4239b9d4bea"
+              "reference": "4dbe0e51d24a4c7e000999324d21fc25edbf7b05"
             },
             "dist": {
                 "type": "zip",
-              "url": "https://api.github.com/repos/briannesbitt/Carbon/zipball/863a1a651ea324e1838da3a52753a4239b9d4bea",
-              "reference": "863a1a651ea324e1838da3a52753a4239b9d4bea",
+              "url": "https://api.github.com/repos/briannesbitt/Carbon/zipball/4dbe0e51d24a4c7e000999324d21fc25edbf7b05",
+              "reference": "4dbe0e51d24a4c7e000999324d21fc25edbf7b05",
                 "shasum": ""
             },
             "require": {
@@ -1668,6 +1659,13 @@
                 "phpunit/phpunit": "^4.8.35 || ^5.7"
             },
             "type": "library",
+          "extra": {
+            "laravel": {
+              "providers": [
+                "Carbon\\Laravel\\ServiceProvider"
+              ]
+            }
+          },
             "autoload": {
                 "psr-4": {
                   "": "src/"
@@ -1691,7 +1689,7 @@
                 "datetime",
                 "time"
             ],
-          "time": "2018-06-15T11:52:26+00:00"
+          "time": "2018-06-24T14:32:22+00:00"
         },
         {
             "name": "oscarotero/middleland",

@@ -1,3 +1,0 @@
-<?php
-
-$_import = 'bg';
