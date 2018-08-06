@@ -57,6 +57,7 @@
     "bytic/router": "^0.9",
     "bytic/translation": "^0.9",
     "bytic/utility": "^1.0",
+    "bytic/view": "^0.9",
     "symfony/http-foundation": "^3.1",
     "symfony/http-kernel": "^3.1",
     "monolog/monolog": "^1.20",
