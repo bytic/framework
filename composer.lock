@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "d56da52fe0966b858afc55c67911e10a",
+    "content-hash": "bbdbd86f421b71af24239863c92158cd",
     "packages": [
         {
             "name": "bytic/application",
@@ -837,6 +837,50 @@
             "description": "Php Framework",
             "homepage": "https://github.com/bytic/locale-detector",
             "time": "2018-06-25T11:09:07+00:00"
+        },
+        {
+            "name": "bytic/logger",
+            "version": "1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/bytic/logger.git",
+                "reference": "df5786c0c2943423bc4959de70680823a15e1ea5"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/bytic/logger/zipball/df5786c0c2943423bc4959de70680823a15e1ea5",
+                "reference": "df5786c0c2943423bc4959de70680823a15e1ea5",
+                "shasum": ""
+            },
+            "require": {
+                "bytic/container": "^1.0",
+                "bytic/debug": "^1.0",
+                "monolog/monolog": "^1.20",
+                "php": "^7.0"
+            },
+            "require-dev": {
+                "mockery/mockery": "^1.1",
+                "phpunit/phpunit": "^7.2",
+                "squizlabs/php_codesniffer": "^3.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Nip\\Logger\\": "src/"
+                },
+                "classmap": [
+                    "legacy"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "authors": [
+                {
+                    "name": "Gabriel Solomon",
+                    "email": "hello@gabrielsolomon.ro"
+                }
+            ],
+            "description": "Logger component for bytic",
+            "time": "2018-09-13T12:42:17+00:00"
         },
         {
             "name": "bytic/mail",
