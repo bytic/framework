@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "2fb02216fe3710f6c737b9ce84ae4c57",
+  "content-hash": "1a676c9d87faa52e52c4445bdd4c77b8",
     "packages": [
         {
             "name": "bytic/application",
@@ -55,6 +55,49 @@
             "time": "2018-06-22T19:00:55+00:00"
         },
         {
+          "name": "bytic/autoloader",
+          "version": "1.0.2",
+          "source": {
+            "type": "git",
+            "url": "https://github.com/bytic/autoloader.git",
+            "reference": "99a58fe968f9c922a59cf9977961b00ee0ffd101"
+          },
+          "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/bytic/autoloader/zipball/99a58fe968f9c922a59cf9977961b00ee0ffd101",
+            "reference": "99a58fe968f9c922a59cf9977961b00ee0ffd101",
+            "shasum": ""
+          },
+          "require": {
+            "bytic/logger": "^1.0",
+            "bytic/utility": "^1.0",
+            "php": "^7.0"
+          },
+          "require-dev": {
+            "mockery/mockery": "^1.1",
+            "phpunit/phpunit": "^7.2",
+            "squizlabs/php_codesniffer": "^3.0"
+          },
+          "type": "library",
+          "autoload": {
+            "psr-4": {
+              "Nip\\Autoloader\\": "src/"
+            },
+            "classmap": [
+              "src"
+            ]
+          },
+          "notification-url": "https://packagist.org/downloads/",
+          "authors": [
+            {
+              "name": "Gabriel Solomon",
+              "email": "hello@gabrielsolomon.ro"
+            }
+          ],
+          "description": "Autoloader component for bytic",
+          "time": "2018-09-18T10:44:36+00:00"
+        },
+      {
             "name": "bytic/cache",
             "version": "1.0.3",
             "source": {
@@ -804,6 +847,50 @@
             "time": "2018-06-25T11:09:07+00:00"
         },
         {
+          "name": "bytic/logger",
+          "version": "1.0.0",
+          "source": {
+            "type": "git",
+            "url": "https://github.com/bytic/logger.git",
+            "reference": "df5786c0c2943423bc4959de70680823a15e1ea5"
+          },
+          "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/bytic/logger/zipball/df5786c0c2943423bc4959de70680823a15e1ea5",
+            "reference": "df5786c0c2943423bc4959de70680823a15e1ea5",
+            "shasum": ""
+          },
+          "require": {
+            "bytic/container": "^1.0",
+            "bytic/debug": "^1.0",
+            "monolog/monolog": "^1.20",
+            "php": "^7.0"
+          },
+          "require-dev": {
+            "mockery/mockery": "^1.1",
+            "phpunit/phpunit": "^7.2",
+            "squizlabs/php_codesniffer": "^3.0"
+          },
+          "type": "library",
+          "autoload": {
+            "psr-4": {
+              "Nip\\Logger\\": "src/"
+            },
+            "classmap": [
+              "legacy"
+            ]
+          },
+          "notification-url": "https://packagist.org/downloads/",
+          "authors": [
+            {
+              "name": "Gabriel Solomon",
+              "email": "hello@gabrielsolomon.ro"
+            }
+          ],
+          "description": "Logger component for bytic",
+          "time": "2018-09-13T12:42:17+00:00"
+        },
+      {
             "name": "bytic/mail",
             "version": "1.0.0",
             "source": {
@@ -1082,16 +1169,16 @@
         },
         {
             "name": "bytic/staging",
-            "version": "1.0.0",
+          "version": "1.0.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/bytic/staging.git",
-                "reference": "5e6ce13cf8fc23dc62f176112534bf0a1ade1741"
+              "reference": "a705669020091c6363ddd08bce7d33c68ab41ddc"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/bytic/staging/zipball/5e6ce13cf8fc23dc62f176112534bf0a1ade1741",
-                "reference": "5e6ce13cf8fc23dc62f176112534bf0a1ade1741",
+              "url": "https://api.github.com/repos/bytic/staging/zipball/a705669020091c6363ddd08bce7d33c68ab41ddc",
+              "reference": "a705669020091c6363ddd08bce7d33c68ab41ddc",
                 "shasum": ""
             },
             "require": {
@@ -1119,7 +1206,7 @@
                 }
             ],
             "description": "Staging component for bytic",
-            "time": "2018-09-19T10:38:56+00:00"
+          "time": "2018-09-19T10:58:42+00:00"
         },
         {
             "name": "bytic/translation",
