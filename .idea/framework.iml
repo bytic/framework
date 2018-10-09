@@ -6,6 +6,7 @@
       <sourceFolder url="file://$MODULE_DIR$/tests" isTestSource="true" packagePrefix="Nip\Tests\" />
       <sourceFolder url="file://$MODULE_DIR$/tests/fixtures" isTestSource="true" packagePrefix="Nip\Fixtures\" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/bytic/application" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/bytic/autoloader" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/bytic/collections" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/bytic/config" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/bytic/container" />
@@ -20,8 +21,11 @@
       <excludeFolder url="file://$MODULE_DIR$/vendor/bytic/helpers" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/bytic/http" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/bytic/inflector" />
-      <excludeFolder url="file://$MODULE_DIR$/vendor/bytic/mvc" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/bytic/locale" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/bytic/locale-detector" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/bytic/logger" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/bytic/orm" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/bytic/pipeline" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/bytic/profiler" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/bytic/request-detective" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/bytic/router" />
@@ -35,6 +39,7 @@
       <excludeFolder url="file://$MODULE_DIR$/vendor/filp/whoops" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/hamcrest/hamcrest-php" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/html2text/html2text" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/league/container" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/league/flysystem" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/league/pipeline" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/maximebf/debugbar" />
@@ -43,7 +48,6 @@
       <excludeFolder url="file://$MODULE_DIR$/vendor/myclabs/deep-copy" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/nesbot/carbon" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/oscarotero/middleland" />
-      <excludeFolder url="file://$MODULE_DIR$/vendor/paragonie/random_compat" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/phar-io/manifest" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/phar-io/version" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/phpdocumentor/reflection-common" />
@@ -78,13 +82,15 @@
       <excludeFolder url="file://$MODULE_DIR$/vendor/swiftmailer/swiftmailer" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/symfony/debug" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/symfony/event-dispatcher" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/symfony/filesystem" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/symfony/finder" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/symfony/http-foundation" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/symfony/http-kernel" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/symfony/polyfill-mbstring" />
-      <excludeFolder url="file://$MODULE_DIR$/vendor/symfony/polyfill-php70" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/symfony/translation" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/symfony/var-dumper" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/theseer/tokenizer" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/vlucas/phpdotenv" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/webmozart/assert" />
     </content>
     <orderEntry type="inheritedJdk" />
