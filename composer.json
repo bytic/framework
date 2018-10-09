@@ -47,6 +47,7 @@
     "bytic/dispatcher": "^1.0",
     "bytic/form": "^1.0",
     "bytic/filesystem": "^1.0",
+    "bytic/flash": "^1.0",
     "bytic/helpers": "^1.0",
     "bytic/http": "^1.0",
     "bytic/inflector": "^1.0",

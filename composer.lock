@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "bd25aa9149b95deabe66c19d9336f6b8",
+    "content-hash": "8d4c35fd166fcb483a5ace34039068de",
     "packages": [
         {
             "name": "bytic/application",
@@ -600,6 +600,52 @@
             "description": "filesystem module for bytic framework",
             "homepage": "https://github.com/bytic/filesystem",
             "time": "2018-02-13T20:35:28+00:00"
+        },
+        {
+            "name": "bytic/flash",
+            "version": "1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/bytic/flash.git",
+                "reference": "7b93b9eb454ee68f8cafc4dda1d7cdadadbb5cb8"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/bytic/flash/zipball/7b93b9eb454ee68f8cafc4dda1d7cdadadbb5cb8",
+                "reference": "7b93b9eb454ee68f8cafc4dda1d7cdadadbb5cb8",
+                "shasum": ""
+            },
+            "require": {
+                "bytic/container": "^1.0",
+                "php": "^7.0"
+            },
+            "require-dev": {
+                "mockery/mockery": "^1.1",
+                "phpunit/phpunit": "^7.2",
+                "squizlabs/php_codesniffer": "^3.3"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Nip\\FlashData\\": "src"
+                },
+                "classmap": [
+                    "legacy"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Gabriel Solomon",
+                    "email": "hello@gabrielsolomon.ro"
+                }
+            ],
+            "description": "Php Framework",
+            "homepage": "https://github.com/bytic/cookie",
+            "time": "2018-10-09T11:27:33+00:00"
         },
         {
             "name": "bytic/form",
