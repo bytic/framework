@@ -1,10 +1,10 @@
 {
     "_readme": [
         "This file locks the dependencies of your project to a known state",
-        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-  "content-hash": "1a676c9d87faa52e52c4445bdd4c77b8",
+    "content-hash": "bd25aa9149b95deabe66c19d9336f6b8",
     "packages": [
         {
             "name": "bytic/application",
@@ -55,49 +55,49 @@
             "time": "2018-06-22T19:00:55+00:00"
         },
         {
-          "name": "bytic/autoloader",
-          "version": "1.0.2",
-          "source": {
-            "type": "git",
-            "url": "https://github.com/bytic/autoloader.git",
-            "reference": "99a58fe968f9c922a59cf9977961b00ee0ffd101"
-          },
-          "dist": {
-            "type": "zip",
-            "url": "https://api.github.com/repos/bytic/autoloader/zipball/99a58fe968f9c922a59cf9977961b00ee0ffd101",
-            "reference": "99a58fe968f9c922a59cf9977961b00ee0ffd101",
-            "shasum": ""
-          },
-          "require": {
-            "bytic/logger": "^1.0",
-            "bytic/utility": "^1.0",
-            "php": "^7.0"
-          },
-          "require-dev": {
-            "mockery/mockery": "^1.1",
-            "phpunit/phpunit": "^7.2",
-            "squizlabs/php_codesniffer": "^3.0"
-          },
-          "type": "library",
-          "autoload": {
-            "psr-4": {
-              "Nip\\Autoloader\\": "src/"
+            "name": "bytic/autoloader",
+            "version": "1.0.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/bytic/autoloader.git",
+                "reference": "99a58fe968f9c922a59cf9977961b00ee0ffd101"
             },
-            "classmap": [
-              "src"
-            ]
-          },
-          "notification-url": "https://packagist.org/downloads/",
-          "authors": [
-            {
-              "name": "Gabriel Solomon",
-              "email": "hello@gabrielsolomon.ro"
-            }
-          ],
-          "description": "Autoloader component for bytic",
-          "time": "2018-09-18T10:44:36+00:00"
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/bytic/autoloader/zipball/99a58fe968f9c922a59cf9977961b00ee0ffd101",
+                "reference": "99a58fe968f9c922a59cf9977961b00ee0ffd101",
+                "shasum": ""
+            },
+            "require": {
+                "bytic/logger": "^1.0",
+                "bytic/utility": "^1.0",
+                "php": "^7.0"
+            },
+            "require-dev": {
+                "mockery/mockery": "^1.1",
+                "phpunit/phpunit": "^7.2",
+                "squizlabs/php_codesniffer": "^3.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Nip\\Autoloader\\": "src/"
+                },
+                "classmap": [
+                    "src"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "authors": [
+                {
+                    "name": "Gabriel Solomon",
+                    "email": "hello@gabrielsolomon.ro"
+                }
+            ],
+            "description": "Autoloader component for bytic",
+            "time": "2018-09-18T10:44:36+00:00"
         },
-      {
+        {
             "name": "bytic/cache",
             "version": "1.0.3",
             "source": {
@@ -327,6 +327,48 @@
             "time": "2018-07-12T20:10:13+00:00"
         },
         {
+            "name": "bytic/cookie",
+            "version": "1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/bytic/cookie.git",
+                "reference": "347ec3f4df2cb5098e67a126de3472a45df9a6c1"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/bytic/cookie/zipball/347ec3f4df2cb5098e67a126de3472a45df9a6c1",
+                "reference": "347ec3f4df2cb5098e67a126de3472a45df9a6c1",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^7.0"
+            },
+            "require-dev": {
+                "mockery/mockery": "^1.1",
+                "phpunit/phpunit": "^7.2",
+                "squizlabs/php_codesniffer": "^3.3"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Nip\\Cookie\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Gabriel Solomon",
+                    "email": "hello@gabrielsolomon.ro"
+                }
+            ],
+            "description": "Php Framework",
+            "homepage": "https://github.com/bytic/cookie",
+            "time": "2018-10-09T10:23:07+00:00"
+        },
+        {
             "name": "bytic/database",
             "version": "1.0.8",
             "source": {
@@ -467,16 +509,16 @@
         },
         {
             "name": "bytic/dispatcher",
-            "version": "1.0.11",
+            "version": "1.0.13",
             "source": {
                 "type": "git",
                 "url": "https://github.com/bytic/dispatcher.git",
-                "reference": "56a5528676141ff849ef65ae10185aae4b620b4c"
+                "reference": "f1a87a6402acdba58400fdb0d56c00b6429732ae"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/bytic/dispatcher/zipball/56a5528676141ff849ef65ae10185aae4b620b4c",
-                "reference": "56a5528676141ff849ef65ae10185aae4b620b4c",
+                "url": "https://api.github.com/repos/bytic/dispatcher/zipball/f1a87a6402acdba58400fdb0d56c00b6429732ae",
+                "reference": "f1a87a6402acdba58400fdb0d56c00b6429732ae",
                 "shasum": ""
             },
             "require": {
@@ -510,7 +552,7 @@
             ],
             "description": "dispatcher bytic framework",
             "homepage": "https://github.com/bytic/dispatcher",
-            "time": "2018-08-29T20:49:18+00:00"
+            "time": "2018-09-19T12:58:56+00:00"
         },
         {
             "name": "bytic/filesystem",
@@ -608,24 +650,73 @@
             "time": "2018-08-30T20:43:32+00:00"
         },
         {
-            "name": "bytic/helpers",
-            "version": "1.0.5",
+            "name": "bytic/google-analytics",
+            "version": "1.0.4",
             "source": {
                 "type": "git",
-                "url": "https://github.com/bytic/helpers.git",
-                "reference": "4293df7f4c0e70a98ebd1360d8949fd8952dd832"
+                "url": "https://github.com/bytic/services-google-analytics.git",
+                "reference": "fe73384e435a8e9e615b59ee82a8366e03bd4b0c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/bytic/helpers/zipball/4293df7f4c0e70a98ebd1360d8949fd8952dd832",
-                "reference": "4293df7f4c0e70a98ebd1360d8949fd8952dd832",
+                "url": "https://api.github.com/repos/bytic/services-google-analytics/zipball/fe73384e435a8e9e615b59ee82a8366e03bd4b0c",
+                "reference": "fe73384e435a8e9e615b59ee82a8366e03bd4b0c",
+                "shasum": ""
+            },
+            "require": {
+                "ext-json": "*",
+                "php": ">=7.0"
+            },
+            "require-dev": {
+                "mockery/mockery": "^1.1",
+                "phpunit/phpunit": "^7.2",
+                "squizlabs/php_codesniffer": "^3.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "ByTIC\\GoogleAnalytics\\Tracking\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Gabriel Solomon",
+                    "email": "hello@gabrielsolomon.ro"
+                }
+            ],
+            "description": "Google Analytics interaction library",
+            "homepage": "https://github.com/ByTIC/services-google-analytics",
+            "keywords": [
+                "facebook",
+                "pixel"
+            ],
+            "time": "2018-09-25T11:55:07+00:00"
+        },
+        {
+            "name": "bytic/helpers",
+            "version": "1.0.7",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/bytic/helpers.git",
+                "reference": "64be64321cdedeb58eac0a8165cb14b2a1165989"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/bytic/helpers/zipball/64be64321cdedeb58eac0a8165cb14b2a1165989",
+                "reference": "64be64321cdedeb58eac0a8165cb14b2a1165989",
                 "shasum": ""
             },
             "require": {
                 "bytic/config": "^1.0",
                 "bytic/filesystem": "^1.0",
+                "bytic/google-analytics": "^1.0",
                 "bytic/router": "^1.0",
-                "php": ">=7.0"
+                "ext-json": "*",
+                "php": ">=5.5"
             },
             "require-dev": {
                 "mockery/mockery": "^1.1",
@@ -649,7 +740,7 @@
                 }
             ],
             "description": "Php Framework",
-            "time": "2018-08-06T08:01:28+00:00"
+            "time": "2018-09-28T18:10:45+00:00"
         },
         {
             "name": "bytic/http",
@@ -847,50 +938,50 @@
             "time": "2018-06-25T11:09:07+00:00"
         },
         {
-          "name": "bytic/logger",
-          "version": "1.0.0",
-          "source": {
-            "type": "git",
-            "url": "https://github.com/bytic/logger.git",
-            "reference": "df5786c0c2943423bc4959de70680823a15e1ea5"
-          },
-          "dist": {
-            "type": "zip",
-            "url": "https://api.github.com/repos/bytic/logger/zipball/df5786c0c2943423bc4959de70680823a15e1ea5",
-            "reference": "df5786c0c2943423bc4959de70680823a15e1ea5",
-            "shasum": ""
-          },
-          "require": {
-            "bytic/container": "^1.0",
-            "bytic/debug": "^1.0",
-            "monolog/monolog": "^1.20",
-            "php": "^7.0"
-          },
-          "require-dev": {
-            "mockery/mockery": "^1.1",
-            "phpunit/phpunit": "^7.2",
-            "squizlabs/php_codesniffer": "^3.0"
-          },
-          "type": "library",
-          "autoload": {
-            "psr-4": {
-              "Nip\\Logger\\": "src/"
+            "name": "bytic/logger",
+            "version": "1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/bytic/logger.git",
+                "reference": "df5786c0c2943423bc4959de70680823a15e1ea5"
             },
-            "classmap": [
-              "legacy"
-            ]
-          },
-          "notification-url": "https://packagist.org/downloads/",
-          "authors": [
-            {
-              "name": "Gabriel Solomon",
-              "email": "hello@gabrielsolomon.ro"
-            }
-          ],
-          "description": "Logger component for bytic",
-          "time": "2018-09-13T12:42:17+00:00"
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/bytic/logger/zipball/df5786c0c2943423bc4959de70680823a15e1ea5",
+                "reference": "df5786c0c2943423bc4959de70680823a15e1ea5",
+                "shasum": ""
+            },
+            "require": {
+                "bytic/container": "^1.0",
+                "bytic/debug": "^1.0",
+                "monolog/monolog": "^1.20",
+                "php": "^7.0"
+            },
+            "require-dev": {
+                "mockery/mockery": "^1.1",
+                "phpunit/phpunit": "^7.2",
+                "squizlabs/php_codesniffer": "^3.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Nip\\Logger\\": "src/"
+                },
+                "classmap": [
+                    "legacy"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "authors": [
+                {
+                    "name": "Gabriel Solomon",
+                    "email": "hello@gabrielsolomon.ro"
+                }
+            ],
+            "description": "Logger component for bytic",
+            "time": "2018-09-13T12:42:17+00:00"
         },
-      {
+        {
             "name": "bytic/mail",
             "version": "1.0.0",
             "source": {
@@ -1169,16 +1260,16 @@
         },
         {
             "name": "bytic/staging",
-          "version": "1.0.1",
+            "version": "1.0.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/bytic/staging.git",
-              "reference": "a705669020091c6363ddd08bce7d33c68ab41ddc"
+                "reference": "a705669020091c6363ddd08bce7d33c68ab41ddc"
             },
             "dist": {
                 "type": "zip",
-              "url": "https://api.github.com/repos/bytic/staging/zipball/a705669020091c6363ddd08bce7d33c68ab41ddc",
-              "reference": "a705669020091c6363ddd08bce7d33c68ab41ddc",
+                "url": "https://api.github.com/repos/bytic/staging/zipball/a705669020091c6363ddd08bce7d33c68ab41ddc",
+                "reference": "a705669020091c6363ddd08bce7d33c68ab41ddc",
                 "shasum": ""
             },
             "require": {
@@ -1206,7 +1297,7 @@
                 }
             ],
             "description": "Staging component for bytic",
-          "time": "2018-09-19T10:58:42+00:00"
+            "time": "2018-09-19T10:58:42+00:00"
         },
         {
             "name": "bytic/translation",
@@ -1863,16 +1954,16 @@
         },
         {
             "name": "nesbot/carbon",
-            "version": "1.33.0",
+            "version": "1.34.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/briannesbitt/Carbon.git",
-                "reference": "55667c1007a99e82030874b1bb14d24d07108413"
+                "reference": "1dbd3cb01c5645f3e7deda7aa46ef780d95fcc33"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/briannesbitt/Carbon/zipball/55667c1007a99e82030874b1bb14d24d07108413",
-                "reference": "55667c1007a99e82030874b1bb14d24d07108413",
+                "url": "https://api.github.com/repos/briannesbitt/Carbon/zipball/1dbd3cb01c5645f3e7deda7aa46ef780d95fcc33",
+                "reference": "1dbd3cb01c5645f3e7deda7aa46ef780d95fcc33",
                 "shasum": ""
             },
             "require": {
@@ -1914,7 +2005,7 @@
                 "datetime",
                 "time"
             ],
-            "time": "2018-08-07T08:39:47+00:00"
+            "time": "2018-09-20T19:36:25+00:00"
         },
         {
             "name": "oscarotero/middleland",
@@ -2374,16 +2465,16 @@
         },
         {
             "name": "symfony/debug",
-            "version": "v3.4.15",
+            "version": "v3.4.17",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/debug.git",
-                "reference": "c4625e75341e4fb309ce0c049cbf7fb84b8897cd"
+                "reference": "0a612e9dfbd2ccce03eb174365f31ecdca930ff6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/debug/zipball/c4625e75341e4fb309ce0c049cbf7fb84b8897cd",
-                "reference": "c4625e75341e4fb309ce0c049cbf7fb84b8897cd",
+                "url": "https://api.github.com/repos/symfony/debug/zipball/0a612e9dfbd2ccce03eb174365f31ecdca930ff6",
+                "reference": "0a612e9dfbd2ccce03eb174365f31ecdca930ff6",
                 "shasum": ""
             },
             "require": {
@@ -2426,11 +2517,11 @@
             ],
             "description": "Symfony Debug Component",
             "homepage": "https://symfony.com",
-            "time": "2018-08-03T10:42:44+00:00"
+            "time": "2018-10-02T16:33:53+00:00"
         },
         {
             "name": "symfony/event-dispatcher",
-            "version": "v4.1.4",
+            "version": "v4.1.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/event-dispatcher.git",
@@ -2493,16 +2584,16 @@
         },
         {
             "name": "symfony/filesystem",
-            "version": "v3.4.15",
+            "version": "v3.4.17",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/filesystem.git",
-                "reference": "285ce5005cb01a0aeaa5b0cf590bd0cc40bb631c"
+                "reference": "d69930fc337d767607267d57c20a7403d0a822a4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/filesystem/zipball/285ce5005cb01a0aeaa5b0cf590bd0cc40bb631c",
-                "reference": "285ce5005cb01a0aeaa5b0cf590bd0cc40bb631c",
+                "url": "https://api.github.com/repos/symfony/filesystem/zipball/d69930fc337d767607267d57c20a7403d0a822a4",
+                "reference": "d69930fc337d767607267d57c20a7403d0a822a4",
                 "shasum": ""
             },
             "require": {
@@ -2539,20 +2630,20 @@
             ],
             "description": "Symfony Filesystem Component",
             "homepage": "https://symfony.com",
-            "time": "2018-08-10T07:29:05+00:00"
+            "time": "2018-10-02T12:28:39+00:00"
         },
         {
             "name": "symfony/finder",
-            "version": "v4.1.4",
+            "version": "v4.1.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/finder.git",
-                "reference": "e162f1df3102d0b7472805a5a9d5db9fcf0a8068"
+                "reference": "1f17195b44543017a9c9b2d437c670627e96ad06"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/finder/zipball/e162f1df3102d0b7472805a5a9d5db9fcf0a8068",
-                "reference": "e162f1df3102d0b7472805a5a9d5db9fcf0a8068",
+                "url": "https://api.github.com/repos/symfony/finder/zipball/1f17195b44543017a9c9b2d437c670627e96ad06",
+                "reference": "1f17195b44543017a9c9b2d437c670627e96ad06",
                 "shasum": ""
             },
             "require": {
@@ -2588,20 +2679,20 @@
             ],
             "description": "Symfony Finder Component",
             "homepage": "https://symfony.com",
-            "time": "2018-07-26T11:24:31+00:00"
+            "time": "2018-10-03T08:47:56+00:00"
         },
         {
             "name": "symfony/http-foundation",
-            "version": "v4.1.4",
+            "version": "v4.1.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/http-foundation.git",
-                "reference": "3a5c91e133b220bb882b3cd773ba91bf39989345"
+                "reference": "d528136617ff24f530e70df9605acc1b788b08d4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/http-foundation/zipball/3a5c91e133b220bb882b3cd773ba91bf39989345",
-                "reference": "3a5c91e133b220bb882b3cd773ba91bf39989345",
+                "url": "https://api.github.com/repos/symfony/http-foundation/zipball/d528136617ff24f530e70df9605acc1b788b08d4",
+                "reference": "d528136617ff24f530e70df9605acc1b788b08d4",
                 "shasum": ""
             },
             "require": {
@@ -2642,20 +2733,20 @@
             ],
             "description": "Symfony HttpFoundation Component",
             "homepage": "https://symfony.com",
-            "time": "2018-08-27T17:47:02+00:00"
+            "time": "2018-10-03T08:48:45+00:00"
         },
         {
             "name": "symfony/http-kernel",
-            "version": "v4.1.4",
+            "version": "v4.1.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/http-kernel.git",
-                "reference": "33de0a1ff2e1720096189e3ced682d7a4e8f5e35"
+                "reference": "f5e7c15a5d010be0e16ce798594c5960451d4220"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/http-kernel/zipball/33de0a1ff2e1720096189e3ced682d7a4e8f5e35",
-                "reference": "33de0a1ff2e1720096189e3ced682d7a4e8f5e35",
+                "url": "https://api.github.com/repos/symfony/http-kernel/zipball/f5e7c15a5d010be0e16ce798594c5960451d4220",
+                "reference": "f5e7c15a5d010be0e16ce798594c5960451d4220",
                 "shasum": ""
             },
             "require": {
@@ -2729,7 +2820,7 @@
             ],
             "description": "Symfony HttpKernel Component",
             "homepage": "https://symfony.com",
-            "time": "2018-08-28T06:17:42+00:00"
+            "time": "2018-10-03T12:53:38+00:00"
         },
         {
             "name": "symfony/polyfill-ctype",
@@ -2905,16 +2996,16 @@
         },
         {
             "name": "symfony/translation",
-            "version": "v4.1.4",
+            "version": "v4.1.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/translation.git",
-                "reference": "fa2182669f7983b7aa5f1a770d053f79f0ef144f"
+                "reference": "9f0b61e339160a466ebcde167a6c5521c810e304"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/translation/zipball/fa2182669f7983b7aa5f1a770d053f79f0ef144f",
-                "reference": "fa2182669f7983b7aa5f1a770d053f79f0ef144f",
+                "url": "https://api.github.com/repos/symfony/translation/zipball/9f0b61e339160a466ebcde167a6c5521c810e304",
+                "reference": "9f0b61e339160a466ebcde167a6c5521c810e304",
                 "shasum": ""
             },
             "require": {
@@ -2970,20 +3061,20 @@
             ],
             "description": "Symfony Translation Component",
             "homepage": "https://symfony.com",
-            "time": "2018-08-07T12:45:11+00:00"
+            "time": "2018-10-02T16:36:10+00:00"
         },
         {
             "name": "symfony/var-dumper",
-            "version": "v4.1.4",
+            "version": "v4.1.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/var-dumper.git",
-                "reference": "a05426e27294bba7b0226ffc17dd01a3c6ef9777"
+                "reference": "60319b45653580b0cdacca499344577d87732f16"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/var-dumper/zipball/a05426e27294bba7b0226ffc17dd01a3c6ef9777",
-                "reference": "a05426e27294bba7b0226ffc17dd01a3c6ef9777",
+                "url": "https://api.github.com/repos/symfony/var-dumper/zipball/60319b45653580b0cdacca499344577d87732f16",
+                "reference": "60319b45653580b0cdacca499344577d87732f16",
                 "shasum": ""
             },
             "require": {
@@ -3045,7 +3136,7 @@
                 "debug",
                 "dump"
             ],
-            "time": "2018-08-02T09:24:26+00:00"
+            "time": "2018-10-02T16:36:10+00:00"
         },
         {
             "name": "vlucas/phpdotenv",
@@ -3203,16 +3294,16 @@
         },
         {
             "name": "mockery/mockery",
-            "version": "1.1.0",
+            "version": "1.2.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/mockery/mockery.git",
-                "reference": "99e29d3596b16dabe4982548527d5ddf90232e99"
+                "reference": "100633629bf76d57430b86b7098cd6beb996a35a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/mockery/mockery/zipball/99e29d3596b16dabe4982548527d5ddf90232e99",
-                "reference": "99e29d3596b16dabe4982548527d5ddf90232e99",
+                "url": "https://api.github.com/repos/mockery/mockery/zipball/100633629bf76d57430b86b7098cd6beb996a35a",
+                "reference": "100633629bf76d57430b86b7098cd6beb996a35a",
                 "shasum": ""
             },
             "require": {
@@ -3221,8 +3312,7 @@
                 "php": ">=5.6.0"
             },
             "require-dev": {
-                "phpdocumentor/phpdocumentor": "^2.9",
-                "phpunit/phpunit": "~5.7.10|~6.5"
+                "phpunit/phpunit": "~5.7.10|~6.5|~7.0"
             },
             "type": "library",
             "extra": {
@@ -3265,7 +3355,7 @@
                 "test double",
                 "testing"
             ],
-            "time": "2018-05-08T08:54:48+00:00"
+            "time": "2018-10-02T21:52:37+00:00"
         },
         {
             "name": "myclabs/deep-copy",
@@ -3634,16 +3724,16 @@
         },
         {
             "name": "phpunit/php-code-coverage",
-            "version": "6.0.7",
+            "version": "6.0.8",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/php-code-coverage.git",
-                "reference": "865662550c384bc1db7e51d29aeda1c2c161d69a"
+                "reference": "848f78b3309780fef7ec8c4666b7ab4e6b09b22f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/php-code-coverage/zipball/865662550c384bc1db7e51d29aeda1c2c161d69a",
-                "reference": "865662550c384bc1db7e51d29aeda1c2c161d69a",
+                "url": "https://api.github.com/repos/sebastianbergmann/php-code-coverage/zipball/848f78b3309780fef7ec8c4666b7ab4e6b09b22f",
+                "reference": "848f78b3309780fef7ec8c4666b7ab4e6b09b22f",
                 "shasum": ""
             },
             "require": {
@@ -3693,7 +3783,7 @@
                 "testing",
                 "xunit"
             ],
-            "time": "2018-06-01T07:51:50+00:00"
+            "time": "2018-10-04T03:41:23+00:00"
         },
         {
             "name": "phpunit/php-file-iterator",
@@ -3886,16 +3976,16 @@
         },
         {
             "name": "phpunit/phpunit",
-            "version": "7.3.5",
+            "version": "7.4.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/phpunit.git",
-                "reference": "7b331efabbb628c518c408fdfcaf571156775de2"
+                "reference": "f3837fa1e07758057ae06e8ddec6d06ba183f126"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/7b331efabbb628c518c408fdfcaf571156775de2",
-                "reference": "7b331efabbb628c518c408fdfcaf571156775de2",
+                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/f3837fa1e07758057ae06e8ddec6d06ba183f126",
+                "reference": "f3837fa1e07758057ae06e8ddec6d06ba183f126",
                 "shasum": ""
             },
             "require": {
@@ -3920,7 +4010,7 @@
                 "sebastian/exporter": "^3.1",
                 "sebastian/global-state": "^2.0",
                 "sebastian/object-enumerator": "^3.0.3",
-                "sebastian/resource-operations": "^1.0",
+                "sebastian/resource-operations": "^2.0",
                 "sebastian/version": "^2.0.1"
             },
             "conflict": {
@@ -3940,7 +4030,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "7.3-dev"
+                    "dev-master": "7.4-dev"
                 }
             },
             "autoload": {
@@ -3966,7 +4056,7 @@
                 "testing",
                 "xunit"
             ],
-            "time": "2018-09-08T15:14:29+00:00"
+            "time": "2018-10-05T04:05:24+00:00"
         },
         {
             "name": "sebastian/code-unit-reverse-lookup",
@@ -4448,25 +4538,25 @@
         },
         {
             "name": "sebastian/resource-operations",
-            "version": "1.0.0",
+            "version": "2.0.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/resource-operations.git",
-                "reference": "ce990bb21759f94aeafd30209e8cfcdfa8bc3f52"
+                "reference": "4d7a795d35b889bf80a0cc04e08d77cedfa917a9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/resource-operations/zipball/ce990bb21759f94aeafd30209e8cfcdfa8bc3f52",
-                "reference": "ce990bb21759f94aeafd30209e8cfcdfa8bc3f52",
+                "url": "https://api.github.com/repos/sebastianbergmann/resource-operations/zipball/4d7a795d35b889bf80a0cc04e08d77cedfa917a9",
+                "reference": "4d7a795d35b889bf80a0cc04e08d77cedfa917a9",
                 "shasum": ""
             },
             "require": {
-                "php": ">=5.6.0"
+                "php": "^7.1"
             },
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "1.0.x-dev"
+                    "dev-master": "2.0-dev"
                 }
             },
             "autoload": {
@@ -4486,7 +4576,7 @@
             ],
             "description": "Provides a list of PHP built-in functions that operate on resources",
             "homepage": "https://www.github.com/sebastianbergmann/resource-operations",
-            "time": "2015-07-28T20:34:47+00:00"
+            "time": "2018-10-04T04:07:39+00:00"
         },
         {
             "name": "sebastian/version",
@@ -4533,16 +4623,16 @@
         },
         {
             "name": "squizlabs/php_codesniffer",
-            "version": "3.3.1",
+            "version": "3.3.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/squizlabs/PHP_CodeSniffer.git",
-                "reference": "628a481780561150481a9ec74709092b9759b3ec"
+                "reference": "6ad28354c04b364c3c71a34e4a18b629cc3b231e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/squizlabs/PHP_CodeSniffer/zipball/628a481780561150481a9ec74709092b9759b3ec",
-                "reference": "628a481780561150481a9ec74709092b9759b3ec",
+                "url": "https://api.github.com/repos/squizlabs/PHP_CodeSniffer/zipball/6ad28354c04b364c3c71a34e4a18b629cc3b231e",
+                "reference": "6ad28354c04b364c3c71a34e4a18b629cc3b231e",
                 "shasum": ""
             },
             "require": {
@@ -4580,7 +4670,7 @@
                 "phpcs",
                 "standards"
             ],
-            "time": "2018-07-26T23:47:18+00:00"
+            "time": "2018-09-23T23:08:17+00:00"
         },
         {
             "name": "theseer/tokenizer",

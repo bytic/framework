@@ -26,7 +26,6 @@
       <path value="$PROJECT_DIR$/vendor/swiftmailer/swiftmailer" />
       <path value="$PROJECT_DIR$/vendor/phpunit/phpunit" />
       <path value="$PROJECT_DIR$/vendor/monolog/monolog" />
-      <path value="$PROJECT_DIR$/vendor/vlucas/phpdotenv" />
       <path value="$PROJECT_DIR$/vendor/phpdocumentor/reflection-docblock" />
       <path value="$PROJECT_DIR$/vendor/phpdocumentor/type-resolver" />
       <path value="$PROJECT_DIR$/vendor/html2text/html2text" />
@@ -44,9 +43,6 @@
       <path value="$PROJECT_DIR$/vendor/symfony/http-foundation" />
       <path value="$PROJECT_DIR$/vendor/doctrine/instantiator" />
       <path value="$PROJECT_DIR$/vendor/sebastian/version" />
-      <path value="$PROJECT_DIR$/vendor/league/container" />
-      <path value="$PROJECT_DIR$/vendor/symfony/filesystem" />
-      <path value="$PROJECT_DIR$/vendor/symfony/finder" />
       <path value="$PROJECT_DIR$/vendor/maximebf/debugbar" />
       <path value="$PROJECT_DIR$/vendor/symfony/event-dispatcher" />
       <path value="$PROJECT_DIR$/vendor/symfony/translation" />
@@ -92,11 +88,12 @@
       <path value="$PROJECT_DIR$/vendor/bytic/translation" />
       <path value="$PROJECT_DIR$/vendor/bytic/mail" />
       <path value="$PROJECT_DIR$/vendor/bytic/application" />
-      <path value="$PROJECT_DIR$/vendor/bytic/locale" />
-      <path value="$PROJECT_DIR$/vendor/bytic/pipeline" />
-      <path value="$PROJECT_DIR$/vendor/bytic/locale-detector" />
-      <path value="$PROJECT_DIR$/vendor/bytic/autoloader" />
-      <path value="$PROJECT_DIR$/vendor/bytic/logger" />
+      <path value="$PROJECT_DIR$/vendor/symfony/polyfill-php70" />
+      <path value="$PROJECT_DIR$/vendor/paragonie/random_compat" />
+      <path value="$PROJECT_DIR$/vendor/bytic/google-analytics" />
+      <path value="$PROJECT_DIR$/vendor/bytic/mvc" />
+      <path value="$PROJECT_DIR$/vendor/bytic/staging" />
+      <path value="$PROJECT_DIR$/vendor/bytic/cookie" />
     </include_path>
   </component>
   <component name="PhpProjectSharedConfiguration" php_language_level="7" />
