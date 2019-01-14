@@ -53,6 +53,7 @@
     "bytic/inflector": "^0.9",
     "bytic/filesystem": "^0.9",
     "bytic/logger": "^0.9",
+    "bytic/locale": "^0.9",
     "bytic/mail": "^0.9",
     "bytic/mvc": "^0.9",
     "bytic/orm": "^0.9",
