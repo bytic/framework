@@ -4,3 +4,4 @@ vendor/*
 
 tests/_output/*
 /.phpunit.result.cache
+composer.lock
