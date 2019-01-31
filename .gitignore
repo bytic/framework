@@ -5,3 +5,5 @@ vendor/*
 .idea/workspace.xml
 /.idea/usage.statistics.xml
 .phpunit.result.cache
+
+composer.lock
