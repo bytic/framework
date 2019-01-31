@@ -60,6 +60,7 @@
     "bytic/profiler": "^0.9",
     "bytic/request-detective": "^1.0",
     "bytic/router": "^0.9",
+    "bytic/session": "^0.9",
     "bytic/staging": "^0.9",
     "bytic/translation": "^0.9",
     "bytic/utility": "^1.0",
