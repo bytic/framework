@@ -76,7 +76,7 @@ function _date($datetime, $format = false)
 function _strtotime($date, $format = false)
 {
     $format = $format ? $format : Nip_Locale::instance()->getOption(['time', 'dateStringFormat']);
-    $dateArray = strptime($date, $format);
+    $dateArray = date_parse_from_format($date, $format);
 
     return mktime($dateArray['tm_hour'], $dateArray['tm_min'], $dateArray['tm_sec'], 1 + $dateArray['tm_mon'],
         $dateArray['tm_mday'], 1900 + $dateArray['tm_year']);
