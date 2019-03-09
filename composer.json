@@ -35,6 +35,7 @@
   },
   "require": {
     "php": "^7.0",
+    "bytic/autoloader": "^0.9",
     "bytic/application": "^0.9",
     "bytic/cache": "^0.9",
     "bytic/collections": "^1.0",
