@@ -3,24 +3,14 @@
 namespace Nip;
 
 use Nip\AutoLoader\Exception;
+use Nip\Locale\Locale;
 use Nip\Mvc\Sections\SectionsManager;
 use Nip\Records\RecordManager;
-
-if (!function_exists('url')) {
-    /**
-     * Get Url Generator
-     * @return \Nip\Router\Generator\UrlGenerator
-     */
-    function url()
-    {
-        return app('url');
-    }
-}
 
 if (!function_exists('locale')) {
     /**
      * Get Locale
-     * @return \Nip\Locale\Locale
+     * @return Locale
      */
     function locale()
     {
