@@ -54,6 +54,7 @@
     "bytic/logger": "^1.0",
     "bytic/locale": "^1.0",
     "bytic/mail": "^1.0",
+    "bytic/mvc": "^1.0",
     "bytic/orm": "^1.0",
     "bytic/profiler": "^1.0",
     "bytic/request-detective": "^1.0",
