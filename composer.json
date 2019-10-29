@@ -21,7 +21,6 @@
       "src/functions/application.php",
       "src/functions/application_namespaced.php",
       "src/functions/common.php",
-      "src/functions/input.php",
       "src/functions/flash.php"
     ]
   },
