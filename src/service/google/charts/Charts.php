@@ -2,17 +2,18 @@
 
 class Nip_Service_Google_Charts
 {
-    protected $_url = "http://chart.apis.google.com/chart";
+    protected $_url = 'http://chart.apis.google.com/chart';
 
     /**
-     * Chart factory
+     * Chart factory.
      *
      * @param string $type
+     *
      * @return Nip_Service_Google_Charts_Chart
      */
-    public function getChart($type = "Line")
+    public function getChart($type = 'Line')
     {
-        $class = "Nip_Service_Google_Charts_Chart_" . $type;
+        $class = 'Nip_Service_Google_Charts_Chart_'.$type;
 
         $chart = new $class();
         $chart->setService($this);
@@ -26,7 +27,7 @@ class Nip_Service_Google_Charts
     }
 
     /**
-     * Singleton
+     * Singleton.
      *
      * @return Nip_Service_Google_Charts
      */
@@ -34,8 +35,8 @@ class Nip_Service_Google_Charts
     {
         static $instance;
         if (!($instance instanceof self)) {
-            $instance = new self();
-        }
+            $instance = new self();}
+
         return $instance;
     }
 }

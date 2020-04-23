@@ -11,7 +11,8 @@ class Paginator
     protected $count = null;
 
     /**
-     * Returns the offset ant length for limiting results to current page
+     * Returns the offset ant length for limiting results to current page.
+     *
      * @return array
      */
     public function getLimits()
@@ -22,7 +23,7 @@ class Paginator
 
         $dLimit = ($this->currentPage - 1) * $this->itemsPerPage;
 
-        return array($dLimit, $this->itemsPerPage);
+        return [$dLimit, $this->itemsPerPage];
     }
 
     public function getTotalPages()
@@ -60,36 +61,43 @@ class Paginator
 
     /**
      * @param array $params
+     *
      * @return Nip_Paginator
      */
     public function setParams($params)
     {
         $this->params = $params;
+
         return $this;
     }
 
     /**
      * @param int $count
+     *
      * @return Nip_Paginator
      */
     public function setCount($count)
     {
         $this->count = $count;
+
         return $this;
     }
 
     /**
      * @param int $page
+     *
      * @return Nip_Paginator
      */
     public function setCurrentPage($page)
     {
         $this->currentPage = $page ? $page : 1;
+
         return $this;
     }
 
     /**
      * @param int $count
+     *
      * @return Nip\Paginator
      */
     public function setItemsPerPage($count)
@@ -97,6 +105,7 @@ class Paginator
         if ($count) {
             $this->itemsPerPage = $count;
         }
+
         return $this;
     }
 }

@@ -20,8 +20,7 @@
     "files": [
       "src/functions/application.php",
       "src/functions/application_namespaced.php",
-      "src/functions/common.php",
-      "src/functions/flash.php"
+      "src/functions/common.php"
     ]
   },
   "autoload-dev": {
@@ -41,12 +40,11 @@
     "bytic/container": "^1.0",
     "bytic/cookie": "^1.0",
     "bytic/database": "^1.0",
+    "bytic/dispatcher": "^1.0",
     "bytic/debug": "^1.0",
     "bytic/debugbar": "^1.0",
-    "bytic/dispatcher": "^1.0",
-    "bytic/form": "^1.0",
+    "bytic/flash": "^0.9|^1.0",
     "bytic/filesystem": "^1.0",
-    "bytic/flash": "^1.0",
     "bytic/helpers": "^1.0",
     "bytic/http": "^1.0",
     "bytic/inflector": "^1.0",

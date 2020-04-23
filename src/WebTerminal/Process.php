@@ -31,11 +31,11 @@ class Process
 
     public function getDescriptorSpec()
     {
-        return array(
-            0 => array("pipe", "r"), // stdin
-            1 => array("pipe", "w"), // stdout -> we use this
-            2 => array("pipe", "w")   // stderr
-        );
+        return [
+            0 => ['pipe', 'r'], // stdin
+            1 => ['pipe', 'w'], // stdout -> we use this
+            2 => ['pipe', 'w'],   // stderr
+        ];
     }
 
     public function runProcess()

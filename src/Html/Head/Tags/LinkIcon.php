@@ -3,8 +3,7 @@
 namespace Nip\Html\Head\Tags;
 
 /**
- * Class Link
- * @package Nip\Html\Head\Tags
+ * Class Link.
  */
 class LinkIcon extends Link
 {
@@ -21,6 +20,7 @@ class LinkIcon extends Link
 
     /**
      * @param $value
+     *
      * @return bool|$this|AbstractTag
      */
     public function setSizes($value)

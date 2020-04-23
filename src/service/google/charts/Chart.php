@@ -34,7 +34,7 @@ class Nip_Service_Google_Charts_Chart
         return $this->_params;
     }
 
-    public function setParams($params = array())
+    public function setParams($params = [])
     {
         if (count($params)) {
             foreach ($params as $name => $value) {
@@ -47,7 +47,7 @@ class Nip_Service_Google_Charts_Chart
 
     public function setSize($size)
     {
-        $this->setParam("chs", $size);
+        $this->setParam('chs', $size);
         return $this;
     }
 

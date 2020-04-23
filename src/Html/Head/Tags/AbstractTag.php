@@ -3,8 +3,7 @@
 namespace Nip\Html\Head\Tags;
 
 /**
- * Class AbstractEntity
- * @package Nip\Html\Head\Tags
+ * Class AbstractEntity.
  */
 abstract class AbstractTag
 {
@@ -23,7 +22,6 @@ abstract class AbstractTag
     public function __construct()
     {
     }
-
 
     /**
      * @return array
@@ -44,6 +42,7 @@ abstract class AbstractTag
     /**
      * @param $name
      * @param string $value
+     *
      * @return bool|AbstractTag
      */
     public function setAttribute($name, $value)
@@ -58,6 +57,7 @@ abstract class AbstractTag
 
     /**
      * @param $name
+     *
      * @return bool
      */
     public function isValidAttribute($name)

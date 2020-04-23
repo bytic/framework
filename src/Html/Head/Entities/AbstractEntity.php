@@ -3,8 +3,7 @@
 namespace Nip\Html\Head\Entities;
 
 /**
- * Class AbstractEntity
- * @package Nip\Html\Head\Meta\Entities
+ * Class AbstractEntity.
  */
 abstract class AbstractEntity
 {

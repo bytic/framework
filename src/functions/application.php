@@ -83,6 +83,14 @@ function translator()
     return app('translator');
 }
 
+/**
+ * @return \Nip\Database\Connection
+ */
+function db()
+{
+    return Container::getInstance()->get('db.connection');
+}
+
 if (!function_exists('inflector')) {
     /**
      * @return Nip\Inflector\Inflector

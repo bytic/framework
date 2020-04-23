@@ -1,13 +1,13 @@
 <?php
 
 /**
- * Nip Framework
+ * Nip Framework.
  *
  * @category   Nip
+ *
  * @copyright  2009 Nip Framework
  * @license    http://www.opensource.org/licenses/mit-license.php The MIT License
  */
-
 abstract class Nip_Service_Maps_Objects_Abstract
 {
     protected $_service;
@@ -24,6 +24,7 @@ abstract class Nip_Service_Maps_Objects_Abstract
     public function setParam($key, $value)
     {
         $this->_params[$key] = $value;
+
         return $this;
     }
 
@@ -31,7 +32,7 @@ abstract class Nip_Service_Maps_Objects_Abstract
     {
         return $this->_params[$key];
     }
-    
+
     public function addListener($event, $function)
     {
         $this->_listeners[$event][] = $function;
@@ -46,6 +47,7 @@ abstract class Nip_Service_Maps_Objects_Abstract
     {
         $name = str_replace('Nip_Service_Maps_Objects_', '', get_class($this));
         $name = inflector()->hyphenize($name);
+
         return $name;
     }
 

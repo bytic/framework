@@ -15,6 +15,7 @@ class Nip_Tool
             $this->_generator = new Nip_Tool_Generator();
             $this->_generator->setTool($this);
         }
+
         return $this->_generator;
     }
 
@@ -25,15 +26,16 @@ class Nip_Tool
     public function run()
     {
         $this->intro();
+
         return $this->mainMenu();
     }
 
     public function intro()
     {
-        $this->getConsole()->output("***************************
+        $this->getConsole()->output('***************************
 ***       Nip Tool      ***
 ***************************
-");
+');
     }
 
     /**
@@ -50,12 +52,13 @@ class Nip_Tool
 
     public function mainMenu()
     {
-        $response = $this->getConsole()->askVariant('How can i serve you today master ?', array(
-                'model'     => 'Models',
-                'module'    => 'Module',
+        $response = $this->getConsole()->askVariant('How can i serve you today master ?', [
+                'model'      => 'Models',
+                'module'     => 'Module',
                 'controller' => 'Controller',
-                'exit' => 'Exit',
-            ));
+                'exit'       => 'Exit',
+            ]);
+
         return $this->runMenu($response);
     }
 

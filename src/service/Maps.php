@@ -1,13 +1,13 @@
 <?php
 
 /**
- * Nip Framework
+ * Nip Framework.
  *
  * @category   Nip
+ *
  * @copyright  2009 Nip Framework
  * @license    http://www.opensource.org/licenses/mit-license.php The MIT License
  */
-
 class Nip_Service_Maps
 {
     protected $_api_key;
@@ -24,7 +24,7 @@ class Nip_Service_Maps
     public function __call($name, $arguments)
     {
         if (strpos($name, 'render') === 0) {
-            return call_user_func_array(array($this->getProvider(), $name), $arguments);
+            return call_user_func_array([$this->getProvider(), $name], $arguments);
         }
     }
 
@@ -43,18 +43,20 @@ class Nip_Service_Maps
     public function setProvider($name)
     {
         $this->_provider = $name;
+
         return $this;
     }
 
     public function initProvider()
     {
         if ($this->_provider) {
-            $class = 'Nip_Service_Maps_Provider_' . ucfirst($this->_provider);
+            $class = 'Nip_Service_Maps_Provider_'.ucfirst($this->_provider);
             $this->_providerObj = new $class();
             $this->_providerObj->setService($this);
+
             return true;
         }
-        trigger_error('No provider set for ' . get_class($this));
+        trigger_error('No provider set for '.get_class($this));
     }
 
     public function getApiKey()
@@ -72,14 +74,16 @@ class Nip_Service_Maps
     public function addObject(Nip_Service_Maps_Objects_Abstract $object)
     {
         $this->_objects[] = $object;
+
         return $this;
     }
 
     public function getNewObject($name)
     {
-        $name = 'Nip_Service_Maps_Objects_' . ucfirst($name);
+        $name = 'Nip_Service_Maps_Objects_'.ucfirst($name);
         $object = new $name();
         $object->setService($this);
+
         return $object;
     }
 
@@ -91,6 +95,7 @@ class Nip_Service_Maps
     public function setParam($key, $value)
     {
         $this->_params[$key] = $value;
+
         return $this;
     }
 
