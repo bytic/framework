@@ -22,8 +22,7 @@
     ],
     "files": [
       "src/functions/application.php",
-      "src/functions/common.php",
-      "src/functions/flash.php"
+      "src/functions/common.php"
     ]
   },
   "autoload-dev": {
