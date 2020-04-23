@@ -47,7 +47,7 @@
     "bytic/debug": "^0.9",
     "bytic/debugbar": "^0.9",
     "bytic/form": "^0.9",
-    "bytic/flash": "^0.9",
+    "bytic/flash": "^0.9|^1.0",
     "bytic/helpers": "^0.9",
     "bytic/http": "^0.9",
     "bytic/inflector": "^0.9",
