@@ -40,7 +40,7 @@
     "bytic/controllers": "^0.9",
     "bytic/config": "^0.9",
     "bytic/cookie": "^0.9",
-    "bytic/container": "^0.9",
+    "bytic/container": "^0.9|^1.0",
     "bytic/database": "^0.9",
     "bytic/dispatcher": "^0.9",
     "bytic/debug": "^0.9",
@@ -54,6 +54,7 @@
     "bytic/logger": "^0.9",
     "bytic/locale": "^0.9",
     "bytic/mail": "^0.9",
+    "bytic/money": "^1.0",
     "bytic/mvc": "^0.9",
     "bytic/orm": "^0.9",
     "bytic/profiler": "^0.9",
@@ -64,12 +65,11 @@
     "bytic/translation": "^0.9",
     "bytic/utility": "^1.0",
     "bytic/view": "^0.9",
-    "monolog/monolog": "^1.20",
+    "bytic/validator": "^1.0",
     "filp/whoops": "^2.1",
     "ezyang/htmlpurifier": "^4.9"
   },
   "require-dev": {
-    "squizlabs/php_codesniffer": "^3.0",
     "phpunit/phpunit": "^7.2",
     "mockery/mockery": "^1.1"
   }
