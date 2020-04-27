@@ -45,11 +45,11 @@
     "bytic/dispatcher": "^0.9",
     "bytic/debug": "^0.9",
     "bytic/debugbar": "^0.9",
-    "bytic/form": "^0.9",
+    "bytic/form": "^0.9|^1.0",
     "bytic/flash": "^0.9|^1.0",
     "bytic/helpers": "^0.9",
     "bytic/http": "^0.9",
-    "bytic/inflector": "^0.9",
+    "bytic/inflector": "^0.9|^1.0",
     "bytic/filesystem": "^0.9",
     "bytic/logger": "^0.9",
     "bytic/locale": "^0.9",
@@ -66,7 +66,6 @@
     "bytic/utility": "^1.0",
     "bytic/view": "^0.9",
     "bytic/validator": "^1.0",
-    "filp/whoops": "^2.1",
     "ezyang/htmlpurifier": "^4.9"
   },
   "require-dev": {
