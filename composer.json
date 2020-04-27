@@ -43,6 +43,7 @@
     "bytic/dispatcher": "^1.0",
     "bytic/debug": "^1.0",
     "bytic/debugbar": "^1.0",
+    "bytic/form": "^0.9|^1.0",
     "bytic/flash": "^0.9|^1.0",
     "bytic/filesystem": "^1.0",
     "bytic/helpers": "^1.0",
@@ -63,7 +64,6 @@
     "bytic/utility": "^1.0",
     "bytic/view": "^1.0",
     "bytic/validator": "^1.0",
-    "filp/whoops": "^2.1",
     "vlucas/phpdotenv": "^2.4",
     "ezyang/htmlpurifier": "^4.9"
   },
