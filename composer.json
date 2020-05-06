@@ -37,6 +37,7 @@
     "bytic/application": "^0.9",
     "bytic/cache": "^0.9",
     "bytic/collections": "^1.0",
+    "bytic/console": "^0.9|^1.0",
     "bytic/controllers": "^0.9",
     "bytic/config": "^0.9",
     "bytic/cookie": "^0.9",
