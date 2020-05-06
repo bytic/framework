@@ -64,7 +64,6 @@
     "bytic/utility": "^1.0",
     "bytic/view": "^1.0",
     "bytic/validator": "^1.0",
-    "vlucas/phpdotenv": "^2.4",
     "ezyang/htmlpurifier": "^4.9"
   },
   "require-dev": {
