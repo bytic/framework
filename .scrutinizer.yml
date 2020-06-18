@@ -4,12 +4,18 @@ checks:
         duplication: true
 build:
     environment:
-        php: '7.1.1'
+        php: '7.2'
+
+    nodes:
+        analysis:
+            tests:
+                override:
+                    - php-scrutinizer-run
 tools:
     php_code_coverage:
         enabled: true
     php_code_sniffer:
         config:
-            standard: "PSR2"
+            standard: "PSR12"
     external_code_coverage:
         timeout: 600
