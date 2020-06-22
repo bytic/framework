@@ -1,9 +1,8 @@
 .idea/workspace.xml
-/.idea/usage.statistics.xml
-/.phpunit.result.cache
+.idea/usage.statistics.xml
+.phpunit.result.cache
 
-vendor/*
-
+vendor
 tests/_output/*
 
 composer.lock

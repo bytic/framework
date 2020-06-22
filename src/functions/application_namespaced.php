@@ -18,17 +18,6 @@ if (!function_exists('locale')) {
     }
 }
 
-if (!function_exists('sections')) {
-    /**
-     * Get SectionsManager
-     * @return SectionsManager
-     */
-    function sections()
-    {
-        return app('mvc.sections');
-    }
-}
-
 if (!function_exists('storage_path')) {
     /**
      * Get the path to the storage folder.
