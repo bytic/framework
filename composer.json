@@ -31,7 +31,7 @@
   },
   "require": {
     "php": "^7.0",
-    "bytic/autoloader": "^0.9|^1.0",
+    "bytic/autoloader": "^0.9|^1.0|^2.0",
     "bytic/application": "^0.9|^1.0",
     "bytic/cache": "^0.9|^1.0",
     "bytic/collections": "^1.0",
