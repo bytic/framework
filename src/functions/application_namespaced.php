@@ -7,17 +7,6 @@ use Nip\Locale\Locale;
 use Nip\Mvc\Sections\SectionsManager;
 use Nip\Records\RecordManager;
 
-if (!function_exists('locale')) {
-    /**
-     * Get Locale
-     * @return Locale
-     */
-    function locale()
-    {
-        return app('locale');
-    }
-}
-
 if (!function_exists('storage_path')) {
     /**
      * Get the path to the storage folder.
