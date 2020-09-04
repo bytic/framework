@@ -48,7 +48,7 @@ function encode_url($input)
  */
 function current_url()
 {
-    return defined('CURRENT_URL') ? CURRENT_URL : url()->current();
+    return defined('CURRENT_URL') ? CURRENT_URL : url()->full();
 }
 
 /**
