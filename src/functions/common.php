@@ -1,5 +1,7 @@
 <?php
 
+use function Nip\url;
+
 if (!function_exists('pr')) {
     function pr($mixed)
     {
@@ -46,7 +48,7 @@ function encode_url($input)
  */
 function current_url()
 {
-    return defined('CURRENT_URL') ? CURRENT_URL : null;
+    return defined('CURRENT_URL') ? CURRENT_URL : url()->current();
 }
 
 /**
