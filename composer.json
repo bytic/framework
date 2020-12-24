@@ -30,7 +30,7 @@
     }
   },
   "require": {
-    "php": "^7.0",
+    "php": "^7.0|^8.0",
     "bytic/autoloader": "^0.9|^1.0|^2.0",
     "bytic/application": "^0.9|^1.0",
     "bytic/cache": "^0.9|^1.0",
@@ -39,7 +39,7 @@
     "bytic/controllers": "^0.9|^1.0",
     "bytic/config": "^0.9|^1.0",
     "bytic/cookie": "^0.9|^1.0",
-    "bytic/container": "^0.9|^1.0",
+    "bytic/container": "^0.9|^1.0|^2.0",
     "bytic/database": "^0.9|^1.0",
     "bytic/dispatcher": "^0.9|^1.0",
     "bytic/debug": "^0.9|^1.0",
