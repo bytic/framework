@@ -1,6 +1,5 @@
 <?php
 
-namespace Nip;
 
 class Paginator
 {
@@ -62,7 +61,7 @@ class Paginator
     /**
      * @param array $params
      *
-     * @return Nip_Paginator
+     * @return \Nip\Nip_Paginator
      */
     public function setParams($params)
     {
@@ -74,7 +73,7 @@ class Paginator
     /**
      * @param int $count
      *
-     * @return Nip_Paginator
+     * @return \Nip\Nip_Paginator
      */
     public function setCount($count)
     {
@@ -86,7 +85,7 @@ class Paginator
     /**
      * @param int $page
      *
-     * @return Nip_Paginator
+     * @return \Nip\Nip_Paginator
      */
     public function setCurrentPage($page)
     {
@@ -98,7 +97,7 @@ class Paginator
     /**
      * @param int $count
      *
-     * @return Nip\Paginator
+     * @return \Nip\Nip
      */
     public function setItemsPerPage($count)
     {
