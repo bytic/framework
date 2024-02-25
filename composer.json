@@ -62,7 +62,7 @@
     "bytic/session": "^1.0|^2.0",
     "bytic/staging": "^1.0|^2.0",
     "bytic/translation": "^1.0|^2.0",
-    "bytic/utility": "^1.0|^2.0",
+    "bytic/utility": "^1.0.78|^2.0",
     "bytic/view": "^1.0|^2.0",
     "bytic/validator": "^1.0"
   },
